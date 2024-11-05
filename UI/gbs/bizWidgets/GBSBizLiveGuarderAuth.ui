@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GBSBizLiveGuarderAuth</class>
+ <widget class="QWidget" name="GBSBizLiveGuarderAuth">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>501</width>
+    <height>341</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="lgAuthCodeWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>501</width>
+     <height>341</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>320</y>
+      <width>293</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #EB3F5E;
+size:12px
+</string>
+    </property>
+    <property name="text">
+     <string>固定验证码请联系负责人，牢记验证码不要告诉任何人。</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePassword2">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>70</y>
+      <width>56</width>
+      <height>56</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePassword3">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>70</y>
+      <width>56</width>
+      <height>56</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePassword4">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>70</y>
+      <width>56</width>
+      <height>56</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>160</y>
+      <width>501</width>
+      <height>58</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, 
+stop:0 #000000, stop:0.525 #434343, stop:1 #000000); 
+border-radius: 24px;
+font-size:18px</string>
+    </property>
+    <property name="text">
+     <string>进入</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePassword1">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>70</y>
+      <width>56</width>
+      <height>56</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblResetPassword">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>260</y>
+      <width>133</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:18px</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>0</y>
+      <width>225</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #00C566;
+font-size:32px
+</string>
+    </property>
+    <property name="text">
+     <string>场控管理授权码</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePassword0">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>70</y>
+      <width>56</width>
+      <height>56</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

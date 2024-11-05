@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GBSBizSettingTimbreSquare</class>
+ <widget class="QWidget" name="GBSBizSettingTimbreSquare">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1238</width>
+    <height>920</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>20</y>
+     <width>1231</width>
+     <height>901</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: #01C667;
+font-size:16px;
+</string>
+   </property>
+   <property name="tabShape">
+    <enum>QTabWidget::TabShape::Rounded</enum>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <property name="elideMode">
+    <enum>Qt::TextElideMode::ElideLeft</enum>
+   </property>
+   <widget class="QWidget" name="tabBasic">
+    <attribute name="title">
+     <string>音色广场</string>
+    </attribute>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>1238</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <widget class="QComboBox" name="comboBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>13</y>
+        <width>80</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>国家</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="comboBox_2">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>13</y>
+        <width>80</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>风格</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>14</y>
+        <width>466</width>
+        <height>30</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="geometry">
+       <rect>
+        <x>736</x>
+        <y>17</y>
+        <width>24</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-image:url(:gbs/images/gbs/biz/gbs-search.png);
+border-radius: 5px;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>1231</width>
+       <height>681</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout"/>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>761</y>
+       <width>40</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-image:url(:gbs/images/gbs/biz/gbs-player-widget-pause.png);
+border-radius: 5px;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>776</y>
+       <width>254</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>771</y>
+       <width>88</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:16px;</string>
+     </property>
+     <property name="text">
+      <string>00:00:00</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>773</y>
+       <width>88</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:16px;</string>
+     </property>
+     <property name="text">
+      <string>00:00:00</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>767</y>
+       <width>32</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-image:url(:gbs/images/gbs/biz/gbs-player-widget-speaker.png);
+border-radius: 5px;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>596</x>
+       <y>771</y>
+       <width>25</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:12px;
+color:#00C566;</string>
+     </property>
+     <property name="text">
+      <string>试听</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="geometry">
+      <rect>
+       <x>630</x>
+       <y>769</y>
+       <width>25</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-image:url(:gbs/images/gbs/biz/gbs-player-widget-download.png);
+border-radius: 5px;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>771</y>
+       <width>25</width>
+       <height>19</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:12px;
+color:#00C566;</string>
+     </property>
+     <property name="text">
+      <string>下载</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>776</y>
+       <width>145</width>
+       <height>14</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size:10px;</string>
+     </property>
+     <property name="text">
+      <string>销售单价：￥99元/月/设备/音色</string>
+     </property>
+    </widget>
+    <widget class="QFrame" name="frame">
+     <property name="geometry">
+      <rect>
+       <x>1016</x>
+       <y>760</y>
+       <width>202</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#8F92A1;
+border-radius:16px;
+</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>13</y>
+        <width>40</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:12px;</string>
+      </property>
+      <property name="text">
+       <string>去结算</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_5">
+      <property name="geometry">
+       <rect>
+        <x>27</x>
+        <y>6</y>
+        <width>25</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-image:url(:gbs/images/gbs/biz/gbs-money.png);
+border-radius: 5px;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>11</y>
+        <width>21</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:12px;
+</string>
+      </property>
+      <property name="text">
+       <string> 张</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>11</y>
+        <width>21</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:12px;</string>
+      </property>
+      <property name="text">
+       <string>01</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabAdvanced">
+    <attribute name="title">
+     <string>我的音色</string>
+    </attribute>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

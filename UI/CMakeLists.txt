@@ -11,7 +11,7 @@ else()
   target_enable_feature(obs "User Interface")
 endif()
 
-find_package(FFmpeg REQUIRED COMPONENTS avcodec avutil avformat)
+find_package(FFmpeg REQUIRED COMPONENTS avcodec avdevice avutil avformat swscale swresample)
 find_package(CURL REQUIRED)
 
 if(NOT TARGET OBS::json11)
@@ -22,6 +22,13 @@ if(NOT TARGET OBS::bpm)
   add_subdirectory("${CMAKE_SOURCE_DIR}/shared/bpm" "${CMAKE_BINARY_DIR}/shared/bpm")
 endif()
 
+if(NOT TARGET OBS::http-util)
+  add_subdirectory("${CMAKE_SOURCE_DIR}/shared/http-util" "${CMAKE_BINARY_DIR}/shared/http-util")
+endif()
+if(NOT TARGET OBS::http-server)
+  add_subdirectory("${CMAKE_SOURCE_DIR}/shared/http-server" "${CMAKE_BINARY_DIR}/shared/http-server")
+endif()
+
 add_executable(obs-studio)
 add_executable(OBS::studio ALIAS obs-studio)
 
@@ -30,12 +37,17 @@ target_link_libraries(
   PRIVATE
     CURL::libcurl
     FFmpeg::avcodec
-    FFmpeg::avutil
     FFmpeg::avformat
+    FFmpeg::avutil
+    FFmpeg::swscale
+    FFmpeg::swresample
+    FFmpeg::avdevice
     OBS::bpm
     OBS::libobs
     OBS::frontend-api
     OBS::json11
+    OBS::http-util
+    OBS::http-server
 )
 
 include(cmake/ui-qt.cmake)

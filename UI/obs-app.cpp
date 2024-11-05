@@ -81,6 +81,19 @@
 
 #include "ui-config.h"
 
+#include "gbs/GBSMainBizWindow.h"
+#include "gbs/GBSMainForm.h"
+#include "gbs/GBSHttpsServer.h"
+#include "gbs/common/GBSHttpClient.h"
+#include "gbs/common/WebSocketClient.h"
+#include "gbs/common/EllipticalSlider.h"
+#include "gbs/common/HoriNaviButton.h"
+#include "gbs/common/EllipticalSliderExt.h"
+#include "gbs/common/QBizLogger.h"
+
+static GBSHttpsHandle *httpsServerHandle = nullptr;
+
+
 using namespace std;
 
 static log_handler_t def_log_handler;
@@ -954,10 +967,55 @@ std::vector<UpdateBranch> OBSApp::GetBranches()
 	return out;
 }
 
+#include <windows.h>
+#include <tlhelp32.h>
+
+bool killPreviousInstances(const QString &processName)
+{
+	bool killed = false;
+	DWORD currentProcessId = GetCurrentProcessId();
+
+	// Create a snapshot of all processes
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		qDebug() << "Failed to take a snapshot of processes.";
+		return false;
+	}
+
+	PROCESSENTRY32 processEntry;
+	processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+	// Loop through all processes in the snapshot
+	if (Process32First(snapshot, &processEntry)) {
+		do {
+			QString currentProcessName = QString::fromWCharArray(processEntry.szExeFile);
+
+			// Check if the process name matches and it's not the current instance
+			if (currentProcessName.compare(processName, Qt::CaseInsensitive) == 0 &&
+			    processEntry.th32ProcessID != currentProcessId) {
+				HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, processEntry.th32ProcessID);
+				if (hProcess) {
+					if (TerminateProcess(hProcess, 0)) {
+						qDebug() << "Killed process:" << processName;
+						killed = true;
+					} else {
+						qDebug() << "Failed to terminate process:" << processName;
+					}
+					CloseHandle(hProcess);
+				}
+			}
+		} while (Process32Next(snapshot, &processEntry));
+	}
+	CloseHandle(snapshot);
+	return killed;
+}
+
 OBSApp::OBSApp(int &argc, char **argv, profiler_name_store_t *store)
 	: QApplication(argc, argv),
 	  profilerNameStore(store)
 {
+	QString procceessName = "obs64.exe";
+	killPreviousInstances(procceessName);
 	/* fix float handling */
 #if defined(Q_OS_UNIX)
 	if (!setlocale(LC_NUMERIC, "C"))
@@ -984,6 +1042,14 @@ OBSApp::OBSApp(int &argc, char **argv, profiler_name_store_t *store)
 
 OBSApp::~OBSApp()
 {
+	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	GBSHttpClient::getInstance()->destroy();
+	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	GBSHttpsDestroy(httpsServerHandle);
+	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	WebSocketClient::getInstance()->Stop();
+	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+
 #ifdef _WIN32
 	bool disableAudioDucking = config_get_bool(appConfig, "Audio", "DisableAudioDucking");
 	if (disableAudioDucking)
@@ -993,19 +1059,21 @@ OBSApp::~OBSApp()
 	close(sigintFd[0]);
 	close(sigintFd[1]);
 #endif
-
+qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
 #ifdef __APPLE__
 	bool vsyncDisabled = config_get_bool(appConfig, "Video", "DisableOSXVSync");
 	bool resetVSync = config_get_bool(appConfig, "Video", "ResetOSXVSyncOnExit");
 	if (vsyncDisabled && resetVSync)
 		EnableOSXVSync(true);
 #endif
-
+qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
 	os_inhibit_sleep_set_active(sleepInhibitor, false);
 	os_inhibit_sleep_destroy(sleepInhibitor);
-
+qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
 	if (libobs_initialized)
 		obs_shutdown();
+qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	exit(0);
 }
 
 static void move_basic_to_profiles(void)
@@ -1288,12 +1356,16 @@ bool OBSApp::OBSInit()
 	setQuitOnLastWindowClosed(false);
 
 	mainWindow = new OBSBasic();
-
+	loginWindow = new GBSMainForm();
+	
 	mainWindow->setAttribute(Qt::WA_DeleteOnClose, true);
 	connect(mainWindow, &OBSBasic::destroyed, this, &OBSApp::quit);
-
 	mainWindow->OBSInit();
+	qobject_cast<OBSBasic *>(mainWindow)->OBSInit2();
+	loginWindow->OBSInit();
 
+	httpsServerHandle = (GBSHttpsHandle*)GBSHttpsInit("http://localhost:7979", "https://localhost:7980");
+	GBSHttpsRun(httpsServerHandle);
 	connect(this, &QGuiApplication::applicationStateChanged,
 		[this](Qt::ApplicationState state) { ResetHotkeyState(state == Qt::ApplicationActive); });
 	ResetHotkeyState(applicationState() == Qt::ApplicationActive);
@@ -1896,9 +1968,10 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 	OBSApp program(argc, argv, profilerNameStore.get());
 	try {
 		QAccessible::installFactory(accessibleFactory);
-		QFontDatabase::addApplicationFont(":/fonts/OpenSans-Regular.ttf");
-		QFontDatabase::addApplicationFont(":/fonts/OpenSans-Bold.ttf");
-		QFontDatabase::addApplicationFont(":/fonts/OpenSans-Italic.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/pingfang.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/pingfang-regular.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/pingfang-semibold.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/pingfang-thin.ttf");
 
 		bool created_log = false;
 
@@ -2439,7 +2512,17 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 #endif
+	QLog::Logger::instance().configure("application.log", QLog::LogLevel::QINFO);
+	QString buildInfo =
+		QString("%1, %2").arg(QString::fromLocal8Bit(__DATE__)).arg(QString::fromLocal8Bit(__TIME__));
+	qDebug() << "Date:" << __DATE__ << "Time:" << __TIME__;
 
+	qDebug() << "HUANGJINGPEI" << buildInfo.toUtf8().constData();
+	QLogD("App was built at %s", buildInfo.toUtf8().constData());
+	QLogD("App start up...");
+	qRegisterMetaType<EllipticalSlider>("EllipticalSlider");
+	qRegisterMetaType<HoriNaviButton>("HoriNaviButton");
+	qRegisterMetaType<EllipticalSlider>("EllipticalSliderExt");
 #ifdef _WIN32
 	// Abort as early as possible if MSVC runtime is outdated
 	if (vc_runtime_outdated())

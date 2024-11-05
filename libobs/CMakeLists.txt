@@ -274,10 +274,17 @@ elseif(OS_FREEBSD OR OS_OPENBSD)
 endif()
 
 configure_file(obsconfig.h.in "${CMAKE_BINARY_DIR}/config/obsconfig.h" @ONLY)
+add_subdirectory("${CMAKE_SOURCE_DIR}/shared/http-util" "${CMAKE_BINARY_DIR}/shared/http-util")
 
 target_include_directories(
   libobs
-  PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/config>" "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  PUBLIC 
+  "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/config>" 
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/shared/http-util/include>"
+  "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/shared/http-server>"
+  #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/util/mongoose>"
+
 )
 
 target_compile_definitions(libobs PUBLIC HAVE_OBSCONFIG_H)

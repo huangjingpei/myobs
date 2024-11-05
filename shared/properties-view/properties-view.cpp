@@ -548,7 +548,7 @@ static void AddComboItem(QComboBox *combo, obs_property_t *prop, size_t idx)
 {
 	const char *name = obs_property_list_item_name(prop, idx);
 	QVariant var = propertyListToQVariant(prop, idx);
-
+	qDebug() << "OBSPropertiesView AddComboItem " << " name " << name << " idx " << idx;
 	combo->addItem(QT_UTF8(name), var);
 
 	if (!obs_property_list_item_disabled(prop, idx))

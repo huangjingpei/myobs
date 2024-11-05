@@ -2092,7 +2092,9 @@ void OBSBasicPreview::DrawOverflow()
 	}
 
 	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
-
+	if (main == nullptr) {
+		return;
+	}
 	OBSScene scene = main->GetCurrentScene();
 
 	if (scene) {
@@ -2115,6 +2117,9 @@ void OBSBasicPreview::DrawSceneEditing()
 	GS_DEBUG_MARKER_BEGIN(GS_DEBUG_COLOR_DEFAULT, "DrawSceneEditing");
 
 	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
+	if (main == nullptr) {
+		return;
+	}
 
 	gs_effect_t *solid = obs_get_base_effect(OBS_EFFECT_SOLID);
 	gs_technique_t *tech = gs_effect_get_technique(solid, "Solid");

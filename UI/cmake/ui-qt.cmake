@@ -18,7 +18,7 @@ set_target_properties(
   PROPERTIES AUTOMOC ON AUTOUIC ON AUTORCC ON
 )
 
-set_property(TARGET obs-studio APPEND PROPERTY AUTOUIC_SEARCH_PATHS forms forms/source-toolbar)
+set_property(TARGET obs-studio APPEND PROPERTY AUTOUIC_SEARCH_PATHS forms forms/source-toolbar gbs gbs/bizWidgets gbs/naviWidgets)
 
 set(
   _qt_sources
@@ -32,6 +32,8 @@ set(
   forms/obs.qrc
   forms/OBSAbout.ui
   forms/OBSAdvAudio.ui
+  # ע�͵�forms�����OBSBasic, ʹ��gbs Ŀ¼�µ�GBSBasic
+  #forms/OBSBasic.ui
   forms/OBSBasic.ui
   forms/OBSBasicControls.ui
   forms/OBSBasicFilters.ui
@@ -58,8 +60,61 @@ set(
   forms/source-toolbar/text-source-toolbar.ui
 )
 
-target_sources(obs-studio PRIVATE ${_qt_sources})
 
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/forms" PREFIX "UI Files" FILES ${_qt_sources})
+set(
+  _qt_sources1
+  gbs/naviWidgets/GBSNaviProduct.ui
+  gbs/naviWidgets/GBSNaviAI.ui
+  gbs/naviWidgets/GBSNaviTranslate.ui
+  gbs/naviWidgets/GBSNaviSetting.ui
+  gbs/naviWidgets/GBSNaviLive.ui
+  gbs/naviWidgets/GBSNaviData.ui
+
+  gbs/bizWidgets/GBSBizDeviceInfo.ui
+  gbs/bizWidgets/GBSBizLiveGuarder.ui
+  gbs/bizWidgets/GBSBizSoYoung.ui
+  gbs/bizWidgets/GBSBizLiveDanmaku.ui
+  gbs/bizWidgets/GBSBizLiveBridger.ui
+  gbs/bizWidgets/GBSBizLivePusher.ui
+  gbs/bizWidgets/GBSBizLiveBroker.ui
+  gbs/bizWidgets/GBSBizAIData.ui
+  gbs/bizWidgets/GBSBizEShopData.ui
+
+  gbs/bizWidgets/GBSBizSettingAV.ui
+  gbs/bizWidgets/GBSBizSettingOutput.ui
+  gbs/bizWidgets/GBSBizSettingBasic.ui
+  gbs/bizWidgets/GBSBizSettingProductDupRM.ui
+  gbs/bizWidgets/GBSBizSettingTimbreSquare.ui
+  gbs/bizWidgets/GBSBizSettingBridgerMgr.ui
+  gbs/bizWidgets/GBSBizSettingLiveEditor.ui
+  gbs/bizWidgets/GBSBizSettingLiveSourceDupRM.ui
+
+  gbs/bizWidgets/GBSBizLiveGuarderCtrl.ui
+  gbs/bizWidgets/GBSBizLiveGuarderAuth.ui
+
+  gbs/bizWidgets/GBSMsgDialog.ui
+
+  gbs/GBSMainBizWindow.ui
+  gbs/GBSNormalLoginForm.ui
+  gbs/GBSQRCodeLoginForm.ui
+  gbs/GBSAuthorizedCodeForm.ui
+  gbs/GBSMainForm.ui
+  gbs/GBSRegisterForm.ui
+  gbs/GBSMainProfile.ui
+
+)
+
+
+
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/forms" PREFIX "UI Files/forms" FILES ${_qt_sources})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/gbs" PREFIX "UI Files/gbs" FILES ${_qt_sources1})
+
+set(_qt_sources2 ${_qt_sources} ${_qt_sources1})
+
+target_sources(obs-studio PRIVATE ${_qt_sources2})
 
 unset(_qt_sources)
+unset(_qt_sources1)
+unset(_qt_sources2)
+

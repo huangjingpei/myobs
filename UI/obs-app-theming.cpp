@@ -759,6 +759,7 @@ OBSTheme *OBSApp::GetTheme(const QString &name)
 
 bool OBSApp::SetTheme(const QString &name)
 {
+	return true;
 	OBSTheme *theme = GetTheme(name);
 	if (!theme)
 		return false;

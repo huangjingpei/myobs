@@ -20,6 +20,7 @@
 #include <QBuffer>
 #include <QAction>
 #include <QThread>
+#include <QMenu>
 #include <QWidgetAction>
 #include <QSystemTrayIcon>
 #include <QStyledItemDelegate>
@@ -1269,6 +1270,7 @@ public:
 	virtual ~OBSBasic();
 
 	virtual void OBSInit() override;
+	void OBSInit2();
 
 	virtual config_t *Config() const override;
 

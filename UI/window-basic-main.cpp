@@ -113,6 +113,7 @@ using namespace std;
 #endif
 
 #include "ui-config.h"
+#include "gbs/bizWidgets/GBSBizDeviceInfo.h"
 
 struct QCef;
 struct QCefCookieManager;
@@ -313,6 +314,9 @@ OBSBasic::OBSBasic(QWidget *parent) : OBSMainWindow(parent), undo_s(ui), ui(new 
 	RegisterYoutubeAuth();
 #endif
 
+	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint |
+		       Qt::WindowCloseButtonHint);
 	setAcceptDrops(true);
 
 	setContextMenuPolicy(Qt::CustomContextMenu);
@@ -529,7 +533,7 @@ OBSBasic::OBSBasic(QWidget *parent) : OBSMainWindow(parent), undo_s(ui), ui(new 
 	 * And hide all docks before restoring parent geometry */
 #define SETUP_DOCK(dock)                                    \
 	setupDockAction(dock);                              \
-	ui->menuDocks->addAction(dock->toggleViewAction()); \
+	//ui->menuDocks->addAction(dock->toggleViewAction()); \
 	dock->setVisible(false);
 
 	SETUP_DOCK(ui->scenesDock);
@@ -582,7 +586,7 @@ OBSBasic::OBSBasic(QWidget *parent) : OBSMainWindow(parent), undo_s(ui), ui(new 
 #endif
 
 	ui->previewDisabledWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->enablePreviewButton, &QPushButton::clicked, this, &OBSBasic::TogglePreview);
+	//connect(ui->enablePreviewButton, &QPushButton::clicked, this, &OBSBasic::TogglePreview);
 
 	connect(ui->scenes, &SceneTree::scenesReordered, []() { OBSProjector::UpdateMultiviewProjectors(); });
 
@@ -2220,10 +2224,10 @@ void OBSBasic::OBSInit()
 				 (opt_minimize_tray || sysTrayWhenStarted);
 
 #ifdef _WIN32
-	SetWin32DropStyle(this);
+	//SetWin32DropStyle(this);
 
-	if (!hideWindowOnStart)
-		show();
+	//if (!hideWindowOnStart)
+	//	show();
 #endif
 
 	bool alwaysOnTop = config_get_bool(App()->GetUserConfig(), "BasicWindow", "AlwaysOnTop");
@@ -2264,9 +2268,9 @@ void OBSBasic::OBSInit()
 		QAction *action = new QAction(QTStr("Basic.MainMenu.Docks."
 						    "CustomBrowserDocks"),
 					      this);
-		ui->menuDocks->insertAction(ui->scenesDock->toggleViewAction(), action);
+		//ui->menuDocks->insertAction(ui->scenesDock->toggleViewAction(), action);
 		connect(action, &QAction::triggered, this, &OBSBasic::ManageExtraBrowserDocks);
-		ui->menuDocks->insertSeparator(ui->scenesDock->toggleViewAction());
+		//ui->menuDocks->insertSeparator(ui->scenesDock->toggleViewAction());
 
 		LoadExtraBrowserDocks();
 	}
@@ -2344,15 +2348,16 @@ void OBSBasic::OBSInit()
 	if (config_get_bool(activeConfiguration, "General", "OpenStatsOnStartup"))
 		on_stats_triggered();
 
-	OBSBasicStats::InitializeValues();
+	//OBSBasicStats::InitializeValues();
+	GBSBizDeviceInfo::InitializeValues();
 
 	/* ----------------------- */
 	/* Add multiview menu      */
 
-	ui->viewMenu->addSeparator();
+	//ui->viewMenu->addSeparator();
 
-	AddProjectorMenuMonitors(ui->multiviewProjectorMenu, this, &OBSBasic::OpenMultiviewProjector);
-	connect(ui->viewMenu->menuAction(), &QAction::hovered, this, &OBSBasic::UpdateMultiviewProjectorMenu);
+	//AddProjectorMenuMonitors(ui->multiviewProjectorMenu, this, &OBSBasic::OpenMultiviewProjector);
+	//connect(ui->viewMenu->menuAction(), &QAction::hovered, this, &OBSBasic::UpdateMultiviewProjectorMenu);
 
 	ui->sources->UpdateIcons();
 
@@ -2581,8 +2586,8 @@ void OBSBasic::ShowWhatsNew(const QString &url)
 
 void OBSBasic::UpdateMultiviewProjectorMenu()
 {
-	ui->multiviewProjectorMenu->clear();
-	AddProjectorMenuMonitors(ui->multiviewProjectorMenu, this, &OBSBasic::OpenMultiviewProjector);
+	//ui->multiviewProjectorMenu->clear();
+	//AddProjectorMenuMonitors(ui->multiviewProjectorMenu, this, &OBSBasic::OpenMultiviewProjector);
 }
 
 void OBSBasic::InitHotkeys()
@@ -4519,7 +4524,8 @@ int OBSBasic::ResetVideo()
 		const float hdr_nominal_peak_level =
 			(float)config_get_uint(activeConfiguration, "Video", "HdrNominalPeakLevel");
 		obs_set_video_levels(sdr_white_level, hdr_nominal_peak_level);
-		OBSBasicStats::InitializeValues();
+		//OBSBasicStats::InitializeValues();
+		GBSBizDeviceInfo::InitializeValues();
 		OBSProjector::UpdateMultiviewProjectors();
 
 		bool canMigrate = usingAbsoluteCoordinates ||
@@ -4704,6 +4710,7 @@ void OBSBasic::ClearSceneData()
 	 * it holds. It will be reconfigured during loading. */
 	if (vcamEnabled) {
 		vcamConfig.type = VCamOutputType::ProgramView;
+		if (outputHandler)
 		outputHandler->UpdateVirtualCamOutputSource();
 	}
 
@@ -4852,7 +4859,7 @@ void OBSBasic::closeEvent(QCloseEvent *event)
 	if (program)
 		program->DestroyDisplay();
 
-	if (outputHandler->VirtualCamActive())
+	if (outputHandler && outputHandler->VirtualCamActive())
 		outputHandler->StopVirtualCam();
 
 	if (introCheckThread)
@@ -5603,7 +5610,7 @@ void OBSBasic::CreateSourcePopupMenu(int idx, bool preview)
 			action->setEnabled(false);
 
 		popup.addAction(ui->actionLockPreview);
-		popup.addMenu(ui->scalingMenu);
+		//popup.addMenu(ui->scalingMenu);
 
 		previewProjectorSource = new QMenu(QTStr("PreviewProjector"));
 		AddProjectorMenuMonitors(previewProjectorSource, this, &OBSBasic::OpenPreviewProjector);
@@ -5633,14 +5640,14 @@ void OBSBasic::CreateSourcePopupMenu(int idx, bool preview)
 	}
 
 	popup.addSeparator();
-	popup.addAction(ui->actionCopySource);
-	popup.addAction(ui->actionPasteRef);
+	//popup.addAction(ui->actionCopySource);
+	//popup.addAction(ui->actionPasteRef);
 	popup.addAction(ui->actionPasteDup);
 	popup.addSeparator();
 
 	popup.addSeparator();
-	popup.addAction(ui->actionCopyFilters);
-	popup.addAction(ui->actionPasteFilters);
+	//popup.addAction(ui->actionCopyFilters);
+	//popup.addAction(ui->actionPasteFilters);
 	popup.addSeparator();
 
 	if (idx != -1) {
@@ -5662,10 +5669,10 @@ void OBSBasic::CreateSourcePopupMenu(int idx, bool preview)
 		popup.addAction(ui->actionRemoveSource);
 		popup.addSeparator();
 
-		popup.addMenu(ui->orderMenu);
+		//popup.addMenu(ui->orderMenu);
 
-		if (hasVideo)
-			popup.addMenu(ui->transformMenu);
+		//if (hasVideo)
+		//	popup.addMenu(ui->transformMenu);
 
 		popup.addSeparator();
 
@@ -5770,6 +5777,7 @@ void OBSBasic::AddSource(const char *id)
 {
 	if (id && *id) {
 		OBSBasicSourceSelect sourceSelect(this, id, undo_s);
+		qDebug() << "AddSource " << " id " <<id;
 		sourceSelect.exec();
 		if (should_show_properties(sourceSelect.newSource, id)) {
 			CreatePropertiesWindow(sourceSelect.newSource);
@@ -5832,7 +5840,6 @@ QMenu *OBSBasic::CreateAddSourcePopupMenu()
 		}
 		foundValues = true;
 	}
-
 	addSource(popup, "scene", Str("Basic.Scene"));
 
 	popup->addSeparator();
@@ -6132,9 +6139,9 @@ void OBSBasic::UploadLog(const char *subdir, const char *file, const bool crash)
 	if (!*fileString)
 		return;
 
-	ui->menuLogFiles->setEnabled(false);
+	//ui->menuLogFiles->setEnabled(false);
 #if defined(_WIN32)
-	ui->menuCrashLogs->setEnabled(false);
+	//ui->menuCrashLogs->setEnabled(false);
 #endif
 
 	stringstream ss;
@@ -6235,9 +6242,9 @@ void OBSBasic::on_actionRestartSafe_triggered()
 
 void OBSBasic::logUploadFinished(const QString &text, const QString &error)
 {
-	ui->menuLogFiles->setEnabled(true);
+	//ui->menuLogFiles->setEnabled(true);
 #if defined(_WIN32)
-	ui->menuCrashLogs->setEnabled(true);
+	//ui->menuCrashLogs->setEnabled(true);
 #endif
 
 	if (text.isEmpty()) {
@@ -6249,9 +6256,9 @@ void OBSBasic::logUploadFinished(const QString &text, const QString &error)
 
 void OBSBasic::crashUploadFinished(const QString &text, const QString &error)
 {
-	ui->menuLogFiles->setEnabled(true);
+	//ui->menuLogFiles->setEnabled(true);
 #if defined(_WIN32)
-	ui->menuCrashLogs->setEnabled(true);
+	//ui->menuCrashLogs->setEnabled(true);
 #endif
 
 	if (text.isEmpty()) {
@@ -6673,8 +6680,9 @@ static inline void ClearProcessPriority()
 
 inline void OBSBasic::OnActivate(bool force)
 {
-	if (ui->profileMenu->isEnabled() || force) {
-		ui->profileMenu->setEnabled(false);
+	//if (ui->profileMenu->isEnabled() || force) {
+	//	ui->profileMenu->setEnabled(false);
+	if (force) {
 		ui->autoConfigure->setEnabled(false);
 		App()->IncrementSleepInhibition();
 		UpdateProcessPriority();
@@ -6701,8 +6709,9 @@ extern volatile bool replaybuf_active;
 
 inline void OBSBasic::OnDeactivate()
 {
-	if (!outputHandler->Active() && !ui->profileMenu->isEnabled()) {
-		ui->profileMenu->setEnabled(true);
+	//if (!outputHandler->Active() && !ui->profileMenu->isEnabled()) {
+	//	ui->profileMenu->setEnabled(true);
+	if (!outputHandler->Active()) {
 		ui->autoConfigure->setEnabled(true);
 		App()->DecrementSleepInhibition();
 		ClearProcessPriority();
@@ -7884,13 +7893,13 @@ void OBSBasic::UpdateEditMenu()
 	OBSSceneItem curItem = GetCurrentSceneItem();
 	bool locked = curItem && obs_sceneitem_locked(curItem);
 
-	ui->actionCopySource->setEnabled(totalCount > 0);
+	//ui->actionCopySource->setEnabled(totalCount > 0);
 	ui->actionEditTransform->setEnabled(canTransformSingle && !locked);
 	ui->actionCopyTransform->setEnabled(canTransformSingle);
 	ui->actionPasteTransform->setEnabled(canTransformMultiple && hasCopiedTransform && videoCount > 0);
-	ui->actionCopyFilters->setEnabled(filter_count > 0);
-	ui->actionPasteFilters->setEnabled(!obs_weak_source_expired(copyFiltersSource) && totalCount > 0);
-	ui->actionPasteRef->setEnabled(!!clipboard.size());
+	//ui->actionCopyFilters->setEnabled(filter_count > 0);
+	//ui->actionPasteFilters->setEnabled(!obs_weak_source_expired(copyFiltersSource) && totalCount > 0);
+	//ui->actionPasteRef->setEnabled(!!clipboard.size());
 	ui->actionPasteDup->setEnabled(allowPastingDuplicate);
 
 	ui->actionMoveUp->setEnabled(totalCount > 0);
@@ -8375,7 +8384,7 @@ void OBSBasic::on_actionHorizontalCenter_triggered()
 void OBSBasic::EnablePreviewDisplay(bool enable)
 {
 	obs_display_set_enabled(ui->preview->GetDisplay(), enable);
-	ui->previewContainer->setVisible(enable);
+	ui->previewContainer->setVisible(enable);	
 	ui->previewDisabledWidget->setVisible(!enable);
 }
 
@@ -8769,8 +8778,8 @@ void OBSBasic::on_resetDocks_triggered(bool force)
 	ui->scenesDock->setVisible(true);
 	ui->sourcesDock->setVisible(true);
 	ui->mixerDock->setVisible(true);
-	ui->transitionsDock->setVisible(true);
-	controlsDock->setVisible(true);
+	//ui->transitionsDock->setVisible(true);
+	//controlsDock->setVisible(true);
 	statsDock->setVisible(false);
 	statsDock->setFloating(true);
 
@@ -8790,6 +8799,7 @@ void OBSBasic::on_lockDocks_toggled(bool lock)
 	QDockWidget::DockWidgetFeatures mainFeatures = features;
 	mainFeatures &= ~QDockWidget::QDockWidget::DockWidgetClosable;
 
+	mainFeatures = QDockWidget::NoDockWidgetFeatures;
 	ui->scenesDock->setFeatures(mainFeatures);
 	ui->sourcesDock->setFeatures(mainFeatures);
 	ui->mixerDock->setFeatures(mainFeatures);
@@ -9114,6 +9124,7 @@ void OBSBasic::SysTrayNotify(const QString &text, QSystemTrayIcon::MessageIcon n
 
 void OBSBasic::SystemTray(bool firstStarted)
 {
+	return;
 	if (!QSystemTrayIcon::isSystemTrayAvailable())
 		return;
 	if (!trayIcon && !firstStarted)
@@ -9263,7 +9274,7 @@ void OBSBasic::AudioMixerCopyFilters()
 	obs_source_t *source = vol->GetSource();
 
 	copyFiltersSource = obs_source_get_weak_source(source);
-	ui->actionPasteFilters->setEnabled(true);
+	//ui->actionPasteFilters->setEnabled(true);
 }
 
 void OBSBasic::AudioMixerPasteFilters()
@@ -9280,7 +9291,7 @@ void OBSBasic::AudioMixerPasteFilters()
 void OBSBasic::SceneCopyFilters()
 {
 	copyFiltersSource = obs_source_get_weak_source(GetCurrentSceneSource());
-	ui->actionPasteFilters->setEnabled(true);
+	//ui->actionPasteFilters->setEnabled(true);
 }
 
 void OBSBasic::ScenePasteFilters()
@@ -9303,7 +9314,7 @@ void OBSBasic::on_actionCopyFilters_triggered()
 
 	copyFiltersSource = obs_source_get_weak_source(source);
 
-	ui->actionPasteFilters->setEnabled(true);
+	//ui->actionPasteFilters->setEnabled(true);
 }
 
 void OBSBasic::CreateFilterPasteUndoRedoAction(const QString &text, obs_source_t *source, obs_data_array_t *undo_array,
@@ -9552,17 +9563,17 @@ QAction *OBSBasic::AddDockWidget(QDockWidget *dock)
 	connect(dock, &QObject::objectNameChanged, this, &OBSBasic::RepairOldExtraDockName);
 
 #ifdef BROWSER_AVAILABLE
-	QAction *action = new QAction(dock->windowTitle(), ui->menuDocks);
+	//QAction *action = new QAction(dock->windowTitle(), ui->menuDocks);
 
-	if (!extraBrowserMenuDocksSeparator.isNull())
-		ui->menuDocks->insertAction(extraBrowserMenuDocksSeparator, action);
-	else
-		ui->menuDocks->addAction(action);
+	//if (!extraBrowserMenuDocksSeparator.isNull())
+	//	ui->menuDocks->insertAction(extraBrowserMenuDocksSeparator, action);
+	//else
+	//	ui->menuDocks->addAction(action);
 #else
-	QAction *action = ui->menuDocks->addAction(dock->windowTitle());
+	//QAction *action = ui->menuDocks->addAction(dock->windowTitle());
 #endif
-	action->setCheckable(true);
-	assignDockToggle(dock, action);
+	//action->setCheckable(true);
+	//assignDockToggle(dock, action);
 	oldExtraDocks.push_back(dock);
 	oldExtraDockNames.push_back(dock->objectName());
 
@@ -9571,7 +9582,7 @@ QAction *OBSBasic::AddDockWidget(QDockWidget *dock)
 		lock ? QDockWidget::NoDockWidgetFeatures
 		     : (QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
 			QDockWidget::DockWidgetFloatable);
-
+	features = QDockWidget::NoDockWidgetFeatures;
 	dock->setFeatures(features);
 
 	/* prune deleted docks */
@@ -9582,7 +9593,7 @@ QAction *OBSBasic::AddDockWidget(QDockWidget *dock)
 		}
 	}
 
-	return action;
+	return new QAction;
 }
 
 void OBSBasic::RepairOldExtraDockName()
@@ -9611,22 +9622,23 @@ void OBSBasic::AddDockWidget(QDockWidget *dock, Qt::DockWidgetArea area, bool ex
 		lock ? QDockWidget::NoDockWidgetFeatures
 		     : (QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
 			QDockWidget::DockWidgetFloatable);
+	features = QDockWidget::NoDockWidgetFeatures;
 
 	setupDockAction(dock);
 	dock->setFeatures(features);
 	addDockWidget(area, dock);
 
 #ifdef BROWSER_AVAILABLE
-	if (extraBrowser && extraBrowserMenuDocksSeparator.isNull())
-		extraBrowserMenuDocksSeparator = ui->menuDocks->addSeparator();
+	//if (extraBrowser && extraBrowserMenuDocksSeparator.isNull())
+	//	extraBrowserMenuDocksSeparator = ui->menuDocks->addSeparator();
 
-	if (!extraBrowser && !extraBrowserMenuDocksSeparator.isNull())
-		ui->menuDocks->insertAction(extraBrowserMenuDocksSeparator, dock->toggleViewAction());
-	else
-		ui->menuDocks->addAction(dock->toggleViewAction());
+	//if (!extraBrowser && !extraBrowserMenuDocksSeparator.isNull())
+	//	ui->menuDocks->insertAction(extraBrowserMenuDocksSeparator, dock->toggleViewAction());
+	//else
+	//	ui->menuDocks->addAction(dock->toggleViewAction());
 
-	if (extraBrowser)
-		return;
+	//if (extraBrowser)
+	//	return;
 #else
 	UNUSED_PARAMETER(extraBrowser);
 
@@ -9678,6 +9690,7 @@ void OBSBasic::AddCustomDockWidget(QDockWidget *dock)
 		lock ? QDockWidget::NoDockWidgetFeatures
 		     : (QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
 			QDockWidget::DockWidgetFloatable);
+	features = QDockWidget::NoDockWidgetFeatures;
 
 	dock->setFeatures(features);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
@@ -9990,7 +10003,7 @@ void OBSBasic::on_OBSBasic_customContextMenuRequested(const QPoint &pos)
 			StackedMixerAreaContextMenuRequested();
 		}
 	} else if (!className) {
-		ui->menuDocks->exec(globalPos);
+		//ui->menuDocks->exec(globalPos);
 	}
 }
 

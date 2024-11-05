@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GBSBizLiveGuarderCtrl</class>
+ <widget class="QWidget" name="GBSBizLiveGuarderCtrl">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1238</width>
+    <height>920</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>37</x>
+     <y>15</y>
+     <width>525</width>
+     <height>486</height>
+    </rect>
+   </property>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>525</width>
+      <height>486</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #01C667;
+font-size:16px;
+</string>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::TabShape::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::TextElideMode::ElideLeft</enum>
+    </property>
+    <widget class="QWidget" name="tabBasic">
+     <attribute name="title">
+      <string>汇总</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tabAdvanced">
+     <attribute name="title">
+      <string>弹幕</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>违规提醒</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>平台类型</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>开播管理</string>
+     </attribute>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>566</x>
+     <y>15</y>
+     <width>637</width>
+     <height>486</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">     background: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, 
+           stop:0 #000000, stop:0.525 #434343, stop:1 #000000); 
+     border-radius: 20px;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>35</x>
+     <y>510</y>
+     <width>1171</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

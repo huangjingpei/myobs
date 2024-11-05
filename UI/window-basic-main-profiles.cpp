@@ -264,15 +264,15 @@ void OBSBasic::RefreshProfiles(bool refreshCache)
 {
 	std::string_view currentProfileName{config_get_string(App()->GetUserConfig(), "Basic", "Profile")};
 
-	QList<QAction *> menuActions = ui->profileMenu->actions();
+	//QList<QAction *> menuActions = ui->profileMenu->actions();
 
-	for (auto &action : menuActions) {
-		QVariant variant = action->property("file_name");
+	//for (auto &action : menuActions) {
+	//	QVariant variant = action->property("file_name");
 
-		if (variant.typeName() != nullptr) {
-			delete action;
-		}
-	}
+	//	if (variant.typeName() != nullptr) {
+	//		delete action;
+	//	}
+	//}
 
 	if (refreshCache) {
 		RefreshProfileCache();
@@ -286,7 +286,7 @@ void OBSBasic::RefreshProfiles(bool refreshCache)
 		action->setCheckable(true);
 		action->setChecked(profileName == currentProfileName);
 
-		ui->profileMenu->addAction(action);
+		//ui->profileMenu->addAction(action);
 
 		numAddedProfiles += 1;
 	}

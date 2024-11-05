@@ -42,7 +42,6 @@
 
 #include "window-main.hpp"
 #include "obs-app-theming.hpp"
-
 std::string CurrentTimeString();
 std::string CurrentDateTimeString();
 std::string GenerateTimeDateFilename(const char *extension, bool noSpace = false);
@@ -92,6 +91,7 @@ private:
 	ConfigFile userConfig;
 	TextLookup textLookup;
 	QPointer<OBSMainWindow> mainWindow;
+	QPointer<OBSMainWindow> loginWindow;
 	profiler_name_store_t *profilerNameStore = nullptr;
 	std::vector<UpdateBranch> updateBranches;
 	bool branches_loaded = false;
@@ -105,6 +105,8 @@ private:
 	bool enableHotkeysOutOfFocus = true;
 
 	std::deque<obs_frontend_translate_ui_cb> translatorHooks;
+
+
 
 	bool UpdatePre22MultiviewLayout(const char *layout);
 
@@ -155,7 +157,19 @@ public:
 
 	inline bool HotkeysEnabledInFocus() const { return enableHotkeysInFocus; }
 
-	inline QMainWindow *GetMainWindow() const { return mainWindow.data(); }
+	inline QMainWindow *GetMainWindow() const {
+		//qDebug() << "GetMainWindow 2" << mainWindow;
+		return mainWindow.data();
+	}
+
+	inline void SetMainWindow(OBSMainWindow *window)
+	{
+		mainWindow.clear();
+		qDebug() << "SetMainWindow 2" << mainWindow;
+		mainWindow = window;
+		qDebug() << "SetMainWindow 3" << mainWindow;
+
+		}
 
 	inline config_t *GetAppConfig() const { return appConfig; }
 	inline config_t *GetUserConfig() const { return userConfig; }

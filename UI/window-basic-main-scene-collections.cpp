@@ -267,14 +267,14 @@ void OBSBasic::RefreshSceneCollections(bool refreshCache)
 {
 	std::string_view currentCollectionName{config_get_string(App()->GetUserConfig(), "Basic", "SceneCollection")};
 
-	QList<QAction *> menuActions = ui->sceneCollectionMenu->actions();
+	//QList<QAction *> menuActions = ui->sceneCollectionMenu->actions();
 
-	for (auto &action : menuActions) {
-		QVariant variant = action->property("file_name");
-		if (variant.typeName() != nullptr) {
-			delete action;
-		}
-	}
+	//for (auto &action : menuActions) {
+	//	QVariant variant = action->property("file_name");
+	//	if (variant.typeName() != nullptr) {
+	//		delete action;
+	//	}
+	//}
 
 	if (refreshCache) {
 		RefreshSceneCollectionCache();
@@ -288,7 +288,7 @@ void OBSBasic::RefreshSceneCollections(bool refreshCache)
 		action->setCheckable(true);
 		action->setChecked(collectionName == currentCollectionName);
 
-		ui->sceneCollectionMenu->addAction(action);
+		//ui->sceneCollectionMenu->addAction(action);
 
 		numAddedCollections += 1;
 	}
@@ -297,8 +297,8 @@ void OBSBasic::RefreshSceneCollections(bool refreshCache)
 
 	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
 
-	main->ui->actionPasteFilters->setEnabled(false);
-	main->ui->actionPasteRef->setEnabled(false);
+	//main->ui->actionPasteFilters->setEnabled(false);
+	//main->ui->actionPasteRef->setEnabled(false);
 	main->ui->actionPasteDup->setEnabled(false);
 }
 

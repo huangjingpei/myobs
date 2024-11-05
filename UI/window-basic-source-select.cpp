@@ -42,7 +42,7 @@ bool OBSBasicSourceSelect::EnumSources(void *data, obs_source_t *source)
 	OBSBasicSourceSelect *window = static_cast<OBSBasicSourceSelect *>(data);
 	const char *name = obs_source_get_name(source);
 	const char *id = obs_source_get_unversioned_id(source);
-
+	qDebug() << "OBSBasicSourceSelect::EnumSources " << " name " << name << " id " << id;
 	if (strcmp(id, window->id) == 0)
 		window->ui->sourceList->addItem(QT_UTF8(name));
 
@@ -199,6 +199,7 @@ bool AddNew(QWidget *parent, const char *id, const char *name, const bool visibl
 	if (!scene)
 		return false;
 
+	qDebug() << "OBSBasicSourceSelect AddNew " << " id " << id << " name " << name;
 	OBSSourceAutoRelease source = obs_get_source_by_name(name);
 	if (source && parent) {
 		OBSMessageBox::information(parent, QTStr("NameExists.Title"), QTStr("NameExists.Text"));

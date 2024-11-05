@@ -296,6 +296,7 @@ static bool is_safe_module(const char *name)
 	return false;
 }
 
+
 static void load_all_callback(void *param, const struct obs_module_info2 *info)
 {
 	struct fail_info *fail_info = param;
@@ -305,6 +306,11 @@ static void load_all_callback(void *param, const struct obs_module_info2 *info)
 	bool can_load_obs_plugin;
 
 	get_plugin_info(info->bin_path, &is_obs_plugin, &can_load_obs_plugin);
+
+
+	blog(LOG_ERROR, "BIN Path %s is_obs_plugin %d can_load_obs_plugin %d\n", info->bin_path, is_obs_plugin,
+		     is_obs_plugin);
+
 
 	if (!is_obs_plugin) {
 		blog(LOG_WARNING, "Skipping module '%s', not an OBS plugin", info->bin_path);

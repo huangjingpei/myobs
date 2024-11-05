@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -34,7 +34,7 @@
    <string notr="true"/>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+   <set>QMainWindow::DockOption::AllowNestedDocks|QMainWindow::DockOption::AllowTabbedDocks|QMainWindow::DockOption::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -85,83 +85,132 @@
             <number>1</number>
            </property>
            <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Basic.Main.PreviewDisabled</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="enablePreviewButton">
-               <property name="text">
-                <string>Basic.Main.PreviewConextMenu.Enable</string>
-               </property>
+              <widget class="QWidget" name="widget" native="true">
+               <widget class="QFrame" name="frmConsole">
+                <property name="geometry">
+                 <rect>
+                  <x>20</x>
+                  <y>10</y>
+                  <width>456</width>
+                  <height>380</height>
+                 </rect>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color:#F9F9F9;
+border: 1px solid  #FFFFFF;
+border-radius: 16px;
+</string>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::Shape::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Shadow::Raised</enum>
+                </property>
+                <widget class="QLabel" name="lblLiveSource_2">
+                 <property name="geometry">
+                  <rect>
+                   <x>20</x>
+                   <y>20</y>
+                   <width>80</width>
+                   <height>25</height>
+                  </rect>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color:#F9F9F9;
+border: 1px solid  #FFFFFF;
+border-radius: 16px;
+font-size: 24px;
+</string>
+                 </property>
+                 <property name="text">
+                  <string>控制台</string>
+                 </property>
+                </widget>
+                <widget class="FatButton" name="pushButton">
+                 <property name="geometry">
+                  <rect>
+                   <x>60</x>
+                   <y>60</y>
+                   <width>150</width>
+                   <height>80</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+                <widget class="FatButton" name="pushButton_2">
+                 <property name="geometry">
+                  <rect>
+                   <x>230</x>
+                   <y>60</y>
+                   <width>150</width>
+                   <height>80</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+                <widget class="FatButton" name="pushButton_3">
+                 <property name="geometry">
+                  <rect>
+                   <x>60</x>
+                   <y>160</y>
+                   <width>150</width>
+                   <height>80</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+                <widget class="FatButton" name="pushButton_4">
+                 <property name="geometry">
+                  <rect>
+                   <x>230</x>
+                   <y>160</y>
+                   <width>150</width>
+                   <height>80</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+                <widget class="FatButton" name="pushButton_5">
+                 <property name="geometry">
+                  <rect>
+                   <x>60</x>
+                   <y>260</y>
+                   <width>150</width>
+                   <height>80</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+                <widget class="FatButton" name="pushButton_6">
+                 <property name="geometry">
+                  <rect>
+                   <x>230</x>
+                   <y>260</y>
+                   <width>150</width>
+                   <height>80</height>
+                  </rect>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </widget>
               </widget>
              </item>
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
             </layout>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -196,7 +245,7 @@
               <string>StudioMode.PreviewSceneName</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
              </property>
              <property name="class" stdset="0">
               <string>label-preview-title</string>
@@ -208,29 +257,6 @@
              <property name="spacing">
               <number>0</number>
              </property>
-             <item row="1" column="0" colspan="2">
-              <widget class="OBSBasicPreview" name="preview" native="true">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>32</width>
-                 <height>32</height>
-                </size>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::ClickFocus</enum>
-               </property>
-               <property name="contextMenuPolicy">
-                <enum>Qt::CustomContextMenu</enum>
-               </property>
-               <addaction name="actionRemoveSource"/>
-              </widget>
-             </item>
              <item row="2" column="1">
               <widget class="QWidget" name="previewXContainer" native="true">
                <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -255,7 +281,7 @@
                    <string>100%</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -294,7 +320,7 @@
                    <number>100</number>
                   </property>
                   <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                   <enum>Qt::Orientation::Horizontal</enum>
                   </property>
                  </widget>
                 </item>
@@ -304,8 +330,31 @@
              <item row="1" column="2">
               <widget class="QScrollBar" name="previewYScrollBar">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="OBSBasicPreview" name="preview" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::ClickFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+               </property>
+               <addaction name="actionRemoveSource"/>
               </widget>
              </item>
             </layout>
@@ -336,7 +385,7 @@
         <number>6</number>
        </property>
        <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
+        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
        </property>
        <property name="leftMargin">
         <number>6</number>
@@ -458,7 +507,7 @@
           <item>
            <widget class="Line" name="line_3">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -543,7 +592,7 @@
           <item>
            <widget class="Line" name="line">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -588,266 +637,10 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1086</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu_File">
-    <property name="title">
-     <string>Basic.MainMenu.File</string>
-    </property>
-    <addaction name="actionShow_Recordings"/>
-    <addaction name="actionRemux"/>
-    <addaction name="separator"/>
-    <addaction name="action_Settings"/>
-    <addaction name="actionShowSettingsFolder"/>
-    <addaction name="actionShowProfileFolder"/>
-    <addaction name="separator"/>
-    <addaction name="actionE_xit"/>
-   </widget>
-   <widget class="QMenu" name="menuBasic_MainMenu_Help">
-    <property name="title">
-     <string>Basic.MainMenu.Help</string>
-    </property>
-    <widget class="QMenu" name="menuLogFiles">
-     <property name="title">
-      <string>Basic.MainMenu.Help.Logs</string>
-     </property>
-     <addaction name="actionShowLogs"/>
-     <addaction name="actionUploadCurrentLog"/>
-     <addaction name="actionUploadLastLog"/>
-     <addaction name="actionViewCurrentLog"/>
-    </widget>
-    <widget class="QMenu" name="menuCrashLogs">
-     <property name="title">
-      <string>Basic.MainMenu.Help.CrashLogs</string>
-     </property>
-     <addaction name="actionShowCrashLogs"/>
-     <addaction name="actionUploadLastCrashLog"/>
-    </widget>
-    <addaction name="actionHelpPortal"/>
-    <addaction name="actionWebsite"/>
-    <addaction name="actionDiscord"/>
-    <addaction name="separator"/>
-    <addaction name="menuLogFiles"/>
-    <addaction name="menuCrashLogs"/>
-    <addaction name="separator"/>
-    <addaction name="actionRepair"/>
-    <addaction name="actionCheckForUpdates"/>
-    <addaction name="actionRestartSafe"/>
-    <addaction name="actionShowMacPermissions"/>
-    <addaction name="separator"/>
-    <addaction name="actionShowWhatsNew"/>
-    <addaction name="actionReleaseNotes"/>
-    <addaction name="actionShowAbout"/>
-    <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="menuBasic_MainMenu_Edit">
-    <property name="title">
-     <string>Basic.MainMenu.Edit</string>
-    </property>
-    <widget class="QMenu" name="transformMenu">
-     <property name="title">
-      <string>Basic.MainMenu.Edit.Transform</string>
-     </property>
-     <addaction name="actionEditTransform"/>
-     <addaction name="actionCopyTransform"/>
-     <addaction name="actionPasteTransform"/>
-     <addaction name="actionResetTransform"/>
-     <addaction name="separator"/>
-     <addaction name="actionRotate90CW"/>
-     <addaction name="actionRotate90CCW"/>
-     <addaction name="actionRotate180"/>
-     <addaction name="separator"/>
-     <addaction name="actionFlipHorizontal"/>
-     <addaction name="actionFlipVertical"/>
-     <addaction name="separator"/>
-     <addaction name="actionFitToScreen"/>
-     <addaction name="actionStretchToScreen"/>
-     <addaction name="actionCenterToScreen"/>
-     <addaction name="actionVerticalCenter"/>
-     <addaction name="actionHorizontalCenter"/>
-    </widget>
-    <widget class="QMenu" name="orderMenu">
-     <property name="title">
-      <string>Basic.MainMenu.Edit.Order</string>
-     </property>
-     <addaction name="actionMoveUp"/>
-     <addaction name="actionMoveDown"/>
-     <addaction name="separator"/>
-     <addaction name="actionMoveToTop"/>
-     <addaction name="actionMoveToBottom"/>
-    </widget>
-    <widget class="QMenu" name="scalingMenu">
-     <property name="title">
-      <string>Basic.MainMenu.Edit.Scale</string>
-     </property>
-     <addaction name="actionScaleWindow"/>
-     <addaction name="actionScaleCanvas"/>
-     <addaction name="actionScaleOutput"/>
-    </widget>
-    <action name="actionCopySource">
-     <property name="text">
-      <string>Copy</string>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+C</string>
-     </property>
-    </action>
-    <action name="actionPasteRef">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>PasteReference</string>
-     </property>
-     <property name="iconText">
-      <string>PasteReference</string>
-     </property>
-     <property name="toolTip">
-      <string>PasteReference</string>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+V</string>
-     </property>
-    </action>
-    <action name="actionCopyFilters">
-     <property name="text">
-      <string>Copy.Filters</string>
-     </property>
-    </action>
-    <action name="actionPasteFilters">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Paste.Filters</string>
-     </property>
-    </action>
-    <addaction name="actionMainUndo"/>
-    <addaction name="actionMainRedo"/>
-    <addaction name="separator"/>
-    <addaction name="actionCopySource"/>
-    <addaction name="actionPasteRef"/>
-    <addaction name="actionPasteDup"/>
-    <addaction name="separator"/>
-    <addaction name="actionCopyFilters"/>
-    <addaction name="actionPasteFilters"/>
-    <addaction name="separator"/>
-    <addaction name="transformMenu"/>
-    <addaction name="orderMenu"/>
-    <addaction name="scalingMenu"/>
-    <addaction name="actionLockPreview"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdvAudioProperties"/>
-    <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="profileMenu">
-    <property name="title">
-     <string>Basic.MainMenu.Profile</string>
-    </property>
-    <addaction name="actionNewProfile"/>
-    <addaction name="actionDupProfile"/>
-    <addaction name="actionRenameProfile"/>
-    <addaction name="actionRemoveProfile"/>
-    <addaction name="actionImportProfile"/>
-    <addaction name="actionExportProfile"/>
-    <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="sceneCollectionMenu">
-    <property name="title">
-     <string>Basic.MainMenu.SceneCollection</string>
-    </property>
-    <addaction name="actionNewSceneCollection"/>
-    <addaction name="actionDupSceneCollection"/>
-    <addaction name="actionRenameSceneCollection"/>
-    <addaction name="actionRemoveSceneCollection"/>
-    <addaction name="actionImportSceneCollection"/>
-    <addaction name="actionExportSceneCollection"/>
-    <addaction name="separator"/>
-    <addaction name="actionShowMissingFiles"/>
-    <addaction name="actionRemigrateSceneCollection"/>
-    <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="viewMenu">
-    <property name="title">
-     <string>Basic.MainMenu.View</string>
-    </property>
-    <widget class="QMenu" name="sceneListModeMenu">
-     <property name="title">
-      <string>Basic.MainMenu.View.SceneListMode</string>
-     </property>
-     <addaction name="actionSceneListMode"/>
-     <addaction name="actionSceneGridMode"/>
-    </widget>
-    <widget class="QMenu" name="multiviewProjectorMenu">
-     <property name="title">
-      <string>MultiviewProjector</string>
-     </property>
-    </widget>
-    <action name="resetUI">
-     <property name="text">
-      <string>Basic.MainMenu.View.ResetUI</string>
-     </property>
-    </action>
-    <action name="actionFullscreenInterface">
-     <property name="text">
-      <string>Basic.MainMenu.View.Fullscreen.Interface</string>
-     </property>
-     <property name="shortcut">
-      <string>F11</string>
-     </property>
-    </action>
-    <addaction name="resetUI"/>
-    <addaction name="actionFullscreenInterface"/>
-    <addaction name="separator"/>
-    <addaction name="sceneListModeMenu"/>
-    <addaction name="toggleListboxToolbars"/>
-    <addaction name="toggleContextBar"/>
-    <addaction name="toggleSourceIcons"/>
-    <addaction name="toggleStatusBar"/>
-    <addaction name="separator"/>
-    <addaction name="stats"/>
-    <addaction name="separator"/>
-    <addaction name="multiviewProjectorMenu"/>
-    <addaction name="multiviewProjectorWindowed"/>
-    <addaction name="separator"/>
-    <addaction name="actionAlwaysOnTop"/>
-   </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="title">
-     <string>Basic.MainMenu.Tools</string>
-    </property>
-    <addaction name="autoConfigure"/>
-    <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="menuDocks">
-    <property name="title">
-     <string>Basic.MainMenu.Docks</string>
-    </property>
-    <addaction name="lockDocks"/>
-    <addaction name="sideDocks"/>
-    <addaction name="resetDocks"/>
-    <addaction name="separator"/>
-   </widget>
-   <addaction name="menu_File"/>
-   <addaction name="menuBasic_MainMenu_Edit"/>
-   <addaction name="viewMenu"/>
-   <addaction name="menuDocks"/>
-   <addaction name="profileMenu"/>
-   <addaction name="sceneCollectionMenu"/>
-   <addaction name="menuTools"/>
-   <addaction name="menuBasic_MainMenu_Help"/>
-  </widget>
   <widget class="OBSBasicStatusBar" name="statusbar"/>
   <widget class="OBSDock" name="scenesDock">
    <property name="features">
-    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::DockWidgetFeature::DockWidgetClosable|QDockWidget::DockWidgetFeature::DockWidgetFloatable|QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
     <string>Basic.Main.Scenes</string>
@@ -899,13 +692,13 @@
            </sizepolicy>
           </property>
           <property name="contextMenuPolicy">
-           <enum>Qt::CustomContextMenu</enum>
+           <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
           </property>
           <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
+           <enum>QFrame::Shadow::Plain</enum>
           </property>
           <property name="showDropIndicator" stdset="0">
            <bool>true</bool>
@@ -914,10 +707,10 @@
            <bool>true</bool>
           </property>
           <property name="dragDropMode">
-           <enum>QAbstractItemView::InternalMove</enum>
+           <enum>QAbstractItemView::DragDropMode::InternalMove</enum>
           </property>
           <property name="defaultDropAction">
-           <enum>Qt::TargetMoveAction</enum>
+           <enum>Qt::DropAction::TargetMoveAction</enum>
           </property>
           <property name="spacing">
            <number>0</number>
@@ -948,10 +741,10 @@
         <item>
          <spacer name="scenesFixedSizeHSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+           <enum>QSizePolicy::Policy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -969,7 +762,7 @@
   </widget>
   <widget class="OBSDock" name="sourcesDock">
    <property name="features">
-    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::DockWidgetFeature::DockWidgetClosable|QDockWidget::DockWidgetFeature::DockWidgetFloatable|QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
     <string>Basic.Main.Sources</string>
@@ -1021,10 +814,10 @@
            </sizepolicy>
           </property>
           <property name="contextMenuPolicy">
-           <enum>Qt::CustomContextMenu</enum>
+           <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
           </property>
           <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="showDropIndicator" stdset="0">
            <bool>true</bool>
@@ -1033,13 +826,13 @@
            <bool>true</bool>
           </property>
           <property name="dragDropMode">
-           <enum>QAbstractItemView::InternalMove</enum>
+           <enum>QAbstractItemView::DragDropMode::InternalMove</enum>
           </property>
           <property name="defaultDropAction">
-           <enum>Qt::TargetMoveAction</enum>
+           <enum>Qt::DropAction::TargetMoveAction</enum>
           </property>
           <property name="selectionMode">
-           <enum>QAbstractItemView::ExtendedSelection</enum>
+           <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
           </property>
           <property name="spacing">
            <number>0</number>
@@ -1070,10 +863,10 @@
         <item>
          <spacer name="sourcesFixedSizeHSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+           <enum>QSizePolicy::Policy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -1091,7 +884,7 @@
   </widget>
   <widget class="OBSDock" name="mixerDock">
    <property name="features">
-    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::DockWidgetFeature::DockWidgetClosable|QDockWidget::DockWidgetFeature::DockWidgetFloatable|QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
     <string>Mixer</string>
@@ -1138,19 +931,19 @@
          <widget class="QStackedWidget" name="stackedMixerArea">
           <widget class="VScrollArea" name="hMixerScrollArea">
            <property name="contextMenuPolicy">
-            <enum>Qt::CustomContextMenu</enum>
+            <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
            </property>
            <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
+            <enum>QFrame::Shape::NoFrame</enum>
            </property>
            <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
+            <enum>QFrame::Shadow::Plain</enum>
            </property>
            <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAsNeeded</enum>
+            <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
            </property>
            <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
+            <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
            </property>
            <property name="widgetResizable">
             <bool>true</bool>
@@ -1160,7 +953,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>225</width>
+              <width>335</width>
               <height>16</height>
              </rect>
             </property>
@@ -1191,19 +984,19 @@
           </widget>
           <widget class="HScrollArea" name="vMixerScrollArea">
            <property name="contextMenuPolicy">
-            <enum>Qt::CustomContextMenu</enum>
+            <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
            </property>
            <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
+            <enum>QFrame::Shape::NoFrame</enum>
            </property>
            <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
+            <enum>QFrame::Shadow::Plain</enum>
            </property>
            <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
+            <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
            </property>
            <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAsNeeded</enum>
+            <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
            </property>
            <property name="widgetResizable">
             <bool>true</bool>
@@ -1214,7 +1007,7 @@
               <x>0</x>
               <y>0</y>
               <width>16</width>
-              <height>192</height>
+              <height>28</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -1268,7 +1061,7 @@
   </widget>
   <widget class="OBSDock" name="transitionsDock">
    <property name="features">
-    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::DockWidgetFeature::DockWidgetClosable|QDockWidget::DockWidgetFeature::DockWidgetFloatable|QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
     <string>Basic.SceneTransitions</string>
@@ -1377,10 +1170,10 @@
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
+             <enum>QSizePolicy::Policy::Expanding</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1491,7 +1284,7 @@
         <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Orientation::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -1552,7 +1345,7 @@
     <string>Del</string>
    </property>
    <property name="shortcutContext">
-    <enum>Qt::WidgetWithChildrenShortcut</enum>
+    <enum>Qt::ShortcutContext::WidgetWithChildrenShortcut</enum>
    </property>
    <property name="iconVisibleInMenu">
     <bool>false</bool>
@@ -1576,7 +1369,7 @@
     <string>Del</string>
    </property>
    <property name="shortcutContext">
-    <enum>Qt::WidgetWithChildrenShortcut</enum>
+    <enum>Qt::ShortcutContext::WidgetWithChildrenShortcut</enum>
    </property>
    <property name="iconVisibleInMenu">
     <bool>false</bool>
@@ -2272,6 +2065,11 @@
    <class>OBSPreviewScalingComboBox</class>
    <extends>QComboBox</extends>
    <header>preview-controls.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>FatButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">gbs/common/FatButton.h</header>
   </customwidget>
  </customwidgets>
  <resources>
