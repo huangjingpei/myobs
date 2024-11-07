@@ -117,22 +117,25 @@ public:
             layout->setAlignment(Qt::AlignCenter); // 整体内容居中
 
 
-            layout->addLayout(createButtonLabelLayout("", "浅色代表未开播未连接"));
-            layout->addLayout(createButtonLabelLayout("", "绿色代表正常分发"));
-            layout->addLayout(createButtonLabelLayout("", "黄色代表在线人数居多"));
-            layout->addLayout(createButtonLabelLayout("", "红色代表直播间异常"));
-            layout->addLayout(createButtonLabelLayout("", "蓝色语音输入按钮"));
+            layout->addLayout(createButtonLabelLayout("", "#C9DCFF", "浅色代表未开播未连接"));
+	    layout->addLayout(createButtonLabelLayout("", "#00C566", "绿色代表正常分发"));
+	    layout->addLayout(createButtonLabelLayout("", "#FFCD19", "黄色代表在线人数居多"));
+	    layout->addLayout(createButtonLabelLayout("", "#EB3F5E", "红色代表直播间异常"));
+	    layout->addLayout(createButtonLabelLayout("", "#2667FE", "蓝色语音输入按钮"));
 
-            GBSMsgDialog *dialog = new GBSMsgDialog("测试", layout, this);
+            GBSMsgDialog *dialog = new GBSMsgDialog("颜色含义解释", layout, this);
             dialog->exec();
         });
 
     }
 
-    QHBoxLayout* createButtonLabelLayout(const QString &buttonText, const QString &labelText) {
+    QHBoxLayout* createButtonLabelLayout(const QString &buttonText, const QString &color, const QString &labelText) {
         QHBoxLayout *layout = new QHBoxLayout;
 
         QPushButton *button = new QPushButton(buttonText);
+	QString styleSheet = "QPushButton { background-color: %1; color: white; border: none; padding: 10px; }";
+	QString style = styleSheet.arg(color);
+	button->setStyleSheet(style);
         button->setFixedSize(38, 28); // 设置按钮大小
 
         QLabel *label = new QLabel(labelText);

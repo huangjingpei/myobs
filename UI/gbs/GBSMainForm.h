@@ -56,8 +56,6 @@ public slots:
         void onLinkActivated(const QString &link);
         void onLoginTypeChanged(int type);
 
-private slots:
-    void on_btnLoginAccount_clicked();
 
     private:
     Ui::GBSMainForm *ui;

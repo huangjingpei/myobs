@@ -2,6 +2,8 @@
 #include "ui_GBSMainForm.h"
 #include "gbsbasicwindow.h"
 #include "gbsmainwindow.h"
+#include "window-basic-main.hpp"
+
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -15,7 +17,6 @@
 #include "GBSHttpsServer.h"
 
 
-
 GBSMainForm::GBSMainForm(QWidget *parent)
 	: OBSMainWindow(parent),
     ui(new Ui::GBSMainForm)
@@ -23,6 +24,7 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	ui->setupUi(this);
 	//initLoginPanel(LoginPanelType::PASSWORD_LOGIN);
 	//connect(this, &GBSMainForm::signalDestroyLoginWindow, this, &GBSMainForm::slotDestroyLoginWindow);
+	
 
 
 	setSizePolicy(
@@ -30,6 +32,8 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint |
 		       Qt::WindowMaximizeButtonHint |
 		       Qt::WindowCloseButtonHint);
+	setWindowTitle(OBSBasic::GetVendor() + " 直播软件登录");
+	
 
 	leftImage = new QLabel(this);
 	QPixmap pixmapBG(":/gbs/images/gbs/login/login-default.png");
@@ -385,17 +389,6 @@ void GBSMainForm::initQRCodeLogin() {
 }
 
 
-
-
-void GBSMainForm::on_btnLoginAccount_clicked()
-{
-
-	// QString uid = ui->inputEmail->text();
-	// QString password = ui->inputVerifyCode->text();
-	// GBSBasicWindow* gbsBasicWindow = new GBSBasicWindow;
-	// gbsBasicWindow->show();
-	// emit signalDestroyLoginWindow();
-}
 
 void GBSMainForm::slotDestroyLoginWindow() {
 	qDebug() << "slot catched.";

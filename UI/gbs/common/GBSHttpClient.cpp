@@ -92,6 +92,25 @@ std::string GBSHttpClient::getDeviceNo()
 	return deviceNo;
 }
 
+std::string GBSHttpClient::getDeviceNoWithoutBraces() {
+	std::string productId = GetWindowsProductIDFromRegistery();
+	std::string deviceId = GetMachineIdFromRegistry();
+	if (productId.empty() || deviceId.empty()) {
+		std::cerr << "product Id is "
+			  << "[" << productId << "]"
+			  << "device Id is "
+			  << "[" << deviceId << "]" << std::endl;
+		return "";
+	}
+	qDebug() << " productID " << productId;
+	if (strncmp("00331-10000-00001-AA498", productId.c_str(), 23) == 0) {
+		productId = "00331-10000-00001-AA819";
+	}
+
+	std::string deviceNo = deviceId.substr(1, deviceId.size() - 3) + productId; //"{" + deviceId + "}" + productId;
+	return deviceNo;
+}
+
 void GBSHttpClient::registerHandler(OBSHttpEventHandler* handler) {
 	std::lock_guard<std::mutex> guard(cs);
 	handlers.push_back(handler);
@@ -257,14 +276,15 @@ void GBSHttpClient::addBarrageRoomConfigTask()
 			  << r.text << "\"]" << std::endl;
 	}
 	return;
+
 }
 
 void GBSHttpClient::getPullStream() {
-
+	executor->addTask([this]() { this->getPullStreamTask(); });
 }
 void GBSHttpClient::getPullStreamTask()
 {
-	std::string deviceNo = getDeviceNo();
+	std::string deviceNo = getDeviceNoWithoutBraces();
 	if (deviceNo.empty()) {
 		std::cerr << "Cannot obtain device id. please check."
 			  << std::endl;
@@ -272,25 +292,46 @@ void GBSHttpClient::getPullStreamTask()
 	}
 	json body = {{"equipmentNo", deviceNo}};
 
-	auto r =
-		cpr::PostAsync(cpr::Url{this->baseUrl +
-					"/preferred/srsLive/getPullStream"},
-			       cpr::Body{body.dump()},
-			       cpr::Header{{"Content-Type", "application/json"},
-					   {"host", httpHost},
-					   {"token", token}},
-			       cpr::VerifySsl{false})
-			.get();
 
-	if (r.status_code == 200) {
-		auto response = json::parse(r.text);
-		//TODO
-	} else {
-		std::cerr << "[ERROR] unable to connect transport"
-			  << " [status code:" << r.status_code << ", body:\""
-			  << r.text << "\"]" << std::endl;
-	}
-	return;
+	std::string url = baseUrl + "/preferred/srsLive/getPullStream";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+
+			} else {
+				std::cerr << "[ERROR] get pull stream"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+				auto r = json::parse(response);
+				if ((!r["result"].is_null()) && (r["result"].is_string())) {
+					{
+						std::string rtmpUrl = r["result"].get<std::string>();
+						std::lock_guard<std::mutex> guard(cs);
+						for (auto it = handlers.begin(); it != handlers.end(); it++) {
+							(*it)->onPullRtmpUrl(rtmpUrl);
+						}
+						return;
+					}
+				}
+			} else {
+				std::cerr << "[ERROR] get pull stream, please check the respose:" << response
+					  << std::endl;
+			}
+		},
+		url, body.dump(), token);
+	task->run();
 }
 void GBSHttpClient::checkDeviceNoCreateQrCodeScan() {
 

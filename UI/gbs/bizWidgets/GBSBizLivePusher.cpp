@@ -144,6 +144,10 @@ GBSBizLivePusher::GBSBizLivePusher(QWidget *parent) : QWidget(parent), ui(new Ui
 		//if (button == QMessageBox::Yes) {
 		//
 		//}
+		OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
+		cameraSource = main->addCameraSource();
+		QLogD("Add the Camera source automaically.");
+		
 	}
 
 	currentCameraIndex = -1;
@@ -325,24 +329,6 @@ void GBSBizLivePusher::onStartRtmpPush() {
 	std::string equipments = qEquipments.toStdString();
 	GBSHttpClient::getInstance()->startLive(equipments);
 
-	if (qPushUrl.isEmpty()) {
-		return;
-	}
-
-	// 找到 "/live/" 的位置
-	int liveIndex = qPushUrl.indexOf("/live/");
-
-	// 如果找到了 "/live/"
-	if (liveIndex != -1) {
-		// 截取第一部分：从头到 "/live/" + 5的位置 ("/live/" 长度是5)
-		QString serverUrl = qPushUrl.left(liveIndex + 5);
-
-		// 截取第二部分：从 "/live/" 之后的部分
-		QString key = qPushUrl.mid(liveIndex + 6);
-
-		StartStreaming(serverUrl.toStdString(), key.toStdString());	
-	}
-
 	
 }
 
@@ -504,7 +490,30 @@ void GBSBizLivePusher::onLoginResult(int result) {
 void GBSBizLivePusher::onRtmpPushUrl(std::string url) {
 	
 	qDebug() << "GBSBizLivePusher URL: " << url;
-	QLogD("Rtmp url ", url.c_str());
+	QLogD("Rtmp url %s", url.c_str());
+	if (url.empty()) {
+		QLogE("Cannot retrieve the rtmp push url ");
+		return;
+	}
+	qPushUrl = QString::fromStdString(url);
+	if (qPushUrl.isEmpty()) {
+		return;
+	}
+
+	// 找到 "/live/" 的位置
+	int liveIndex = qPushUrl.indexOf("/live/");
+
+	// 如果找到了 "/live/"
+	if (liveIndex != -1) {
+		// 截取第一部分：从头到 "/live/" + 5的位置 ("/live/" 长度是5)
+		QString serverUrl = qPushUrl.left(liveIndex + 5);
+
+		// 截取第二部分：从 "/live/" 之后的部分
+		QString key = qPushUrl.mid(liveIndex + 6);
+
+		StartStreaming(serverUrl.toStdString(), key.toStdString());
+	}
+
 
 
 }

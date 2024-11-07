@@ -96,6 +96,8 @@ void GBSNaviLive::onZBZBClicked() {
 		currentWidgetRef->hide();
 		if (!useLiveBroker) {
 			currentWidgetRef->deleteLater();
+		} else {
+			gbsBizLiveBroker->endPullTask();
 		}
 		currentWidgetRef = nullptr;
 		GBSBizLivePusher* gbsBizLivePusher = new GBSBizLivePusher(this);
@@ -111,12 +113,9 @@ void GBSNaviLive::onZBZBClicked() {
 
 }
 void GBSNaviLive::onDBZBClicked() {
-	if (useLiveBroker) {
-		return;
-	}
 
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
-	if (layout) {
+	if (layout && !useLiveBroker) {
 		layout->removeWidget(currentWidgetRef);
 		currentWidgetRef->hide();
 		currentWidgetRef->deleteLater();
@@ -124,6 +123,7 @@ void GBSNaviLive::onDBZBClicked() {
 		layout->addWidget(gbsBizLiveBroker);
 		currentWidgetRef = gbsBizLiveBroker;
 		gbsBizLiveBroker->show();
+		gbsBizLiveBroker->beginPullTask();
 
 	}
 	layout->invalidate(); // 使布局无效并重新调整
@@ -139,6 +139,8 @@ void GBSNaviLive::onDMSZClicked() {
 		currentWidgetRef->hide();
 		if (!useLiveBroker) {
 			currentWidgetRef->deleteLater();
+		} else {
+			gbsBizLiveBroker->endPullTask();
 		}
 		currentWidgetRef = nullptr;
 		GBSBizLiveDanmaku *gbsBizLiveDanmaku =
@@ -158,6 +160,8 @@ void GBSNaviLive::onCKGLClicked() {
 		currentWidgetRef->hide();
 		if (!useLiveBroker) {
 			currentWidgetRef->deleteLater();
+		} else {
+			gbsBizLiveBroker->endPullTask();
 		}
 		currentWidgetRef = nullptr;
 		GBSBizLiveGuarder *gbsBizLiveGuarder = new GBSBizLiveGuarder(this);

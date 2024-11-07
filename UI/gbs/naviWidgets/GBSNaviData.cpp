@@ -38,9 +38,9 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 
 	ui->lblNickName->setText(nickName);
 
-	VertNaviButton* btnDeviceInfo = new VertNaviButton("数据信息", ":gbs/images/gbs/biz/gbs-discover.png", this);
-	VertNaviButton* btnEShopData = new VertNaviButton("电商数据", ":gbs/images/gbs/biz/gbs-star.png", this);
-	VertNaviButton* btnAIData = new VertNaviButton("智能数据", ":gbs/images/gbs/biz/gbs-timer.png", this);
+	VertNaviButton* btnDeviceInfo = new VertNaviButton("数据信息", ":gbs/images/gbs/biz/gbs-data-device-info.png", this);
+	VertNaviButton* btnEShopData = new VertNaviButton("电商数据", ":gbs/images/gbs/biz/gbs-data-running-data.png", this);
+	VertNaviButton* btnAIData = new VertNaviButton("智能数据", ":gbs/images/gbs/biz/gbs-data-matrix-screen.png", this);
 	btnDeviceInfo->setFixedSize(205, 40);
 	btnEShopData->setFixedSize(205, 40);
 	btnAIData->setFixedSize(205, 40);

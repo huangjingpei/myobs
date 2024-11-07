@@ -61,6 +61,7 @@ class OBSBasicVCamConfig;
 
 #include "ui_OBSBasic.h"
 #include "ui_ColorSelect.h"
+#include "gbs/common/GBSHttpClient.h"
 
 #define DESKTOP_AUDIO_1 Str("DesktopAudioDevice1")
 #define DESKTOP_AUDIO_2 Str("DesktopAudioDevice2")
@@ -175,7 +176,7 @@ private:
 	std::unique_ptr<Ui::ColorSelect> ui;
 };
 
-class OBSBasic : public OBSMainWindow {
+class OBSBasic : public OBSMainWindow, public OBSHttpEventHandler {
 	Q_OBJECT
 	Q_PROPERTY(QIcon imageIcon READ GetImageIcon WRITE SetImageIcon DESIGNABLE true)
 	Q_PROPERTY(QIcon colorIcon READ GetColorIcon WRITE SetColorIcon DESIGNABLE true)
@@ -292,6 +293,7 @@ private:
 	QPointer<QTimer> diskFullTimer;
 
 	QPointer<QTimer> nudge_timer;
+	QPointer<QTimer> pullStreamTimer;
 	bool recent_nudge = false;
 
 	os_cpu_usage_info_t *cpuUsageInfo = nullptr;
@@ -1271,6 +1273,14 @@ public:
 
 	virtual void OBSInit() override;
 	void OBSInit2();
+	void OBSDeinit2();
+
+	void beginPullTask();
+	void endPullTask();
+
+	OBSSource addCameraSource();
+
+	static QString GetVendor();
 
 	virtual config_t *Config() const override;
 
@@ -1367,6 +1377,21 @@ private slots:
 
 public slots:
 	bool CreateNewSceneCollection(const QString &name);
+
+private:
+	// 通过 OBSHttpEventHandler 继承
+	void onLoginResult(const int result) override;
+	void onRtmpPushUrl(const std::string url) override;
+	void onPullRtmpUrl(const std::string url) override;
+	void onUserInfo(const GBSUserInfo *info) override;
+	void onUserIconPath(const std::string &path) override;
+	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
+	void onRoomInfo(GBSRoomInfo *info) override;
+private slots:
+	void startPullStream(QString rtmp);
+
+private:
+	QString pullRtmpUrl;
 };
 
 extern bool cef_js_avail;

@@ -107,7 +107,6 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 				    "    height: 16px;"                                       // 箭头的高度
 				    "    border: none;"
 				    "    background: transparent;" // 透明背景
-				    "    box-shadow: none;"        // 无阴影
 				    "}"
 				"QComboBox QAbstractItemView {"
 				"border: 1px solid #cccccc;"

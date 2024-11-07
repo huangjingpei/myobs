@@ -289,5 +289,30 @@
         <file>images/gbs/biz/gbs-remote-share.png</file>
         <file>images/gbs/biz/gbs-search-24px.png</file>
         <file>images/gbs/biz/gbs-trash-20px.png</file>
+        <file>images/gbs/biz/gbs-audio-plaza.png</file>
+        <file>images/gbs/biz/gbs-data-device-info.png</file>
+        <file>images/gbs/biz/gbs-data-device-info-transparent.png</file>
+        <file>images/gbs/biz/gbs-data-matrix-screen.png</file>
+        <file>images/gbs/biz/gbs-data-matrix-screen-transparent.png</file>
+        <file>images/gbs/biz/gbs-data-running-data.png</file>
+        <file>images/gbs/biz/gbs-data-running-data-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-bgwj-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-bttj-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-jfsj-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-jxzm-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-mzrh-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-qcdm-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-rybh-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-smjd-transparent.png</file>
+        <file>images/gbs/biz/gbs-product-xbwj-transparent.png</file>
+        <file>images/gbs/biz/gbs-profile-about.png</file>
+        <file>images/gbs/biz/gbs-profile-accont.png</file>
+        <file>images/gbs/biz/gbs-profile-api.png</file>
+        <file>images/gbs/biz/gbs-profile-driver.png</file>
+        <file>images/gbs/biz/gbs-profile-hotkey.png</file>
+        <file>images/gbs/biz/gbs-profile-material.png</file>
+        <file>images/gbs/biz/gbs-profile-setting.png</file>
+        <file>images/gbs/biz/gbs-profile-update.png</file>
+        <file>images/gbs/biz/Group 427320978.png</file>
     </qresource>
 </RCC>

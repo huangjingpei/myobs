@@ -53,6 +53,8 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	QLogD("Enter MainBiz");
 	ui->imgLogo->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-logo.png)");
 	ui->imgBanner->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-gbcg-banner.png)");
+	
+	setWindowTitle(OBSBasic::GetVendor() + " 直播软件");
 
 
 	// ui->btnData->setStyleSheet(

@@ -72,6 +72,7 @@ public:
 
 private:
     std::string getDeviceNo();
+	std::string getDeviceNoWithoutBraces();
 
 public:
 
