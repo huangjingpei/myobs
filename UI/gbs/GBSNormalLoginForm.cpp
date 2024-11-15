@@ -243,7 +243,7 @@ void GBSNormalLoginForm::onLoginGBS() {
 		return;
 	}
 
-
+	
 
 	GBSHttpClient::getInstance()->loginWithCheckVersion(
 	email.toUtf8().constData(), password.toUtf8().constData(), 5,"多多客");

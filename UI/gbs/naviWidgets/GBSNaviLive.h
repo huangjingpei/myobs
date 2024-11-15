@@ -12,7 +12,8 @@
 #include "gbs/common/WebSocketClient.h"
 #include "gbs/bizWidgets/GBSBizLiveBroker.h"
 
-
+#include <QList>
+#include "gbs/common/VertNaviButton.h"
 
 	
 class DammaMSG {
@@ -93,6 +94,11 @@ public slots:
 	void onDBZBClicked();
 	void onDMSZClicked();
 	void onCKGLClicked();
+
+private:
+	void mariVertButton(VertNaviButton *button);
+
+
 private:
 	Ui::GBSNaviLive *ui;
 	QWeakPointer<QLayout> weakLayoutPtr;
@@ -108,6 +114,7 @@ private:
 
 	void processDanmaItem(const nlohmann::json jsonObject);
 
+	QList<VertNaviButton *> vertNaviButtons;
 };
 
 #endif // GBSNAVILIVE_H

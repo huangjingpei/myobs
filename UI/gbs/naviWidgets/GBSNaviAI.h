@@ -5,7 +5,8 @@
 #include <QLayout>
 #include <QSharedPointer>
 #include <QWeakPointer>
-
+#include <QList>
+#include "gbs/common/VertNaviButton.h"
 namespace Ui {
 class GBSNaviAI;
 }
@@ -24,11 +25,14 @@ public:
 	void onLlama3Clicked();
 	void onMuseTalkClicked();
 
+    void mariVertButton(VertNaviButton* button);
 
 private:
 	Ui::GBSNaviAI *ui;
 	QWeakPointer<QLayout> weakLayoutPtr;
 	QWidget* currentWidgetRef;
+
+    QList<VertNaviButton*> vertNaviButtons;
 };
 
 #endif // GBSNAVIAI_H

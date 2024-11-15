@@ -6,7 +6,8 @@
 #include <QLayout>
 #include <QSharedPointer>
 #include <QWeakPointer>
-
+#include <QList>
+#include "gbs/common/VertNaviButton.h"
 namespace Ui {
 class GBSNaviData;
 }
@@ -26,9 +27,14 @@ public slots:
 	void onMyIconDownloaded(QString path);
 
 private:
+	void mariVertButton(VertNaviButton *button);
+
+
+private:
 	Ui::GBSNaviData *ui;
 	QWeakPointer<QLayout> weakLayoutPtr;
 	QWidget* currentWidgetRef;
+	QList<VertNaviButton *> vertNaviButtons;
 };
 
 #endif // GBSNAVIDATA_H

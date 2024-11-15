@@ -11,13 +11,16 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	ui->setupUi(this);
 
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: center;">
-		<span style="color: #9CA4AB;">实时翻译</span>
-	    </p>
-	)";
 
-	ui->lblNaviTitle->setText(naviTitle);
+
+	ui->lblNaviTitle->setStyleSheet("QLabel {"
+					"    background: transparent;"
+					"    color: #1B2846;"     // 文本颜色
+					"    font-size: 14px;"    // 字体大小
+					"    padding-left: 15px;" // 左对齐并添加15px的内边距
+					"}");
+
+	ui->lblNaviTitle->setText("实时翻译");
 
 
         QString welcomeMessage = R"(
@@ -39,7 +42,8 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	VertNaviButton* btnDMXHCYY = new VertNaviButton("大模型合成语音", ":gbs/images/gbs/biz/gbs-translate-intertrans.png", this);
 	VertNaviButton* btnWBHCZB = new VertNaviButton("文本合成直播", ":gbs/images/gbs/biz/gbs-translate-speech.png", this);
 	VertNaviButton* btnSPFYHC = new VertNaviButton("视频翻译合成", ":gbs/images/gbs/biz/gbs-translate-video.png", this);
-
+	vertNaviButtons << btnDMXHCYY << btnWBHCZB << btnSPFYHC;
+	btnDMXHCYY->changeStyle(true);
 	btnDMXHCYY->setFixedSize(205, 40);
 	btnWBHCZB->setFixedSize(205, 40);
 	btnSPFYHC->setFixedSize(205, 40);
@@ -77,7 +81,7 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	connect(btnWBHCZB, &QPushButton::clicked, this, &GBSNaviTranslate::onTextAIClick);
 	connect(btnSPFYHC, &QPushButton::clicked, this, &GBSNaviTranslate::onVideoAIClick);
 	OBSBasic *main = OBSBasic::Get();
-    QString path = main->getRoundedAvator();
+	QString path = main->getRoundedAvator();
 	QPixmap pixmap(path);
 	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 
@@ -88,7 +92,17 @@ GBSNaviTranslate::~GBSNaviTranslate()
 	delete ui;
 }
 
-
+void GBSNaviTranslate::mariVertButton(VertNaviButton *button)
+{
+	for (int i = 0; i < vertNaviButtons.count(); i++) {
+		VertNaviButton *it = vertNaviButtons.at(i);
+		if (it == button) {
+			it->changeStyle(true);
+		} else {
+			it->changeStyle(false);
+		}
+	}
+}
 void GBSNaviTranslate::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) {
 	weakLayoutPtr = layout;
 	currentWidgetRef = widget;
@@ -99,6 +113,8 @@ void GBSNaviTranslate::onBigAIClick() {
 
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		//这里是否可以使用replaceWidget ???
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -112,7 +128,8 @@ void GBSNaviTranslate::onTextAIClick()
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSoYoung* gbsBizSoYoung = new GBSBizSoYoung(this);
@@ -124,7 +141,8 @@ void GBSNaviTranslate::onTextAIClick()
 void GBSNaviTranslate::onVideoAIClick() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSoYoung* gbsBizSoYoung = new GBSBizSoYoung(this);

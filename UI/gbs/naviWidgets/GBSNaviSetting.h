@@ -5,6 +5,8 @@
 #include <QLayout>
 #include <QSharedPointer>
 #include <QWeakPointer>
+#include <QList>
+#include "gbs/common/VertNaviButton.h"
 namespace Ui {
 class GBSNaviSetting;
 }
@@ -28,11 +30,15 @@ public slots:
 	void onLiveEditorClick();
 	void onLiveSourcDupRMClick();
 
+private:
+    void mariVertButton(VertNaviButton *button);
 
 private:
 	Ui::GBSNaviSetting *ui;
 	QWidget* currentWidgetRef;
 	QWeakPointer<QLayout> weakLayoutPtr;
+
+	QList<VertNaviButton *> vertNaviButtons;
 
 };
 

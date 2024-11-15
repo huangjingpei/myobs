@@ -11,6 +11,7 @@
 #include <QWeakPointer>
 #include <QPoint>
 #include "gbs/common/GBSHttpClient.h"
+#include "gbs/common/HoriNaviButton.h"
 namespace Ui {
 class GBSMainBizWindow;
 }
@@ -50,6 +51,8 @@ private:
 	void clearWidgetsFromLayout(QBoxLayout* layout);
 
 public:
+    
+	void markHoriButton(HoriNaviButton* button);
 	BizUI* subMain() { return ui;}
 
 private:

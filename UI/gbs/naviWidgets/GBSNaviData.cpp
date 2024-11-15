@@ -11,13 +11,15 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: left;">
-		<span style="color: #9CA4AB;">数据大屏</span>
-	    </p>
-	)";
 
-	ui->lblNaviTitle->setText(naviTitle);
+	ui->lblNaviTitle->setStyleSheet("QLabel {"
+					"    background: transparent;"
+					"    color: #1B2846;"     // 文本颜色
+					"    font-size: 14px;"    // 字体大小
+					"    padding-left: 15px;" // 左对齐并添加15px的内边距
+					"}");
+
+	ui->lblNaviTitle->setText("数据大屏");
 
 
         QString welcomeMessage = R"(
@@ -41,6 +43,9 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 	VertNaviButton* btnDeviceInfo = new VertNaviButton("数据信息", ":gbs/images/gbs/biz/gbs-data-device-info.png", this);
 	VertNaviButton* btnEShopData = new VertNaviButton("电商数据", ":gbs/images/gbs/biz/gbs-data-running-data.png", this);
 	VertNaviButton* btnAIData = new VertNaviButton("智能数据", ":gbs/images/gbs/biz/gbs-data-matrix-screen.png", this);
+	vertNaviButtons << btnDeviceInfo << btnEShopData << btnAIData;
+	btnDeviceInfo->changeStyle(true);
+
 	btnDeviceInfo->setFixedSize(205, 40);
 	btnEShopData->setFixedSize(205, 40);
 	btnAIData->setFixedSize(205, 40);
@@ -50,10 +55,10 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 	QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 	ui->verticalLayout->addSpacerItem(verticalSpacer);
 
-	connect(btnDeviceInfo, &QPushButton::clicked, this, &GBSNaviData::onDeviceInfoClicked);
-	connect(btnEShopData, &QPushButton::clicked, this,
+	connect(btnDeviceInfo, &VertNaviButton::clicked, this, &GBSNaviData::onDeviceInfoClicked);
+	connect(btnEShopData, &VertNaviButton::clicked, this,
 		&GBSNaviData::onEShopDataClicked);
-	connect(btnAIData, &QPushButton::clicked, this,
+	connect(btnAIData, &VertNaviButton::clicked, this,
 		&GBSNaviData::onAIDataClicked);
 	OBSBasic *main = OBSBasic::Get();
 
@@ -69,6 +74,17 @@ GBSNaviData::~GBSNaviData()
 	delete ui;
 }
 
+void GBSNaviData::mariVertButton(VertNaviButton *button)
+{
+	for (int i = 0; i < vertNaviButtons.count(); i++) {
+		VertNaviButton *it = vertNaviButtons.at(i);
+		if (it == button) {
+			it->changeStyle(true);
+		} else {
+			it->changeStyle(false);
+		}
+	}
+}
 
 void GBSNaviData::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) {
 	weakLayoutPtr = layout;
@@ -79,7 +95,8 @@ void GBSNaviData::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) 
 void GBSNaviData::onDeviceInfoClicked() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizDeviceInfo* gbsBizDeviceInfo = new GBSBizDeviceInfo(this);
@@ -94,15 +111,13 @@ void GBSNaviData::onDeviceInfoClicked() {
 void GBSNaviData::onEShopDataClicked() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSoYoung* gbsBizSoYoung = new GBSBizSoYoung(this);
 		layout->addWidget(gbsBizSoYoung);
 		currentWidgetRef = gbsBizSoYoung;
-
-
-
 	}
 }
 
@@ -110,7 +125,8 @@ void GBSNaviData::onEShopDataClicked() {
 void GBSNaviData::onAIDataClicked() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSoYoung* gbsBizSoYoung = new GBSBizSoYoung(this);

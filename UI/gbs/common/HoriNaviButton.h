@@ -19,7 +19,6 @@ public:
         : QPushButton("", parent), textLabel(new QLabel(this)), imageLabel(new QLabel(this)) {
 
         setFixedSize(90, 55); // 总高度包含按钮和图片
-        qDebug() << " text ....................................... " << text;
         // 设置按钮样式
         setCheckable(true); // 使按钮可被选中
         setText("");
@@ -34,11 +33,11 @@ public:
         imageLabel->setFixedSize(32, 15); // 设置图片大小
         imageLabel->setAlignment(Qt::AlignHCenter); // 居中对齐
         imageLabel->setVisible(false); // 初始时隐藏图片
-        qDebug() << "HoriNaviButton " << " width " << width() << " height " <<  height() << " image width "<< imageLabel->width() << " iamge height " << imageLabel->height();
+        //qDebug() << "HoriNaviButton " << " width " << width() << " height " <<  height() << " image width "<< imageLabel->width() << " iamge height " << imageLabel->height();
         //imageLabel->move((width() - imageLabel->width()) / 2, height()); // 将图片放在按钮正下方
         imageLabel->move((width() - imageLabel->width()) / 2, 40); // 将图片放在按钮正下方
         // 连接信号和槽
-        connect(this, &QPushButton::toggled, this, &HoriNaviButton::updateStyle);
+        //connect(this, &QPushButton::toggled, this, &HoriNaviButton::updateStyle);
         //connect(this, &QPushButton::clicked, this, &HoriNaviButton::onButtonClicked);
     }
 // protected:
@@ -60,14 +59,26 @@ public:
     }
 protected:
     void focusInEvent(QFocusEvent *event) override {
-        textLabel->setStyleSheet("background-color: #EB3F5E; font-size: 16px; border-radius: 16px;"); // 得到焦点时更新样式
+        // imageLabel->setVisible(true); // 根据按钮状态显示或隐藏图片
+
+        // textLabel->setStyleSheet("background-color: #EB3F5E; font-size: 16px; border-radius: 16px;"); // 得到焦点时更新样式
         QPushButton::focusInEvent(event); // 继续处理事件
     }
 
     void focusOutEvent(QFocusEvent *event) override {
-        setChecked(false); // 失去焦点时取消选中
-        textLabel->setStyleSheet("font-size: 16px; border: none; background-color: transparent;"); // 回复原样
+        // imageLabel->setVisible(false); // 根据按钮状态显示或隐藏图片
+        // setChecked(false); // 失去焦点时取消选中
+        // textLabel->setStyleSheet("font-size: 16px; border: none; background-color: transparent;"); // 回复原样
         QPushButton::focusOutEvent(event); // 继续处理事件
+    }
+public:
+    void changeStyle(bool checked) {
+        imageLabel->setVisible(checked); // 根据按钮状态显示或隐藏图片
+        if (checked) {
+            textLabel->setStyleSheet("background-color: #EB3F5E; font-size: 16px; border-radius: 16px;"); // 选中时背景色
+        } else {
+            textLabel->setStyleSheet("background-color: transparent; font-size: 16px; border-radius: 16px;"); // 未选中时背景色
+        }
     }
 
 private slots:

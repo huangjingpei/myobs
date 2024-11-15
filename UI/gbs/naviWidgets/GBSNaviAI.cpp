@@ -8,13 +8,17 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: center;">
-		<span style="color: #9CA4AB;">大模型</span>
-	    </p>
-	)";
+	ui->lblNaviTitle->setStyleSheet(
+	"QLabel {"
+	"    background: transparent;"
+	"    color: #1B2846;"                        // 文本颜色
+	"    font-size: 14px;"                     // 字体大小
+	"    padding-left: 15px;"  // 左对齐并添加15px的内边距
+	"}"
+	);
 
-	ui->lblNaviTitle->setText(naviTitle);
+	ui->lblNaviTitle->setText("大模型设置");
+
 
 
         QString welcomeMessage = R"(
@@ -38,6 +42,7 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 	VertNaviButton* btnLlama3 = new VertNaviButton("Llama3 (话术拆分)", ":gbs/images/gbs/biz/gbs-ai-llama3.png", this);
 	VertNaviButton* btnMuseTalk = new VertNaviButton("MuseTalk (数字人)", ":gbs/images/gbs/biz/gbs-ai-musetalk.png", this);
 
+    vertNaviButtons << btnTTS << btnFacefusion << btnRVC << btnLlama3 << btnMuseTalk;
 
 	btnTTS->setFixedSize(205, 40);
 	btnFacefusion->setFixedSize(205, 40);
@@ -61,6 +66,7 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 		&GBSNaviAI::onLlama3Clicked);
 	connect(btnMuseTalk, &QPushButton::clicked, this,
 		&GBSNaviAI::onMuseTalkClicked);
+    btnTTS->changeStyle(true);
 
 
 	// ui->btnYYHC->setStyleSheet(
@@ -95,6 +101,16 @@ GBSNaviAI::~GBSNaviAI()
 	delete ui;
 }
 
+void GBSNaviAI::mariVertButton(VertNaviButton* button) {
+    for(int i = 0; i < vertNaviButtons.count(); i++) {
+        VertNaviButton * it = vertNaviButtons.at(i);
+        if (it == button) {
+            it->changeStyle(true);
+        } else {
+            it->changeStyle(false);
+        }
+    }
+}
 void GBSNaviAI::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) {
 	weakLayoutPtr = layout;
 	currentWidgetRef = widget;
@@ -102,6 +118,8 @@ void GBSNaviAI::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) {
 }
 
 void GBSNaviAI::onTTSlicked() {
+    VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+    mariVertButton(button);
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
@@ -117,7 +135,8 @@ void GBSNaviAI::onTTSlicked() {
 }
 
 void GBSNaviAI::onFacefusionlicked() {
-
+    VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+    mariVertButton(button);
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		//这里是否可以使用replaceWidget ???
@@ -132,6 +151,8 @@ void GBSNaviAI::onFacefusionlicked() {
 
 void GBSNaviAI::onRVCClicked()
 {
+    VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+    mariVertButton(button);
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
@@ -146,6 +167,8 @@ void GBSNaviAI::onRVCClicked()
 }
 
 void GBSNaviAI::onLlama3Clicked() {
+    VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+    mariVertButton(button);
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
@@ -162,6 +185,8 @@ void GBSNaviAI::onLlama3Clicked() {
 }
 
 void GBSNaviAI::onMuseTalkClicked() {
+    VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+    mariVertButton(button);
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 

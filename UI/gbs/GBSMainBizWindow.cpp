@@ -164,6 +164,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	horiButtons.append(ui->btnSetting);
 	horiButtons.append(ui->btnAI);
 
+	ui->btnData->changeStyle(true);
 
 	GBSNaviData *gbsNaviData = new GBSNaviData(this);
 	QHBoxLayout* bizPageLayout = new QHBoxLayout;
@@ -268,6 +269,17 @@ void GBSMainBizWindow::clearWidgetsFromLayout(QBoxLayout* layout) {
 	}
 
 }
+void GBSMainBizWindow::markHoriButton(HoriNaviButton* button) {
+    for(int i = 0; i < horiButtons.count(); i++) {
+        HoriNaviButton* it = qobject_cast<HoriNaviButton*> (horiButtons.at(i));
+        if (button ==  it) {
+            it->changeStyle(true);
+        } else {
+            it->changeStyle(false);
+        }
+    }
+}
+
 void GBSMainBizWindow::onLoginResult(const int result) {}
 void GBSMainBizWindow::onRtmpPushUrl(const std::string url) {}
 void GBSMainBizWindow::onPullRtmpUrl(const std::string url) {}
@@ -287,6 +299,8 @@ void GBSMainBizWindow::onRoomInfo(GBSRoomInfo *info) {}
 void GBSMainBizWindow::onQRcodeInfo(std::string no, std::string url, int status) {}
 
 void GBSMainBizWindow::onDataClick(bool checked) {
+    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+    markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviData *gbsNaviData = new GBSNaviData(this);
 	naviLayout->addWidget(gbsNaviData);
@@ -294,11 +308,15 @@ void GBSMainBizWindow::onDataClick(bool checked) {
 	clearWidgetsFromLayout(bizLayout.data());
 	GBSBizDeviceInfo* gbsDeviceInfo = new GBSBizDeviceInfo(this);
 	bizLayout->addWidget(gbsDeviceInfo);
+	gbsNaviData->addLayoutRef(bizLayout, gbsDeviceInfo);
+
 	currentBizWidget = gbsDeviceInfo;
 
 
 }
 void GBSMainBizWindow::onProductClick(bool checked) {
+    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+    markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviProduct *gbsNaviProduct = new GBSNaviProduct(this);
 	naviLayout->addWidget(gbsNaviProduct);
@@ -306,9 +324,12 @@ void GBSMainBizWindow::onProductClick(bool checked) {
 	clearWidgetsFromLayout(bizLayout.data());
 	GBSBizSoYoung *gbsSoYoung = new GBSBizSoYoung(this);
 	bizLayout->addWidget(gbsSoYoung);
+	gbsNaviProduct->addLayoutRef(bizLayout, gbsSoYoung);
 	currentBizWidget = gbsSoYoung;
 }
 void GBSMainBizWindow::onLiveClick(bool checked) {
+    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+    markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviLive* gbsNaviLive = new GBSNaviLive(this);
 	naviLayout->addWidget(gbsNaviLive);
@@ -328,6 +349,8 @@ void GBSMainBizWindow::onLiveClick(bool checked) {
 
 }
 void GBSMainBizWindow::onTranslateClick(bool checked) {
+    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+    markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviTranslate *gbsNaviTranslate = new GBSNaviTranslate(this);
 	naviLayout->addWidget(gbsNaviTranslate);
@@ -338,6 +361,8 @@ void GBSMainBizWindow::onTranslateClick(bool checked) {
 	currentBizWidget = gbsBizSoYoung;
 }
 void GBSMainBizWindow::onSettingClick(bool checked) {
+    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+    markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviSetting *gbsNaviSetting = new GBSNaviSetting(this);
 	naviLayout->addWidget(gbsNaviSetting);
@@ -351,6 +376,8 @@ void GBSMainBizWindow::onSettingClick(bool checked) {
 
 }
 void GBSMainBizWindow::onAIClick(bool checked) {
+    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+    markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviAI *gbsNaviAI = new GBSNaviAI(this);
 	naviLayout->addWidget(gbsNaviAI);

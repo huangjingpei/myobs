@@ -9,13 +9,15 @@ GBSNaviProduct::GBSNaviProduct(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgWechatQrCode->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-wechat-qrcode.png)");
-	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: center;">
-		<span style="color: #9CA4AB;">选品广场</span>
-	    </p>
-	)";
 
-	ui->lblNaviTitle->setText(naviTitle);
+	ui->lblNaviTitle->setStyleSheet("QLabel {"
+					"    background: transparent;"
+					"    color: #1B2846;"     // 文本颜色
+					"    font-size: 14px;"    // 字体大小
+					"    padding-left: 15px;" // 左对齐并添加15px的内边距
+					"}");
+
+	ui->lblNaviTitle->setText("选品广场");
 
 	VertNaviButton* btnBTTJ = new VertNaviButton("本土推荐", ":gbs/images/gbs/biz/gbs-product-bttj.png", this);
 	VertNaviButton* btnXBWJ = new VertNaviButton("鞋包玩具", ":gbs/images/gbs/biz/gbs-product-xbwj.png", this);
@@ -52,15 +54,18 @@ GBSNaviProduct::GBSNaviProduct(QWidget *parent)
 	QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 	ui->verticalLayout->addSpacerItem(verticalSpacer);
 
-	connect(btnBTTJ, &QPushButton::clicked, this, &GBSNaviProduct::onBTTJClick);
-	connect(btnXBWJ, &QPushButton::clicked, this, &GBSNaviProduct::onXBWJClick);
-	connect(btnSMJD, &QPushButton::clicked, this, &GBSNaviProduct::onSMJDClick);
-	connect(btnQCDM, &QPushButton::clicked, this, &GBSNaviProduct::onQCDMClick);
-	connect(btnJFSJ, &QPushButton::clicked, this, &GBSNaviProduct::onJFSFClick);
-	connect(btnRYBH, &QPushButton::clicked, this, &GBSNaviProduct::onRYBHClick);
-	connect(btnMZRH, &QPushButton::clicked, this, &GBSNaviProduct::onMZRHClick);
-	connect(btnJXZM, &QPushButton::clicked, this, &GBSNaviProduct::onJXZMClick);
-	connect(btnBGWJ, &QPushButton::clicked, this, &GBSNaviProduct::onBGWJClick);
+	connect(btnBTTJ, &VertNaviButton::clicked, this, &GBSNaviProduct::onBTTJClick);
+	connect(btnXBWJ, &VertNaviButton::clicked, this, &GBSNaviProduct::onXBWJClick);
+	connect(btnSMJD, &VertNaviButton::clicked, this, &GBSNaviProduct::onSMJDClick);
+	connect(btnQCDM, &VertNaviButton::clicked, this, &GBSNaviProduct::onQCDMClick);
+	connect(btnJFSJ, &VertNaviButton::clicked, this, &GBSNaviProduct::onJFSFClick);
+	connect(btnRYBH, &VertNaviButton::clicked, this, &GBSNaviProduct::onRYBHClick);
+	connect(btnMZRH, &VertNaviButton::clicked, this, &GBSNaviProduct::onMZRHClick);
+	connect(btnJXZM, &VertNaviButton::clicked, this, &GBSNaviProduct::onJXZMClick);
+	connect(btnBGWJ, &VertNaviButton::clicked, this, &GBSNaviProduct::onBGWJClick);
+	vertNaviButtons << btnBTTJ << btnXBWJ << btnSMJD << btnQCDM << btnJFSJ << btnRYBH << btnMZRH << btnJXZM
+			<< btnBGWJ;
+	btnBTTJ->changeStyle(true);
 
 	// ui->btnBGWJ->setStyleSheet(
 	// 	"QPushButton {"
@@ -89,12 +94,30 @@ GBSNaviProduct::~GBSNaviProduct()
 	delete ui;
 }
 
+void GBSNaviProduct::mariVertButton(VertNaviButton *button)
+{
+	for (int i = 0; i < vertNaviButtons.count(); i++) {
+		VertNaviButton *it = vertNaviButtons.at(i);
+		if (it == button) {
+			it->changeStyle(true);
+		} else {
+			it->changeStyle(false);
+		}
+	}
+}
+
+void GBSNaviProduct::addLayoutRef(QSharedPointer<QLayout> layout, QWidget *widget)
+{
+	weakLayoutPtr = layout;
+	currentWidgetRef = widget;
+}
 void GBSNaviProduct::onBTTJClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSoYoung* gbsBizSoYoung = new GBSBizSoYoung(this);
@@ -109,7 +132,8 @@ void GBSNaviProduct::onXBWJClick()
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSoYoung* gbsBizSoYoung = new GBSBizSoYoung(this);
@@ -123,7 +147,8 @@ void GBSNaviProduct::onSMJDClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -138,7 +163,8 @@ void GBSNaviProduct::onQCDMClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -153,7 +179,8 @@ void GBSNaviProduct::onJFSFClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -168,7 +195,8 @@ void GBSNaviProduct::onRYBHClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -183,7 +211,8 @@ void GBSNaviProduct::onMZRHClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -197,7 +226,8 @@ void GBSNaviProduct::onJXZMClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -211,7 +241,8 @@ void GBSNaviProduct::onBGWJClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;

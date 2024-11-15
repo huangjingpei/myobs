@@ -16,14 +16,14 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: center;">
-		<span style="color: #9CA4AB;">远程代播</span>
-	    </p>
-	)";
+	ui->lblNaviTitle->setStyleSheet("QLabel {"
+					"    background: transparent;"
+					"    color: #1B2846;"     // 文本颜色
+					"    font-size: 14px;"    // 字体大小
+					"    padding-left: 15px;" // 左对齐并添加15px的内边距
+					"}");
 
-	ui->lblNaviTitle->setText(naviTitle);
-
+	ui->lblNaviTitle->setText("远程代播");
 
         QString welcomeMessage = R"(
             <p style="font-size: 12px; text-align: center;">
@@ -46,6 +46,10 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 	VertNaviButton* btnDBZB = new VertNaviButton("代播直播", ":gbs/images/gbs/biz/gbs-live-dbzb.png", this);
 	VertNaviButton* btnDMSZ = new VertNaviButton("弹幕设置", ":gbs/images/gbs/biz/gbs-live-dmsz.png", this);
 	VertNaviButton* btnCKGL = new VertNaviButton("场控管理", ":gbs/images/gbs/biz/gbs-live-ckgl.png", this);
+
+	vertNaviButtons << btnZBZB << btnDBZB << btnDMSZ << btnCKGL;
+	btnZBZB->changeStyle(true);
+
 	btnZBZB->setFixedSize(205, 40);
 	btnDBZB->setFixedSize(205, 40);
 	btnDMSZ->setFixedSize(205, 40);
@@ -72,9 +76,11 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 	
 	gbsBizLiveBroker = reinterpret_cast<GBSBizLiveBroker *>(App()->GetMainWindow());
 	OBSBasic *main = OBSBasic::Get();
-    QString path = main->getRoundedAvator();
+	QString path = main->getRoundedAvator();
 	QPixmap pixmap(path);
 	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+
+
 
 }
 
@@ -92,10 +98,26 @@ GBSNaviLive::~GBSNaviLive()
 	delete ui;
 }
 
+void GBSNaviLive::mariVertButton(VertNaviButton *button)
+{
+	for (int i = 0; i < vertNaviButtons.count(); i++) {
+		VertNaviButton *it = vertNaviButtons.at(i);
+		if (it == button) {
+			it->changeStyle(true);
+		} else {
+			it->changeStyle(false);
+		}
+	}
+	update();
+}
+
 void GBSNaviLive::onZBZBClicked() {
 
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
+
 		//这里是否可以使用replaceWidget ???
 		layout->removeWidget(currentWidgetRef);
 		currentWidgetRef->hide();
@@ -121,6 +143,9 @@ void GBSNaviLive::onDBZBClicked() {
 
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout && !useLiveBroker) {
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
+
 		layout->removeWidget(currentWidgetRef);
 		currentWidgetRef->hide();
 		currentWidgetRef->deleteLater();
@@ -139,7 +164,8 @@ void GBSNaviLive::onDBZBClicked() {
 void GBSNaviLive::onDMSZClicked() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-		
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		currentWidgetRef->hide();
 		if (!useLiveBroker) {
@@ -161,6 +187,8 @@ void GBSNaviLive::onDMSZClicked() {
 void GBSNaviLive::onCKGLClicked() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		currentWidgetRef->hide();
 		if (!useLiveBroker) {

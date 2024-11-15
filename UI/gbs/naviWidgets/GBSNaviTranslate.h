@@ -5,6 +5,8 @@
 #include <QLayout>
 #include <QSharedPointer>
 #include <QWeakPointer>
+#include <QList>
+#include "gbs/common/VertNaviButton.h"
 
 namespace Ui {
 class GBSNaviTranslate;
@@ -25,9 +27,13 @@ public slots:
 	void onVideoAIClick();
 
 private:
+	void mariVertButton(VertNaviButton *button);
+
+private:
 	Ui::GBSNaviTranslate *ui;
 	QWeakPointer<QLayout> weakLayoutPtr;
 	QWidget* currentWidgetRef;
+	QList<VertNaviButton *> vertNaviButtons;
 };
 
 #endif // GBSNAVITRANSLATE_H

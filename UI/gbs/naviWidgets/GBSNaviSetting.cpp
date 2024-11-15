@@ -18,13 +18,15 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: center;">
-		<span style="color: #9CA4AB;">直播设置</span>
-	    </p>
-	)";
+	ui->lblNaviTitle->setStyleSheet("QLabel {"
+					"    background: transparent;"
+					"    color: #1B2846;"     // 文本颜色
+					"    font-size: 14px;"    // 字体大小
+					"    padding-left: 15px;" // 左对齐并添加15px的内边距
+					"}");
 
-	ui->lblNaviTitle->setText(naviTitle);
+	ui->lblNaviTitle->setText("直播设置");
+
 
 
         QString welcomeMessage = R"(
@@ -53,6 +55,9 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	VertNaviButton *btnLiveSourcDupRM =
 		new VertNaviButton("源直播去重", ":gbs/images/gbs/biz/gbs-setting-source-dumrm.png", this);
 
+	vertNaviButtons << btnBasic << btnProductDupRM << btnTimbreSquare << btnBridgerMgr << btnLiveEditor
+			<< btnLiveSourcDupRM;
+
 	btnBasic->setFixedSize(205, 40);
 	btnProductDupRM->setFixedSize(205, 40);
 	btnTimbreSquare->setFixedSize(205, 40);
@@ -78,9 +83,10 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	connect(btnBridgerMgr, &QPushButton::clicked, this, &GBSNaviSetting::onBridgerMgrClick);
 	connect(btnLiveEditor, &QPushButton::clicked, this, &GBSNaviSetting::onLiveEditorClick);
 	connect(btnLiveSourcDupRM, &QPushButton::clicked, this, &GBSNaviSetting::onLiveSourcDupRMClick);
+	btnBasic->changeStyle(true);
 
 	OBSBasic *main = OBSBasic::Get();
-    QString path = main->getRoundedAvator();
+	QString path = main->getRoundedAvator();
 	QPixmap pixmap(path);
 	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 
@@ -91,6 +97,17 @@ GBSNaviSetting::~GBSNaviSetting()
 	delete ui;
 }
 
+void GBSNaviSetting::mariVertButton(VertNaviButton *button)
+{
+	for (int i = 0; i < vertNaviButtons.count(); i++) {
+		VertNaviButton *it = vertNaviButtons.at(i);
+		if (it == button) {
+			it->changeStyle(true);
+		} else {
+			it->changeStyle(false);
+		}
+	}
+}
 
 void GBSNaviSetting::addLayoutRef(QSharedPointer<QLayout> layout, QWidget *widget)
 {
@@ -103,6 +120,9 @@ void GBSNaviSetting::onBaiscClick()
 
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
+
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		//这里是否可以使用replaceWidget ???
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
@@ -116,7 +136,8 @@ void GBSNaviSetting::onProductDupRMClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 
@@ -130,7 +151,8 @@ void GBSNaviSetting::onTimbreSquareClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 
@@ -144,7 +166,8 @@ void GBSNaviSetting::onBridgerMgrClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 
@@ -158,7 +181,8 @@ void GBSNaviSetting::onLiveEditorClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 
@@ -172,7 +196,8 @@ void GBSNaviSetting::onLiveSourcDupRMClick()
 {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 
@@ -187,7 +212,8 @@ void GBSNaviSetting::onOutputClick()
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 
@@ -200,7 +226,8 @@ void GBSNaviSetting::onOutputClick()
 void GBSNaviSetting::onAVClick() {
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
-
+		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+		mariVertButton(button);
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizSettingAV* gbsBizSettingAV = new GBSBizSettingAV(this);
