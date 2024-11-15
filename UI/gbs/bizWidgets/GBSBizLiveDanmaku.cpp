@@ -226,25 +226,26 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 			} else if (plat == "拼多多") {
 				iniFile->setValue("broadcast", "plat", "pdd");
 			} else if (plat == "其他") {
-
+				iniFile->setValue("broadcast", "plat", "");
 			}
-			
-			QProcess *chromeProcess = nullptr;
-			launchDanmuExe(chromeProcess);
-			HWND chromeHwnd = nullptr;
-
-			//// Wait for a few seconds for Chrome to launch and get the window handle
-			//QTimer::singleShot(2000, [&]() {
-			//	chromeHwnd = findChromeWindow();
-			//	if (chromeHwnd) {
-			//		embedChrome(
-			//			chromeHwnd,
-			//			ui->wgtEmbedChrome); // Embed Chrome into the main window
-			//	}
-			//});
 
 		});
 
+	connect(ui->pushButton_15, &QPushButton::clicked, this, [this]() {
+		QProcess *chromeProcess = nullptr;
+		launchDanmuExe(chromeProcess);
+		HWND chromeHwnd = nullptr;
+
+		//// Wait for a few seconds for Chrome to launch and get the window handle
+		//QTimer::singleShot(2000, [&]() {
+		//	chromeHwnd = findChromeWindow();
+		//	if (chromeHwnd) {
+		//		embedChrome(
+		//			chromeHwnd,
+		//			ui->wgtEmbedChrome); // Embed Chrome into the main window
+		//	}
+		//});
+		});
 
 }
 

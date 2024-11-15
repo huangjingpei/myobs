@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QList>
 #include <QColor>
+#include <QTime>
 #include "../common/DanmakuWidget.h"
 #include "../common/SelectedIDSDialog.h"
 #include "../GBSToolKits.h"
@@ -16,6 +17,12 @@
 namespace Ui {
 class GBSBizLivePusher;
 }
+
+typedef struct tagDammaItem {
+	QTime  currentTime; 
+	QString deviceName;
+	QString danmaku;
+} DanmaItem;
 
 class GBSBizLivePusher : public QWidget,
 	public OBSHttpEventHandler {
@@ -53,7 +60,7 @@ public slots:
 
 
 public slots:
-	void addNewWidget(const QString &text, const QString &imagePath, const QString &text2);
+	void addNewWidget(const QString &text, const QString &imagePath, const QString &text2, const QString &type);
 
 
 private slots:
@@ -102,6 +109,11 @@ private:
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status) override;
+
+	QList<DanmaItem> whoIsDanmukus;
+	QList<DanmaItem> allDanmakus;
+	QList<DanmaItem> giftDanmakus;
+	QList<DanmaItem> greetDanmakus;
 
 };
 

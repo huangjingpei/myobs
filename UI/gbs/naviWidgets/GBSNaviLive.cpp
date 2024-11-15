@@ -8,6 +8,7 @@
 #include "../bizWidgets/GBSBizLiveBroker.h"
 #include "../bizWidgets/GBSBizLiveDanmaku.h"
 #include "../bizWidgets/GBSBizLiveGuarder.h"
+#include "gbs/common/QBizLogger.h"
 
 
 GBSNaviLive::GBSNaviLive(QWidget *parent)
@@ -234,7 +235,35 @@ void GBSNaviLive::onClose() {}
 
 
 void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
+	QString plat = "other";
+	if (danmaPlatIconString.isEmpty()) {
+		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("danmu/setting/setting.ini");
+		plat = iniFile->value("broadcast", "plat", "other").toString();
+		if (plat == "douyin") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-douyin.png";
+		} else if (plat == "kuaishou") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-kuai.png";
+		} else if (plat == "shipinhao") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-wechat.png";
+		} else if (plat == "tiktok") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-tiktok.png";
+		} else if (plat == "bili") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-bilibili.png";
+		} else if (plat == "pdd") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-bilibili.png";
+		} else if (plat == "facebook") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-facebook.png";
+		} else if (plat == "other") {
+			
+		}
+	}
+	if (danmaPlatIconString.isEmpty()) {
+		QLogE("No platform about danmaku, ProcessDanmaItem failed.");
+		return;
+	}
+
 	std::string type = jsonObject["type"].get<std::string>();
+	qDebug() << "damaku type " << type;
 	if (type == "MemberMessage") {
 		auto danma = std::make_shared<DammaMemberMSG>();
 		danma->type = "MemberMessage";
@@ -246,9 +275,7 @@ void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
 		 
 		QString danmaText = QString::fromStdString(danma->name) + ":" +
 				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01",
-				      ":gbs/images/gbs/biz/gbs-logo-douyin.png",
-				      danmaText);
+		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
 
 	} else if (type == "ChatMessage") {
 		auto danma = std::make_shared<DanmaChatMessage>();
@@ -259,9 +286,7 @@ void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
 		danma->msgType = 2;
 		QString danmaText = QString::fromStdString(danma->name) + ":" +
 				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01",
-				      ":gbs/images/gbs/biz/gbs-logo-douyin.png",
-				      danmaText);
+		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
 
 	} else if (type == "GiftMessage") {
 		auto danma = std::make_shared<DanmaGiftMessage>();
@@ -274,9 +299,7 @@ void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
 		danma->msgType = 3;
 		QString danmaText = QString::fromStdString(danma->name) + ":" +
 				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01",
-				      ":gbs/images/gbs/biz/gbs-logo-douyin.png",
-				      danmaText);
+		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
 
 	} else if (type == "SocialMessage") {
 		auto danma = std::make_shared<DanmaSocialMessage>();
@@ -287,9 +310,7 @@ void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
 		danma->msgType = 4;
 		QString danmaText = QString::fromStdString(danma->name) + ":" +
 				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01",
-				      ":gbs/images/gbs/biz/gbs-logo-douyin.png",
-				      danmaText);
+		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
 	} else if (type == "LikeMessage") {
 		auto danma = std::make_shared<DanmaLikeMessage>();
 		danma->type = "LikeMessage";
@@ -300,9 +321,7 @@ void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
 		danma->msgType = 5;
 		QString danmaText = QString::fromStdString(danma->name) + ":" +
 				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01",
-				      ":gbs/images/gbs/biz/gbs-logo-douyin.png",
-				      danmaText);
+		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
 
 		
 	}

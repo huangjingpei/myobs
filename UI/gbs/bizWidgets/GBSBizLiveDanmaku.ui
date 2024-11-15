@@ -618,6 +618,25 @@ color:#FFFFFF</string>
        </rect>
       </property>
      </widget>
+     <widget class="QPushButton" name="pushButton_15">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>80</y>
+        <width>100</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+      </property>
+      <property name="text">
+       <string>开启弹幕提取</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tab">

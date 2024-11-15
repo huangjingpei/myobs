@@ -454,9 +454,11 @@ void GBSBizLivePusher::onComboBoxIndexChanged(int index) {
 //
 //}
 
+
 void GBSBizLivePusher::addNewWidget(const QString &text,
 				    const QString &imagePath,
-				    const QString &text2)
+				    const QString &text2,
+					const QString &type)
 {
 	// 创建新 widget
 	DanmakuWidget *newWidget = new DanmakuWidget(this);

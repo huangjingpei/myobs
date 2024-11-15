@@ -87,7 +87,8 @@ signals:
 
 	void signalDanmakuReceived(const QString &text,
 				   const QString &imagePath,
-				   const QString &text2);
+				   const QString &text2,
+				   const QString &type);
 
 public slots:
 	void onZBZBClicked();
@@ -115,6 +116,8 @@ private:
 	void processDanmaItem(const nlohmann::json jsonObject);
 
 	QList<VertNaviButton *> vertNaviButtons;
+
+	QString danmaPlatIconString;
 };
 
 #endif // GBSNAVILIVE_H
