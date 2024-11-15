@@ -2,10 +2,11 @@
 #define GBSNORMALLOGINFORM_H
 
 #include <QWidget>
-
+#include <memory>
 #include "gbs/common/GBSHttpClient.h"
 #include "window-main.hpp"
 #include <QPoint>
+#include "gbs/common/XORPasswordProtecter.h"
 namespace Ui {
 class GBSNormalLoginForm;
 }
@@ -50,7 +51,7 @@ private:
 	void OBSInit() override;
 	int GetProfilePath(char *path, size_t size, const char *file) const override;
 
-
+	std::unique_ptr<XORPasswordProtecter> passwordProtecter;
 };
 
 #endif // GBSNORMALLOGINFORM_H

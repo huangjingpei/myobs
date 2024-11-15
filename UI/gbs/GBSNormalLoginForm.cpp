@@ -15,6 +15,7 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 	  ui(new Ui::GBSNormalLoginForm)
 {
 	ui->setupUi(this);
+	passwordProtecter = std::make_unique<XORPasswordProtecter>("asdfghjkl;'\\！@#￥");
 	ui->imgBanner->setStyleSheet("border-image:url(:/gbs/images/gbs/login/gbs-banner.png)");
 	ui->btnScanQRodeLogin->setStyleSheet("border-image:url(:/gbs/images/gbs/login/scan-qrcode-login.png)");
 	ui->btnAuthorizeCodeLogin->setStyleSheet("border-image:url(:/gbs/images/gbs/login/authorized-code-login.png)");
@@ -30,8 +31,9 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 	
 
 	if ((emailValue != "unknown") && (passwordValue != "unknown")) {
+		QString decPassword = passwordProtecter->decrypt(passwordValue.toUtf8()); 
 		ui->leEmal->setText(emailValue);
-		ui->lePassword->setText(passwordValue);
+		ui->lePassword->setText(decPassword);
 		ui->radioButton->setChecked(true);
 	}
 
@@ -322,10 +324,13 @@ void GBSNormalLoginForm::onLoginResult(const int result) {
 					layout->addLayout(layout2);
 					GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
 					connect(confirm, &QPushButton::clicked, dialog, [dialog, this]() {
+						
+						QByteArray decPassword = passwordProtecter->encrypt(
+							this->ui->lePassword->text().toUtf8());
 						std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 						iniFile->setValue("User", "login.Type", "normal");
 						iniFile->setValue("User", "login.Username", this->ui->leEmal->text());
-						iniFile->setValue("User", "login.Password", this->ui->lePassword->text());
+						iniFile->setValue("User", "login.Password", QString(decPassword));
 						dialog->accept();
 						});
 					connect(cancel, &QPushButton::clicked, dialog, &QDialog::reject);

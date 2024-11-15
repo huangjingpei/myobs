@@ -48,6 +48,8 @@ target_sources(
     gbs/common/GBSHttpClient.cpp
     gbs/common/GBSHttpClient.h
 
+    gbs/common/XORPasswordProtecter.h
+
     gbs/GBSMainBizWindow.cpp
     gbs/GBSMainBizWindow.h
     gbs/GBSMainForm.cpp
