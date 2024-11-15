@@ -1,4 +1,4 @@
-#include "gbsbizsettingbasic.h"
+#include "GBSBizSettingBasic.h"
 #include "ui_gbsbizsettingbasic.h"
 
 #include <QCheckBox>

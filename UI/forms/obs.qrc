@@ -22,10 +22,10 @@
         <file>images/active.png</file>
         <file>images/active_mac.png</file>
         <file>images/right.svg</file>
-        <file>images/unlocked.svg</file>
-        <file>images/locked.svg</file>
-        <file>images/invisible.svg</file>
-        <file>images/visible.svg</file>
+        <file>images/unlocked.png</file>
+        <file>images/locked.png</file>
+        <file>images/invisible.png</file>
+        <file>images/visible.png</file>
         <file>images/help.svg</file>
         <file>images/help_light.svg</file>
         <file>images/revert.svg</file>
@@ -70,6 +70,13 @@
         <file>images/network-bad.svg</file>
         <file>images/network-disconnected.svg</file>
         <file>images/network-inactive.svg</file>
+        <file>images/invisible.svg</file>
+        <file>images/locked.svg</file>
+        <file>images/obs_macos.png</file>
+        <file>images/obs_paused_macos.png</file>
+        <file>images/tray_active_macos.png</file>
+        <file>images/unlocked.svg</file>
+        <file>images/visible.svg</file>
     </qresource>
     <qresource prefix="/settings">
         <file>images/settings/output.svg</file>
@@ -244,10 +251,8 @@
         <file>images/gbs/biz/gs-local-source-ypsr.png</file>
         <file>images/gbs/biz/gs-local-source-yxcj.png</file>
         <file>images/gbs/biz/login-bg.png</file>
-        <file>images/gbs/biz/login-default.png</file>
         <file>images/gbs/biz/login-dev.png</file>
         <file>images/gbs/biz/login-llama3-ad.png</file>
-        <file>images/gbs/biz/login-mbp-45.png</file>
         <file>images/gbs/biz/login-mbp-325.png</file>
         <file>images/gbs/biz/login-right-bg.png</file>
         <file>images/gbs/biz/login-right-middle-bg.png</file>
@@ -255,12 +260,10 @@
         <file>images/gbs/login/authorized-code-login.png</file>
         <file>images/gbs/login/gbs-banner.png</file>
         <file>images/gbs/login/login-bg.png</file>
-        <file>images/gbs/login/login-default.png</file>
         <file>images/gbs/login/login-dev.png</file>
         <file>images/gbs/login/login-llama3.png</file>
         <file>images/gbs/login/login-llama3-ad.png</file>
         <file>images/gbs/login/login-mbp.png</file>
-        <file>images/gbs/login/login-mbp-45.png</file>
         <file>images/gbs/login/login-mbp-325.png</file>
         <file>images/gbs/login/login-right-bg.png</file>
         <file>images/gbs/login/login-right-middle-bg.png</file>
@@ -314,5 +317,37 @@
         <file>images/gbs/biz/gbs-profile-setting.png</file>
         <file>images/gbs/biz/gbs-profile-update.png</file>
         <file>images/gbs/biz/Group 427320978.png</file>
+        <file>images/gbs/login/login-default.png</file>
+        <file>images/gbs/login/login-default-ad.png</file>
+        <file>images/gbs/login/login-multi-vcam-ad.png</file>
+        <file>images/gbs/login/login-register.png</file>
+        <file>images/gbs/login/login-register-ad.png</file>
+        <file>images/gbs/login/login-qrcode-register.png</file>
+        <file>images/gbs/login/login-qrcode-register-ad.png</file>
+        <file>images/gbs/biz/gbs-live-ckgl-transparent.png</file>
+        <file>images/gbs/biz/gbs-live-dbzb-transparent.png</file>
+        <file>images/gbs/biz/gbs-live-dmsz-transparent.png</file>
+        <file>images/gbs/biz/gbs-live-zbzb-transparent.png</file>
+        <file>images/gbs/biz/login-default.png</file>
+        <file>images/gbs/biz/login-mbp-45.png</file>
+        <file>images/gbs/biz/gbs-translate-intertrans.png</file>
+        <file>images/gbs/biz/gbs-translate-intertrans-transparent.png</file>
+        <file>images/gbs/biz/gbs-translate-speech.png</file>
+        <file>images/gbs/biz/gbs-translate-speech-transparent.png</file>
+        <file>images/gbs/biz/gbs-translate-video.png</file>
+        <file>images/gbs/biz/gbs-translate-video-transparent.png</file>
+        <file>images/gbs/biz/gbs-setting-bridger-mgr-transparent.png</file>
+        <file>images/gbs/biz/gbs-setting-live-edit-transparent.png</file>
+        <file>images/gbs/biz/gbs-setting-product-material-transparent.png</file>
+        <file>images/gbs/biz/gbs-setting-source-dumrm-transparent.png</file>
+        <file>images/gbs/biz/gbs-setting-timbre-square-transparent.png</file>
+        <file>images/gbs/biz/gbs-ai-facefusion-transparent.png</file>
+        <file>images/gbs/biz/gbs-ai-llama3.png</file>
+        <file>images/gbs/biz/gbs-ai-llama3-transparent.png</file>
+        <file>images/gbs/biz/gbs-ai-musetalk.png</file>
+        <file>images/gbs/biz/gbs-ai-musetalk-transparent.png</file>
+        <file>images/gbs/biz/gbs-ai-rvc.png</file>
+        <file>images/gbs/biz/gbs-ai-rvc-transparent.png</file>
+        <file>images/gbs/biz/gbs-ai-tts-transparent.png</file>
     </qresource>
 </RCC>

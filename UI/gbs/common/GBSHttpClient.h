@@ -10,18 +10,23 @@
 
 #include "gbs/dto/GBSUserInfo.h"
 #include "gbs/dto/GBSRoomInfo.h"
+#include "gbs/dto/GBSMemberInfo.h"
+
+
 
 class OBSHttpEventHandler {
 public:
 	OBSHttpEventHandler() = default;
 	virtual ~OBSHttpEventHandler(){}
-	virtual void onLoginResult(const int result) = 0;
-	virtual void onRtmpPushUrl(const std::string url) = 0;
-	virtual void onPullRtmpUrl(const std::string url) = 0;
-	virtual void onUserInfo(const GBSUserInfo *info) = 0;
-	virtual void onUserIconPath(const std::string &path) = 0;
-	virtual void onRoomInfos(std::list<GBSRoomInfo> &info) = 0;
-	virtual void onRoomInfo(GBSRoomInfo *info) = 0;
+	virtual void onLoginResult(const int result){};
+	virtual void onRtmpPushUrl(const std::string url){};
+	virtual void onPullRtmpUrl(const std::string url){};
+	virtual void onUserInfo(const GBSUserInfo *info){};
+	virtual void onUserFileDownLoad(const std::string &path, int type){};
+	virtual void onRoomInfos(std::list<GBSRoomInfo> &info){};
+	virtual void onRoomInfo(GBSRoomInfo *info){};
+	virtual void onQRcodeInfo(std::string no, std::string url, int status){};
+	virtual void onMemberInfo(GBSMemberInfo info){};
 };
 
 class GBSHttpClient {
@@ -35,6 +40,11 @@ struct MemFile {
 	std::string endTime;
 };
 
+public:
+enum DownLoadType  {
+	FILE_AVATOR,
+	FILE_QRLOGIN
+};
 using ApiCallback = std::function<void(int)>;
 public:
     virtual ~GBSHttpClient() {}
@@ -68,9 +78,27 @@ public:
 
     void upRemoteLiveRoomState(std::string ids);
     void upRemoteLiveRoomStateTask(std::string ids);
+
+    void createQrCodeScan();
+    void createQrCodeScanTask();
+
+    void scanLoginInfo(std::string qrCode);
+    void scanLoginInfoTask(std::string qrCode);
     void destroy();
 
-private:
+    void downFile(std::string url, std::string path, int type);
+    void downFileTask(std::string url, std::string path, int type);
+
+    void memberInfo(std::string userId);
+    void memberInfoTask(std::string userId);
+
+    void codeList(int levelId);
+    void codeListTask(int levelId);
+
+    void remainingActivation(int levelId);
+    void remainingActivationTask(int levelId);
+
+    private:
     std::string getDeviceNo();
 	std::string getDeviceNoWithoutBraces();
 

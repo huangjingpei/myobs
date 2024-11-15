@@ -523,8 +523,8 @@ void GBSBizLivePusher::onPullRtmpUrl(std::string url) {
 
 void GBSBizLivePusher::onUserInfo(const GBSUserInfo *info) {}
 
-void GBSBizLivePusher::onUserIconPath(const std::string &path) {
-	qDebug() << "GBSBizLivePusher onUserIconPath: " << path;
+void GBSBizLivePusher::onUserFileDownLoad(const std::string &path, int type) {
+	qDebug() << "GBSBizLivePusher onUserFileDownLoad: " << path;
 }
 
 void GBSBizLivePusher::onRoomInfos(std::list<GBSRoomInfo>& infos) {
@@ -569,6 +569,7 @@ void GBSBizLivePusher::onRoomInfo(GBSRoomInfo *info)
 	qUserId = QString("%1").arg(userId);
 	qDebug() << "GBSBizLivePusher onRoomInfo: " << qUserId;
 }
+void GBSBizLivePusher::onQRcodeInfo(std::string no, std::string url, int status) {}
 
 GBSBizLivePusher::~GBSBizLivePusher()
 {

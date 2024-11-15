@@ -188,12 +188,12 @@ QGroupBox::indicator:unchecked:disabled {
 
 .indicator-lock::indicator:checked,
 .indicator-lock::indicator:checked:hover {
-    image: url(theme:Light/locked.svg);
+    image: url(theme:Light/locked.png);
 }
 
 .indicator-visibility::indicator:checked,
 .indicator-visibility::indicator:checked:hover {
-    image: url(theme:Light/visible.svg);
+    image: url(theme:Light/visible.png);
 }
 
 .indicator-mute::indicator:checked {

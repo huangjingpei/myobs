@@ -201,21 +201,21 @@ OBSBasicSettings QListWidget::item {
 /* Locked CheckBox */
 
 .indicator-lock::indicator:checked {
-    image: url(:res/images/locked.svg);
+    image: url(:res/images/locked.png);
 }
 
 .indicator-lock::indicator:unchecked {
-    image: url(:res/images/unlocked.svg);
+    image: url(:res/images/unlocked.png);
 }
 
 /* Visibility CheckBox */
 
 .indicator-visibility::indicator:checked {
-    image: url(:res/images/visible.svg);
+    image: url(:res/images/visible.png);
 }
 
 .indicator-visibility::indicator:unchecked {
-    image: url(:res/images/invisible.svg);
+    image: url(:res/images/invisible.png);
 }
 
 OBSMissingFiles {

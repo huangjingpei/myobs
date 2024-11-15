@@ -3,6 +3,7 @@
 #include "../common/VertNaviButton.h"
 #include "../bizWidgets/GBSBizDeviceInfo.h"
 #include "../bizWidgets/GBSBizSoYoung.h"
+#include "window-basic-main.hpp"
 
 GBSNaviData::GBSNaviData(QWidget *parent)
 	: QWidget(parent),
@@ -10,9 +11,8 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	ui->imgAvator->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-logo.png)");
 	QString naviTitle = R"(
-	    <p style="font-size: 16px; text-align: center;">
+	    <p style="font-size: 16px; text-align: left;">
 		<span style="color: #9CA4AB;">数据大屏</span>
 	    </p>
 	)";
@@ -55,6 +55,12 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 		&GBSNaviData::onEShopDataClicked);
 	connect(btnAIData, &QPushButton::clicked, this,
 		&GBSNaviData::onAIDataClicked);
+	OBSBasic *main = OBSBasic::Get();
+
+	connect(main, &OBSBasic::onUseIconUpdate, this, &GBSNaviData::onMyIconDownloaded);
+
+
+
 
 }
 
@@ -116,3 +122,11 @@ void GBSNaviData::onAIDataClicked() {
 	}
 }
 
+
+void GBSNaviData::onMyIconDownloaded(QString path) {
+
+	QPixmap pixmap(path);
+	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	ui->imgAvator->setStyleSheet(
+		" border-radius: 50%;");
+}

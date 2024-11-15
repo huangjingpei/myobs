@@ -22,6 +22,9 @@ public slots:
 	void onDeviceInfoClicked();
 	void onEShopDataClicked();
 	void onAIDataClicked();
+
+	void onMyIconDownloaded(QString path);
+
 private:
 	Ui::GBSNaviData *ui;
 	QWeakPointer<QLayout> weakLayoutPtr;

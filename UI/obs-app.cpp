@@ -443,7 +443,7 @@ bool OBSApp::InitGlobalConfigDefaults()
 	config_set_default_uint(appConfig, "General", "MaxLogs", 10);
 	config_set_default_int(appConfig, "General", "InfoIncrement", -1);
 	config_set_default_string(appConfig, "General", "ProcessPriority", "Normal");
-	config_set_default_bool(appConfig, "General", "EnableAutoUpdates", true);
+	config_set_default_bool(appConfig, "General", "EnableAutoUpdates", false);
 
 #if _WIN32
 	config_set_default_string(appConfig, "Video", "Renderer", "Direct3D 11");
@@ -2676,7 +2676,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	check_safe_mode_sentinel();
+	//check_safe_mode_sentinel();
 
 	fstream logFile;
 

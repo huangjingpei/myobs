@@ -98,9 +98,11 @@ private:
 	void onRtmpPushUrl(std::string url) override;
 	void onPullRtmpUrl(std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
-	void onUserIconPath(const std::string &path) override;
+	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
+	void onQRcodeInfo(std::string no, std::string url, int status) override;
+
 };
 
 #endif // GBSBIZLIVEPUSHER_H

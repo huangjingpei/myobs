@@ -1,5 +1,9 @@
 #include "gbsqrcodeloginform.h"
 #include "ui_gbsqrcodeloginform.h"
+#include <QTimer>
+#include "window-basic-main.hpp"
+#include "gbs/common/GBSHttpClient.h"
+#include "gbs/GBSMainBizWindow.h"
 
 GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	: QWidget(parent),
@@ -135,11 +139,16 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	connect(ui->btnScanQRodeLogin, &QPushButton::clicked, this, &GBSQRCodeLoginForm::onQRcodeLogin);
 	connect(ui->btnAuthorizeCodeLogin, &QPushButton::clicked, this, &GBSQRCodeLoginForm::onAuthorizedLogin);
 	connect(ui->btnLoginGBS,&QPushButton::clicked, this, &GBSQRCodeLoginForm::onLoginGBS);
+	OBSBasic *main = OBSBasic::Get();
 
+	connect(this, &GBSQRCodeLoginForm::onUseIconUpdate, this, &GBSQRCodeLoginForm::onMyIconDownloaded);
+	GBSHttpClient::getInstance()->registerHandler(this);
+	GBSHttpClient::getInstance()->createQrCodeScan();
 }
 
 GBSQRCodeLoginForm::~GBSQRCodeLoginForm()
 {
+	GBSHttpClient::getInstance()->unRegisterHandler(this);
 	delete ui;
 }
 
@@ -164,4 +173,54 @@ void GBSQRCodeLoginForm::onLoginTypeChanged(int type) {
 
 void GBSQRCodeLoginForm::onLoginGBS() {
 
+}
+
+void GBSQRCodeLoginForm::onLoginResult(const int result) {}
+
+void GBSQRCodeLoginForm::onRtmpPushUrl(const std::string url) {}
+
+void GBSQRCodeLoginForm::onPullRtmpUrl(const std::string url) {}
+
+void GBSQRCodeLoginForm::onUserInfo(const GBSUserInfo *info) {}
+
+void GBSQRCodeLoginForm::onUserFileDownLoad(const std::string &path, int type) {
+	if (type == 1) {
+		QString qPath = QString::fromStdString(path);
+		emit onUseIconUpdate(qPath);
+	}
+}
+
+void GBSQRCodeLoginForm::onRoomInfos(std::list<GBSRoomInfo> &info) {}
+
+void GBSQRCodeLoginForm::onRoomInfo(GBSRoomInfo *info) {}
+
+//状态 0待扫码 1已扫码待确认 2已确认
+void GBSQRCodeLoginForm::onQRcodeInfo(std::string no, std::string url, int status) {
+	if (status == 2) {
+		qDebug() << "onQRcodeInfo 2.";
+		QMetaObject::invokeMethod(QCoreApplication::instance()->thread(), [](){
+			GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();
+			gbsMainBizWindow->show();
+			});
+
+		emit notifyLoginSuccess();
+	} else if (status <= 0) {
+		qDebug() << "onQRcodeInfo 1.";
+		GBSHttpClient::getInstance()->downFile(url, "login-qrcode.png", 1);
+
+		    std::thread myThread([no]() { qDebug() << "Hello from thread!";
+			QThread::sleep(2);
+			GBSHttpClient::getInstance()->scanLoginInfo(no);
+			qDebug() << "onQRcodeInfo 4.";
+			});
+		myThread.detach();
+	
+	}
+}
+
+
+void GBSQRCodeLoginForm::onMyIconDownloaded(QString path)
+{
+	QPixmap pixmap(path);
+	ui->lblQRCode->setPixmap(pixmap.scaled(245, 245, Qt::KeepAspectRatio));
 }

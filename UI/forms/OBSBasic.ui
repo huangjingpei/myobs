@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1086</width>
-    <height>729</height>
+    <width>1322</width>
+    <height>920</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,6 +60,153 @@
         <property name="spacing">
          <number>2</number>
         </property>
+        <item>
+         <widget class="QWidget" name="previewContainer" native="true">
+          <layout class="QVBoxLayout" name="previewTextLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="previewLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>StudioMode.PreviewSceneName</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+             </property>
+             <property name="class" stdset="0">
+              <string>label-preview-title</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item row="1" column="2">
+              <widget class="QScrollBar" name="previewYScrollBar">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="OBSBasicPreview" name="preview" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::FocusPolicy::ClickFocus</enum>
+               </property>
+               <property name="contextMenuPolicy">
+                <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+               </property>
+               <addaction name="actionRemoveSource"/>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QWidget" name="previewXContainer" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="OBSPreviewScalingLabel" name="previewScalePercent">
+                  <property name="text">
+                   <string>100%</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="OBSPreviewScalingComboBox" name="previewScalingMode">
+                  <item>
+                   <property name="text">
+                    <string>Basic.MainMenu.Edit.Scale.Window</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Basic.MainMenu.Edit.Scale.Canvas</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QScrollBar" name="previewXScrollBar">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimum">
+                   <number>-200</number>
+                  </property>
+                  <property name="maximum">
+                   <number>200</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>10</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>100</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
         <item>
          <widget class="QFrame" name="previewDisabledWidget">
           <property name="sizePolicy">
@@ -208,153 +355,6 @@ font-size: 24px;
                  </property>
                 </widget>
                </widget>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QWidget" name="previewContainer" native="true">
-          <layout class="QVBoxLayout" name="previewTextLayout">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="previewLabel">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>StudioMode.PreviewSceneName</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-             </property>
-             <property name="class" stdset="0">
-              <string>label-preview-title</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QGridLayout" name="gridLayout">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <item row="2" column="1">
-              <widget class="QWidget" name="previewXContainer" native="true">
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="OBSPreviewScalingLabel" name="previewScalePercent">
-                  <property name="text">
-                   <string>100%</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignmentFlag::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="OBSPreviewScalingComboBox" name="previewScalingMode">
-                  <item>
-                   <property name="text">
-                    <string>Basic.MainMenu.Edit.Scale.Window</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Basic.MainMenu.Edit.Scale.Canvas</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QScrollBar" name="previewXScrollBar">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimum">
-                   <number>-200</number>
-                  </property>
-                  <property name="maximum">
-                   <number>200</number>
-                  </property>
-                  <property name="singleStep">
-                   <number>10</number>
-                  </property>
-                  <property name="pageStep">
-                   <number>100</number>
-                  </property>
-                  <property name="orientation">
-                   <enum>Qt::Orientation::Horizontal</enum>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QScrollBar" name="previewYScrollBar">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" colspan="2">
-              <widget class="OBSBasicPreview" name="preview" native="true">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>32</width>
-                 <height>32</height>
-                </size>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::FocusPolicy::ClickFocus</enum>
-               </property>
-               <property name="contextMenuPolicy">
-                <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
-               </property>
-               <addaction name="actionRemoveSource"/>
               </widget>
              </item>
             </layout>
@@ -953,7 +953,7 @@ font-size: 24px;
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>335</width>
+              <width>366</width>
               <height>16</height>
              </rect>
             </property>

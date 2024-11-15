@@ -44,7 +44,7 @@ private:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
-	void wheelEvent(QWheelEvent *event) override;
+	//void wheelEvent(QWheelEvent *event) override;
 
 private:
 	void clearWidgetsFromLayout(QBoxLayout* layout);
@@ -71,9 +71,10 @@ private:
 	void onRtmpPushUrl(const std::string url) override;
 	void onPullRtmpUrl(const std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
-	void onUserIconPath(const std::string &path) override;
+	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
+	void onQRcodeInfo(std::string no, std::string url, int status) override;
 
 private:
 	bool m_dragging = false;

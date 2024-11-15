@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1238</width>
-    <height>920</height>
+    <width>1139</width>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:#F9F9F9;
+border: 1px solid  #FFFFFF;
+border-radius: 4px;
+</string>
   </property>
   <widget class="QFrame" name="frame_3">
    <property name="geometry">
@@ -133,14 +139,17 @@ color:#FFFFFF</string>
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>50</y>
-     <width>1231</width>
-     <height>451</height>
+     <y>0</y>
+     <width>1139</width>
+     <height>599</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true">color: #01C667;
 font-size:16px;
+background-color:#F9F9F9;
+border: 1px solid  #FFFFFF;
+border-radius: 4px;
 </string>
    </property>
    <property name="tabShape">

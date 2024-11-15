@@ -36,8 +36,33 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	
 
 	leftImage = new QLabel(this);
-	QPixmap pixmapBG(":/gbs/images/gbs/login/login-default.png");
-	leftImage->setPixmap(pixmapBG.scaled(739, 990, Qt::KeepAspectRatio));
+	QPixmap loginDdefault(":/gbs/images/gbs/login/login-default.png");
+	QPixmap loginDdefaultAd(":/gbs/images/gbs/login/login-default-ad.png");
+	QRect rect(88, 128, 455, 140);
+	PixmapOverlay *overlayWidget = new PixmapOverlay(loginDdefault, loginDdefaultAd, rect);
+	normalLoginPixmap =
+		overlayWidget->overlay()->scaled(739, 990, Qt::KeepAspectRatio);
+
+	QPixmap loginRegister(":/gbs/images/gbs/login/login-register.png");
+	QPixmap loginRegisterAd(":/gbs/images/gbs/login/login-register-ad.png");
+	QRect rect1(88, 128, 455, 164);
+	PixmapOverlay *overlayWidget1 = new PixmapOverlay(loginRegister, loginRegisterAd, rect1);
+	registerPixmap = overlayWidget1->overlay()->scaled(739, 990, Qt::KeepAspectRatio);
+
+	QPixmap loginQrCodeLogin(":/gbs/images/gbs/login/login-qrcode-register.png");
+	QPixmap loginQrCodeLoginAd(":/gbs/images/gbs/login/login-multi-vcam-ad.png");
+	QRect rect2(88, 128, 515, 164);
+	PixmapOverlay *overlayWidget2 = new PixmapOverlay(loginRegister, loginRegisterAd, rect2);
+	qrCodeLoginPixmap = overlayWidget2->overlay()->scaled(739, 990, Qt::KeepAspectRatio);
+
+	QPixmap authCodeLogin(":/gbs/images/gbs/login/login-qrcode-register.png");
+	QPixmap authCodeLoginAd(":/gbs/images/gbs/login/login-qrcode-register-ad.png");
+	QRect rect3(88, 128, 515, 164);
+	PixmapOverlay *overlayWidget3 = new PixmapOverlay(authCodeLogin, authCodeLoginAd, rect3);
+	authCodeLoginPixmap = overlayWidget3->overlay()->scaled(739, 990, Qt::KeepAspectRatio);
+	
+
+	leftImage->setPixmap(normalLoginPixmap);
 	leftImage->setSizePolicy(QSizePolicy::Expanding,
 				 QSizePolicy::Expanding);
 	leftImage->setScaledContents(true); // 使图片内容跟随大小变化
@@ -149,6 +174,11 @@ GBSMainForm::~GBSMainForm()
     delete ui;
 }
 
+void GBSMainForm::setleftImage(QPixmap pixmap) {
+	leftImage->setPixmap(pixmap);
+	leftImage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	leftImage->setScaledContents(true); // 使图片内容跟随大小变化
+}
 
 void GBSMainForm::onLinkActivated(const QString &link) {
 	qDebug() << "onLinkActivated enter " << link;
@@ -157,6 +187,9 @@ void GBSMainForm::onLinkActivated(const QString &link) {
 		if (currentFrom != nullptr) {
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
+
+			setleftImage(registerPixmap);
+
 			currentFrom = nullptr;
 			registerForm = new GBSRegisterForm(this);
 			loginBizLayout->addWidget(registerForm);
@@ -170,6 +203,7 @@ void GBSMainForm::onLinkActivated(const QString &link) {
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
 			currentFrom = nullptr;
+			setleftImage(normalLoginPixmap);
 			normalLoginForm = new GBSNormalLoginForm(this);
 			loginBizLayout->addWidget(normalLoginForm);
 			connect(normalLoginForm, &GBSNormalLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
@@ -196,6 +230,9 @@ void GBSMainForm::onLoginTypeChanged(int type){
 		if (currentFrom != nullptr) {
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
+			setleftImage(normalLoginPixmap);
+
+
 			currentFrom = nullptr;
 			normalLoginForm = new GBSNormalLoginForm(this);
 			loginBizLayout->addWidget(normalLoginForm);
@@ -214,6 +251,9 @@ void GBSMainForm::onLoginTypeChanged(int type){
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
 			currentFrom = nullptr;
+			setleftImage(authCodeLoginPixmap);
+
+
 			authorizedCodeForm = new GBSAuthorizedCodeForm(this);
 			loginBizLayout->addWidget(authorizedCodeForm);
 			connect(authorizedCodeForm, &GBSAuthorizedCodeForm::linkActivated, this, &GBSMainForm::onLinkActivated);
@@ -229,10 +269,13 @@ void GBSMainForm::onLoginTypeChanged(int type){
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
 			currentFrom = nullptr;
+			setleftImage(qrCodeLoginPixmap);
+
 			scanQRcodeForm = new GBSQRCodeLoginForm(this);
 			loginBizLayout->addWidget(scanQRcodeForm);
 			connect(scanQRcodeForm, &GBSQRCodeLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
 			connect(scanQRcodeForm, &GBSQRCodeLoginForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
+			connect(scanQRcodeForm, &GBSQRCodeLoginForm::notifyLoginSuccess, this, &GBSMainForm::close);
 
 			currentFrom = scanQRcodeForm;
 
@@ -426,14 +469,14 @@ void GBSMainForm::mouseReleaseEvent(QMouseEvent *event)
 		m_dragging = false;
 	}
 }
-void GBSMainForm::wheelEvent(QWheelEvent *event)
-{
-	if (event->modifiers() & Qt::ControlModifier) {
-		int delta = event->angleDelta().y();
-		if (delta > 0) {
-			resize(width() * 1.1, height() * 1.1);
-		} else if (delta < 0) {
-			resize(width() * 0.9, height() * 0.9);
-		}
-	}
-}
+// void GBSMainForm::wheelEvent(QWheelEvent *event)
+// {
+// 	if (event->modifiers() & Qt::ControlModifier) {
+// 		int delta = event->angleDelta().y();
+// 		if (delta > 0) {
+// 			resize(width() * 1.1, height() * 1.1);
+// 		} else if (delta < 0) {
+// 			resize(width() * 0.9, height() * 0.9);
+// 		}
+// 	}
+// }

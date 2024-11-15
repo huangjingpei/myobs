@@ -82,11 +82,13 @@ target_sources(
     gbs/bizWidgets/GBSBizLiveBroker.cpp
     gbs/bizWidgets/GBSBizLiveBridger.cpp
     gbs/bizWidgets/GBSBizSettingAV.cpp
+    gbs/bizWidgets/GBSBizSettingAV.h
     gbs/bizWidgets/GBSBizSettingOutput.cpp
     gbs/bizWidgets/GBSBizSettingOutput.h
-    gbs/bizWidgets/gbsbizsettingbasic.cpp
+    gbs/bizWidgets/GBSBizSettingBasic.cpp
     gbs/bizWidgets/GBSBizSettingBasic.h
-    gbs/bizWidgets/GBSBizSettingAV.h
+    gbs/bizWidgets/GBSBizSettingPage.cpp
+    gbs/bizWidgets/GBSBizSettingPage.h
     gbs/bizWidgets/GBSBizSettingProductDupRM.h
     gbs/bizWidgets/GBSBizSettingProductDupRM.cpp
     gbs/bizWidgets/GBSBizSettingTimbreSquare.h
@@ -126,6 +128,8 @@ target_sources(
     gbs/dto/GBSUserInfo.cpp
     gbs/dto/GBSRoomInfo.h
     gbs/dto/GBSRoomInfo.cpp
+    gbs/dto/GBSMemberInfo.h
+    gbs/dto/GBSMemberInfo.cpp
 
     gbs/utils/TaskExecutor.h
     gbs/GBSToolKits.h

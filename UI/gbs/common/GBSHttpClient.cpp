@@ -334,7 +334,7 @@ void GBSHttpClient::getPullStreamTask()
 	task->run();
 }
 void GBSHttpClient::checkDeviceNoCreateQrCodeScan() {
-
+	executor->addTask([this]() { this->checkDeviceNoCreateQrCodeScanTask(); });
 }
 
 void GBSHttpClient::checkDeviceNoCreateQrCodeScanTask()
@@ -391,6 +391,7 @@ void GBSHttpClient::checkDeviceNoCreateQrCodeScanTask()
 			  << " [status code:" << r.status_code << ", body:\""
 			  << r.text << "\"]" << std::endl;
 	}
+
 }
 
 
@@ -570,71 +571,7 @@ void GBSHttpClient::getUserInfoTask()
 						    }
 						    return;
 					}
-					cpr::Url url{headerUrl};
-					cpr::Session session;
-					session.SetHeader(cpr::Header{
-						{"Accept-Encoding", "gzip"}});
-					session.SetUrl(url);
-					std::filesystem::path exePath =
-						std::filesystem::current_path();
-					std::filesystem::path filePath =
-						exePath / "myIcon.jpg";
-
-					std::FILE *file = std::fopen(
-						filePath.string().c_str(),
-						"wb");
-					cpr::Response response = session.Download(cpr::WriteCallback{
-						[](const std::string_view &data,
-						   intptr_t userdata) {
-							// 假设 userdata 是文件指针或者内存指针，用来保存数据
-							std::FILE *file =
-								reinterpret_cast<
-									std::FILE
-										*>(
-									userdata);
-							if (file) {
-								std::fwrite(
-									data.data(),
-									1,
-									data.size(),
-									file);
-							}
-							return data
-								.size(); // 返回处理的数据大小，表示成功写入
-						},
-						reinterpret_cast<intptr_t>(
-							file) // userdata
-					});
-					std::fclose(file);
-
-					if (response.status_code == 200 &&
-					    response.error.code ==
-						    cpr::ErrorCode::OK) {
-						std::cout
-							<< "Download succeeded!"
-							<< std::endl;
-						{
-							std::lock_guard<
-								std::mutex>
-								guard(cs);
-							for (auto it =
-								     handlers.begin();
-							     it !=
-							     handlers.end();
-							     it++) {
-								(*it)->onUserIconPath(
-									filePath.string()
-										.c_str());
-							}
-							return;
-						}
-						
-					} else {
-						std::cerr
-							<< "Download failed! Status code: "
-							<< response.status_code
-							<< std::endl;
-					}
+					
 				}
 			} else {
 				std::cerr
@@ -647,6 +584,61 @@ void GBSHttpClient::getUserInfoTask()
 
 	
 }
+void GBSHttpClient::downFile(std::string url, std::string path, int type) {
+	executor->addTask(std::bind(&GBSHttpClient::downFileTask, this, url, path, type));
+}
+
+void GBSHttpClient::downFileTask(std::string url, std::string pathfile, int type)
+{
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string pathfile, int type) -> std::string {
+			cpr::Url cprUrl{url};
+			cpr::Session session;
+			session.SetHeader(cpr::Header{{"Accept-Encoding", "gzip"}});
+			session.SetUrl(cprUrl);
+			std::filesystem::path exePath = std::filesystem::current_path();
+			std::filesystem::path filePath = exePath / pathfile;
+
+			std::FILE *file = std::fopen(filePath.string().c_str(), "wb");
+			cpr::Response response = session.Download(cpr::WriteCallback{
+				[](const std::string_view &data, intptr_t userdata) {
+					// 假设 userdata 是文件指针或者内存指针，用来保存数据
+					std::FILE *file = reinterpret_cast<std::FILE *>(userdata);
+					if (file) {
+						std::fwrite(data.data(), 1, data.size(), file);
+					}
+					return data.size(); // 返回处理的数据大小，表示成功写入
+				},
+				reinterpret_cast<intptr_t>(file) // userdata
+			});
+			std::fclose(file);
+			if (response.status_code == 200 && response.error.code == cpr::ErrorCode::OK) {
+				std::cout << "Download succeeded!" << std::endl;
+				{
+					std::lock_guard<std::mutex> guard(cs);
+					for (auto it = handlers.begin(); it != handlers.end(); it++) {
+						(*it)->onUserFileDownLoad(filePath.string().c_str(), type);
+					}
+					return "OK";
+				}
+
+			} else {
+				std::cerr << "Download failed! Status code: " << response.status_code << std::endl;
+				QLogE("Download %s failed! Status code:%d", url.c_str(), response.status_code);
+				return "Error";
+			}
+		},
+				    [this](const std::string &response) {
+
+				    }, url, pathfile, type);
+
+
+			task->run();
+	return;
+}
+
+
+
 void GBSHttpClient::pageQuery() {
 	executor->addTask(std::bind(&GBSHttpClient::pageQueryTask, this));
 }
@@ -868,6 +860,243 @@ void GBSHttpClient::upRemoteLiveRoomStateTask(std::string ids)
 		}, url, body.dump(), token);
 	
 			
+	task->run();
+
+	return;
+}
+
+void GBSHttpClient::createQrCodeScan() {
+	executor->addTask(std::bind(&GBSHttpClient::createQrCodeScanTask, this));
+	}
+void GBSHttpClient::createQrCodeScanTask() {
+	json body = {{}};
+	std::string url = baseUrl + "/preferred/user/createQrCodeScan";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost},
+							    },
+						cpr::VerifySsl{false})
+					 .get();
+
+			if (r.status_code == 200) {
+				auto response = json::parse(r.text);
+				if (!response["result"].is_null() && response["result"].is_object()) {
+					std::string qrCodeUrl = response["result"]["qrCodeUrl"].get<std::string>();
+					std::string qrCodeNo = response["result"]["qrCodeNo"].get<std::string>();
+					int status = response["result"]["status"].is_null()
+							     ? 0
+							     : response["result"]["status"].get<int>();
+					if (!qrCodeUrl.empty()) {
+						std::lock_guard<std::mutex> guard(cs);
+						for (auto it = handlers.begin(); it != handlers.end(); it++) {
+							(*it)->onQRcodeInfo(qrCodeNo, qrCodeUrl, status);
+						}
+					}
+					
+				}
+				return "OK";
+
+			} else {
+				std::cerr << "[ERROR] update live room state error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+
+		}, url, body.dump());
+
+	task->run();
+
+	return;
+}
+
+void GBSHttpClient::scanLoginInfo(std::string qrCode) {
+	executor->addTask(std::bind(&GBSHttpClient::scanLoginInfoTask, this, qrCode));
+
+    }
+void GBSHttpClient::scanLoginInfoTask(std::string qrCode) {
+	json body = {{"qrCodeNo", qrCode}};
+	std::string url = baseUrl + "/preferred/user/scanLoginInfo";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string qrCode) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{
+							{"Content-Type", "application/json"},
+							{"host", httpHost},
+						},
+						cpr::VerifySsl{false})
+					 .get();
+
+			if (r.status_code == 200) {
+				auto response = json::parse(r.text);
+				if (!response["result"].is_null() && response["result"].is_object()) {
+					std::string qrCodeUrl = response["result"]["qrCodeUrl"].get<std::string>();
+					std::string qrCodeNo = response["result"]["qrCodeNo"].get<std::string>();
+					int status = response["result"]["status"].is_null()
+							     ? 0
+							     : response["result"]["status"].get<int>();
+					if (!qrCodeUrl.empty()) {
+						std::lock_guard<std::mutex> guard(cs);
+						for (auto it = handlers.begin(); it != handlers.end(); it++) {
+							(*it)->onQRcodeInfo(qrCodeNo, qrCodeUrl, status);
+						}
+					}
+				}
+				return "OK";
+
+			} else {
+				
+				std::lock_guard<std::mutex> guard(cs);
+				for (auto it = handlers.begin(); it != handlers.end(); it++) {
+					(*it)->onQRcodeInfo(qrCode, "", -1);
+				}
+				
+				std::cerr << "[ERROR] update live room state error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+
+		},
+		url, body.dump(), qrCode);
+
+	task->run();
+
+	return;
+}
+
+void GBSHttpClient::memberInfo(std::string userId) {
+	executor->addTask(std::bind(&GBSHttpClient::memberInfoTask, this, userId));
+}
+void GBSHttpClient::memberInfoTask(std::string userId) {
+	std::string deviceNo = getDeviceNo();
+	if (deviceNo.empty()) {
+		std::cerr << "Cannot obtain device id. please check." << std::endl;
+		return;
+	}
+	json body = {{"id", std::stoi(userId)}};
+	std::string url = baseUrl + "/preferred/memberLevel/memberInfo";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+
+			if (r.status_code == 200) {
+				return r.text;
+
+			} else {
+				std::cerr << "[ERROR] retrieve the member info error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			auto r = json::parse(response);
+			if (!r["result"].is_null() && r["result"].is_object()) {
+				GBSMemberInfo info = GBSMemberInfo::fromJson(response);
+				{
+					std::lock_guard<std::mutex> guard(cs);
+					for (auto it = handlers.begin(); it != handlers.end(); it++) {
+						//(*it)->onMemberInfo(info);
+					}
+					QLogD("Login success.");
+
+					return;
+				}
+			} else {
+			
+				QLogD("Retrieve member info invalid. received msg:%s.", response.c_str());
+				return;
+				
+			}
+		}, url, body.dump(), token);
+
+	task->run();
+
+	return;
+}
+
+
+void GBSHttpClient::codeList(int levelId) {
+	executor->addTask(std::bind(&GBSHttpClient::codeListTask, this, levelId));
+}
+void GBSHttpClient::codeListTask(int levelId) {
+	json body = {{"id", levelId}};
+	std::string url = baseUrl + "/preferred/memberLevel/codeList";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+
+			if (r.status_code == 200) {
+				return r.text;
+
+			} else {
+				std::cerr << "[ERROR] retrieve the member info error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+
+
+		},
+		url, body.dump(), token);
+
+	task->run();
+
+	return;
+}
+
+void GBSHttpClient::remainingActivation(int levelId) {
+	executor->addTask(std::bind(&GBSHttpClient::remainingActivationTask, this, levelId));
+}
+void GBSHttpClient::remainingActivationTask(int levelId) {
+	json body = {{"id", levelId}};
+	std::string url = baseUrl + "/preferred/memberLevel/remainingActivation";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+
+			if (r.status_code == 200) {
+				return r.text;
+
+			} else {
+				std::cerr << "[ERROR] retrieve the member info error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			auto r = json::parse(response);
+			if (!r.is_null() && r.is_object()) {
+
+			}
+		},
+		url, body.dump(), token);
+
 	task->run();
 
 	return;

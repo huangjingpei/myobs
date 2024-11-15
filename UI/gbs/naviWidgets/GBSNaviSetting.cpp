@@ -2,7 +2,7 @@
 #include "ui_gbsnavisetting.h"
 
 #include "../common/VertNaviButton.h"
-#include "../bizWidgets/GBSBizSettingBasic.h"
+#include "../bizWidgets/GBSBizSettingPage.h"
 #include "../bizWidgets/GBSBizSettingOutput.h"
 #include "../bizWidgets/GBSBizSettingAV.h"
 #include "../bizWidgets/GBSBizSettingProductDupRM.h"
@@ -10,6 +10,7 @@
 #include "../bizWidgets/GBSBizSettingBridgerMgr.h"
 #include "../bizWidgets/GBSBizSettingLiveEditor.h"
 #include "../bizWidgets/GBSBizSettingLiveSourceDupRM.h"
+#include "window-basic-main.hpp"
 
 GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	: QWidget(parent),
@@ -17,7 +18,6 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	ui->imgAvator->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-logo.png)");
 	QString naviTitle = R"(
 	    <p style="font-size: 16px; text-align: center;">
 		<span style="color: #9CA4AB;">直播设置</span>
@@ -79,7 +79,10 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	connect(btnLiveEditor, &QPushButton::clicked, this, &GBSNaviSetting::onLiveEditorClick);
 	connect(btnLiveSourcDupRM, &QPushButton::clicked, this, &GBSNaviSetting::onLiveSourcDupRMClick);
 
-
+	OBSBasic *main = OBSBasic::Get();
+    QString path = main->getRoundedAvator();
+	QPixmap pixmap(path);
+	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 
 }
 
@@ -103,9 +106,9 @@ void GBSNaviSetting::onBaiscClick()
 		//这里是否可以使用replaceWidget ???
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
-		GBSBizSettingBasic *gbsBizSettingBasic = new GBSBizSettingBasic(this);
-		layout->addWidget(gbsBizSettingBasic);
-		currentWidgetRef = gbsBizSettingBasic;
+		GBSBizSettingPage *gbsBizSettingPage = new GBSBizSettingPage(this);
+		layout->addWidget(gbsBizSettingPage);
+		currentWidgetRef = gbsBizSettingPage;
 	}
 }
 

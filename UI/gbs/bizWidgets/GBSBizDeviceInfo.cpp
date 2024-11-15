@@ -4,11 +4,14 @@
 #include <QStringList>
 #include <QLineEdit>
 #include <QSlider>
+#include <QDateTime>
 #include "window-basic-main.hpp"
 #include "gbs/common/QIniFile.h"
 #include "gbs/common/SystemUtils.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/common/GBSHttpClient.h"
+#include "gbs/dto/GBSMemberInfo.h"
 
 extern "C" {
 #include "gbs/common/SystemUtils.h"
@@ -463,10 +466,68 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 
 	});
 	
+	GBSHttpClient::getInstance()->registerHandler(this);
+	GBSHttpClient::getInstance()->memberInfo("9");
+	GBSHttpClient::getInstance()->codeList(9);
+	GBSHttpClient::getInstance()->remainingActivation(9);
+}
+
+qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string &date) {
+    QString format = "yyyy-MM-dd HH:mm:ss";
+	QString qData = QString::fromStdString(date);
+    QDateTime dateTime = QDateTime::fromString(qData, format);
+    if (dateTime.isValid()) {
+        // 获取自 1970-01-01 以来的秒数（时间戳）
+        qint64 secondsSinceEpoch = dateTime.toSecsSinceEpoch();
+        qDebug() << "秒数:" << secondsSinceEpoch;
+		return secondsSinceEpoch;
+    } else {
+        qDebug() << "时间格式错误";
+		return -1;
+    }
+
+}
+
+
+void GBSBizDeviceInfo::onMemberInfo(GBSMemberInfo info) {
+	
+	//std::unique_ptr<GBSMemberInfo> memberInfo = std::make_unique<GBSMemberInfo>(
+	//	info.GetCodeNum(), info.GetContent(), info.GetCreatedTime(),
+	//					     info.GetId(), info.GetLangNum(), info.GetMoney(),
+	//					     info.GetOriginalPrice(), info.GetSeat(), info.GetSeatMoney(),
+	//					     info.GetSharingRatio(), info.GetStatus(), info.GetTime(),
+	//					     info.GetTitle(), info.GetType(), info.GetUpdatedTime());
+	std::string createTime = info.GetCreatedTime();
+	std::string updateTime = info.GetUpdatedTime();
+	QMetaObject::invokeMethod(this, [&createTime, &updateTime, this]() {
+
+		qint64 createMs = converYMDHMStoSec(createTime);
+		qint64 updateMs = converYMDHMStoSec(updateTime);
+		QString format = "yyyy-MM-dd HH:mm:ss";
+		QDateTime dateTime = QDateTime::fromString(QString::fromStdString(createTime), format);
+		if (dateTime.isValid()) {
+			dateTime.setTime(QTime(dateTime.time().hour(), 0, 0));
+			QString newFormat = "yyyy年MM月dd日HH:mm";
+			QString newDatetimeString = dateTime.toString(newFormat);
+			QString sysInfo01 = QString("%1     %2").arg("开通时间：").arg(newDatetimeString);
+			ui->lbsSysInfo01->setText(sysInfo01);
+			qint64 timeDiffMs = updateMs - createMs;
+			int day = timeDiffMs/(24*60*60);
+			int hour = (timeDiffMs - day * 24 * 60 * 60)/(60*60);
+			int min = (timeDiffMs - day * 24 * 60 * 60) / 60 % 60;
+			int sec = (timeDiffMs - day * 24 * 60 * 60) % 60;
+			QString sysInfo02 = QString("%1%2天 %3:%4:%5    ").arg("至到期时间：   ").arg(day).arg(hour).arg(min).arg(sec);
+			ui->lbsSysInfo02->setText(sysInfo02);
+		}
+		});
+
+
 }
 void GBSBizDeviceInfo::Update() {
 	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
-
+	if (main) {
+		return;
+	}
 		struct obs_video_info ovi = {};
 	obs_get_video_info(&ovi);
 		double curFPS = obs_get_active_fps();
@@ -627,5 +688,6 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
 GBSBizDeviceInfo::~GBSBizDeviceInfo()
 {
 	timer.stop();
+	GBSHttpClient::getInstance()->unRegisterHandler(this);
 	delete ui;
 }

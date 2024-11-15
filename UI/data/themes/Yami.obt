@@ -1602,24 +1602,24 @@ QGroupBox::indicator:unchecked:disabled {
 
 .indicator-lock::indicator:checked,
 .indicator-lock::indicator:checked:hover {
-    image: url(theme:Dark/locked.svg);
+    image: url(theme:Dark/locked.png);
 }
 
 .indicator-lock::indicator:unchecked,
 .indicator-lock::indicator:unchecked:hover {
-    image: url(:res/images/unlocked.svg);
+    image: url(:res/images/unlocked.png);
 }
 
 /* Visibility CheckBox */
 
 .indicator-visibility::indicator:checked,
 .indicator-visibility::indicator:checked:hover {
-    image: url(theme:Dark/visible.svg);
+    image: url(theme:Dark/visible.png);
 }
 
 .indicator-visibility::indicator:unchecked,
 .indicator-visibility::indicator:unchecked:hover {
-    image: url(:res/images/invisible.svg);
+    image: url(:res/images/invisible.png);
 }
 
 /* Mute CheckBox */

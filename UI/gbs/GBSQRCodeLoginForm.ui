@@ -150,10 +150,10 @@ text-align: center;
    <widget class="QLabel" name="lblQRCode">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>186</y>
-      <width>501</width>
-      <height>221</height>
+      <x>125</x>
+      <y>180</y>
+      <width>245</width>
+      <height>245</height>
      </rect>
     </property>
     <property name="text">

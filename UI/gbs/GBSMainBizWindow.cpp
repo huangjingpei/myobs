@@ -20,7 +20,7 @@
 #include "bizWidgets/GBSBizSoYoung.h"
 
 
-#include "bizWidgets/GBSBizSettingBasic.h"
+#include "bizWidgets/GBSBizSettingPage.h"
 #include "bizWidgets/GBSBizSettingOutput.h"
 #include "bizWidgets/GBSBizSettingAV.h"
 
@@ -210,6 +210,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	connect(ui->btnTranslate, &QPushButton::clicked, this, &GBSMainBizWindow::onTranslateClick);
 	connect(ui->btnSetting, &QPushButton::clicked, this, &GBSMainBizWindow::onSettingClick);
 	connect(ui->btnAI, &QPushButton::clicked, this, &GBSMainBizWindow::onAIClick);
+	GBSHttpClient::getInstance()->registerHandler(this);
 
 
 	GBSHttpClient::getInstance()->queryByEquipmentNo();
@@ -220,8 +221,6 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	//	&GBSMainBizWindow::closeWindow);
 
 
-	GBSHttpClient::getInstance()->registerHandler(this);
-	GBSHttpClient::getInstance()->getUserInfo();
 
 	connect(ui->btnProfile, &QPushButton::clicked, this, &GBSMainBizWindow::onPopupProfile);
 
@@ -282,9 +281,11 @@ void GBSMainBizWindow::onUserInfo(const GBSUserInfo *info) {
 			std::to_string(userId));
 	}
 }
-void GBSMainBizWindow::onUserIconPath(const std::string &path) {}
+void GBSMainBizWindow::onUserFileDownLoad(const std::string &path, int type) {}
 void GBSMainBizWindow::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 void GBSMainBizWindow::onRoomInfo(GBSRoomInfo *info) {}
+void GBSMainBizWindow::onQRcodeInfo(std::string no, std::string url, int status) {}
+
 void GBSMainBizWindow::onDataClick(bool checked) {
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviData *gbsNaviData = new GBSNaviData(this);
@@ -341,10 +342,10 @@ void GBSMainBizWindow::onSettingClick(bool checked) {
 	GBSNaviSetting *gbsNaviSetting = new GBSNaviSetting(this);
 	naviLayout->addWidget(gbsNaviSetting);
 	clearWidgetsFromLayout(bizLayout.data());
-	GBSBizSettingBasic *gbsBizSettingBasic = new GBSBizSettingBasic(this);
-	bizLayout->addWidget(gbsBizSettingBasic);
-	gbsNaviSetting->addLayoutRef(bizLayout, gbsBizSettingBasic);
-	currentBizWidget = gbsBizSettingBasic;
+	GBSBizSettingPage *gbsBizSettingPage = new GBSBizSettingPage(this);
+	bizLayout->addWidget(gbsBizSettingPage);
+	gbsNaviSetting->addLayoutRef(bizLayout, gbsBizSettingPage);
+	currentBizWidget = gbsBizSettingPage;
 
 
 
@@ -458,14 +459,14 @@ void GBSMainBizWindow::mouseReleaseEvent(QMouseEvent *event)
 		m_dragging = false;
 	}
 }
-void GBSMainBizWindow::wheelEvent(QWheelEvent *event)
-{
-	if (event->modifiers() & Qt::ControlModifier) {
-		int delta = event->angleDelta().y();
-		if (delta > 0) {
-			resize(width() * 1.1, height() * 1.1);
-		} else if (delta < 0) {
-			resize(width() * 0.9, height() * 0.9);
-		}
-	}
-}
+// void GBSMainBizWindow::wheelEvent(QWheelEvent *event)
+// {
+// 	if (event->modifiers() & Qt::ControlModifier) {
+// 		int delta = event->angleDelta().y();
+// 		if (delta > 0) {
+// 			resize(width() * 1.1, height() * 1.1);
+// 		} else if (delta < 0) {
+// 			resize(width() * 0.9, height() * 0.9);
+// 		}
+// 	}
+// }

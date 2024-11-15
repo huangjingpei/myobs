@@ -3,6 +3,7 @@
 
 #include "../common/VertNaviButton.h"
 #include "../bizWidgets/GBSBizSoYoung.h"
+#include "window-basic-main.hpp"
 GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GBSNaviTranslate)
@@ -10,7 +11,6 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	ui->setupUi(this);
 
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	ui->imgAvator->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-logo.png)");
 	QString naviTitle = R"(
 	    <p style="font-size: 16px; text-align: center;">
 		<span style="color: #9CA4AB;">实时翻译</span>
@@ -36,9 +36,9 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 
         ui->lblNickName->setText(nickName);
 
-	VertNaviButton* btnDMXHCYY = new VertNaviButton("大模型合成语音", ":gbs/images/gbs/biz/gbs-discover.png", this);
-	VertNaviButton* btnWBHCZB = new VertNaviButton("文本合成直播", ":gbs/images/gbs/biz/gbs-star.png", this);
-	VertNaviButton* btnSPFYHC = new VertNaviButton("视频翻译合成", ":gbs/images/gbs/biz/gbs-timer-dmsz.png", this);
+	VertNaviButton* btnDMXHCYY = new VertNaviButton("大模型合成语音", ":gbs/images/gbs/biz/gbs-translate-intertrans.png", this);
+	VertNaviButton* btnWBHCZB = new VertNaviButton("文本合成直播", ":gbs/images/gbs/biz/gbs-translate-speech.png", this);
+	VertNaviButton* btnSPFYHC = new VertNaviButton("视频翻译合成", ":gbs/images/gbs/biz/gbs-translate-video.png", this);
 
 	btnDMXHCYY->setFixedSize(205, 40);
 	btnWBHCZB->setFixedSize(205, 40);
@@ -76,6 +76,10 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	connect(btnDMXHCYY, &QPushButton::clicked, this, &GBSNaviTranslate::onBigAIClick);
 	connect(btnWBHCZB, &QPushButton::clicked, this, &GBSNaviTranslate::onTextAIClick);
 	connect(btnSPFYHC, &QPushButton::clicked, this, &GBSNaviTranslate::onVideoAIClick);
+	OBSBasic *main = OBSBasic::Get();
+    QString path = main->getRoundedAvator();
+	QPixmap pixmap(path);
+	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 
 }
 

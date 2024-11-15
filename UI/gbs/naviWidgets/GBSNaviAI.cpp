@@ -2,12 +2,12 @@
 #include "ui_gbsnaviai.h"
 #include "../common/VertNaviButton.h"
 #include "../bizWidgets/GBSBizSoYoung.h"
+#include "window-basic-main.hpp"
 
 GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	ui->imgAvator->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-logo.png)");
 	QString naviTitle = R"(
 	    <p style="font-size: 16px; text-align: center;">
 		<span style="color: #9CA4AB;">大模型</span>
@@ -33,10 +33,10 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
         ui->lblNickName->setText(nickName);
 
 	VertNaviButton* btnTTS = new VertNaviButton("TTS (语音合成)", ":gbs/images/gbs/biz/gbs-ai-tts.png", this);
-	VertNaviButton* btnFacefusion = new VertNaviButton("Facefusion (换脸)", ":gbs/images/gbs/biz/gbs-ai-facefusion-dark.png", this);
-	VertNaviButton* btnRVC = new VertNaviButton("RVC (实时变声)", ":gbs/images/gbs/biz/gbs-ai-rvc-dark.png", this);
-	VertNaviButton* btnLlama3 = new VertNaviButton("Llama3 (话术拆分)", ":gbs/images/gbs/biz/gbs-ai-llama3-dark.png", this);
-	VertNaviButton* btnMuseTalk = new VertNaviButton("MuseTalk (数字人)", ":gbs/images/gbs/biz/gbs-ai-musetalk-dark.png", this);
+	VertNaviButton* btnFacefusion = new VertNaviButton("Facefusion (换脸)", ":gbs/images/gbs/biz/gbs-ai-facefusion.png", this);
+	VertNaviButton* btnRVC = new VertNaviButton("RVC (实时变声)", ":gbs/images/gbs/biz/gbs-ai-rvc.png", this);
+	VertNaviButton* btnLlama3 = new VertNaviButton("Llama3 (话术拆分)", ":gbs/images/gbs/biz/gbs-ai-llama3.png", this);
+	VertNaviButton* btnMuseTalk = new VertNaviButton("MuseTalk (数字人)", ":gbs/images/gbs/biz/gbs-ai-musetalk.png", this);
 
 
 	btnTTS->setFixedSize(205, 40);
@@ -82,6 +82,11 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 	// 	"   padding-top: 1px;    /* 向上移动 3px */"
 	// 	"}"
 	// 	);
+
+	OBSBasic *main = OBSBasic::Get();
+    QString path = main->getRoundedAvator();
+	QPixmap pixmap(path);
+	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 
 }
 

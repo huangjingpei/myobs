@@ -362,36 +362,36 @@ OBSBasic::OBSBasic(QWidget *parent) : OBSMainWindow(parent), undo_s(ui), ui(new 
 		Qt::DirectConnection);
 
 	/* Add controls dock */
-	OBSBasicControls *controls = new OBSBasicControls(this);
-	controlsDock = new OBSDock(this);
-	controlsDock->setObjectName(QString::fromUtf8("controlsDock"));
-	controlsDock->setWindowTitle(QTStr("Basic.Main.Controls"));
-	/* Parenting is done there so controls will be deleted alongside controlsDock */
-	controlsDock->setWidget(controls);
-	addDockWidget(Qt::BottomDockWidgetArea, controlsDock);
+	//OBSBasicControls *controls = new OBSBasicControls(this);
+	//controlsDock = new OBSDock(this);
+	//controlsDock->setObjectName(QString::fromUtf8("controlsDock"));
+	//controlsDock->setWindowTitle(QTStr("Basic.Main.Controls"));
+	///* Parenting is done there so controls will be deleted alongside controlsDock */
+	//controlsDock->setWidget(controls);
+	//addDockWidget(Qt::BottomDockWidgetArea, controlsDock);
 
-	connect(controls, &OBSBasicControls::StreamButtonClicked, this, &OBSBasic::StreamActionTriggered);
+	//connect(controls, &OBSBasicControls::StreamButtonClicked, this, &OBSBasic::StreamActionTriggered);
 
-	connect(controls, &OBSBasicControls::StartStreamMenuActionClicked, this, &OBSBasic::StartStreaming);
-	connect(controls, &OBSBasicControls::StopStreamMenuActionClicked, this, &OBSBasic::StopStreaming);
-	connect(controls, &OBSBasicControls::ForceStopStreamMenuActionClicked, this, &OBSBasic::ForceStopStreaming);
+	//connect(controls, &OBSBasicControls::StartStreamMenuActionClicked, this, &OBSBasic::StartStreaming);
+	//connect(controls, &OBSBasicControls::StopStreamMenuActionClicked, this, &OBSBasic::StopStreaming);
+	//connect(controls, &OBSBasicControls::ForceStopStreamMenuActionClicked, this, &OBSBasic::ForceStopStreaming);
 
-	connect(controls, &OBSBasicControls::BroadcastButtonClicked, this, &OBSBasic::BroadcastButtonClicked);
+	//connect(controls, &OBSBasicControls::BroadcastButtonClicked, this, &OBSBasic::BroadcastButtonClicked);
 
-	connect(controls, &OBSBasicControls::RecordButtonClicked, this, &OBSBasic::RecordActionTriggered);
-	connect(controls, &OBSBasicControls::PauseRecordButtonClicked, this, &OBSBasic::RecordPauseToggled);
+	//connect(controls, &OBSBasicControls::RecordButtonClicked, this, &OBSBasic::RecordActionTriggered);
+	//connect(controls, &OBSBasicControls::PauseRecordButtonClicked, this, &OBSBasic::RecordPauseToggled);
 
-	connect(controls, &OBSBasicControls::ReplayBufferButtonClicked, this, &OBSBasic::ReplayBufferActionTriggered);
-	connect(controls, &OBSBasicControls::SaveReplayBufferButtonClicked, this, &OBSBasic::ReplayBufferSave);
+	//connect(controls, &OBSBasicControls::ReplayBufferButtonClicked, this, &OBSBasic::ReplayBufferActionTriggered);
+	//connect(controls, &OBSBasicControls::SaveReplayBufferButtonClicked, this, &OBSBasic::ReplayBufferSave);
 
-	connect(controls, &OBSBasicControls::VirtualCamButtonClicked, this, &OBSBasic::VirtualCamActionTriggered);
-	connect(controls, &OBSBasicControls::VirtualCamConfigButtonClicked, this, &OBSBasic::OpenVirtualCamConfig);
+	//connect(controls, &OBSBasicControls::VirtualCamButtonClicked, this, &OBSBasic::VirtualCamActionTriggered);
+	//connect(controls, &OBSBasicControls::VirtualCamConfigButtonClicked, this, &OBSBasic::OpenVirtualCamConfig);
 
-	connect(controls, &OBSBasicControls::StudioModeButtonClicked, this, &OBSBasic::TogglePreviewProgramMode);
+	//connect(controls, &OBSBasicControls::StudioModeButtonClicked, this, &OBSBasic::TogglePreviewProgramMode);
 
-	connect(controls, &OBSBasicControls::SettingsButtonClicked, this, &OBSBasic::on_action_Settings_triggered);
+	//connect(controls, &OBSBasicControls::SettingsButtonClicked, this, &OBSBasic::on_action_Settings_triggered);
 
-	connect(controls, &OBSBasicControls::ExitButtonClicked, this, &QMainWindow::close);
+	//connect(controls, &OBSBasicControls::ExitButtonClicked, this, &QMainWindow::close);
 
 	startingDockLayout = saveState();
 
@@ -539,8 +539,9 @@ OBSBasic::OBSBasic(QWidget *parent) : OBSMainWindow(parent), undo_s(ui), ui(new 
 	SETUP_DOCK(ui->scenesDock);
 	SETUP_DOCK(ui->sourcesDock);
 	SETUP_DOCK(ui->mixerDock);
-	SETUP_DOCK(ui->transitionsDock);
-	SETUP_DOCK(controlsDock);
+	//SETUP_DOCK(ui->transitionsDock);
+	//SETUP_DOCK(controlsDock);
+	ui->transitionsDock->setVisible(false);
 	SETUP_DOCK(statsDock);
 #undef SETUP_DOCK
 
@@ -2286,7 +2287,7 @@ void OBSBasic::OBSInit()
 
 	const char *dockStateStr = config_get_string(App()->GetUserConfig(), "BasicWindow", "DockState");
 
-	if (!dockStateStr) {
+	if (true || !dockStateStr) {
 		on_resetDocks_triggered(true);
 	} else {
 		QByteArray dockState = QByteArray::fromBase64(QByteArray(dockStateStr));
@@ -3867,8 +3868,8 @@ void OBSBasic::CheckForUpdates(bool manualUpdate)
 
 	if (updateCheckThread && updateCheckThread->isRunning())
 		return;
-	updateCheckThread.reset(new AutoUpdateThread(manualUpdate));
-	updateCheckThread->start();
+	//updateCheckThread.reset(new AutoUpdateThread(manualUpdate));
+	//updateCheckThread->start();
 #elif defined(ENABLE_SPARKLE_UPDATER)
 	ui->actionCheckForUpdates->setEnabled(false);
 
@@ -8385,8 +8386,9 @@ void OBSBasic::on_actionHorizontalCenter_triggered()
 
 void OBSBasic::EnablePreviewDisplay(bool enable)
 {
-	obs_display_set_enabled(ui->preview->GetDisplay(), enable);
-	ui->previewContainer->setVisible(enable);	
+	//README 就在这里做统一修改吧，替换掉原先开启预览的QMenu操作， 这里修改为previewContainer 一直在左侧显示，右侧可以做开关显示
+	obs_display_set_enabled(ui->preview->GetDisplay(), true);
+	ui->previewContainer->setVisible(true);	
 	ui->previewDisabledWidget->setVisible(!enable);
 }
 
@@ -8773,19 +8775,20 @@ void OBSBasic::on_resetDocks_triggered(bool force)
 
 	int mixerSize = cx - (cx22_5 * 2 + cx5 + cx21);
 
-	QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock, ui->mixerDock, ui->transitionsDock, controlsDock};
-
-	QList<int> sizes{cx22_5, cx22_5, mixerSize, cx5, cx21};
+	//QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock, ui->mixerDock, ui->transitionsDock, controlsDock};
+	QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock, ui->mixerDock};
+	//QList<int> sizes{cx22_5, cx22_5, mixerSize, cx5, cx21};
+	QList<int> sizes{cx*291/1107, cx*360/1107, cx*456/1107};
 
 	ui->scenesDock->setVisible(true);
 	ui->sourcesDock->setVisible(true);
 	ui->mixerDock->setVisible(true);
-	//ui->transitionsDock->setVisible(true);
-	//controlsDock->setVisible(true);
+	ui->transitionsDock->setVisible(false);
+	//controlsDock->setVisible(false);
 	statsDock->setVisible(false);
 	statsDock->setFloating(true);
 
-	resizeDocks(docks, {cy, cy, cy, cy, cy}, Qt::Vertical);
+	resizeDocks(docks, {cy, cy, cy}, Qt::Vertical);
 	resizeDocks(docks, sizes, Qt::Horizontal);
 
 	activateWindow();
@@ -8805,8 +8808,8 @@ void OBSBasic::on_lockDocks_toggled(bool lock)
 	ui->scenesDock->setFeatures(mainFeatures);
 	ui->sourcesDock->setFeatures(mainFeatures);
 	ui->mixerDock->setFeatures(mainFeatures);
-	ui->transitionsDock->setFeatures(mainFeatures);
-	controlsDock->setFeatures(mainFeatures);
+	//ui->transitionsDock->setFeatures(mainFeatures);
+	//controlsDock->setFeatures(mainFeatures);
 	statsDock->setFeatures(features);
 
 	for (int i = extraDocks.size() - 1; i >= 0; i--)
@@ -9672,8 +9675,6 @@ bool OBSBasic::IsDockObjectNameUsed(const QString &name)
 	list << "scenesDock"
 	     << "sourcesDock"
 	     << "mixerDock"
-	     << "transitionsDock"
-	     << "controlsDock"
 	     << "statsDock";
 	list << oldExtraDockNames;
 	list << extraDockNames;

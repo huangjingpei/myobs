@@ -4,6 +4,9 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <QSpacerItem>
+#include "gbs/GBSMainBizWindow.h"
+#include "gbs/GBSNormalLoginForm.h"
+#include "window-basic-main.hpp"
 
 
 GBSMainProfile::GBSMainProfile(QWidget *parent)
@@ -73,11 +76,30 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
         "   color: white;"  // 按下状态字体颜色
         "}"
         );
+    //QString appDirPath = QCoreApplication::applicationDirPath();
+    //appDirPath += "/avator.png";
+    //QString style = "background-image: url(./avator.png);";
+    //ui->label_3->setStyleSheet(style);
+
+
+    OBSBasic *main = OBSBasic::Get();
+    QString path = main->getRoundedAvator();
+	QPixmap pixmap(path);
+    ui->label_3->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+    // ui->label_3->setStyleSheet(" border-radius: 50%;");
     connect(ui->pushButton_2,  &QPushButton::clicked, this, &GBSMainProfile::exitSystemAndGoLogin);
 }
 
 void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
     close();
+
+
+    App()->quit();
+    delete App();
+    QTimer::singleShot(2000, [this]() {
+	    GBSNormalLoginForm *loginForm = new GBSNormalLoginForm();
+	    loginForm->show();
+    });
 
 }
 GBSMainProfile::~GBSMainProfile()

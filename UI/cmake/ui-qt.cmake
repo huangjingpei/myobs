@@ -83,6 +83,7 @@ set(
   gbs/bizWidgets/GBSBizSettingAV.ui
   gbs/bizWidgets/GBSBizSettingOutput.ui
   gbs/bizWidgets/GBSBizSettingBasic.ui
+  gbs/bizWidgets/GBSBizSettingPage.ui
   gbs/bizWidgets/GBSBizSettingProductDupRM.ui
   gbs/bizWidgets/GBSBizSettingTimbreSquare.ui
   gbs/bizWidgets/GBSBizSettingBridgerMgr.ui

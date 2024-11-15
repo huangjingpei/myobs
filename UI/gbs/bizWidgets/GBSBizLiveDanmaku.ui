@@ -36,15 +36,546 @@ font-size:16px;
    <property name="elideMode">
     <enum>Qt::TextElideMode::ElideLeft</enum>
    </property>
-   <widget class="QWidget" name="tabBasic">
+   <widget class="QWidget" name="tabAdvanced">
     <attribute name="title">
-     <string>本机弹幕获取</string>
+     <string>弹幕平台设置</string>
     </attribute>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>70</y>
+       <width>95</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>本机接口设置</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>380</y>
+       <width>95</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>平台直播间地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>120</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF;
+font-size:16px;</string>
+     </property>
+     <property name="text">
+      <string>谷歌EXE路径</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>170</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>服务器地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_4">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>220</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>服务器端口</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_5">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>270</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>服务器类型</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_6">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>430</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>抖音地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_7">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>480</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>快手地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_8">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>530</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>视频号地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_9">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>580</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>TikTok地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_10">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>630</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>淘宝地址</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_11">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>680</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>美团地址</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leChromePath">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>120</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leServer">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>170</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lePort">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>220</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leServerType">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>270</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leDouyin">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>430</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leKuaishou">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>480</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leWechatVideo">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>530</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leTikTok">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>580</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leTaobao">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>630</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leMeiTuan">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>680</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leOther">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>780</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_12">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>780</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>其他</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lePddLive">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>730</y>
+       <width>581</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"> background-color: #F9F9F9;
+ border: none;
+border-radius: 1px;
+font-size: 16px	
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_13">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>730</y>
+       <width>135</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+color:#FFFFFF</string>
+     </property>
+     <property name="text">
+      <string>拼多多</string>
+     </property>
+    </widget>
     <widget class="QFrame" name="frame">
      <property name="geometry">
       <rect>
-       <x>-4</x>
-       <y>3</y>
+       <x>-10</x>
+       <y>0</y>
        <width>332</width>
        <height>841</height>
       </rect>
@@ -58,7 +589,7 @@ font-size:16px;
      <property name="frameShadow">
       <enum>QFrame::Shadow::Raised</enum>
      </property>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushButton_14">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -87,552 +618,6 @@ color:#FFFFFF</string>
        </rect>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="wgtEmbedChrome" native="true">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>0</y>
-       <width>921</width>
-       <height>871</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tabAdvanced">
-    <attribute name="title">
-     <string>弹幕设置</string>
-    </attribute>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>70</y>
-       <width>95</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>本机接口设置</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>380</y>
-       <width>95</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>平台直播间地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>120</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF;
-font-size:16px;</string>
-     </property>
-     <property name="text">
-      <string>谷歌EXE路径</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_3">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>170</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>服务器地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_4">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>220</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>服务器端口</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_5">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>270</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>服务器类型</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_6">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>430</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>抖音地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_7">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>480</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>快手地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_8">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>530</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>视频号地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_9">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>580</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>TikTok地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_10">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>630</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>淘宝地址</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_11">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>680</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>美团地址</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leChromePath">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>120</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leServer">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>170</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lePort">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>220</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leServerType">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>270</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leDouyin">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>430</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leKuaishou">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>480</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leWechatVideo">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>530</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leTikTok">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>580</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leTaobao">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>630</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leMeiTuan">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>680</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leOther">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>780</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_12">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>780</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>其他</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lePddLive">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>730</y>
-       <width>771</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_13">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>730</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>拼多多</string>
-     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab">

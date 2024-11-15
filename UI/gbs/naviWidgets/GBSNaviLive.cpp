@@ -1,5 +1,6 @@
 #include "gbsnavilive.h"
 #include "ui_gbsnavilive.h"
+#include "window-basic-main.hpp"
 #include "../common/VertNaviButton.h"
 
 #include "../bizWidgets/GBSBizLivePusher.h"
@@ -15,7 +16,6 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-	ui->imgAvator->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-logo.png)");
 	QString naviTitle = R"(
 	    <p style="font-size: 16px; text-align: center;">
 		<span style="color: #9CA4AB;">远程代播</span>
@@ -71,6 +71,11 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 	WebSocketClient::getInstance()->RegisterHandler(this);
 	
 	gbsBizLiveBroker = reinterpret_cast<GBSBizLiveBroker *>(App()->GetMainWindow());
+	OBSBasic *main = OBSBasic::Get();
+    QString path = main->getRoundedAvator();
+	QPixmap pixmap(path);
+	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+
 }
 
 void GBSNaviLive::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) {

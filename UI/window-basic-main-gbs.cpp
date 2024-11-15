@@ -1,13 +1,22 @@
 #include <string>
 #include <algorithm>
+#include <vector>
 #include <cinttypes>
+#include <memory>
+#include <QScopedPointer>
+#include <QTimer>
+#include <QFile>
+#include <QPainterPath>
 #include "window-basic-main.hpp"
+
 
 #include <qt-wrappers.hpp>
 #include "gbs/common/FatButton.h"
 #include "gbs/common/QIniFile.h"
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/naviWidgets/GBSNaviData.h"
+
 
 
 // 本窗体是为了初始化自己窗口的函数，区别于OBSInit的是: 后者是初始化OBS系统，前者只是简单的初始化一个窗口
@@ -48,6 +57,18 @@ static void AddSource2(void *_data, obs_scene_t *scene)
 	data->scene_item = sceneitem;
 }
 
+static bool remove_items2(obs_scene_t *, obs_sceneitem_t *item, void *param)
+{
+	std::vector<OBSSceneItem> &items = *reinterpret_cast<std::vector<OBSSceneItem> *>(param);
+
+	if (obs_sceneitem_selected(item)) {
+		items.emplace_back(item);
+	} else if (obs_sceneitem_is_group(item)) {
+		obs_sceneitem_group_enum_items(item, remove_items2, &items);
+	}
+	return true;
+};
+
 
 void OBSBasic::OBSInit2() {
 
@@ -67,6 +88,15 @@ void OBSBasic::OBSInit2() {
 					":gbs/images/gbs/biz/gbs-live-console-danmaku-interaction-color.png", "弹幕回复");
 
 	GBSHttpClient::getInstance()->registerHandler(this);
+
+	
+
+	
+	
+	connect(ui->pushButton_2, &FatButton::clicked, this, &OBSBasic::RecordActionTriggered);
+	connect(ui->pushButton, &FatButton::clicked, this, &OBSBasic::VirtualCamActionTriggered);
+
+
 }
 
 void OBSBasic::OBSDeinit2() {
@@ -205,19 +235,65 @@ void OBSBasic::startPullStream(QString rtmp) {
 	}
 	
 }
+static QPixmap getRoundedPixmap(const QPixmap &src, int diameter) {
+    // 创建一个直径为 diameter 的目标图像，并设置透明背景
+    QPixmap dst(diameter, diameter);
+    dst.fill(Qt::transparent);
+
+    // 创建一个更大的 QPixmap 用于抗锯齿处理（例如放大 2 倍再缩小）
+    int scaleFactor = 2;
+    QPixmap scaledSrc = src.scaled(diameter * scaleFactor, diameter * scaleFactor,
+                                   Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    // 在更大的 QPixmap 上绘制圆形裁剪路径
+    QPainter painter(&dst);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+
+    QPainterPath path;
+    path.addEllipse(0, 0, diameter, diameter);
+    painter.setClipPath(path);
+
+    // 将预缩放的图像绘制到目标 QPixmap
+    painter.drawPixmap(0, 0, diameter, diameter, scaledSrc);
+
+    return dst;
+}
 
 
 
+void OBSBasic::onUserInfo(const GBSUserInfo *info) {
+	if (!info->GetHead().empty()) {
+		GBSHttpClient::getInstance()->downFile(info->GetHead(), "avator.png", 0);
+	}
+	
+}
 
+void OBSBasic::onUserFileDownLoad(const std::string &path, int type) {
+	if (type == 0 && !path.empty()) {
+		QString qPath = QString::fromStdString(path);
+		QPixmap rounded = getRoundedPixmap(qPath, 64);
+		rounded.save("round-avator.png");
+		QString appDirPath = QCoreApplication::applicationDirPath();
+		appDirPath += "/round-avator.png";
+		emit onUseIconUpdate(appDirPath);
+	}
+}
 
-void OBSBasic::onUserInfo(const GBSUserInfo *info) {}
-
-void OBSBasic::onUserIconPath(const std::string &path) {}
+QString OBSBasic::getRoundedAvator() {
+	QString file = QCoreApplication::applicationDirPath() + "/round-avator.png";
+	QFile qFile(file);
+	if (qFile.exists()) {
+		return file;
+	} else {
+		return QCoreApplication::applicationDirPath() + "/avator.png";
+	}
+}
 
 void OBSBasic::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 
 void OBSBasic::onRoomInfo(GBSRoomInfo *info) {}
-
+void OBSBasic::onQRcodeInfo(std::string no, std::string url, int status){}
 
 OBSSource OBSBasic::addCameraSource()
 {
@@ -298,4 +374,123 @@ OBSSource OBSBasic::addCameraSource()
 		}
 	}
 	return newSource;
+}
+
+
+OBSSource OBSBasic::addMicrophoneSource() {
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "wasapi_input_capture") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("场控对讲设备");
+			if (source) {
+
+			} else {
+
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("wasapi_input_capture");
+				source = obs_source_create(v_id, "场控对讲设备", NULL, nullptr);
+				OBSScene scene = GetCurrentScene();
+				if (source && scene) {
+					AddSourceData2 data;
+					data.source = source;
+					data.visible = true;
+
+					obs_enter_graphics();
+					obs_scene_atomic_update(scene, AddSource2, &data);
+					obs_leave_graphics();
+
+					newSource = source;
+					newSceneItem = data.scene_item;
+
+					/* set monitoring if source monitors by default */
+					uint32_t flags = obs_source_get_output_flags(source);
+					if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0) {
+						obs_source_set_monitoring_type(source,
+									       OBS_MONITORING_TYPE_MONITOR_ONLY);
+					}
+
+					bool closed = true;
+					if (properties)
+						closed = properties->close();
+
+					obs_properties_t *props = obs_source_properties(newSource);
+					obs_property_t *property = obs_properties_first(props);
+					obs_property_t *prop_device = obs_properties_get(props, "device_id");
+					if (prop_device) {
+						size_t count = obs_property_list_item_count(prop_device);
+						for (size_t i = 0; i < count; ++i) {
+							if (i == 0) {
+								const char *device_name =
+									obs_property_list_item_name(prop_device, i);
+								const char *device_id =
+									obs_property_list_item_string(prop_device, i);
+
+								// 选择合适的设备
+								obs_data_t *settings = obs_source_get_settings(source);
+								obs_data_set_string(settings, "device_id",
+										    device_id);
+								obs_source_update(source, settings);
+								obs_data_release(settings);
+							}
+						}
+					}
+
+					if (!closed) {
+						properties = new OBSBasicProperties(this, newSource);
+						properties->Init();
+						properties->setAttribute(Qt::WA_DeleteOnClose, true);
+					}
+				}
+			}
+		}
+	}
+	return newSource;
+}
+
+void OBSBasic::removeMicrophoneSource() {
+	std::vector<OBSSceneItem> items;
+	OBSScene scene = GetCurrentScene();
+	obs_source_t *scene_source = obs_scene_get_source(scene);
+
+	obs_scene_enum_items(scene, remove_items2, &items);
+	if (!items.size())
+		return;
+
+	
+	/* ----------------------------------------------- */
+	/* save undo data                                  */
+
+	OBSData undo_data = BackupScene(scene_source);
+
+	/* ----------------------------------------------- */
+	/* remove items                                    */
+
+	for (auto &item : items)
+		obs_sceneitem_remove(item);
+
+	/* ----------------------------------------------- */
+	/* save redo data                                  */
+
+	OBSData redo_data = BackupScene(scene_source);
+
+	/* ----------------------------------------------- */
+	/* add undo/redo action                            */
+
+	QString action_name;
+	if (items.size() > 1) {
+		action_name = QTStr("Undo.Sources.Multi").arg(QString::number(items.size()));
+	} else {
+		QString str = QTStr("Undo.Delete");
+		action_name = str.arg(obs_source_get_name(obs_sceneitem_get_source(items[0])));
+	}
+
+	CreateSceneUndoRedoAction(action_name, undo_data, redo_data);
 }

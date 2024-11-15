@@ -49,7 +49,7 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
+    //void wheelEvent(QWheelEvent *event) override;
 
 public slots:
         void slotDestroyLoginWindow();
@@ -73,8 +73,9 @@ public slots:
     QList<QWidget *> widgets;
 
 
+    void setleftImage(QPixmap pixmap);
 
-public:
+ public:
 
 // 通过 OBSMainWindow 继承
     config_t *Config() const override;
@@ -86,6 +87,15 @@ private:
     private:
     bool m_dragging = false;
     QPoint m_dragStartPos;
+
+private:
+    QPixmap normalLoginPixmap;
+    QPixmap qrCodeLoginPixmap;
+    QPixmap registerPixmap;
+    QPixmap authCodeLoginPixmap;
+	
+
+    
 };
 
 #endif // GBSMAINFORM_H
