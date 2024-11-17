@@ -16,68 +16,35 @@ GBSMsgDialog::GBSMsgDialog(QString title, QLayout* layout, QWidget *parent)
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
 
     qDebug() <<"width " << width() << " height " <<height();
+	ui->btnClose->setFixedSize(QSize{48, 48});
+	ui->btnClose->setStyleSheet("QPushButton {"
+				"   background-image: url(:gbs/images/gbs/biz/gbs-close-window.png);"
+				"  border-radius: 5px;" // 圆角
+				"}"
+				"QPushButton:hover {"
+				"  border: none;"
+				"   background-color: #F9F9F9;"
 
-    QWidget *contentWidget = new QWidget();
-    contentWidget->setLayout(layout);
-    contentWidget->setGeometry(0, 54, width(), height() - 54); // 设置内容区域的位置和大小
+				"}"
+				"QPushButton:pressed {"
+				"   background-color: #D1D8DD;" // 按下时背景颜色
+				"   padding-left: 3px;"         // 向左移动 3px
+				"   padding-top: 3px;"          // 向上移动 3px
+				"   background-repeat: no-repeat;"
+				"   background-position: center;"
 
-    QVBoxLayout *mainLayout =new QVBoxLayout();
-    QHBoxLayout *horiLayout = new QHBoxLayout();
-    horiLayout->setGeometry(QRect{0, 0, width(), 54});
+				"}");
 
-    QPushButton* btnFavIcon = new QPushButton();
-    btnFavIcon->setFixedSize(48, 48);
-    btnFavIcon->setGeometry(0, ((height() - 48))/2, 48, 48);
-    btnFavIcon->setStyleSheet(
-        "QPushButton {"
-        "   background-image: url(:gbs/images/gbs/favicon/favicon-48.ico);"
-        "   background-repeat: no-repeat;"
-        "   background-position: center;"
-        "   color: white;"
-        "   border: none;" // 无边框
-        "   border-radius: 999px;" // 圆角
-        "   font-size: 16px;"
-        "   padding: 0;" // 不添加内边距
-        "}"
+    if (!title.isEmpty()) {
+	    ui->label->setText(title);
+	    ui->label->setStyleSheet("QLabel { "
+		    "font-size: 16px; "
+		    "}");
 
-        );
-
-    QLabel *label = new QLabel(title);
-
-
-    QPushButton *btnClose = new QPushButton();
-    btnClose->setFixedSize(48, 48); // 设置按钮大小
-    btnClose->setStyleSheet("QPushButton {"
-                          "   background-image: url(:gbs/images/gbs/biz/gbs-close-window);"
-                          "  border-radius: 5px;"       // 圆角
-                          "}"
-                          "QPushButton:hover {"
-                          "  border: none;"
-                          "   background-color: #F9F9F9;"
-                          "}"
-                          "QPushButton:pressed {"
-                          "   background-color: #D1D8DD;" // 按下时背景颜色
-                          "   padding-left: 3px;"  // 向左移动 3px
-                          "   padding-top: 3px;"    // 向上移动 3px
-                          "   background-repeat: no-repeat;"
-                          "   background-position: center;"
-                          "}"
-                          );
-
-    int btnX = width() - btnClose->width() - 20;
-    btnClose->setGeometry(btnX, (54 - btnClose->height()) / 2, btnClose->width(), btnClose->height());
-    qDebug() << "btnX " << btnX;
-
-    horiLayout->addWidget(btnFavIcon);
-    horiLayout->addWidget(label);
-    horiLayout->addWidget(btnClose);
-    mainLayout->addLayout(horiLayout);
-    mainLayout->addWidget(contentWidget);
-
-
+    }
 
     // 设置渐变背景色
-    contentWidget->setStyleSheet(
+    ui->widget_2->setStyleSheet(
         "QWidget { "
         "background: qlineargradient("
         "spread:pad, "
@@ -91,18 +58,11 @@ GBSMsgDialog::GBSMsgDialog(QString title, QLayout* layout, QWidget *parent)
         "}"
         );
 
-    if (title.isEmpty()) {
+    ui->widget_2->setLayout(layout);
 
-    } else {
-        if (layout != nullptr) {
 
-            setWindowTitle(title);
-            setLayout(mainLayout);
-        }
-    }
-
-    connect(btnClose, &QPushButton::clicked, this, &QDialog::close);
-  //  connect(ui->push)
+    connect(ui->btnClose, &QPushButton::clicked, this, &QDialog::close);
+  
 
 }
 
@@ -122,4 +82,23 @@ void GBSMsgDialog::resizeEvent(QResizeEvent *event) {
         int btnX = label->width() - btnClose->width() - 20;
         btnClose->setGeometry(btnX, (label->height() - btnClose->height()) / 2, btnClose->width(), btnClose->height());
     }
+}
+
+
+void GBSMsgDialog::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton) {
+		dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
+		event->accept();
+	}
+	QDialog::mousePressEvent(event);
+}
+
+void GBSMsgDialog::mouseMoveEvent(QMouseEvent *event)
+{
+	if (event->buttons() & Qt::LeftButton) {
+		move(event->globalPosition().toPoint() - dragPosition);
+		event->accept();
+	}
+	QDialog::mouseMoveEvent(event);
 }

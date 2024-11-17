@@ -19,9 +19,11 @@ class GBSBizLivePusher;
 }
 
 typedef struct tagDammaItem {
-	QTime  currentTime; 
+	QTime  currentTime;
 	QString deviceName;
+	QString iamgePath;
 	QString danmaku;
+	QString type;
 } DanmaItem;
 
 class GBSBizLivePusher : public QWidget,
@@ -113,7 +115,7 @@ private:
 	QList<DanmaItem> whoIsDanmukus;
 	QList<DanmaItem> allDanmakus;
 	QList<DanmaItem> giftDanmakus;
-	QList<DanmaItem> greetDanmakus;
+	QList<DanmaItem> likeDanmakus;
 
 };
 

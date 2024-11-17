@@ -1,5 +1,8 @@
 #include "GBSBizSettingOutput.h"
 #include "ui_GBSBizSettingOutput.h"
+#include "window-basic-main.hpp"
+#include "window-basic-settings.hpp"
+
 
 GBSBizSettingOutput::GBSBizSettingOutput(QWidget *parent)
 	: QWidget(parent),
@@ -64,6 +67,14 @@ GBSBizSettingOutput::GBSBizSettingOutput(QWidget *parent)
 		"}"
 		);
 
+
+	//connect(ui->btnOpen, &QPushButton::clicked, this, [this]() {
+	//	OBSBasic *main = OBSBasic::Get();
+	//	if (main != nullptr) {
+	//		OBSBasicSettings settings(main);
+	//		settings.exec();
+	//	}
+	//});
 
 }
 

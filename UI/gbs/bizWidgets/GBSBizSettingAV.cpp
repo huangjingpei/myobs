@@ -1,6 +1,7 @@
 #include "gbsbizsettingav.h"
 #include "ui_gbsbizsettingav.h"
-
+#include "window-basic-main.hpp"
+#include "window-basic-settings.hpp"
 GBSBizSettingAV::GBSBizSettingAV(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GBSBizSettingAV)
@@ -11,7 +12,7 @@ GBSBizSettingAV::GBSBizSettingAV(QWidget *parent)
 
 	ui->tabWidget->setStyleSheet(
 		"QTabWidget::pane {"
-		"    border: none;"  // 移除tab pane的边框
+		"    border: transparent;"  // 移除tab pane的边框
 		"}"
 		"QTabBar::tab {"
 		"    background: none;"  // tab的背景颜色
@@ -34,7 +35,27 @@ GBSBizSettingAV::GBSBizSettingAV(QWidget *parent)
 		"}"
 		);
 
+
+
+
+
+	//connect(ui->tabWidget, &QTabWidget::currentChanged, this,
+	//	[this](int index) {
+	//		qDebug() << "Current tab index is:" << index;
+	//	if (index == 0) {
+	//			OBSBasic *main = OBSBasic::Get();
+	//			if (main != nullptr) {
+	//				OBSBasicSettings settings(main);
+	//				settings.setWindowFlags(Qt::Widget);
+	//				ui->horizontalLayout->addWidget(&settings);
+	//				//settings.show();
+	//			}
+	//	} 
+	//	});
+
 }
+
+
 
 GBSBizSettingAV::~GBSBizSettingAV()
 {

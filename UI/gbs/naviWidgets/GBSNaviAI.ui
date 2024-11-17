@@ -67,9 +67,9 @@
    <widget class="QLabel" name="lblHelloMessage">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>780</y>
-      <width>76</width>
+      <x>60</x>
+      <y>788</y>
+      <width>131</width>
       <height>17</height>
      </rect>
     </property>
@@ -85,9 +85,9 @@
    <widget class="QLabel" name="lblNickName">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>800</y>
-      <width>76</width>
+      <x>60</x>
+      <y>807</y>
+      <width>131</width>
       <height>17</height>
      </rect>
     </property>

@@ -177,7 +177,7 @@ color: #00C566;</string>
 color: #00C566;</string>
     </property>
     <property name="text">
-     <string>刷新</string>
+     <string>获取</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnDevInfo04">

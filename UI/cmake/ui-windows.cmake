@@ -124,7 +124,10 @@ target_sources(
     gbs/bizWidgets/GBSBizAIData.h
     gbs/bizWidgets/GBSBizEShopData.cpp
     gbs/bizWidgets/GBSBizEShopData.h
-
+    gbs/bizWidgets/GBSAddBroker.cpp
+    gbs/bizWidgets/GBSAddBroker.h
+    gbs/bizWidgets/GBSRemoveBroker.cpp
+    gbs/bizWidgets/GBSRemoveBroker.h
 
     gbs/dto/GBSUserInfo.h
     gbs/dto/GBSUserInfo.cpp

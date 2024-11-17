@@ -227,6 +227,47 @@ GBSBizLivePusher::GBSBizLivePusher(QWidget *parent) : QWidget(parent), ui(new Ui
 	connect(ui->btnFans, &QPushButton::toggled, this, &GBSBizLivePusher::updateStyle);
 	connect(ui->btnTips, &QPushButton::toggled, this, &GBSBizLivePusher::updateStyle);
 	connect(ui->btnF2F, &QPushButton::toggled, this, &GBSBizLivePusher::updateStyle);
+	connect(ui->btnAll, &QPushButton::clicked, this, [this]() {
+		for (DanmakuWidget * widget : danmaKuAreaLayout->findChildren<DanmakuWidget*>()) {
+			danmaKuAreaLayout->removeWidget(widget);
+			delete widget;
+			
+		}
+		for (DanmaItem item : allDanmakus) {
+			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
+		}
+		allDanmakus.clear();
+		});
+	connect(ui->btnFans, &QPushButton::clicked, this, [this]() {
+		for (DanmakuWidget *widget : danmaKuAreaLayout->findChildren<DanmakuWidget *>()) {
+			danmaKuAreaLayout->removeWidget(widget);
+			delete widget;
+		}
+		for (DanmaItem item : whoIsDanmukus) {
+			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
+		}
+		whoIsDanmukus.clear();
+	});
+	connect(ui->btnTips, &QPushButton::clicked, this, [this]() {
+		for (DanmakuWidget *widget : danmaKuAreaLayout->findChildren<DanmakuWidget *>()) {
+			danmaKuAreaLayout->removeWidget(widget);
+			delete widget;
+		}
+		for (DanmaItem item : giftDanmakus) {
+			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
+		}
+		giftDanmakus.clear();
+	});
+	connect(ui->btnF2F, &QPushButton::clicked, this, [this]() {
+		for (DanmakuWidget *widget : danmaKuAreaLayout->findChildren<DanmakuWidget *>()) {
+			danmaKuAreaLayout->removeWidget(widget);
+			delete widget;
+		}
+		for (DanmaItem item : likeDanmakus) {
+			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
+		}
+		likeDanmakus.clear();
+		});
 	btnDanmaLists.append(ui->btnAll);
 	btnDanmaLists.append(ui->btnFans);
 	btnDanmaLists.append(ui->btnTips);
@@ -455,11 +496,38 @@ void GBSBizLivePusher::onComboBoxIndexChanged(int index) {
 //}
 
 
-void GBSBizLivePusher::addNewWidget(const QString &text,
-				    const QString &imagePath,
-				    const QString &text2,
-					const QString &type)
+void GBSBizLivePusher::addNewWidget(const QString &atext,
+				    const QString &aimagePath,
+				    const QString &atext2,
+					const QString &atype)
 {
+	QString text = atext;
+	QString imagePath = aimagePath;
+	QString text2 = atext2;
+	QString type = atype;
+	DanmaItem item{QTime::currentTime(), text, imagePath, text2, type};
+	if (type == "MemberMessage") {
+		whoIsDanmukus.push_back(item);
+		if (whoIsDanmukus.size() > 1000) {
+			whoIsDanmukus.pop_front();
+		}
+	} else if (type == "ChatMessage") {
+	} else if (type == "GiftMessage") {
+		giftDanmakus.push_back(item);
+		if (giftDanmakus.size() > 1000) {
+			giftDanmakus.pop_front();
+		}
+	} else if (type == "SocialMessage") {
+	} else if (type == "LikeMessage") {
+		likeDanmakus.push_back(item);
+		if (likeDanmakus.size() > 1000) {
+			likeDanmakus.pop_front();
+		}
+	}
+	if (allDanmakus.size() > 1000) {
+		allDanmakus.pop_front();
+	}
+	allDanmakus.push_back(item);
 	// 创建新 widget
 	DanmakuWidget *newWidget = new DanmakuWidget(this);
 	newWidget->setFirstRowContent(text, imagePath);
@@ -477,12 +545,13 @@ void GBSBizLivePusher::addNewWidget(const QString &text,
 	vScrollBar->setValue(vScrollBar->maximum());
 
 	// 检查是否超过 50 个 widget
-	if (widgetList.size() > 30) {
+	if (widgetList.size() > 1000) {
 		// 移除最早的 widget
 		DanmakuWidget *oldestWidget = widgetList.takeFirst();
 		danmaKuAreaLayout->removeWidget(oldestWidget);
 		delete oldestWidget;
 	}
+	
 }
 
 void GBSBizLivePusher::onLoginResult(int result) {

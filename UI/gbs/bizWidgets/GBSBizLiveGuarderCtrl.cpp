@@ -1,7 +1,8 @@
 #include "GBSBizLiveGuarderCtrl.h"
 #include "ui_GBSBizLiveGuarderCtrl.h"
 #include "GBSMsgDialog.h"
-
+#include "gbs/bizWidgets/GBSAddBroker.h"
+#include "gbs/bizWidgets/GBSRemoveBroker.h"
 
 #include <QWidget>
 #include <QPushButton>
@@ -580,6 +581,9 @@ public:
 
 
 		QObject::connect(btnAdd, &QPushButton::clicked, this, [table, this]() {
+			GBSAddBroker *broker = new GBSAddBroker(this);
+			broker->show();
+			#if 0
 			QPushButton *delButton = new QPushButton();
 			delButton->setStyleSheet("QPushButton {"
 						 "   background-image: url(:gbs/images/gbs/biz/gbs-trash-20px.png);"
@@ -650,6 +654,7 @@ public:
 
 			table->addRow(rowData);
 			table->setCellWidget(table->rowCount() - 1, rowData.size() - 1, operationWidget);
+			#endif
 		});
 		setLayout(mainLayout);
 

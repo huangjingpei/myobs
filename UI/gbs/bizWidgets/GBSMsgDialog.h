@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QString>
+#include <QPoint>
+#include <QMouseEvent>
 
 namespace Ui {
 class GBSMsgDialog;
@@ -17,8 +19,14 @@ public:
     ~GBSMsgDialog();
 
     void resizeEvent(QResizeEvent *event) override;
+
 private:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    private:
     Ui::GBSMsgDialog *ui;
+	    QPoint dragPosition;
 };
 
 #endif // GBSMSGDIALOG_H

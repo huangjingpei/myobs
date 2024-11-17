@@ -1,0 +1,96 @@
+#include "GBSAddBroker.h"
+#include "ui_GBSAddBroker.h"
+
+GBSAddBroker::GBSAddBroker(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::GBSAddBroker)
+{
+    ui->setupUi(this);
+     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    //setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+
+    ui->widget_2->setStyleSheet(
+        "QWidget { "
+        "background: qlineargradient("
+        "spread:pad, "
+        "x1:0, y1:0, x2:1, y2:1, "
+        "stop:0.1543 rgba(237, 255, 246, 255), "
+        "stop:0.822 rgba(255, 255, 255, 255)"
+        "); "
+        "border: none; "
+
+
+    "}"
+    );
+    ui->widget->setStyleSheet("QWidget {"
+			      "background-color:#0xFFFFFF;"
+			      "background:#0xFFFFFF;"
+			      "border:none;"
+			      "}");
+    ui->btnClose->setStyleSheet("QPushButton {"
+			    "   background-image: url(:gbs/images/gbs/biz/gbs-close-window.png);"
+			    "  border-radius: 5px;" // 圆角
+			    "}"
+			    "QPushButton:hover {"
+			    "  border: none;"
+			    "   background-color: #F9F9F9;"
+			    "}"
+			    "QPushButton:pressed {"
+			    "   background-color: #D1D8DD;" // 按下时背景颜色
+			    "   padding-left: 3px;"         // 向左移动 3px
+			    "   padding-top: 3px;"          // 向上移动 3px
+			    "   background-repeat: no-repeat;"
+			    "   background-position: center;"
+			    "}");
+
+        ui->btnCancel->setStyleSheet("QPushButton:pressed {"
+			     "   padding-left: 3px;" // 向左移动 3px
+			     "   padding-top: 3px;"  // 向上移动 3px
+			     "   background-repeat: no-repeat;"
+			     "   background-position: center;"
+			     "}");
+    ui->btnOK->setStyleSheet("QPushButton:pressed {"
+			     "   padding-left: 3px;"         // 向左移动 3px
+			     "   padding-top: 3px;"          // 向上移动 3px
+			     "   background-repeat: no-repeat;"
+			     "   background-position: center;"
+			     "}"
+    );
+
+    connect(ui->btnClose, &QPushButton::clicked, this, [this]() { close();
+	    });
+
+    connect(ui->btnCancel, &QPushButton::clicked, this, [this]() { reject();
+	    });
+
+    connect(ui->btnOK, &QPushButton::clicked, this, [this]() {
+
+	    accept();
+	    });
+    
+
+}
+
+GBSAddBroker::~GBSAddBroker()
+{
+    delete ui;
+}
+
+
+void GBSAddBroker::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton) {
+		dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
+		event->accept();
+	}
+	QDialog::mousePressEvent(event);
+}
+
+void GBSAddBroker::mouseMoveEvent(QMouseEvent *event)
+{
+	if (event->buttons() & Qt::LeftButton) {
+		move(event->globalPosition().toPoint() - dragPosition);
+		event->accept();
+	}
+	QDialog::mouseMoveEvent(event);
+}

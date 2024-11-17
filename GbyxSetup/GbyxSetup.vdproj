@@ -10455,12 +10455,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D76C84D18E024907A9DF527DD851434B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D7C2F62931814EFDA8EDAE190526775E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -12451,6 +12445,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -12467,6 +12469,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -47288,26 +47298,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D76C84D18E024907A9DF527DD851434B"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\application.log"
-            "TargetName" = "8:application.log"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D7C2F62931814EFDA8EDAE190526775E"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\frontend-tools\\locale\\hr-HR.ini"
@@ -54944,22 +54934,22 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:GbyxSetup"
+        "ProductName" = "8:gbyx"
         "ProductCode" = "8:{59FCE15C-1DBA-443F-A1A9-723306812318}"
         "PackageCode" = "8:{DDEB7325-FDAC-46BA-A886-F7A68A6C7546}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:MicroSoft"
+        "Manufacturer" = "8:gbyx"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:GbyxSetup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:MicroSoft"
+        "ARPCONTACT" = "8:gbyx"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
