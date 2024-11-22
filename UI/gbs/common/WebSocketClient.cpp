@@ -43,6 +43,10 @@ public:
 		m_endpoint.set_open_handler(bind(&type::on_open, this, ::_1));
 		m_endpoint.set_close_handler(bind(&type::on_close, this, ::_1));
 		m_endpoint.set_fail_handler(bind(&type::on_fail, this, ::_1));
+		m_endpoint.set_ping_handler(bind(&type::on_ping, this, ::_1, ::_2));
+		m_endpoint.set_pong_handler(bind(&type::on_pong, this, ::_1, ::_2));
+		m_endpoint.set_pong_timeout_handler(bind(&type::on_pong_timeout, this, ::_1, ::_2));
+
 	}
 
 private:
@@ -130,6 +134,17 @@ private:
 		//qDebug() << con->get_ec();
 		qDebug() << con->get_ec().message();
 			
+	}
+
+	bool on_ping(websocketpp::connection_hdl, std::string msg) {
+		return true;
+	}
+	void on_pong(websocketpp::connection_hdl, std::string msg) {
+
+	}
+
+	void on_pong_timeout(websocketpp::connection_hdl, std::string) {
+
 	}
 
 	void on_open(websocketpp::connection_hdl)

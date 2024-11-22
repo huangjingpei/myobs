@@ -27,6 +27,7 @@ public:
 	virtual void onRoomInfo(GBSRoomInfo *info){};
 	virtual void onQRcodeInfo(std::string no, std::string url, int status){};
 	virtual void onMemberInfo(GBSMemberInfo info){};
+	virtual void onAgreementInfo(std::string richText, int type){};
 };
 
 class GBSHttpClient {
@@ -76,6 +77,9 @@ public:
     void startLive(std::string &equipments);
     void startLiveTask(std::string &equipments);
 
+    void endLive(std::string id);
+    void endLiveTask(std::string id);
+
     void upRemoteLiveRoomState(std::string ids);
     void upRemoteLiveRoomStateTask(std::string ids);
 
@@ -97,6 +101,9 @@ public:
 
     void remainingActivation(int levelId);
     void remainingActivationTask(int levelId);
+
+    void agreement(int type);
+    void agreementTask(int type);
 
     private:
     std::string getDeviceNo();
@@ -140,7 +147,6 @@ private:
     std::unique_ptr<TaskExecutor> executor;
 
     std::mutex cs;
-
 
 public:
     std::string token;

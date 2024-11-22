@@ -12,6 +12,7 @@
 #include <QPoint>
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/common/HoriNaviButton.h"
+
 namespace Ui {
 class GBSMainBizWindow;
 }
@@ -25,6 +26,8 @@ public:
 
 protected:
 	void keyPressEvent(QKeyEvent *event) override;
+
+	void seeYouNext();
 
 signals:
 	void windowClosed();

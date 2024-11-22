@@ -90,7 +90,7 @@ border-radius: 8px;
 </string>
     </property>
     <property name="placeholderText">
-     <string>请输出场控密码</string>
+     <string>  请输出场控密码</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnCancel">

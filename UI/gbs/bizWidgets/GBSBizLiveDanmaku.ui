@@ -43,8 +43,8 @@ font-size:16px;
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>70</y>
+       <x>120</x>
+       <y>100</y>
        <width>95</width>
        <height>22</height>
       </rect>
@@ -56,7 +56,7 @@ font-size:16px;
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>340</x>
+       <x>110</x>
        <y>380</y>
        <width>95</width>
        <height>22</height>
@@ -69,8 +69,8 @@ font-size:16px;
     <widget class="QPushButton" name="pushButton_2">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>120</y>
+       <x>170</x>
+       <y>150</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -89,8 +89,8 @@ font-size:16px;</string>
     <widget class="QPushButton" name="pushButton_3">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>170</y>
+       <x>170</x>
+       <y>200</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -108,8 +108,8 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_4">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>220</y>
+       <x>170</x>
+       <y>250</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -127,8 +127,8 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_5">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>270</y>
+       <x>170</x>
+       <y>300</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -146,7 +146,7 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_6">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>430</y>
        <width>135</width>
        <height>40</height>
@@ -165,7 +165,7 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_7">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>480</y>
        <width>135</width>
        <height>40</height>
@@ -184,7 +184,7 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_8">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>530</y>
        <width>135</width>
        <height>40</height>
@@ -203,7 +203,7 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_9">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>580</y>
        <width>135</width>
        <height>40</height>
@@ -222,7 +222,7 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_10">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>630</y>
        <width>135</width>
        <height>40</height>
@@ -241,7 +241,7 @@ color:#FFFFFF</string>
     <widget class="QPushButton" name="pushButton_11">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>680</y>
        <width>135</width>
        <height>40</height>
@@ -260,8 +260,8 @@ color:#FFFFFF</string>
     <widget class="QLineEdit" name="leChromePath">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>120</y>
+       <x>340</x>
+       <y>150</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -283,8 +283,8 @@ font-size: 16px
     <widget class="QLineEdit" name="leServer">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>170</y>
+       <x>340</x>
+       <y>200</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -306,8 +306,8 @@ font-size: 16px
     <widget class="QLineEdit" name="lePort">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>220</y>
+       <x>340</x>
+       <y>250</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -329,8 +329,8 @@ font-size: 16px
     <widget class="QLineEdit" name="leServerType">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>270</y>
+       <x>340</x>
+       <y>300</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -352,7 +352,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leDouyin">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>430</y>
        <width>581</width>
        <height>40</height>
@@ -375,7 +375,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leKuaishou">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>480</y>
        <width>581</width>
        <height>40</height>
@@ -398,7 +398,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leWechatVideo">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>530</y>
        <width>581</width>
        <height>40</height>
@@ -421,7 +421,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leTikTok">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>580</y>
        <width>581</width>
        <height>40</height>
@@ -444,7 +444,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leTaobao">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>630</y>
        <width>581</width>
        <height>40</height>
@@ -467,7 +467,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leMeiTuan">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>680</y>
        <width>581</width>
        <height>40</height>
@@ -490,7 +490,7 @@ font-size: 16px
     <widget class="QLineEdit" name="leOther">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>780</y>
        <width>581</width>
        <height>40</height>
@@ -513,7 +513,7 @@ font-size: 16px
     <widget class="QPushButton" name="pushButton_12">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>780</y>
        <width>135</width>
        <height>40</height>
@@ -532,7 +532,7 @@ color:#FFFFFF</string>
     <widget class="QLineEdit" name="lePddLive">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>340</x>
        <y>730</y>
        <width>581</width>
        <height>40</height>
@@ -555,7 +555,7 @@ font-size: 16px
     <widget class="QPushButton" name="pushButton_13">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>170</x>
        <y>730</y>
        <width>135</width>
        <height>40</height>
@@ -571,72 +571,53 @@ color:#FFFFFF</string>
       <string>拼多多</string>
      </property>
     </widget>
-    <widget class="QFrame" name="frame">
+    <widget class="QComboBox" name="cbxPlat">
      <property name="geometry">
       <rect>
-       <x>-10</x>
-       <y>0</y>
-       <width>332</width>
-       <height>841</height>
+       <x>240</x>
+       <y>30</y>
+       <width>160</width>
+       <height>40</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_14">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>30</y>
+       <width>100</width>
+       <height>40</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:#E8E8E8;</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
-     </property>
-     <widget class="QPushButton" name="pushButton_14">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>10</y>
-        <width>100</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color:#00C566;
+      <string notr="true">background-color:#00C566;
 border: 1px solid white;
 border-radius:5px;
 color:#FFFFFF</string>
-      </property>
-      <property name="text">
-       <string>平台选择</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="cbxPlat">
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>10</y>
-        <width>160</width>
-        <height>40</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_15">
-      <property name="geometry">
-       <rect>
-        <x>210</x>
-        <y>80</y>
-        <width>100</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color:#00C566;
+     </property>
+     <property name="text">
+      <string>平台选择</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_15">
+     <property name="geometry">
+      <rect>
+       <x>1060</x>
+       <y>30</y>
+       <width>100</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color:#00C566;
 border: 1px solid white;
 border-radius:5px;
 color:#FFFFFF</string>
-      </property>
-      <property name="text">
-       <string>开启弹幕提取</string>
-      </property>
-     </widget>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab">

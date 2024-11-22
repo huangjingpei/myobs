@@ -401,7 +401,10 @@ private slots:
 
 	void on_filenameFormatting_textEdited(const QString &text);
 	void on_outputResolution_editTextChanged(const QString &text);
+
+public slots:
 	void on_baseResolution_editTextChanged(const QString &text);
+private slots:
 
 	void on_disableOSXVSync_clicked();
 
@@ -480,6 +483,30 @@ protected:
 	virtual void closeEvent(QCloseEvent *event) override;
 	virtual void showEvent(QShowEvent *event) override;
 	void reject() override;
+
+public:
+	QWidget* getAdvancedPageWidget();
+	QWidget* getHotkeyPageWidget();
+	QSpinBox* getSimpleOutputVBitrate();
+	QComboBox* getSimpleOutStrEncoder();
+	QComboBox* getSimpleOutputABitrate();
+	QComboBox* getSimpleOutPreset();
+	QComboBox* getSimpleOutStrAEncoder();
+	QComboBox* getSimpleOutRecQuality();
+	QComboBox* getSimpleOutRecFormat();
+	
+	QComboBox *getBaseResolution();
+	QComboBox *getOutputResolution();
+	QComboBox *getDownscaleFilter();
+	QComboBox *getFpsType();
+	QStackedWidget *getFpsTypes();
+
+	QLabel* getBaseAspect();
+	QLabel* getScaledAspect();
+
+	void onCofirm();
+	void onCancel();
+	void onApply();
 
 public:
 	OBSBasicSettings(QWidget *parent);

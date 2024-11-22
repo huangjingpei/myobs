@@ -953,7 +953,7 @@ font-size: 24px;
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>366</width>
+              <width>409</width>
               <height>16</height>
              </rect>
             </property>
@@ -1318,7 +1318,7 @@ font-size: 24px;
   <action name="actionAddSource">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/plus.svg</normaloff>:/res/images/plus.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-add.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-add.png</iconset>
    </property>
    <property name="text">
     <string>Add</string>
@@ -1357,7 +1357,7 @@ font-size: 24px;
   <action name="actionRemoveSource">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/minus.svg</normaloff>:/res/images/minus.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-remove.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-remove.png</iconset>
    </property>
    <property name="text">
     <string>Remove</string>
@@ -1384,7 +1384,7 @@ font-size: 24px;
    </property>
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/settings/images/settings/general.svg</normaloff>:/settings/images/settings/general.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-setting.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-setting.png</iconset>
    </property>
    <property name="text">
     <string>Properties</string>
@@ -1417,7 +1417,7 @@ font-size: 24px;
    </property>
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/up.svg</normaloff>:/res/images/up.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-up.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-up.png</iconset>
    </property>
    <property name="text">
     <string>MoveUp</string>
@@ -1450,7 +1450,7 @@ font-size: 24px;
    </property>
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/down.svg</normaloff>:/res/images/down.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-down.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-down.png</iconset>
    </property>
    <property name="text">
     <string>MoveDown</string>
@@ -1960,7 +1960,7 @@ font-size: 24px;
   <action name="actionMixerToolbarAdvAudio">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/settings/images/settings/advanced.svg</normaloff>:/settings/images/settings/advanced.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-mixer.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-mixer.png</iconset>
    </property>
    <property name="text">
     <string>AdvAudioProps</string>

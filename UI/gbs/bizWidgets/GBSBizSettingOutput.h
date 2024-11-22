@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include "window-basic-settings.hpp"
 namespace Ui {
 class GBSBizSettingOutput;
 }
@@ -11,7 +12,7 @@ class GBSBizSettingOutput : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit GBSBizSettingOutput(QWidget *parent = nullptr);
+	explicit GBSBizSettingOutput(OBSBasicSettings *settings, QWidget *parent = nullptr);
 	~GBSBizSettingOutput();
 
 
@@ -21,6 +22,8 @@ private:
 	//Too ugly. please use TabControl possibly
 	QList<QWidget*> basicWidgets;
 	QList<QWidget*> advancedWidgets;
+
+	OBSBasicSettings *settings;
 
 };
 

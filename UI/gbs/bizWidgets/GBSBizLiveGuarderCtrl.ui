@@ -77,27 +77,6 @@ font-size:16px;
     </widget>
    </widget>
   </widget>
-  <widget class="QFrame" name="frame">
-   <property name="geometry">
-    <rect>
-     <x>566</x>
-     <y>15</y>
-     <width>637</width>
-     <height>486</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">     background: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, 
-           stop:0 #000000, stop:0.525 #434343, stop:1 #000000); 
-     border-radius: 20px;</string>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
-   </property>
-  </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
@@ -109,7 +88,30 @@ font-size:16px;
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout"/>
   </widget>
+  <widget class="OBSBasicPreview" name="wgtPreview" native="true">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>40</y>
+     <width>621</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, 
+stop:0 #000000, stop:0.525 #434343, stop:1 #000000); 
+border-radius: 20px;</string>
+   </property>
+  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>OBSBasicPreview</class>
+   <extends>QWidget</extends>
+   <header location="global">window-basic-preview.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

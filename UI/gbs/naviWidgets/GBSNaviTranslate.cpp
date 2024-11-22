@@ -11,8 +11,9 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	ui->setupUi(this);
 
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
-
-
+	ui->imgTheme->setVisible(false);
+	ui->radioButton->setVisible(false);
+	
 	ui->lblNaviTitle->setStyleSheet("QLabel {"
 					"    background: transparent;"
 					"    color: #1B2846;"     // 文本颜色

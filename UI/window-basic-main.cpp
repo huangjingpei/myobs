@@ -2346,8 +2346,8 @@ void OBSBasic::OBSInit()
 #endif
 	TimedCheckForUpdates();
 
-	ToggleMixerLayout(config_get_bool(App()->GetUserConfig(), "BasicWindow", "VerticalVolControl"));
-
+	//ToggleMixerLayout(config_get_bool(App()->GetUserConfig(), "BasicWindow", "VerticalVolControl"));
+	ToggleVolControlLayout();
 	if (config_get_bool(activeConfiguration, "General", "OpenStatsOnStartup"))
 		on_stats_triggered();
 
@@ -3718,6 +3718,7 @@ void OBSBasic::StackedMixerAreaContextMenuRequested()
 
 void OBSBasic::ToggleMixerLayout(bool vertical)
 {
+
 	if (vertical) {
 		ui->stackedMixerArea->setMinimumSize(180, 220);
 		ui->stackedMixerArea->setCurrentIndex(1);
@@ -3725,11 +3726,12 @@ void OBSBasic::ToggleMixerLayout(bool vertical)
 		ui->stackedMixerArea->setMinimumSize(220, 0);
 		ui->stackedMixerArea->setCurrentIndex(0);
 	}
+	
 }
 
 void OBSBasic::ToggleVolControlLayout()
 {
-	bool vertical = !config_get_bool(App()->GetUserConfig(), "BasicWindow", "VerticalVolControl");
+	bool vertical = true;//!config_get_bool(App()->GetUserConfig(), "BasicWindow", "VerticalVolControl");
 	config_set_bool(App()->GetUserConfig(), "BasicWindow", "VerticalVolControl", vertical);
 	ToggleMixerLayout(vertical);
 

@@ -13,17 +13,160 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QFrame" name="frame_3">
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QPushButton" name="lblVideoEncoder">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>50</y>
-     <width>2</width>
-     <height>21</height>
+     <x>40</x>
+     <y>240</y>
+     <width>81</width>
+     <height>40</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color:#DBDBDB</string>
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>视频编码器</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblRecordQuality">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>180</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>录像质量</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblAudioEncoder">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>360</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>音频编码器</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxVideoEncoderPreSetting">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>300</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxAudioEncoder">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>360</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblAudioBitrate">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>180</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>音频码率</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblVideoEncoderPreSetting">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>300</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>编码器预设</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblRecordFormat">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>240</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>录像格式</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="vertLine">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>120</y>
+     <width>1</width>
+     <height>281</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#DBDBDB;</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::Shape::StyledPanel</enum>
@@ -32,389 +175,279 @@
     <enum>QFrame::Shadow::Raised</enum>
    </property>
   </widget>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QComboBox" name="cbxRecordQuality">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1139</width>
-     <height>599</height>
+     <x>690</x>
+     <y>180</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxAudioBitrate">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>180</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxRecordFomat">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>240</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="leRecordPath">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>120</y>
+     <width>321</width>
+     <height>40</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color:#F9F9F9;
-border: 1px solid  #FFFFFF;
-border-radius: 4px;
-</string>
-   </property>
-   <property name="tabShape">
-    <enum>QTabWidget::TabShape::Rounded</enum>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <property name="elideMode">
-    <enum>Qt::TextElideMode::ElideLeft</enum>
-   </property>
-   <widget class="QWidget" name="tabBasic">
-    <attribute name="title">
-     <string>基础</string>
-    </attribute>
-    <widget class="QPushButton" name="lblVideoBitrate">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>20</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>视频码率</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblVideoEncoder">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>140</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>视频编码器</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblAudioBitrate">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>80</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>音频码率</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxAudioEncoder">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>260</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxVideoBitrate">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>20</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblRecordPath">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>20</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>录像路径</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblAudioEncoder">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>260</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>音频编码器</string>
-     </property>
-    </widget>
-    <widget class="QFrame" name="vertLine">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>20</y>
-       <width>2</width>
-       <height>281</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color:#DBDBDB</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxVideoEncoder">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>140</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxVideoEncoderPreSetting">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>200</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btnOpen">
-     <property name="geometry">
-      <rect>
-       <x>1010</x>
-       <y>20</y>
-       <width>57</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>浏览</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblVideoEncoderPreSetting">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>200</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>编码器预设</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leRecordCache">
-     <property name="geometry">
-      <rect>
-       <x>680</x>
-       <y>260</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#9CA4AAB;
-border: 5px solid  #9CA4AAB;
+    <string notr="true">background-color:#FFFFFF;
+border: 1px solid  #9CA4AB;
 border-radius: 8px;
 </string>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="leRecordPath">
-     <property name="geometry">
-      <rect>
-       <x>680</x>
-       <y>20</y>
-       <width>321</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#9CA4AAB;
-border: 5px solid  #9CA4AAB;
+   </property>
+   <property name="placeholderText">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxVideoEncoder">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>240</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QFrame" name="horiLine">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>320</y>
+     <width>491</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#DBDBDB;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnOpen">
+   <property name="geometry">
+    <rect>
+     <x>1020</x>
+     <y>120</y>
+     <width>57</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>浏览</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBoxVideoBitrate">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>120</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>200</number>
+   </property>
+   <property name="maximum">
+    <number>1000000</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>2000</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblPlayCache">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>360</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>回放缓存</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="leRecordCache">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>360</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#FFFFFF;
+border: 1px solid  #9CA4AB;
 border-radius: 8px;
 </string>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblRecordQuality">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>80</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
+   </property>
+   <property name="placeholderText">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblVideoBitrate">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>120</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
 border: 1px solid white;
 border-radius:5px;
 font-size:12px;
 color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>录像质量</string>
-     </property>
-    </widget>
-    <widget class="QFrame" name="horiLine">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>220</y>
-       <width>491</width>
-       <height>2</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color:#DBDBDB</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxRecordQuality">
-     <property name="geometry">
-      <rect>
-       <x>680</x>
-       <y>80</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblRecordFormat">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>140</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
+   </property>
+   <property name="text">
+    <string>视频码率</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="lblRecordPath">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>120</y>
+     <width>81</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
 border: 1px solid white;
 border-radius:5px;
 font-size:12px;
 color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>录像格式</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="lblPlayCache">
-     <property name="geometry">
-      <rect>
-       <x>580</x>
-       <y>260</y>
-       <width>81</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-font-size:12px;
-color:#FFFFFF</string>
-     </property>
-     <property name="text">
-      <string>回放缓存</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxAudioBitrate">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>80</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbxRecordFomat">
-     <property name="geometry">
-      <rect>
-       <x>680</x>
-       <y>140</y>
-       <width>391</width>
-       <height>40</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tabAdvanced">
-    <attribute name="title">
-     <string>高级</string>
-    </attribute>
-   </widget>
+   </property>
+   <property name="text">
+    <string>录像路径</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>49</x>
+     <y>90</y>
+     <width>1031</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#DBDBDB;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>50</y>
+     <width>54</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size:20px;
+color:#00C566;</string>
+   </property>
+   <property name="text">
+    <string>基础</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>430</y>
+     <width>54</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size:20px;
+color:#00C566;</string>
+   </property>
+   <property name="text">
+    <string>高级</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>39</x>
+     <y>470</y>
+     <width>1031</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#DBDBDB;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
   </widget>
  </widget>
  <resources/>

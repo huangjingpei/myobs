@@ -2,7 +2,7 @@
 #define GBSMAINPROFILE_H
 
 #include <QWidget>
-
+#include <QTimer>
 namespace Ui {
 class GBSMainProfile;
 }
@@ -19,8 +19,13 @@ public:
 
 public slots:
     void exitSystemAndGoLogin(bool checked);
+	void onShowSetting();
+    void resetClickCount();
+
 private:
     Ui::GBSMainProfile *ui;
+	QTimer *timer;
+	int clickCount = 0;
 };
 
 #endif // GBSMAINPROFILE_H

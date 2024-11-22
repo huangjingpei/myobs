@@ -4,7 +4,6 @@
 #include "GBSBizLiveGuarderCtrl.h"
 #include <QList>
 #include<QLineEdit>
-#define AUTH_CODE_NUM 5
 GBSBizLiveGuarder::GBSBizLiveGuarder(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GBSBizLiveGuarder)

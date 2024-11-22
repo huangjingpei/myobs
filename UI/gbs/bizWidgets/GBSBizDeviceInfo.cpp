@@ -12,6 +12,7 @@
 #include "gbs/common/QBizLogger.h"
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/dto/GBSMemberInfo.h"
+#include "gbs/bizWidgets/GBSAddConsumer.h"
 
 extern "C" {
 #include "gbs/common/SystemUtils.h"
@@ -470,6 +471,22 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	GBSHttpClient::getInstance()->memberInfo("9");
 	GBSHttpClient::getInstance()->codeList(9);
 	GBSHttpClient::getInstance()->remainingActivation(9);
+
+
+
+	//Disable widgets .will be open later.
+
+	ui->horizontalSlider->setDisabled(true);
+	ui->btnMngredInfo01->setDisabled(true);
+	ui->btnMngredInfo02->setDisabled(true);
+	ui->comboBox->setDisabled(true);
+
+	connect(ui->btnDevInfo03, &QPushButton::clicked, this,
+		[this]() {
+			GBSAddConsumer *addConsumer = new GBSAddConsumer();
+			addConsumer->show();
+		});
+
 }
 
 qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string &date) {

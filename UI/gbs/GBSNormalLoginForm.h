@@ -45,6 +45,7 @@ private:
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status) override;
+	void onAgreementInfo(std::string richText, int type) override;
 
 	// 通过 OBSMainWindow 继承
 	config_t *Config() const override;

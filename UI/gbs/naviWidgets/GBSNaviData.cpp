@@ -4,6 +4,7 @@
 #include "../bizWidgets/GBSBizDeviceInfo.h"
 #include "../bizWidgets/GBSBizSoYoung.h"
 #include "window-basic-main.hpp"
+#include "gbs/common/QToast.h"
 
 GBSNaviData::GBSNaviData(QWidget *parent)
 	: QWidget(parent),
@@ -11,6 +12,8 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
+	ui->imgTheme->setVisible(false);
+	ui->radioButton->setVisible(false);
 
 	ui->lblNaviTitle->setStyleSheet("QLabel {"
 					"    background: transparent;"
@@ -74,6 +77,14 @@ GBSNaviData::~GBSNaviData()
 	delete ui;
 }
 
+void GBSNaviData::seeYouNext()
+{
+
+	QToast *toast = new QToast(this, "感谢你的关注!\n我们已经在努力开发中，敬请期待未来的版本...", 3000);
+	toast->show();
+	return;
+}
+
 void GBSNaviData::mariVertButton(VertNaviButton *button)
 {
 	for (int i = 0; i < vertNaviButtons.count(); i++) {
@@ -109,6 +120,7 @@ void GBSNaviData::onDeviceInfoClicked() {
 }
 
 void GBSNaviData::onEShopDataClicked() {
+	return seeYouNext();
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
@@ -123,6 +135,7 @@ void GBSNaviData::onEShopDataClicked() {
 
 
 void GBSNaviData::onAIDataClicked() {
+	return seeYouNext();
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());

@@ -3,7 +3,7 @@
 #include "GBSBizLiveGuarder.h"
 #include <QList>
 #include<QLineEdit>
-#define AUTH_CODE_NUM 5
+#define AUTH_CODE_NUM 6
 GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
 	: QWidget(parent),
       ui(new Ui::GBSBizLiveGuarderAuth)
@@ -15,6 +15,7 @@ GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
     qlists.push_back(ui->lePassword2);
     qlists.push_back(ui->lePassword3);
     qlists.push_back(ui->lePassword4);
+    qlists.push_back(ui->lePassword5);
 
     for (int i = 0; i < AUTH_CODE_NUM; i++) {
         qlists[i]->setMaxLength(1);

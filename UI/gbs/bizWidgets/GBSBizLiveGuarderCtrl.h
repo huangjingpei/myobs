@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+
+
 namespace Ui {
 class GBSBizLiveGuarderCtrl;
 }
@@ -18,6 +20,9 @@ public:
 public slots:
 void onTabChanged(int index);
 
+protected:
+	static void RenderMain(void *data, uint32_t cx, uint32_t cy);
+	void ResizePreview(uint32_t cx, uint32_t cy);
 
 
 private:
@@ -25,6 +30,10 @@ private:
 
 private:
 	QWidget *validWidget = nullptr;
+
+	int previewX = 0, previewY = 0;
+	int previewCX = 0, previewCY = 0;
+	float previewScale = 0.0f;
 };
 
 #endif // GBSBIZLIVEGUARDERCTRL_H

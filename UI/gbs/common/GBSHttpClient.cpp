@@ -817,8 +817,54 @@ void GBSHttpClient::startLiveTask(std::string &equipments)
 
 		
 }
+
+void GBSHttpClient::endLive(std::string id) {
+	executor->addTask(std::bind(&GBSHttpClient::endLiveTask, this, id));
+}
+void GBSHttpClient::endLiveTask(std::string id)
+{
+	std::string deviceNo = getDeviceNo();
+	if (deviceNo.empty()) {
+		std::cerr << "Cannot obtain device id. please check." << std::endl;
+		return;
+	}
+	std::string url = baseUrl + "/preferred/srsLive/closeStream";
+
+	json body = {{"id", id}};
+
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url},
+						cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+
+			} else {
+				std::cerr << "[ERROR] close live error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+
+			}
+		},
+		url, body.dump(), token);
+
+	task->run();
+}
+
+
 void GBSHttpClient::upRemoteLiveRoomState(std::string ids)
-{	executor->addTask(
+{
+	executor->addTask(
 		std::bind(&GBSHttpClient::upRemoteLiveRoomStateTask, this, ids));
 }
 void GBSHttpClient::upRemoteLiveRoomStateTask(std::string ids)
@@ -1096,6 +1142,46 @@ void GBSHttpClient::remainingActivationTask(int levelId) {
 			}
 		},
 		url, body.dump(), token);
+
+	task->run();
+
+	return;
+}
+void GBSHttpClient::agreement(int type) {
+	executor->addTask(std::bind(&GBSHttpClient::agreementTask, this, type));
+}
+void GBSHttpClient::agreementTask(int type) {
+	json body = {{"type", type}};
+	std::string url = baseUrl + "/preferred/login/agreement";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, int type) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHost}},
+						cpr::VerifySsl{false})
+					 .get();
+
+			if (r.status_code == 200) {
+				return r.text;
+
+			} else {
+				std::cerr << "[ERROR] retrieve the member info error:"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				return "Error";
+			}
+		},
+		[type, this](const std::string &response) {
+			auto r = json::parse(response);
+			if (!r.is_null() && !r["result"].is_null()) {
+				std::string richText = r["result"]["content"].get<std::string>();
+				std::lock_guard<std::mutex> guard(cs);
+				for (auto it = handlers.begin(); it != handlers.end(); it++) {
+					(*it)->onAgreementInfo(richText, type);
+				}
+			}
+		},
+		url, body.dump(), type);
 
 	task->run();
 

@@ -17,6 +17,8 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
+	ui->imgTheme->setVisible(false);
+	ui->radioButton->setVisible(false);
 	ui->lblNaviTitle->setStyleSheet("QLabel {"
 					"    background: transparent;"
 					"    color: #1B2846;"     // 文本颜色
@@ -43,22 +45,23 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
         ui->lblNickName->setText(nickName);
 
 
-	VertNaviButton* btnZBZB = new VertNaviButton("主播直播", ":gbs/images/gbs/biz/gbs-live-zbzb.png", this);
 	VertNaviButton* btnDBZB = new VertNaviButton("代播直播", ":gbs/images/gbs/biz/gbs-live-dbzb.png", this);
-	VertNaviButton* btnDMSZ = new VertNaviButton("弹幕设置", ":gbs/images/gbs/biz/gbs-live-dmsz.png", this);
 	VertNaviButton* btnCKGL = new VertNaviButton("场控管理", ":gbs/images/gbs/biz/gbs-live-ckgl.png", this);
+	VertNaviButton* btnDMSZ = new VertNaviButton("弹幕设置", ":gbs/images/gbs/biz/gbs-live-dmsz.png", this);
+	VertNaviButton* btnZBZB = new VertNaviButton("主播直播", ":gbs/images/gbs/biz/gbs-live-zbzb.png", this);
 
 	vertNaviButtons << btnZBZB << btnDBZB << btnDMSZ << btnCKGL;
-	btnZBZB->changeStyle(true);
+	btnDBZB->changeStyle(true);
 
 	btnZBZB->setFixedSize(205, 40);
 	btnDBZB->setFixedSize(205, 40);
 	btnDMSZ->setFixedSize(205, 40);
 	btnCKGL->setFixedSize(205, 40);
-	ui->verticalLayout->addWidget(btnZBZB);
+	ui->verticalLayout->addWidget(btnCKGL);
 	ui->verticalLayout->addWidget(btnDBZB);
 	ui->verticalLayout->addWidget(btnDMSZ);
-	ui->verticalLayout->addWidget(btnCKGL);
+	ui->verticalLayout->addWidget(btnZBZB);
+
 	QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 	ui->verticalLayout->addSpacerItem(verticalSpacer);
 
@@ -81,7 +84,7 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 	QPixmap pixmap(path);
 	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 
-
+	useLiveBroker = true;
 
 }
 
@@ -131,8 +134,8 @@ void GBSNaviLive::onZBZBClicked() {
 		GBSBizLivePusher* gbsBizLivePusher = new GBSBizLivePusher(this);
 		layout->addWidget(gbsBizLivePusher);
 		currentWidgetRef = gbsBizLivePusher;
-		connect(this, &GBSNaviLive::signalDanmakuReceived,
-			gbsBizLivePusher, &GBSBizLivePusher::addNewWidget);
+		//connect(this, &GBSNaviLive::signalDanmakuReceived,
+		//	gbsBizLivePusher, &GBSBizLivePusher::addNewWidget);
 
 	}
 	layout->invalidate(); // 使布局无效并重新调整

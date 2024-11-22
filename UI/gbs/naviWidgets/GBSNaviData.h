@@ -28,6 +28,7 @@ public slots:
 
 private:
 	void mariVertButton(VertNaviButton *button);
+	void seeYouNext();
 
 
 private:

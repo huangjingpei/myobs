@@ -31,6 +31,8 @@
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/common/HoriNaviButton.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/common/QToast.h"
+
 
 #include "GBSMainProfile.h"
 #include <thread>
@@ -186,7 +188,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 		if (mainWindow) {
 			qDebug() << "FILE: " << __FILE__ << " line " << __LINE__;
 
-			mainWindow->close(); // 将触发 closeEvent
+			//mainWindow->close(); // 将触发 closeEvent
 		}
 		qDebug() << "FILE: " << __FILE__ << " line " << __LINE__;
 
@@ -298,6 +300,14 @@ void GBSMainBizWindow::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 void GBSMainBizWindow::onRoomInfo(GBSRoomInfo *info) {}
 void GBSMainBizWindow::onQRcodeInfo(std::string no, std::string url, int status) {}
 
+void GBSMainBizWindow::seeYouNext() {
+
+	QToast *toast = new QToast(this, "感谢你的关注!\n我们已经在努力开发中，敬请期待未来的版本...", 3000);
+	toast->show();
+	return;
+}
+
+
 void GBSMainBizWindow::onDataClick(bool checked) {
     HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
     markHoriButton(button);
@@ -315,8 +325,10 @@ void GBSMainBizWindow::onDataClick(bool checked) {
 
 }
 void GBSMainBizWindow::onProductClick(bool checked) {
-    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
-    markHoriButton(button);
+
+	return seeYouNext();
+	HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+	markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviProduct *gbsNaviProduct = new GBSNaviProduct(this);
 	naviLayout->addWidget(gbsNaviProduct);
@@ -328,29 +340,30 @@ void GBSMainBizWindow::onProductClick(bool checked) {
 	currentBizWidget = gbsSoYoung;
 }
 void GBSMainBizWindow::onLiveClick(bool checked) {
-    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
-    markHoriButton(button);
+	HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+	markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviLive* gbsNaviLive = new GBSNaviLive(this);
 	naviLayout->addWidget(gbsNaviLive);
 	clearWidgetsFromLayout(bizLayout.data());
 
-	GBSBizLivePusher* gbsBizlivePusher = new GBSBizLivePusher(this);
-	bizLayout->addWidget(gbsBizlivePusher);
-	gbsNaviLive->addLayoutRef(bizLayout, gbsBizlivePusher);
-	currentBizWidget = gbsBizlivePusher;
+	//GBSBizLivePusher* gbsBizlivePusher = new GBSBizLivePusher(this);
+	//bizLayout->addWidget(gbsBizlivePusher);
+	//gbsNaviLive->addLayoutRef(bizLayout, gbsBizlivePusher);
+	//currentBizWidget = gbsBizlivePusher;
 
-	//GBSBizLiveBroker*  gbsBizLiveBroker= reinterpret_cast<GBSBizLiveBroker *>(App()->GetMainWindow());
-	//gbsNaviLive->addLayoutRef(bizLayout, gbsBizLiveBroker);
-	//bizLayout->addWidget(gbsBizLiveBroker);
-	//currentBizWidget = gbsBizLiveBroker;
+	GBSBizLiveBroker*  gbsBizLiveBroker= reinterpret_cast<GBSBizLiveBroker *>(App()->GetMainWindow());
+	gbsNaviLive->addLayoutRef(bizLayout, gbsBizLiveBroker);
+	bizLayout->addWidget(gbsBizLiveBroker);
+	currentBizWidget = gbsBizLiveBroker;
 
 
 
 }
 void GBSMainBizWindow::onTranslateClick(bool checked) {
-    HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
-    markHoriButton(button);
+	return seeYouNext();
+	HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
+	markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviTranslate *gbsNaviTranslate = new GBSNaviTranslate(this);
 	naviLayout->addWidget(gbsNaviTranslate);

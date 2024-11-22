@@ -1031,7 +1031,11 @@ private slots:
 
 	void on_actionShow_Recordings_triggered();
 	void on_actionRemux_triggered();
+
+public slots:
 	void on_action_Settings_triggered();
+
+private slots:
 	void on_actionShowMacPermissions_triggered();
 	void on_actionShowMissingFiles_triggered();
 	void on_actionAdvAudioProperties_triggered();

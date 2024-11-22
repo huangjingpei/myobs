@@ -10,6 +10,9 @@
 #include <QProcess>
 #include <QTimer>
 
+#include "window-basic-main-outputs.hpp"
+#include "obs-frontend-api.h"
+
 
 #include "gbs/common/QIniFile.h"
 #include "gbs/common/WebSocketClient.h"

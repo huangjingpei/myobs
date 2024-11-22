@@ -7,30 +7,79 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	ui->tabWidget->setStyleSheet(
-	"QTabWidget::pane {"
-	"    border: none;" // 移除tab pane的边框
-	"}"
-	"QTabBar::tab {"
-	"    background: none;"   // tab的背景颜色
-	"    padding: 10px;"      // tab内容的填充
-	"    margin-right: 10px;" // 调整tab之间的水平间距
-	"    border: none;"       // 移除tab的边框
-	"    color: #01C667;"
-	"    font-size:16px;"
-	"}"
-	"QTabBar::tab:first {"
-	"    margin-left: 100px;" // 调整第一个tab项的左外边距
-	"}"
-	"QTabBar::tab:selected {"
-	"    background: #C0C0C0;" // 选中tab的背景颜色
-	"    border: none;"        // 选中时也不显示边框
-	"    border-radius: 16px"
-	"}"
-	"QTabBar {"
-	"    qproperty-alignment: AlignCenter;" // 设置tab项居中对齐
-	"}");
+	// ui->tabWidget->setStyleSheet(
+	// "QTabWidget::pane {"
+	// "    border: none;" // 移除tab pane的边框
+	// "}"
+	// "QTabBar::tab {"
+	// "    background: none;"   // tab的背景颜色
+	// "    padding: 10px;"      // tab内容的填充
+	// "    margin-right: 10px;" // 调整tab之间的水平间距
+	// "    border: none;"       // 移除tab的边框
+	// "    color: #01C667;"
+	// "    font-size:16px;"
+	// "}"
+	// "QTabBar::tab:first {"
+	// "    margin-left: 100px;" // 调整第一个tab项的左外边距
+	// "}"
+	// "QTabBar::tab:selected {"
+	// "    background: #C0C0C0;" // 选中tab的背景颜色
+	// "    border: none;"        // 选中时也不显示边框
+	// "    border-radius: 16px"
+	// "}"
+	// "QTabBar {"
+	// "    qproperty-alignment: AlignCenter;" // 设置tab项居中对齐
+	// "}");
 
+	    ui->tabWidget->setStyleSheet("QTabWidget::pane {"
+				 "    border: none;" // 移除tab pane的边框
+				 "}"); // 清空 QTabWidget 的样式表
+
+	    ui->tabWidget->tabBar()->setStyleSheet("QTabBar::tab {"
+				"    color: #78828A; "              // 默认字体颜色
+				"    background: none; "       // 默认背景颜色
+				 "    padding: 40px; "      // 内边距
+				"    padding: 4px; "             // 内边距
+				"    border-radius: 5px; "        // 圆角
+				"    font-size: 16px;"         // 设置字体大小为16像素
+
+				"}"
+				"QTabBar::tab:selected {"
+				"    color: #00C566; "              // 选中字体颜色
+				"    background: none; "       // 选中背景颜色
+				"    padding: 4px; "              // 内边距
+				"}"
+				"QTabBar::tab:first {"
+				"    margin-left: 100px;" // 调整第一个tab项的左外边距
+				"}");
+
+    ui->cbxPlat->setStyleSheet("QComboBox {"
+				    "    padding-left: 10px;" // 为左侧箭头和文本之间留出足够的空间
+				    "    border: 1px solid transparent;" // 去除边框
+				    "    background: transparent;"       // 背景透明
+
+				    "}"
+				    "QComboBox::drop-down {"
+				    "    width: 20px;" // 设置下拉箭头的宽度
+				    "    subcontrol-origin: padding;"
+				    "    subcontrol-position: left center;" // 将下拉按钮移到左侧
+				    "    margin-left: 5px;"                 // 控制箭头与左边框的距离
+				    "}"
+				    "QComboBox::down-arrow {"
+				    "    image: url(:gbs/images/gbs/biz/gbs-right-combox-arrow.png);" // 替换为你的箭头图标
+				    "    width: 16px;"                                        // 箭头的宽度
+				    "    height: 16px;"                                       // 箭头的高度
+				    "    border: none;"
+				    "    background: transparent;" // 透明背景
+				    "}"
+				"QComboBox QAbstractItemView {"
+				"border: 1px solid #cccccc;"
+				"   selection-background-color: #f0f0f0;"
+				"   selection-color: black;"
+				"border-radius: 0px;" /* 移除下拉列表的圆角 */
+
+				"}"
+    );
 	iniFile = new IniSettings("danmu/setting/setting.ini");
 	QString text = ui->leChromePath->text();
 	if (text.isEmpty()) {
@@ -204,6 +253,8 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 	ui->cbxPlat->addItem("拼多多");
 	ui->cbxPlat->addItem("其他");
 
+
+
 	connect(ui->cbxPlat, &QComboBox::activated, this,
 		[this](int index) {
 			QString plat = ui->cbxPlat->currentText();
@@ -231,20 +282,51 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 
 		});
 
-	connect(ui->pushButton_15, &QPushButton::clicked, this, [this]() {
-		QProcess *chromeProcess = nullptr;
-		launchDanmuExe(chromeProcess);
-		HWND chromeHwnd = nullptr;
 
-		//// Wait for a few seconds for Chrome to launch and get the window handle
-		//QTimer::singleShot(2000, [&]() {
-		//	chromeHwnd = findChromeWindow();
-		//	if (chromeHwnd) {
-		//		embedChrome(
-		//			chromeHwnd,
-		//			ui->wgtEmbedChrome); // Embed Chrome into the main window
-		//	}
-		//});
+	ui->pushButton_15->setStyleSheet("QPushButton {"
+					"background-color: #00C566;"
+					"border-radius:5px;"
+					"color: white;"
+					 "font-size: 16px;"
+					"}"
+				);
+	ui->pushButton_15->setText("关闭");
+	ui->pushButton_15->setCheckable(true);
+	connect(ui->pushButton_15, &QPushButton::clicked, this, [this]() {
+
+		QPushButton *button = qobject_cast<QPushButton *>(sender());
+		if (button->isChecked()) {
+			QProcess *chromeProcess = nullptr;
+			launchDanmuExe(chromeProcess);
+			HWND chromeHwnd = nullptr;
+
+			//// Wait for a few seconds for Chrome to launch and get the window handle
+			//QTimer::singleShot(2000, [&]() {
+			//	chromeHwnd = findChromeWindow();
+			//	if (chromeHwnd) {
+			//		embedChrome(
+			//			chromeHwnd,
+			//			ui->wgtEmbedChrome); // Embed Chrome into the main window
+			//	}
+			//});
+
+			ui->pushButton_15->setText("开启");
+			ui->pushButton_15->setStyleSheet("QPushButton {"
+							 "background-color: #D7D7D7;" 
+							 "border-radius:5px;"
+							 "color: white;"
+							 "font-size: 16px;"
+							 "}");
+		} else {
+			ui->pushButton_15->setText("关闭");
+			ui->pushButton_15->setStyleSheet("QPushButton {"
+							 "background-color: #00C566;"
+							 "border-radius:5px;"
+							 "color: white;"
+							 "font-size: 16px;"
+							 "}");
+		}
+
 		});
 
 }

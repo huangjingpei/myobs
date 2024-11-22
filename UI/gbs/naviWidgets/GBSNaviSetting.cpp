@@ -18,6 +18,8 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->imgTheme->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-theme-dark.png)");
+	ui->imgTheme->setVisible(false);
+	ui->radioButton->setVisible(false);
 	ui->lblNaviTitle->setStyleSheet("QLabel {"
 					"    background: transparent;"
 					"    color: #1B2846;"     // 文本颜色
@@ -43,7 +45,7 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
             </p>
         )";
 
-	VertNaviButton *btnBasic = new VertNaviButton("基础设置", ":gbs/images/gbs/biz/gbs-setting-basic.png", this);
+	VertNaviButton *btnBasic = new VertNaviButton("  基础设置", ":gbs/images/gbs/biz/gbs-setting-basic.png", this);
 	VertNaviButton *btnProductDupRM =
 		new VertNaviButton("商品素材去重", ":gbs/images/gbs/biz/gbs-setting-product-material.png", this);
 	VertNaviButton *btnTimbreSquare =
@@ -89,6 +91,10 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	QString path = main->getRoundedAvator();
 	QPixmap pixmap(path);
 	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+
+	
+	btnBridgerMgr->setVisible(false);
+	btnLiveEditor->setVisible(false);
 
 }
 
@@ -206,35 +212,35 @@ void GBSNaviSetting::onLiveSourcDupRMClick()
 		currentWidgetRef = gbsBizSettingLiveSourceDupRM;
 	}
 }
-
-void GBSNaviSetting::onOutputClick()
-{
-	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
-	if (layout) {
-
-		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
-		mariVertButton(button);
-		layout->removeWidget(currentWidgetRef);
-		delete currentWidgetRef;
-
-		GBSBizSettingOutput* gbsBizSettingOutput = new GBSBizSettingOutput(this);
-		layout->addWidget(gbsBizSettingOutput);
-		currentWidgetRef = gbsBizSettingOutput;
-
-	}
-}
-void GBSNaviSetting::onAVClick() {
-	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
-	if (layout) {
-		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
-		mariVertButton(button);
-		layout->removeWidget(currentWidgetRef);
-		delete currentWidgetRef;
-		GBSBizSettingAV* gbsBizSettingAV = new GBSBizSettingAV(this);
-		layout->addWidget(gbsBizSettingAV);
-		currentWidgetRef = gbsBizSettingAV;
-
-
-
-	}
-}
+//
+//void GBSNaviSetting::onOutputClick()
+//{
+//	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
+//	if (layout) {
+//
+//		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+//		mariVertButton(button);
+//		layout->removeWidget(currentWidgetRef);
+//		delete currentWidgetRef;
+//
+//		GBSBizSettingOutput *gbsBizSettingOutput = new GBSBizSettingOutput(this);
+//		layout->addWidget(gbsBizSettingOutput);
+//		currentWidgetRef = gbsBizSettingOutput;
+//
+//	}
+//}
+//void GBSNaviSetting::onAVClick() {
+//	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
+//	if (layout) {
+//		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+//		mariVertButton(button);
+//		layout->removeWidget(currentWidgetRef);
+//		delete currentWidgetRef;
+//		GBSBizSettingAV* gbsBizSettingAV = new GBSBizSettingAV(this);
+//		layout->addWidget(gbsBizSettingAV);
+//		currentWidgetRef = gbsBizSettingAV;
+//
+//
+//
+//	}
+//}

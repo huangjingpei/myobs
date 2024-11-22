@@ -3,8 +3,8 @@
 
 #include <QCheckBox>
 
-GBSBizSettingBasic::GBSBizSettingBasic(QWidget *parent)
-	: QWidget(parent),
+GBSBizSettingBasic::GBSBizSettingBasic(OBSBasicSettings *settings, QWidget *parent)
+	: settings(settings), QWidget(parent),
 	  ui(new Ui::GBSBizSettingBasic)
 {
 	ui->setupUi(this);

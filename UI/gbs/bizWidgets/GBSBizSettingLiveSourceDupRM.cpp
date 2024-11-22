@@ -8,30 +8,30 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->tabWidget->setStyleSheet(
-        "QTabWidget::pane {"
-        "    border: none;"  // 移除tab pane的边框
-        "}"
-        "QTabBar::tab {"
-        "    background: none;"  // tab的背景颜色
-        "    padding: 10px;"  // tab内容的填充
-        "    margin-right: 10px;"  // 调整tab之间的水平间距
-        "    border: none;"  // 移除tab的边框
-        "    color: #01C667;"
-        "    font-size:16px;"
-        "}"
-        "QTabBar::tab:first {"
-        "    margin-left: 100px;"  // 调整第一个tab项的左外边距
-        "}"
-        "QTabBar::tab:selected {"
-        "    background: #C0C0C0;"  // 选中tab的背景颜色
-        "    border: none;"  // 选中时也不显示边框
-        "    border-radius: 16px"
-        "}"
-        "QTabBar {"
-        "    qproperty-alignment: AlignCenter;"  // 设置tab项居中对齐
-        "}"
-        );
+    //ui->tabWidget->setStyleSheet(
+    //    "QTabWidget::pane {"
+    //    "    border: none;"  // 移除tab pane的边框
+    //    "}"
+    //    "QTabBar::tab {"
+    //    "    background: none;"  // tab的背景颜色
+    //    "    padding: 10px;"  // tab内容的填充
+    //    "    margin-right: 10px;"  // 调整tab之间的水平间距
+    //    "    border: none;"  // 移除tab的边框
+    //    "    color: #01C667;"
+    //    "    font-size:16px;"
+    //    "}"
+    //    "QTabBar::tab:first {"
+    //    "    margin-left: 100px;"  // 调整第一个tab项的左外边距
+    //    "}"
+    //    "QTabBar::tab:selected {"
+    //    "    background: #C0C0C0;"  // 选中tab的背景颜色
+    //    "    border: none;"  // 选中时也不显示边框
+    //    "    border-radius: 16px"
+    //    "}"
+    //    "QTabBar {"
+    //    "    qproperty-alignment: AlignCenter;"  // 设置tab项居中对齐
+    //    "}"
+    //    );
 
 
 
@@ -89,31 +89,6 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 	    ui->horizontalSlider_30->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.GlobalControl", value);
     });
-    bool localPicture = iniFile->value("RemoveDuplicate", "video.LocalPicture", false).toBool();
-    ui->horizontalSlider_31->setValue(localPicture);
-    connect(ui->horizontalSlider_31, &QSlider::valueChanged, this, [this](int value) {
-	    ui->horizontalSlider_31->setValue(value);
-	    iniFile->setValue("RemoveDuplicate", "video.LocalPicture", value);
-    });
-    bool localTimeClock = iniFile->value("RemoveDuplicate", "video.LocalTimeClock", false).toBool();
-    ui->horizontalSlider_34->setValue(localTimeClock);
-    connect(ui->horizontalSlider_34, &QSlider::valueChanged, this, [this](int value) {
-	    ui->horizontalSlider_34->setValue(value);
-	    iniFile->setValue("RemoveDuplicate", "video.LocalTimeClock", value);
-    });
-    bool localWhosComming = iniFile->value("RemoveDuplicate", "video.LocalWhosComming", false).toBool();
-    ui->horizontalSlider_35->setValue(localWhosComming);
-    connect(ui->horizontalSlider_35, &QSlider::valueChanged, this, [this](int value) {
-	    ui->horizontalSlider_35->setValue(value);
-	    iniFile->setValue("RemoveDuplicate", "video.LocalWhosComming", value);
-    });
-    bool localAudioEffect = iniFile->value("RemoveDuplicate", "video.LocalAudioEffect", false).toInt();
-    ui->horizontalSlider_37->setValue(localAudioEffect);
-    connect(ui->horizontalSlider_37, &QSlider::valueChanged, this, [this](int value) {
-	    ui->horizontalSlider_37->setValue(value);
-	    iniFile->setValue("RemoveDuplicate", "video.LocalAudioEffect", value);
-    });
-
 
     int localJitter = iniFile->value("RemoveDuplicate", "video.LocalJitter", 0).toBool();
     ui->hsJittterSlider->setValue(localJitter);

@@ -42,11 +42,13 @@ target_sources(
     gbs/common/SystemUtils.h
     gbs/common/QIniFile.h
     gbs/common/QBizLogger.h
+    gbs/common/QToast.h
 
     gbs/common/WebSocketClient.cpp
     gbs/common/WebSocketClient.h
     gbs/common/GBSHttpClient.cpp
     gbs/common/GBSHttpClient.h
+    gbs/common/DoubleTextButton.h
 
     gbs/common/XORPasswordProtecter.h
 
@@ -106,6 +108,10 @@ target_sources(
     gbs/bizWidgets/GBSBizLiveGuarderAuth.cpp
     gbs/bizWidgets/GBSBizLiveGuarderAuth.h
     gbs/bizWidgets/GBSBizLiveGuarderCtrl.cpp
+    gbs/bizWidgets/GBSBizLivePusherAuth.h
+    gbs/bizWidgets/GBSBizLivePusherAuth.cpp
+    gbs/bizWidgets/GBSBizLivePusherCtrl.h
+    gbs/bizWidgets/GBSBizLivePusherCtrl.cpp
 
     gbs/bizWidgets/GBSMsgDialog.h
     gbs/bizWidgets/GBSMsgDialog.cpp
@@ -126,6 +132,8 @@ target_sources(
     gbs/bizWidgets/GBSBizEShopData.h
     gbs/bizWidgets/GBSAddBroker.cpp
     gbs/bizWidgets/GBSAddBroker.h
+    gbs/bizWidgets/GBSAddConsumer.cpp
+    gbs/bizWidgets/GBSAddConsumer.h
     gbs/bizWidgets/GBSRemoveBroker.cpp
     gbs/bizWidgets/GBSRemoveBroker.h
 
@@ -151,6 +159,7 @@ target_sources(
     window-basic-settings-a11y.cpp
     window-basic-settings-appearance.cpp
     window-basic-settings-stream.cpp
+    window-basic-settings-gbs.cpp
     window-basic-settings.cpp
     window-basic-settings.hpp
     window-basic-source-select.cpp

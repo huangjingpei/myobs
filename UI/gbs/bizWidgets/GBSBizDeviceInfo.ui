@@ -126,7 +126,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>激活密钥：5456******56</string>
+     <string>客户号：   54568556ds56</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnDevInfo01">
@@ -227,7 +227,7 @@ color: #00C566;</string>
      <string notr="true">color:#FF0000;</string>
     </property>
     <property name="text">
-     <string>正常/异常</string>
+     <string>正常</string>
     </property>
    </widget>
   </widget>

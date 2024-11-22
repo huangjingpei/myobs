@@ -92,9 +92,13 @@ set(
 
   gbs/bizWidgets/GBSBizLiveGuarderCtrl.ui
   gbs/bizWidgets/GBSBizLiveGuarderAuth.ui
+  gbs/bizWidgets/GBSBizLivePusherAuth.ui
+  gbs/bizWidgets/GBSBizLivePusherCtrl.ui
+
 
   gbs/bizWidgets/GBSAddBroker.ui
   gbs/bizWidgets/GBSRemoveBroker.ui
+  gbs/bizWidgets/GBSAddConsumer.ui
 
   gbs/bizWidgets/GBSMsgDialog.ui
 

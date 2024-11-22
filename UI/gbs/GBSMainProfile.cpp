@@ -7,6 +7,9 @@
 #include "gbs/GBSMainBizWindow.h"
 #include "gbs/GBSNormalLoginForm.h"
 #include "window-basic-main.hpp"
+#include "window-basic-settings.hpp"
+#include "gbs/bizWidgets/GBSMsgDialog.h"
+#include <QDialog>
 
 
 GBSMainProfile::GBSMainProfile(QWidget *parent)
@@ -81,6 +84,60 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
     //QString style = "background-image: url(./avator.png);";
     //ui->label_3->setStyleSheet(style);
 
+    QString dialogStyleSheet = R"(
+				"QDialog { "
+				  "    background-color: grey; " // 背景色
+				  "    border: 2px solid #000000; " // 边框
+				  "    border-radius: 10px; "       // 圆角
+				  "} "
+				  "QLabel { "
+				  "    color: white; "    // 文本颜色
+				  "    font-size: 16px; " // 字体大小
+				  "} "
+				  "QPushButton { "
+				  "    background-color: #2E3A59; "
+				  "    color: white; "
+				  "    border: 1px solid #4C4C4C; "
+				  "    border-radius: 5px; "
+				  "    padding: 5px 10px; "
+				  "} "
+				  "QPushButton:hover { "
+				  "    background-color: #3B4A72; "
+				  "} "
+				  "QComboBox { "
+				  "    background-color: #2E3A59; "
+				  "    color: white; "
+				  "    border: 1px solid #4C4C4C; "
+				  "    border-radius: 5px; "
+				  "    padding: 2px 5px; "
+				  "} "
+				  "QComboBox::drop-down { "
+				  "    border: 0px; "
+				  "} "
+				  "QComboBox::down-arrow { "
+				  "    image: url(:/icons/down-arrow.png); "
+				  "    width: 10px; height: 10px; "
+				  "} "
+				  "QCheckBox, QRadioButton { "
+				  "    color: white; "
+				  "    font-size: 14px; "
+				  "} "
+				  "QGroupBox { "
+				  "    color: white; "              // 标题颜色
+				  "    font-size: 16px; "           // 标题字体大小
+				  "    border: 1px solid #4C4C4C; " // 边框
+				  "    border-radius: 5px; "        // 圆角
+				  "    margin-top: 10px; "          // 标题上方的间距
+				  "} "
+				  "QGroupBox:title { "
+				  "    subcontrol-origin: margin; "
+				  //"    subcontrol-position: top center; " // 标题居中
+				  "    padding: 0 5px; "
+				  "    background-color: #2E3A59; "
+				  "    border-radius: 5px; "
+				  "}"
+			)";
+
 
     OBSBasic *main = OBSBasic::Get();
     QString path = main->getRoundedAvator();
@@ -88,6 +145,49 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
     ui->label_3->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
     // ui->label_3->setStyleSheet(" border-radius: 50%;");
     connect(ui->pushButton_2,  &QPushButton::clicked, this, &GBSMainProfile::exitSystemAndGoLogin);
+    connect(btnSetting, &QPushButton::clicked, this, [dialogStyleSheet, main]() {
+	    QVBoxLayout *layout = new QVBoxLayout();
+	    OBSBasicSettings settings(main);
+	    QWidget *widget = settings.getAdvancedPageWidget();
+	    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+	    layout->addWidget(widget);
+	    layout->addWidget(buttonBox);
+
+	    QDialog *dialog = new QDialog();
+	    dialog->setStyleSheet(dialogStyleSheet);
+	    dialog->setLayout(layout);
+	    // 连接按钮信号
+	    connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept); // 确认按钮
+	    connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject); // 取消按钮
+	    dialog->exec();
+	    });
+
+
+    
+    connect(btnHotkey, &QPushButton::clicked, this, [dialogStyleSheet, main]() {
+	    QVBoxLayout *layout = new QVBoxLayout();
+	    OBSBasicSettings settings(main);
+	    QWidget *widget = settings.getHotkeyPageWidget();
+	    widget->setFixedSize(453, 815);
+	    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+	    layout->addWidget(widget);
+	    layout->addWidget(buttonBox);
+
+	    QDialog *dialog = new QDialog();
+	    dialog->setStyleSheet(dialogStyleSheet);
+	    dialog->setLayout(layout);
+	    // 连接按钮信号
+	    connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept); // 确认按钮
+	    connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject); // 取消按钮
+	    dialog->exec();
+	    });
+
+    timer = new QTimer(this);
+    timer->setInterval(1000); // 1秒无点击重置计数器
+    connect(ui->pushButton, &QPushButton::clicked, this, &GBSMainProfile::onShowSetting);
+    connect(timer, &QTimer::timeout, this, &GBSMainProfile::resetClickCount);
 }
 
 void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
@@ -102,6 +202,30 @@ void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
     });
 
 }
+
+void GBSMainProfile::onShowSetting()
+{
+	clickCount++;
+	if (!timer->isActive()) {
+		timer->start(); 
+	}
+	if (clickCount >= 5) {
+		clickCount = 0; 
+		timer->stop();
+		OBSBasic *main = OBSBasic::Get();
+		main->on_action_Settings_triggered();
+
+	} else {
+
+	}
+}
+
+void GBSMainProfile::resetClickCount()
+{
+	clickCount = 0;
+}
+
+
 GBSMainProfile::~GBSMainProfile()
 {
     delete ui;

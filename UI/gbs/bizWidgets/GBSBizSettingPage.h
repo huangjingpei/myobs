@@ -2,6 +2,9 @@
 #define GBSBIZSETTINGPAGE_H
 
 #include <QWidget>
+#include <QList>
+#include <QPushButton>
+#include "window-basic-settings.hpp"
 
 namespace Ui {
 class GBSBizSettingPage;
@@ -14,14 +17,28 @@ class GBSBizSettingPage : public QWidget
 public:
     explicit GBSBizSettingPage(QWidget *parent = nullptr);
     ~GBSBizSettingPage();
+
+    void markButton(QPushButton *button);
+
 private slots:
     void onClickBasic();
     void onClickAVOutput();
     void onClickAVSetting();
 
+    void onOK();
+    void onCancel();
+    void onApply();
+
 private:
     Ui::GBSBizSettingPage *ui;
     QWidget *currentWidget{nullptr};
+
+    QList<QPushButton *> buttons;
+    QList<QString> iconPathes;
+    OBSBasicSettings *settings;
+
+    
+    
 
 };
 

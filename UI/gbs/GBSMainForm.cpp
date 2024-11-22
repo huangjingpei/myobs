@@ -215,9 +215,9 @@ void GBSMainForm::onLinkActivated(const QString &link) {
 		}
 	}
 	else if (link == "constrains") {
-
+		GBSHttpClient::getInstance()->agreement(1);
 	} else if (link == "privacy") {
-
+		GBSHttpClient::getInstance()->agreement(2);
 	}
 }
 

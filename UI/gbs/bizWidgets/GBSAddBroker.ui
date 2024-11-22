@@ -90,7 +90,7 @@ border-radius: 8px;
 </string>
     </property>
     <property name="placeholderText">
-     <string>请输入激活编号</string>
+     <string>  请输入激活编号</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="leRecordCache_2">
@@ -109,7 +109,7 @@ border-radius: 8px;
 </string>
     </property>
     <property name="placeholderText">
-     <string>请输入激活密码</string>
+     <string>  请输入激活密码</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnCancel">

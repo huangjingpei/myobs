@@ -21,8 +21,8 @@ public:
 
 public slots:
 	void onBaiscClick();
-	void onOutputClick();
-	void onAVClick();
+	//void onOutputClick();
+	//void onAVClick();
 
 	void onProductDupRMClick();
 	void onTimbreSquareClick();

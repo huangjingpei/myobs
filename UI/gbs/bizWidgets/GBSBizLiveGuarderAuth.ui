@@ -25,7 +25,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>110</x>
       <y>320</y>
       <width>293</width>
       <height>17</height>
@@ -33,7 +33,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">color: #EB3F5E;
-size:12px
+size:14px
 </string>
     </property>
     <property name="text">
@@ -43,8 +43,8 @@ size:12px
    <widget class="QLineEdit" name="lePassword2">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>70</y>
+      <x>185</x>
+      <y>74</y>
       <width>56</width>
       <height>56</height>
      </rect>
@@ -53,8 +53,8 @@ size:12px
    <widget class="QLineEdit" name="lePassword3">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>70</y>
+      <x>265</x>
+      <y>74</y>
       <width>56</width>
       <height>56</height>
      </rect>
@@ -63,8 +63,8 @@ size:12px
    <widget class="QLineEdit" name="lePassword4">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>70</y>
+      <x>345</x>
+      <y>74</y>
       <width>56</width>
       <height>56</height>
      </rect>
@@ -92,8 +92,8 @@ font-size:18px</string>
    <widget class="QLineEdit" name="lePassword1">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>70</y>
+      <x>105</x>
+      <y>74</y>
       <width>56</width>
       <height>56</height>
      </rect>
@@ -130,14 +130,24 @@ font-size:32px
 </string>
     </property>
     <property name="text">
-     <string>场控管理授权码</string>
+     <string>场控管理验证码</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lePassword0">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>70</y>
+      <x>25</x>
+      <y>74</y>
+      <width>56</width>
+      <height>56</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePassword5">
+    <property name="geometry">
+     <rect>
+      <x>425</x>
+      <y>74</y>
       <width>56</width>
       <height>56</height>
      </rect>

@@ -23,8 +23,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color:#F9F9F9;
-border: 1px solid  #FFFFFF;
+    <string notr="true">nborder: 1px solid  #FFFFFF;
 border-radius: 4px;
 </string>
    </property>

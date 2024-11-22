@@ -12,6 +12,12 @@
 #include <QGridLayout>
 #include <QLabel>
 
+#include "qt-wrappers.hpp"
+
+
+#include "window-basic-main.hpp"
+#include "display-helpers.hpp"
+
 class GridButtons : public QWidget {
 
 
@@ -333,6 +339,17 @@ class MyTableWidget : public QTableWidget {
 public:
 	explicit MyTableWidget(QWidget *parent = nullptr) : QTableWidget(parent)
 	{
+		setStyleSheet("QTableWidget {"
+			      "    border: 1px solid #1B2846;"           // 表格外边框
+			      "    border-radius: 4px;"                  // 边框圆角
+			      "    background: #C9DCFF;"                 // 表格背景色
+			      "    gridline-color: #1B2846;"             // 网格线颜色
+			      "    color: #FFFFFF;"                      // 字体颜色
+			      "    font-size: 14px;"                     // 字体大小
+			      "    selection-background-color: #007BFF;" // 选中行背景色
+			      "    selection-color: #FFFFFF;"            // 选中行文字颜色
+			      "}"
+			      );
 		setColumnCount(10);
 		setHorizontalHeaderLabels({"序号", "激活编号", "备注编号", "激活备注客户名称", "开播时间", "刷新时间",
 					   "直播账号", "直播数量（总）", "直播时长", "操作"});
@@ -677,43 +694,93 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
     ui->horizontalLayout->addWidget(buttons);
     validWidget = buttons;
 
+    //ui->tabWidget->setStyleSheet("QTabWidget::pane {"
+				// "    border: none;" // 移除tab pane的边框
+				// "}"
+				// "QTabBar::tab {"
+				// "    background: none;"   // tab的背景颜色
+				// "    padding: 10px;"      // tab内容的填充
+				// "    margin-right: 10px;" // 调整tab之间的水平间距
+				// "    border: none;"       // 移除tab的边框
+				// "    color: #FF0000;"
+				// "    font-size:16px;"
+				// "}"
+				// "QTabBar::tab:first {"
+				// "    margin-left: 100px;" // 调整第一个tab项的左外边距
+				// "}"
+				// "QTabBar::tab:selected {"
+				// "    background: green;" // 选中tab的背景颜色
+				// "    border: none;"        // 选中时也不显示边框
+				// "    border-radius: 16px"
+				// "    font-color:#00C566;"
+				// "    border: 1px solid #00FF00; "
+				// "}"
+				// "QTabBar {"
+				// "    qproperty-alignment: AlignCenter;" // 设置tab项居中对齐
+				// "}"
+				// "QTabBar::tab:hover {"
+				// "    background: #E0E0E0; "
+				// "    color: #0000FF; "
+				// "}"
+    //);
     ui->tabWidget->setStyleSheet("QTabWidget::pane {"
 				 "    border: none;" // 移除tab pane的边框
-				 "}"
-				 "QTabBar::tab {"
-				 "    background: none;"   // tab的背景颜色
-				 "    padding: 10px;"      // tab内容的填充
-				 "    margin-right: 10px;" // 调整tab之间的水平间距
-				 "    border: none;"       // 移除tab的边框
-				 "    color: #01C667;"
-				 "    font-size:16px;"
-				 "}"
-				 "QTabBar::tab:first {"
-				 "    margin-left: 100px;" // 调整第一个tab项的左外边距
-				 "}"
-				 "QTabBar::tab:selected {"
-				 "    background: #C0C0C0;" // 选中tab的背景颜色
-				 "    border: none;"        // 选中时也不显示边框
-				 "    border-radius: 16px"
-				 "}"
-				 "QTabBar {"
-				 "    qproperty-alignment: AlignCenter;" // 设置tab项居中对齐
-				 "}");
+				 "}"); // 清空 QTabWidget 的样式表
+
+    ui->tabWidget->tabBar()->setStyleSheet("QTabBar::tab {"
+				"    color: #78828A; "              // 默认字体颜色
+				"    background: none; "       // 默认背景颜色
+				 "    padding: 40px; "      // 内边距
+				"    padding: 4px; "             // 内边距
+				"    border-radius: 5px; "        // 圆角
+				"    font-size: 14px;"         // 设置字体大小为16像素
+
+				"}"
+				"QTabBar::tab:selected {"
+				"    color: #00C566; "              // 选中字体颜色
+				"    background: none; "       // 选中背景颜色
+				"    padding: 4px; "              // 内边距
+				"}"
+				"QTabBar::tab:first {"
+				"    margin-left: 100px;" // 调整第一个tab项的左外边距
+				"}"
+    );
 
 	 connect(ui->tabWidget, &QTabWidget::currentChanged, this, &GBSBizLiveGuarderCtrl::onTabChanged);
+	   
+
+	auto displayResize = [this]() {
+		 struct obs_video_info ovi;
+
+		 if (obs_get_video_info(&ovi))
+			 ResizePreview(ovi.base_width, ovi.base_height);
+	 };
+	 connect(ui->wgtPreview, &OBSQTDisplay::DisplayResized, displayResize);
+	auto addDisplay = [this](OBSQTDisplay *window) {
+		OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
+		 obs_display_add_draw_callback(window->GetDisplay(), GBSBizLiveGuarderCtrl::RenderMain, this);
+
+		struct obs_video_info ovi;
+		if (obs_get_video_info(&ovi))
+			ResizePreview(ovi.base_width, ovi.base_height);
+	};
+	ui->wgtPreview->Init();
+	connect(ui->wgtPreview, &OBSQTDisplay::DisplayCreated, addDisplay);
 }
 
 void GBSBizLiveGuarderCtrl::onTabChanged(int index) {
-	if (validWidget == nullptr) {
-		return;
+
+
+	if (validWidget != nullptr) {
+
+		qDebug() << "GBSBizLiveGuarderCtrl " << index;
+		ui->horizontalLayout->removeWidget(validWidget);
+		delete validWidget;
+		validWidget = nullptr;
+		update();
 	}
-	qDebug() << "GBSBizLiveGuarderCtrl " << index;
-	ui->horizontalLayout->removeWidget(validWidget);
-	delete validWidget;
-	validWidget = nullptr;
-	update();
 	
-	if (index == 0) {
+	if (index == 0 && index <=3) {
 		GridButtons *buttons = new GridButtons(this);
 		ui->horizontalLayout->addWidget(buttons);
 		validWidget = buttons;
@@ -727,5 +794,95 @@ void GBSBizLiveGuarderCtrl::onTabChanged(int index) {
 
 GBSBizLiveGuarderCtrl::~GBSBizLiveGuarderCtrl()
 {
+	obs_display_remove_draw_callback(ui->wgtPreview->GetDisplay(), GBSBizLiveGuarderCtrl::RenderMain, this);
     delete ui;
+}
+
+
+
+void GBSBizLiveGuarderCtrl::ResizePreview(uint32_t cx, uint32_t cy)
+{
+	QSize targetSize;
+	bool isFixedScaling;
+	obs_video_info ovi;
+
+	/* resize preview panel to fix to the top section of the window */
+	targetSize = GetPixelSize(ui->wgtPreview);
+
+	isFixedScaling = ui->wgtPreview->IsFixedScaling();
+	obs_get_video_info(&ovi);
+
+	if (isFixedScaling) {
+		previewScale = ui->wgtPreview->GetScalingAmount();
+
+		ui->wgtPreview->ClampScrollingOffsets();
+
+		GetCenterPosFromFixedScale(int(cx), int(cy), targetSize.width() - PREVIEW_EDGE_SIZE * 2,
+					   targetSize.height() - PREVIEW_EDGE_SIZE * 2, previewX, previewY,
+					   previewScale);
+		previewX += ui->wgtPreview->GetScrollX();
+		previewY += ui->wgtPreview->GetScrollY();
+
+	} else {
+		GetScaleAndCenterPos(int(cx), int(cy), targetSize.width() - PREVIEW_EDGE_SIZE * 2,
+				     targetSize.height() - PREVIEW_EDGE_SIZE * 2, previewX, previewY, previewScale);
+	}
+
+	ui->wgtPreview->SetScalingAmount(previewScale);
+
+	previewX += float(PREVIEW_EDGE_SIZE);
+	previewY += float(PREVIEW_EDGE_SIZE);
+}
+
+void GBSBizLiveGuarderCtrl::RenderMain(void *data, uint32_t, uint32_t)
+{
+	GS_DEBUG_MARKER_BEGIN(GS_DEBUG_COLOR_DEFAULT, "RenderMain");
+
+	GBSBizLiveGuarderCtrl *window = static_cast<GBSBizLiveGuarderCtrl *>(data);
+	obs_video_info ovi;
+
+	obs_get_video_info(&ovi);
+
+	window->previewCX = int(window->previewScale * float(ovi.base_width));
+	window->previewCY = int(window->previewScale * float(ovi.base_height));
+
+	gs_viewport_push();
+	gs_projection_push();
+
+	obs_display_t *display = window->ui->wgtPreview->GetDisplay();
+	uint32_t width, height;
+	obs_display_size(display, &width, &height);
+	float right = float(width) - window->previewX;
+	float bottom = float(height) - window->previewY;
+
+	gs_ortho(-window->previewX, right, -window->previewY, bottom, -100.0f, 100.0f);
+
+	window->ui->wgtPreview->DrawOverflow();
+
+	/* --------------------------------------- */
+
+	gs_ortho(0.0f, float(ovi.base_width), 0.0f, float(ovi.base_height), -100.0f, 100.0f);
+	gs_set_viewport(window->previewX, window->previewY, window->previewCX, window->previewCY);
+
+	{
+		obs_render_main_texture_src_color_only();
+	}
+	gs_load_vertexbuffer(nullptr);
+
+	/* --------------------------------------- */
+
+	gs_ortho(-window->previewX, right, -window->previewY, bottom, -100.0f, 100.0f);
+	gs_reset_viewport();
+
+	uint32_t targetCX = window->previewCX;
+	uint32_t targetCY = window->previewCY;
+
+	window->ui->wgtPreview->DrawSceneEditing();
+
+	/* --------------------------------------- */
+
+	gs_projection_pop();
+	gs_viewport_pop();
+
+	GS_DEBUG_MARKER_END();
 }

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GBSAddConsumer</class>
+ <widget class="QDialog" name="GBSAddConsumer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>815</width>
+    <height>453</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>815</width>
+     <height>54</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>14</y>
+      <width>95</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:16px;</string>
+    </property>
+    <property name="text">
+     <string>输入客户号</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnClose">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>2</y>
+      <width>48</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../forms/images/gbs/biz/gbs-close-window.png</normaloff>../../forms/images/gbs/biz/gbs-close-window.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>48</width>
+      <height>48</height>
+     </size>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="widget_2" native="true">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>50</y>
+     <width>831</width>
+     <height>411</height>
+    </rect>
+   </property>
+   <widget class="QLineEdit" name="leActiveNo">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>60</y>
+      <width>490</width>
+      <height>59</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  这里输入您的合同编号或客服给予的客户号</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leRecordCache_2">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>160</y>
+      <width>490</width>
+      <height>59</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  5656556565665</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnCancel">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>250</y>
+      <width>96</width>
+      <height>59</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:10px;
+font-size:20px;</string>
+    </property>
+    <property name="text">
+     <string>确定</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnOK">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>250</y>
+      <width>96</width>
+      <height>59</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:10px;
+font-size:20px;</string>
+    </property>
+    <property name="text">
+     <string>取消</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>80</y>
+      <width>48</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:16px;
+color:#7E7E7E;</string>
+    </property>
+    <property name="text">
+     <string>客户号</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>180</y>
+      <width>71</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:16px;
+color:#7E7E7E;</string>
+    </property>
+    <property name="text">
+     <string>激活编号</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>80</y>
+      <width>40</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:12px;
+color:#FF0000;</string>
+    </property>
+    <property name="text">
+     <string>错误</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>180</y>
+      <width>40</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:12px;
+color:#00C566;</string>
+    </property>
+    <property name="text">
+     <string>复制</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>370</y>
+      <width>541</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-size:16px;
+color:#7E7E7E;</string>
+    </property>
+    <property name="text">
+     <string>请复制您的激活编号到场控管理添加授权或者给到您的代播运营者添加授权</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../Resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

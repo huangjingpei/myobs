@@ -543,7 +543,7 @@ color: #78828A;
      <rect>
       <x>250</x>
       <y>363</y>
-      <width>313</width>
+      <width>431</width>
       <height>30</height>
      </rect>
     </property>
@@ -587,7 +587,7 @@ color: #78828A;
      <rect>
       <x>250</x>
       <y>563</y>
-      <width>313</width>
+      <width>431</width>
       <height>30</height>
      </rect>
     </property>
@@ -740,19 +740,6 @@ font-size:16px;</string>
      <enum>QFrame::Shadow::Raised</enum>
     </property>
    </widget>
-   <widget class="EllipticalSlider" name="horizontalSlider_31">
-    <property name="geometry">
-     <rect>
-      <x>620</x>
-      <y>463</y>
-      <width>60</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QFrame" name="seprater1_9">
     <property name="geometry">
      <rect>
@@ -790,7 +777,7 @@ font-size:16px;</string>
      <rect>
       <x>250</x>
       <y>463</y>
-      <width>313</width>
+      <width>431</width>
       <height>30</height>
      </rect>
     </property>
@@ -844,19 +831,6 @@ color:#000000</string>
     </property>
     <property name="text">
      <string>谁来了</string>
-    </property>
-   </widget>
-   <widget class="EllipticalSlider" name="horizontalSlider_34">
-    <property name="geometry">
-     <rect>
-      <x>620</x>
-      <y>363</y>
-      <width>60</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
     </property>
    </widget>
    <widget class="QFrame" name="seprater1_10">
@@ -969,25 +943,6 @@ font-size:16px;</string>
      <string>选择文件夹</string>
     </property>
    </widget>
-   <widget class="EllipticalSlider" name="horizontalSlider_35">
-    <property name="geometry">
-     <rect>
-      <x>620</x>
-      <y>203</y>
-      <width>60</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>1</number>
-    </property>
-    <property name="value">
-     <number>0</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="EllipticalSliderExt" name="hsJittterSlider">
     <property name="geometry">
      <rect>
@@ -1015,7 +970,7 @@ font-size:16px;</string>
 color:#000000</string>
     </property>
     <property name="text">
-     <string>图片去重</string>
+     <string>图层去重</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_9">
@@ -1119,25 +1074,12 @@ font-size:16px;</string>
      <rect>
       <x>250</x>
       <y>203</y>
-      <width>313</width>
+      <width>431</width>
       <height>30</height>
      </rect>
     </property>
     <property name="placeholderText">
      <string>D:\Program Files (x86)\webcatst_mate</string>
-    </property>
-   </widget>
-   <widget class="EllipticalSlider" name="horizontalSlider_37">
-    <property name="geometry">
-     <rect>
-      <x>620</x>
-      <y>563</y>
-      <width>60</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label_64">

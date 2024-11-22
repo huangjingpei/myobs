@@ -206,14 +206,11 @@
         <file>images/gbs/biz/gbs-setting.png</file>
         <file>images/gbs/biz/gbs-setting2-20px.png</file>
         <file>images/gbs/biz/gbs-setting-20px.png</file>
-        <file>images/gbs/biz/gbs-setting-av.png</file>
-        <file>images/gbs/biz/gbs-setting-basic.png</file>
         <file>images/gbs/biz/gbs-setting-bridger-mgr.png</file>
         <file>images/gbs/biz/gbs-setting-dark.png</file>
         <file>images/gbs/biz/gbs-setting-dbhgl.png</file>
         <file>images/gbs/biz/gbs-setting-dmhfsz.png</file>
         <file>images/gbs/biz/gbs-setting-live-edit.png</file>
-        <file>images/gbs/biz/gbs-setting-oupput.png</file>
         <file>images/gbs/biz/gbs-setting-product-demo.png</file>
         <file>images/gbs/biz/gbs-setting-product-material.png</file>
         <file>images/gbs/biz/gbs-setting-source-dumrm.png</file>
@@ -349,5 +346,21 @@
         <file>images/gbs/biz/gbs-ai-rvc.png</file>
         <file>images/gbs/biz/gbs-ai-rvc-transparent.png</file>
         <file>images/gbs/biz/gbs-ai-tts-transparent.png</file>
+        <file>images/gbs/biz/gbs-spinbox-down.png</file>
+        <file>images/gbs/biz/gbs-spinbox-up.png</file>
+        <file>images/gbs/biz/gbs-combox-down.png</file>
+        <file>images/gbs/biz/gbs-setting-basic-transparent.png</file>
+        <file>images/gbs/biz/gbs-live-layer-add.png</file>
+        <file>images/gbs/biz/gbs-live-layer-down.png</file>
+        <file>images/gbs/biz/gbs-live-layer-remove.png</file>
+        <file>images/gbs/biz/gbs-live-layer-setting.png</file>
+        <file>images/gbs/biz/gbs-live-layer-up.png</file>
+        <file>images/gbs/biz/gbs-live-layer-mixer.png</file>
+        <file>images/gbs/biz/gbs-setting-av.png</file>
+        <file>images/gbs/biz/gbs-setting-av-blue.png</file>
+        <file>images/gbs/biz/gbs-setting-basic.png</file>
+        <file>images/gbs/biz/gbs-setting-basic-blue.png</file>
+        <file>images/gbs/biz/gbs-setting-output.png</file>
+        <file>images/gbs/biz/gbs-setting-output-blue.png</file>
     </qresource>
 </RCC>

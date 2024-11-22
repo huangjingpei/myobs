@@ -19,169 +19,404 @@ border: 1px solid  #FFFFFF;
 border-radius: 4px;
 </string>
   </property>
-  <widget class="QFrame" name="frame_3">
+  <widget class="QComboBox" name="cbxScaleAlgo">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>60</y>
-     <width>2</width>
-     <height>21</height>
+     <x>310</x>
+     <y>250</y>
+     <width>541</width>
+     <height>40</height>
     </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color:#DBDBDB</string>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
    </property>
   </widget>
-  <widget class="QFrame" name="frame_4">
+  <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>4</x>
-     <y>852</y>
-     <width>1219</width>
-     <height>60</height>
+     <x>720</x>
+     <y>180</y>
+     <width>131</width>
+     <height>40</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color:#F9F9F9;
-border: 1px solid  #FFFFFF;
-border-radius: 16px;
-</string>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
-   </property>
-   <widget class="QPushButton" name="btnConform">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>13</y>
-      <width>80</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">        background-color: qlineargradient(
-            spread:pad, 
-            x1:0, y1:0, x2:1, y2:1, 
-            stop:0.1054 #1B2846, 
-            stop:0.9062 #000000
-        );
+    <string notr="true">background-color:#00C566;
 border: 1px solid white;
 border-radius:5px;
-font-size:16px;
+font-size:12px;
 color:#FFFFFF</string>
-    </property>
-    <property name="text">
-     <string>确定</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnCancel">
-    <property name="geometry">
-     <rect>
-      <x>1010</x>
-      <y>13</y>
-      <width>80</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">        background-color: qlineargradient(
-            spread:pad, 
-            x1:0, y1:0, x2:1, y2:1, 
-            stop:0.1054 #1B2846, 
-            stop:0.9062 #000000
-        );
-border: 1px solid white;
-border-radius:5px;
-font-size:16px;
-color:#FFFFFF</string>
-    </property>
-    <property name="text">
-     <string>取消</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnApply">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>13</y>
-      <width>80</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">        background-color: qlineargradient(
-            spread:pad, 
-            x1:0, y1:0, x2:1, y2:1, 
-            stop:0.1054 #1B2846, 
-            stop:0.9062 #000000
-        );
-border: 1px solid white;
-border-radius:5px;
-font-size:16px;
-color:#FFFFFF</string>
-    </property>
-    <property name="text">
-     <string>应用</string>
-    </property>
-   </widget>
+   </property>
+   <property name="text">
+    <string>长宽比</string>
+   </property>
   </widget>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1139</width>
-     <height>599</height>
+     <x>190</x>
+     <y>180</y>
+     <width>91</width>
+     <height>40</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: #01C667;
-font-size:16px;
-background-color:#F9F9F9;
-border: 1px solid  #FFFFFF;
-border-radius: 4px;
-</string>
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
    </property>
-   <property name="tabShape">
-    <enum>QTabWidget::TabShape::Rounded</enum>
+   <property name="text">
+    <string>输出分辨率</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxFpsType">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>320</y>
+     <width>101</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbxOutputResolution">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>180</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStackedWidget" name="fpsTypes">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>320</y>
+     <width>541</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="lineWidth">
+    <number>0</number>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
-   <property name="elideMode">
-    <enum>Qt::TextElideMode::ElideLeft</enum>
-   </property>
-   <widget class="QWidget" name="tabBasic">
-    <attribute name="title">
-     <string>基础</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="tabAdvanced">
-    <attribute name="title">
-     <string>高级</string>
-    </attribute>
-    <widget class="QWidget" name="horizontalLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>-1</y>
-       <width>1131</width>
-       <height>571</height>
-      </rect>
+   <widget class="QWidget" name="page_4">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <property name="leftMargin">
+      <number>0</number>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
-    </widget>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item alignment="Qt::AlignmentFlag::AlignTop">
+      <widget class="QComboBox" name="fpsCommon_2">
+       <property name="currentText">
+        <string notr="true">10</string>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <item>
+        <property name="text">
+         <string notr="true">10</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">20</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>24 NTSC</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>25 PAL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">29.97</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">30</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">48</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>50 PAL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">59.94</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">60</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
    </widget>
+   <widget class="QWidget" name="page_5">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item alignment="Qt::AlignmentFlag::AlignTop">
+      <widget class="QSpinBox" name="fpsInteger_2">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>120</number>
+       </property>
+       <property name="value">
+        <number>30</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="page_6">
+    <layout class="QFormLayout" name="formLayout_5">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+     </property>
+     <property name="labelAlignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>Basic.Settings.Video.Numerator</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="fpsNumerator_2">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+       <property name="value">
+        <number>30</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>Basic.Settings.Video.Denominator</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="fpsDenominator_2">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QComboBox" name="cbxBasicResolution">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>110</y>
+     <width>391</width>
+     <height>40</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>720</x>
+     <y>110</y>
+     <width>131</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>长宽比</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>110</y>
+     <width>91</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>基础分辨率</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>250</y>
+     <width>91</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#00C566;
+border: 1px solid white;
+border-radius:5px;
+font-size:12px;
+color:#FFFFFF</string>
+   </property>
+   <property name="text">
+    <string>缩小算法</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>40</y>
+     <width>54</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size:20px;
+color:#00C566;</string>
+   </property>
+   <property name="text">
+    <string>基础</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>80</y>
+     <width>831</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#DBDBDB;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>450</y>
+     <width>821</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:#DBDBDB;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>410</y>
+     <width>54</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size:20px;
+color:#00C566;</string>
+   </property>
+   <property name="text">
+    <string>高级</string>
+   </property>
   </widget>
  </widget>
  <resources/>
