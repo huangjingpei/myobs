@@ -9,7 +9,6 @@
 #include <QPainterPath>
 #include "window-basic-main.hpp"
 
-
 #include <qt-wrappers.hpp>
 #include "gbs/common/FatButton.h"
 #include "gbs/common/QIniFile.h"
@@ -238,30 +237,32 @@ void OBSBasic::startPullStream(QString rtmp) {
 	
 }
 static QPixmap getRoundedPixmap(const QPixmap &src, int diameter) {
-    // 创建一个直径为 diameter 的目标图像，并设置透明背景
+    // 创建一个目标 QPixmap，设置为透明背景
     QPixmap dst(diameter, diameter);
     dst.fill(Qt::transparent);
 
-    // 创建一个更大的 QPixmap 用于抗锯齿处理（例如放大 2 倍再缩小）
-    int scaleFactor = 2;
-    QPixmap scaledSrc = src.scaled(diameter * scaleFactor, diameter * scaleFactor,
-                                   Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    // 缩放源图像到适合的大小，保持抗锯齿和平滑转换
+    QPixmap scaledSrc = src.scaled(diameter, diameter, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
-    // 在更大的 QPixmap 上绘制圆形裁剪路径
+    // 使用 QPainter 绘制裁剪后的圆形图片
     QPainter painter(&dst);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
 
+    // 创建圆形裁剪路径并设置裁剪区域
     QPainterPath path;
     path.addEllipse(0, 0, diameter, diameter);
     painter.setClipPath(path);
 
-    // 将预缩放的图像绘制到目标 QPixmap
-    painter.drawPixmap(0, 0, diameter, diameter, scaledSrc);
+    // 将缩放后的图片绘制到目标图像上
+    QRect targetRect(0, 0, diameter, diameter);
+    QRect sourceRect((scaledSrc.width() - diameter) / 2, 
+                     (scaledSrc.height() - diameter) / 2, 
+                     diameter, diameter);
+    painter.drawPixmap(targetRect, scaledSrc, sourceRect);
 
     return dst;
 }
-
 
 
 void OBSBasic::onUserInfo(const GBSUserInfo *info) {
@@ -272,18 +273,25 @@ void OBSBasic::onUserInfo(const GBSUserInfo *info) {
 }
 
 void OBSBasic::onUserFileDownLoad(const std::string &path, int type) {
-	if (type == 0 && !path.empty()) {
-		QString qPath = QString::fromStdString(path);
-		QPixmap rounded = getRoundedPixmap(qPath, 64);
-		rounded.save("round-avator.png");
-		QString appDirPath = QCoreApplication::applicationDirPath();
-		appDirPath += "/round-avator.png";
-		emit onUseIconUpdate(appDirPath);
-	}
+	QMetaObject::invokeMethod(this, [path,type, this]() {
+		if (type == 0 && !path.empty()) {
+			QString qPath = QString::fromStdString(path);
+			QPixmap rounded = getRoundedPixmap(qPath, 64);
+
+			rounded.save("round-avator.png");
+			QString appDirPath = QCoreApplication::applicationDirPath();
+			QLogD("onUserFileDownLoad, %s.", appDirPath.toStdString().c_str());
+
+			appDirPath += "/round-avator.png";
+			emit onUseIconUpdate(qPath);
+		}
+		});
+
+
 }
 
 QString OBSBasic::getRoundedAvator() {
-	QString file = QCoreApplication::applicationDirPath() + "/round-avator.png";
+	QString file = QCoreApplication::applicationDirPath() + "/avator.png";
 	QFile qFile(file);
 	if (qFile.exists()) {
 		return file;

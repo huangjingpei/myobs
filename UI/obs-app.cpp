@@ -1070,9 +1070,13 @@ qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
 	os_inhibit_sleep_set_active(sleepInhibitor, false);
 	os_inhibit_sleep_destroy(sleepInhibitor);
 qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	QLogD("System shutdown begin...");
+
 	if (libobs_initialized)
 		obs_shutdown();
-qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	QLogD("System shutdown begin...");
+	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+	QLogD("System exit...");
 	exit(0);
 }
 
@@ -2166,8 +2170,7 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 // 	"Woops, OBS has crashed!\n\nWould you like to copy the crash log " \
 // 	"to the clipboard? The crash log will still be saved to:\n\n%s"
 
-#define CRASH_MESSAGE \
-"糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s"
+constexpr auto CRASH_MESSAGE = u8R"(糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
 
 static void main_crash_handler(const char *format, va_list args, void * /* param */)
 {

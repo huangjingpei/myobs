@@ -2348,6 +2348,8 @@ void OBSBasic::OBSInit()
 
 	//ToggleMixerLayout(config_get_bool(App()->GetUserConfig(), "BasicWindow", "VerticalVolControl"));
 	ToggleVolControlLayout();
+	TogglePreview();
+	on_actionLockPreview_triggered();
 	if (config_get_bool(activeConfiguration, "General", "OpenStatsOnStartup"))
 		on_stats_triggered();
 
@@ -5610,7 +5612,7 @@ void OBSBasic::CreateSourcePopupMenu(int idx, bool preview)
 		QAction *action =
 			popup.addAction(QTStr("Basic.Main.PreviewConextMenu.Enable"), this, &OBSBasic::TogglePreview);
 		action->setCheckable(true);
-		action->setChecked(obs_display_enabled(ui->preview->GetDisplay()));
+		action->setChecked(previewEnabled);
 		if (IsPreviewProgramMode())
 			action->setEnabled(false);
 

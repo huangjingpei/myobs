@@ -64,25 +64,12 @@ private:
 		//con->set_proxy("http://humupdates.uchicago.edu:8443");
 		//con->replace_header("Sec-WebSocket-Protocol", "protoo");
 		m_endpoint.connect(con);
- 		clientThread = std::make_shared<std::thread>(&WebSocketClientImpl::run_client, this);
+		m_thread = websocketpp::lib::make_shared<websocketpp::lib::thread>(&client::run, &m_endpoint);
+
 
 
 	}
 
-	void run_client()
-	{
-		// Start the ASIO io_service run loop
-		std::unique_lock<std::mutex> lock(stopMutex);
-		m_start = std::chrono::high_resolution_clock::now();
-		while (m_running) {
-			m_endpoint.run_one();
-
-			// 等待 stopCondition 的通知来结束
-			stopCondition.wait_for(lock, std::chrono::milliseconds(100), [this]() { return !m_running; });
-		}
-	}
-
-	void stop() { m_endpoint.stop(); }
 
 	void on_socket_init(websocketpp::connection_hdl hdl)
 	{
@@ -219,13 +206,23 @@ private:
 		QLogD("retry connect %#x", this);
 		while ((m_should_reconnect) && (!m_exited)){
 			m_running = false;
-			stopCondition.notify_one();
-			// Wait for the `run_client` thread to exit
-			if (clientThread && clientThread->joinable()) {
-				clientThread->join();
+			m_endpoint.stop_perpetual();
+
+	
+			// Ensure the WebSocket connection is closed
+			if (m_handle.lock()) {
+				try {
+					m_endpoint.close(m_handle, websocketpp::close::status::going_away, "");
+				} catch (const websocketpp::exception &e) {
+					std::cerr << "WebSocket close error: " << e.what() << std::endl;
+				}
 			}
 
-			stop();
+			// Wait for the `run_client` thread to exit
+			if (m_thread && m_thread->joinable()) {
+				m_thread->join();
+			}
+
 			std::cout << "Attempting to reconnect in " << m_reconnect_interval << " seconds..."
 				  << std::endl;
 			std::this_thread::sleep_for(std::chrono::seconds(m_reconnect_interval));
@@ -239,25 +236,36 @@ private:
 public:
 	void Start(std::string url) override
 	{
+		DWORD threadId = GetCurrentThreadId();
+		qDebug() << "start thread id" << threadId;
+		QLogD("Start thread id %d", threadId);
 		start(url);
 	}
 	void Stop() override
 	{
+		m_endpoint.stop_perpetual();
+		DWORD threadId = GetCurrentThreadId();
+		qDebug() << "stop thread id" << threadId;
+		QLogD("Stop thread id %d", threadId);
+
 		m_exited = true;
+
 		m_running = false;
+
 		// Ensure the WebSocket connection is closed
 		if (m_handle.lock()) {
-			m_endpoint.close(m_handle, websocketpp::close::status::going_away, "");
+			try {
+				m_endpoint.close(m_handle, websocketpp::close::status::going_away, "");
+			} catch (const websocketpp::exception &e) {
+				std::cerr << "WebSocket close error: " << e.what() << std::endl;
+			}
 		}
-		// Notify `run_client` thread to exit
-		stopCondition.notify_one();
 
 		// Wait for the `run_client` thread to exit
-		if (clientThread && clientThread->joinable()) {
-			clientThread->join();
+		if (m_thread && m_thread->joinable()) {
+			m_thread->join();
 		}
 
-		stop();
 	}
 
 	void Send(std::string msg) override { send_mseeage(msg); }
@@ -285,7 +293,9 @@ private:
 	std::atomic<bool> m_running{false};
 	int m_reconnect_interval{5};
 	std::string m_url;
-	std::shared_ptr<std::thread> clientThread;
+	
+	websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_thread;
+
 	std::mutex stopMutex;
 	std::condition_variable stopCondition;
 };

@@ -359,7 +359,7 @@ void GBSBizLiveDanmaku::launchDanmuExe(QProcess *&process)
 {
 	//process = new QProcess;
 	//QString danmu =
-	//	QCoreApplication::applicationDirPath() + "/danmu/danmu.exe";
+	//	QCoreApplication::applicationDirPath() + "/danmu/main.exe";
 	////process->start(danmu);
 
 	////    if (!process->waitForStarted()) {
@@ -382,7 +382,7 @@ void GBSBizLiveDanmaku::launchDanmuExe(QProcess *&process)
 	//}
 
 
-	QString danmu = QCoreApplication::applicationDirPath() + "/danmu/danmu.exe";
+	QString danmu = QCoreApplication::applicationDirPath() + "/danmu/main.exe";
 	// 可执行文件路径
 	LPCWSTR applicationName = reinterpret_cast<LPCWSTR>(danmu.utf16());
 

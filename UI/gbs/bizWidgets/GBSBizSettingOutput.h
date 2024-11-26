@@ -14,7 +14,7 @@ class GBSBizSettingOutput : public QWidget {
 public:
 	explicit GBSBizSettingOutput(OBSBasicSettings *settings, QWidget *parent = nullptr);
 	~GBSBizSettingOutput();
-
+	void SaveOutputSettings();
 
 private:
 	Ui::GBSBizSettingOutput *ui;

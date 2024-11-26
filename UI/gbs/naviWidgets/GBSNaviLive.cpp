@@ -57,9 +57,9 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 	btnDBZB->setFixedSize(205, 40);
 	btnDMSZ->setFixedSize(205, 40);
 	btnCKGL->setFixedSize(205, 40);
-	ui->verticalLayout->addWidget(btnCKGL);
 	ui->verticalLayout->addWidget(btnDBZB);
 	ui->verticalLayout->addWidget(btnDMSZ);
+	ui->verticalLayout->addWidget(btnCKGL);
 	ui->verticalLayout->addWidget(btnZBZB);
 
 	QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);

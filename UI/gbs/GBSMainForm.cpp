@@ -69,10 +69,45 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 
 
 	QHBoxLayout *loginWndCtlLayout = new QHBoxLayout;
-	QPushButton *minimizeButton = new QPushButton("-", this);
-	//QPushButton *maximizeButton = new QPushButton("+", this);
-	QPushButton *closeButton = new QPushButton("x", this);
+	QPushButton *minimizeButton = new QPushButton();
+	minimizeButton->setStyleSheet("QPushButton {"
+				       "   background-image: url(:gbs/images/gbs/biz/gbs-minimize-window.png);"
+				       "   background-repeat: no-repeat;"
+				       "   background-position: center;"
+				       "   color: white;"
+				       "   border: none;"       // 无边框
+				       "   border-radius: 5px;" // 圆角
+				       "   font-size: 16px;"
+				       "   padding: 0;" // 不添加内边距
+				       "}"
+				       "QPushButton:hover {"
+				       "   background-color: #EB3F5E;"
+				       "}"
+				       "QPushButton:pressed {"
+				       "   padding-left: 1px;  /* 向左移动 3px */"
+				       "   padding-top: 1px;    /* 向上移动 3px */"
+				       "}");
 
+
+	//QPushButton *maximizeButton = new QPushButton("+", this);
+	QPushButton *closeButton = new QPushButton();
+	closeButton->setStyleSheet("QPushButton {"
+				   "   background-image: url(:gbs/images/gbs/biz/gbs-close-window.png);"
+				   "   background-repeat: no-repeat;"
+				   "   background-position: center;"
+				   "   color: white;"
+				   "   border: none;"       // 无边框
+				   "   border-radius: 5px;" // 圆角
+				   "   font-size: 16px;"
+				   "   padding: 0;" // 不添加内边距
+				   "}"
+				   "QPushButton:hover {"
+				   "   background-color: #EB3F5E;"
+				   "}"
+				   "QPushButton:pressed {"
+				   "   padding-left: 1px;  /* 向左移动 3px */"
+				   "   padding-top: 1px;    /* 向上移动 3px */"
+				   "}");
 	minimizeButton->setFixedSize(60, 60);
 	//maximizeButton->setFixedSize(60, 60);
 	closeButton->setFixedSize(60, 60);
@@ -81,38 +116,6 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	loginWndCtlLayout->addWidget(minimizeButton);
 	//loginWndCtlLayout->addWidget(maximizeButton);
 	loginWndCtlLayout->addWidget(closeButton);
-
-
-	minimizeButton->setStyleSheet(
-		"QPushButton {"
-		"  border-radius: 10px;" // 设置圆角的半径为10像素
-		"  font: 26px 'Times New Roman';" // 设置字体大小和类型
-		"}"
-		"QPushButton:hover {"
-		"  background-color: #4EA8FF;" // 鼠标悬停时的背景颜色
-		"  color: white;"              // 鼠标悬停时的文字颜色
-		"}");
-
-	//maximizeButton->setStyleSheet(
-	//	"QPushButton {"
-	//	"  border-radius: 10px;" // 设置圆角的半径为10像素
-	//	"  font: 26px 'Times New Roman';" // 设置字体大小和类型
-	//	"}"
-	//	"QPushButton:hover {"
-	//	"  background-color: #4EA8FF;" // 鼠标悬停时的背景颜色
-	//	"  color: white;"              // 鼠标悬停时的文字颜色
-	//	"}");
-
-	closeButton->setStyleSheet(
-		"QPushButton {"
-		"  border-radius: 10px;" // 设置圆角的半径为10像素
-		"  font: 26px 'Times New Roman';" // 设置字体大小和类型
-		"}"
-		"QPushButton:hover {"
-		"  background-color: #4EA8FF;" // 鼠标悬停时的背景颜色
-		"  color: white;"              // 鼠标悬停时的文字颜色
-		"}");
-
 
 	// 确保按钮在右上角
 	loginWndCtlLayout->setAlignment(Qt::AlignTop | Qt::AlignRight);
@@ -158,6 +161,8 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	//		showMaximized(); // 最大化窗口
 	//	}
 	//});
+	
+	connect(minimizeButton, &QPushButton::clicked, this, &GBSMainForm::showMinimized);
 	connect(closeButton, &QPushButton::clicked, this, &GBSMainForm::close);
 	connect(normalLoginForm, &GBSNormalLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
 	connect(normalLoginForm, &GBSNormalLoginForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
@@ -211,6 +216,8 @@ void GBSMainForm::onLinkActivated(const QString &link) {
 			connect(normalLoginForm,
 				&GBSNormalLoginForm::closeLoginWindow,
 				this, &GBSMainForm::close);
+			connect(normalLoginForm, &GBSNormalLoginForm::notifyLoginSuccess, this, &GBSMainForm::close);
+
 			currentFrom = normalLoginForm;
 		}
 	}
@@ -238,6 +245,11 @@ void GBSMainForm::onLoginTypeChanged(int type){
 			loginBizLayout->addWidget(normalLoginForm);
 			connect(normalLoginForm, &GBSNormalLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
 			connect(normalLoginForm, &GBSNormalLoginForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
+			connect(normalLoginForm, &GBSNormalLoginForm::notifyLoginSuccess, this,
+				[this]() {
+					GBSMainForm::close();
+				});
+
 			connect(normalLoginForm,
 				&GBSNormalLoginForm::closeLoginWindow, this,
 				&GBSMainForm::close);
@@ -258,6 +270,8 @@ void GBSMainForm::onLoginTypeChanged(int type){
 			loginBizLayout->addWidget(authorizedCodeForm);
 			connect(authorizedCodeForm, &GBSAuthorizedCodeForm::linkActivated, this, &GBSMainForm::onLinkActivated);
 			connect(authorizedCodeForm, &GBSAuthorizedCodeForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
+			//connect(authorizedCodeForm, &GBSNormalLoginForm::notifyLoginSuccess, this, &GBSMainForm::close);
+
 
 			currentFrom= authorizedCodeForm;
 		}

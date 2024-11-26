@@ -16,20 +16,6 @@ GBSRegisterForm::GBSRegisterForm(QWidget *parent)
 	ui->lblRegister->setText(registerMessage);
 
 
-	ui->btnRegisterGBS->setStyleSheet(
-		"QPushButton {"
-		"   background-color: transparent;"
-		"   border: none;" // 无边框
-		"   border-radius: 5px;" // 圆角
-		"   font-size: 14px;"
-		"   text-align: center;"
-		"}"
-		"QPushButton:pressed {"
-		"   background-color: #F9F9F9;" // 按下状态背景颜色
-		"   padding-left: 1px;  /* 向左移动 3px */"
-		"   padding-top: 1px;    /* 向上移动 3px */"
-		"}"
-		);
 
         QString existAccountMessage = R"(
             <p style="font-size: 15px; text-align: center;">

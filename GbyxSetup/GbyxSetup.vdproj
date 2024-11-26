@@ -1077,12 +1077,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_1895B011AEDD4405B75A7113669C2EEA"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_189710C7268C44819A84FB14D9AC114B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1216,12 +1210,6 @@
         "Entry"
         {
         "MsmKey" = "8:_1B4DE168AFE444F18340CA836B4DFEA5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1B605BD8D0D244A1AC3B33D117EA697B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3219,12 +3207,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_42D8FA330BF4413581B5DFD4838D9744"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_42DACF43CDC84E8384851A09643A9BCB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -4749,6 +4731,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_62A5B226B8B448FCBA5927C3AD668AB5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_62AD4C12F7AD4C358D11AC2CB2D4B053"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -5488,6 +5476,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7199050F6DE64871BC10F4B46D704FAC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_71C7D53696994CF1864CFB446820DF0C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -7221,6 +7215,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9422D808F91944BDB0D7B2B11D4F4A20"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9475E4594FE04F1790A3F5EF336FABCB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -7774,12 +7774,6 @@
         "Entry"
         {
         "MsmKey" = "8:_9EF9BD858BA94317A58766C47A234E37"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9EFCE1D24FFA4EF5BED31D7FEF6A613B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -9148,6 +9142,12 @@
         "Entry"
         {
         "MsmKey" = "8:_BC7F050A339743E693BC96CD7B91E54D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BCC8E2FE390C496ABE48E7A074233DBD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -16054,26 +16054,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1895B011AEDD4405B75A7113669C2EEA"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\avator.png"
-            "TargetName" = "8:avator.png"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_189710C7268C44819A84FB14D9AC114B"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\aja-output-ui\\locale\\en-US.ini"
@@ -16520,26 +16500,6 @@
             "TargetName" = "8:kaa.ini"
             "Tag" = "8:"
             "Folder" = "8:_975D95B2C90D4C509571B34CF5C1953A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1B605BD8D0D244A1AC3B33D117EA697B"
-            {
-            "SourcePath" = "8:..\\UI\\forms\\images\\gbs\\favicon\\favicon-64.ico"
-            "TargetName" = "8:favicon-64.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_9F77630FAAE64D68ACD6E153FEC731FA"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -23194,26 +23154,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42D8FA330BF4413581B5DFD4838D9744"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\danmu\\danmu.exe"
-            "TargetName" = "8:danmu.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_8B7A19DA931B4299A11C74109D1420A6"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42DACF43CDC84E8384851A09643A9BCB"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\win-capture\\locale\\uk-UA.ini"
@@ -28294,6 +28234,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_62A5B226B8B448FCBA5927C3AD668AB5"
+            {
+            "SourcePath" = "8:..\\UI\\forms\\images\\gbs\\favicon\\favicon-128.ico"
+            "TargetName" = "8:favicon-128.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_62AD4C12F7AD4C358D11AC2CB2D4B053"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\decklink\\locale\\he-IL.ini"
@@ -30760,6 +30720,26 @@
             "TargetName" = "8:hr-HR.ini"
             "Tag" = "8:"
             "Folder" = "8:_7CE29DC03D6F44F7866790CC94A27D7E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_71C7D53696994CF1864CFB446820DF0C"
+            {
+            "SourcePath" = "8:..\\UI\\forms\\images\\gbs\\favicon\\favicon-64.ico"
+            "TargetName" = "8:favicon-64.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -36534,6 +36514,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9422D808F91944BDB0D7B2B11D4F4A20"
+            {
+            "SourcePath" = "8:..\\UI\\forms\\images\\gbs\\favicon\\favicon-64.ico"
+            "TargetName" = "8:favicon-64.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9475E4594FE04F1790A3F5EF336FABCB"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-scripting\\64bit\\obslua.dll"
@@ -38380,26 +38380,6 @@
             "TargetName" = "8:ar-SA.ini"
             "Tag" = "8:"
             "Folder" = "8:_47BDD97676014A019359BF657B43F960"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9EFCE1D24FFA4EF5BED31D7FEF6A613B"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\round-avator.png"
-            "TargetName" = "8:round-avator.png"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -42960,6 +42940,26 @@
             "TargetName" = "8:hi-IN.ini"
             "Tag" = "8:"
             "Folder" = "8:_975D95B2C90D4C509571B34CF5C1953A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BCC8E2FE390C496ABE48E7A074233DBD"
+            {
+            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\danmu\\main.exe"
+            "TargetName" = "8:main.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_8B7A19DA931B4299A11C74109D1420A6"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -54950,9 +54950,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:gbyx"
+        "ProductName" = "8:国播出国"
         "ProductCode" = "8:{59FCE15C-1DBA-443F-A1A9-723306812318}"
-        "PackageCode" = "8:{DDEB7325-FDAC-46BA-A886-F7A68A6C7546}"
+        "PackageCode" = "8:{69FFDEF7-4E6C-4E13-92E2-5B63A382F04C}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -54960,7 +54960,7 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:gbyx"
+        "Manufacturer" = "8:国博科技"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:GbyxSetup"
@@ -55072,9 +55072,9 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_473CC399361E4BF0A4ECAF414657B6C5"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DC27C5019697458A8B735221BC706193"
             {
-            "Name" = "8:gbs64.exe"
+            "Name" = "8:国播出国"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -55083,7 +55083,7 @@
             "Target" = "8:_AC0C467A1F0442C2AC0C53AAC750FE17"
             "Folder" = "8:_9F77630FAAE64D68ACD6E153FEC731FA"
             "WorkingFolder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Icon" = "8:_1B605BD8D0D244A1AC3B33D117EA697B"
+            "Icon" = "8:_62A5B226B8B448FCBA5927C3AD668AB5"
             "Feature" = "8:"
             }
         }

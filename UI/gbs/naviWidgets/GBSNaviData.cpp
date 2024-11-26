@@ -5,6 +5,8 @@
 #include "../bizWidgets/GBSBizSoYoung.h"
 #include "window-basic-main.hpp"
 #include "gbs/common/QToast.h"
+#include "gbs/bizWidgets/GBSMsgDialog.h"
+#include "gbs/common/QBizLogger.h"
 
 GBSNaviData::GBSNaviData(QWidget *parent)
 	: QWidget(parent),
@@ -77,12 +79,28 @@ GBSNaviData::~GBSNaviData()
 	delete ui;
 }
 
-void GBSNaviData::seeYouNext()
+void GBSNaviData::seeYouNext(QString title)
 {
+	
 
-	QToast *toast = new QToast(this, "感谢你的关注!\n我们已经在努力开发中，敬请期待未来的版本...", 3000);
-	toast->show();
-	return;
+	// QToast *toast = new QToast(mainWidget, "感谢你的关注!\n我们已经在努力开发中，敬请期待未来的版本...", 2000);
+	// toast->show();
+	// return;
+	QWidget *widget = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout(widget);
+	QLabel *label = new QLabel("感谢你的关注 !\n我们已经在努力开发中，敬请期待未来的版本... ");
+	QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	layout->addItem(spacer);
+	label->setStyleSheet("font-size: 32px;");
+	label->setAlignment(Qt::AlignHCenter);
+	
+	layout->addWidget(label);
+	GBSMsgDialog *dialog = new GBSMsgDialog(title, layout, this);
+	dialog->exec();
+}
+
+void GBSNaviData::setMainBizWindow(QWidget* widget) {
+	mainWidget = widget;
 }
 
 void GBSNaviData::mariVertButton(VertNaviButton *button)
@@ -120,7 +138,7 @@ void GBSNaviData::onDeviceInfoClicked() {
 }
 
 void GBSNaviData::onEShopDataClicked() {
-	return seeYouNext();
+	return seeYouNext("电商数据");
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
@@ -135,7 +153,7 @@ void GBSNaviData::onEShopDataClicked() {
 
 
 void GBSNaviData::onAIDataClicked() {
-	return seeYouNext();
+	return seeYouNext("智能数据");
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
@@ -154,6 +172,7 @@ void GBSNaviData::onAIDataClicked() {
 
 void GBSNaviData::onMyIconDownloaded(QString path) {
 
+	QLogD("onMyIconDownloaded . %s.", path.toStdString().c_str());
 	QPixmap pixmap(path);
 	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 	ui->imgAvator->setStyleSheet(

@@ -45,3 +45,7 @@ void GBSBizSettingBasic::onClickCBXStopRecordInd() {
 void GBSBizSettingBasic::onClickCBXAutoRecordInd() {
 
 }
+
+void GBSBizSettingBasic::SaveBasicSettings() {
+
+}

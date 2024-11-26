@@ -27,7 +27,7 @@ public:
 protected:
 	void keyPressEvent(QKeyEvent *event) override;
 
-	void seeYouNext();
+	void seeYouNext(QString title);
 
 signals:
 	void windowClosed();

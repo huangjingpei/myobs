@@ -5,6 +5,7 @@
 #include <QDialog>
 #include <QTextBrowser>
 #include <QDialogButtonBox>
+#include <QTimer>
 
 #include "gbs/common/GBSHttpClient.h"
 
@@ -160,22 +161,6 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 		"}"
 		);
 
-
-
-	ui->btnLoginGBS->setStyleSheet(
-		"QPushButton {"
-		"   background-color: #1B2846;" // 正常状态背景颜色
-		"   color: white;"
-		"   border: none;" // 无边框
-		"   border-radius: 5px;" // 圆角
-		"   font-size: 16px;"
-		"}"
-		"QPushButton:pressed {"
-		"   background-color: #1B2846;" // 按下状态背景颜色
-		"   padding-left: 1px;  /* 向左移动 3px */"
-		"   padding-top: 1px;    /* 向上移动 3px */"
-		"}"
-		);
 	connect(ui->btnScanQRodeLogin, &QPushButton::clicked, this, &GBSNormalLoginForm::onQRcodeLogin);
 	connect(ui->btnAuthorizeCodeLogin, &QPushButton::clicked, this, &GBSNormalLoginForm::onAuthorizedLogin);
 	connect(ui->btnForgetPassword, &QPushButton::clicked, this, &GBSNormalLoginForm::onPasswordForgot);

@@ -140,6 +140,7 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 				      "   font-size: 16px;"                                         // 字体大小
 				      "   padding: 10px;"                                           // 内边距
 				      "}");
+	ui->wgtPreview->SetLocked(true);
 
 	auto displayResize = [this]() {
 		struct obs_video_info ovi;

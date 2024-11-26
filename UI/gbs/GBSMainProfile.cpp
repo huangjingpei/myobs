@@ -197,7 +197,7 @@ void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
     App()->quit();
     delete App();
     QTimer::singleShot(2000, [this]() {
-	    GBSNormalLoginForm *loginForm = new GBSNormalLoginForm();
+	    GBSNormalLoginForm *loginForm = new GBSNormalLoginForm(this);
 	    loginForm->show();
     });
 

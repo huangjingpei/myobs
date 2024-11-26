@@ -145,10 +145,15 @@ text-align: center;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: 1px solid gray;
-border-radius: 20px;
+     <string notr="true">border: 1px solid #E9EBED;
+border-radius: 24px;
 padding: 5px;
-background: white;</string>
+background: white;
+padding-left: 24px;
+font-size: 14px;</string>
+    </property>
+    <property name="placeholderText">
+     <string>你的邮箱</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="leProductID">
@@ -161,10 +166,18 @@ background: white;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: 1px solid gray;
-border-radius: 20px;
+     <string notr="true">border: 1px solid #E9EBED;
+border-radius: 24px;
 padding: 5px;
-background: white;</string>
+background: white;
+padding-left: 24px;
+padding-top:10px;
+font-size: 14px;
+lineedit-password-character: 42;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>你的验证码</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnLoginGBS">
@@ -177,12 +190,21 @@ background: white;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: 1px solid gray;
-border-radius: 20px;
+     <string notr="true">QPushButton{
+border: 1px solid #E9EBED;
+color:#FFFFFF;
+border-radius: 24px;
 padding: 5px;
 background: #1B2846;
 font-size: 32px;
 text-align: center;
+}
+QPushButton:pressed{
+background-color: #1B2846;
+ padding-ringht: 3px;
+padding-bottom: 3px;
+}
+
 </string>
     </property>
     <property name="text">

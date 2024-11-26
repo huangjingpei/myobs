@@ -764,6 +764,8 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 		if (obs_get_video_info(&ovi))
 			ResizePreview(ovi.base_width, ovi.base_height);
 	};
+
+	ui->wgtPreview->SetLocked(true);
 	ui->wgtPreview->Init();
 	connect(ui->wgtPreview, &OBSQTDisplay::DisplayCreated, addDisplay);
 }

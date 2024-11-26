@@ -78,6 +78,24 @@ void GBSBizSettingPage::onCancel() {
 }
 void GBSBizSettingPage::onApply() {
 	settings->onApply();
+	GBSBizSettingBasic *gbsBizSettingBasic = qobject_cast<GBSBizSettingBasic *>(currentWidget);
+	if (gbsBizSettingBasic != nullptr) {
+		gbsBizSettingBasic->SaveBasicSettings();
+	}
+
+	GBSBizSettingOutput *gbsBizSettingOutput = qobject_cast<GBSBizSettingOutput *>(currentWidget);
+	if (gbsBizSettingOutput != nullptr) {
+		gbsBizSettingOutput->SaveOutputSettings();
+	}
+
+	GBSBizSettingAV *gbsBizSettingAV = qobject_cast<GBSBizSettingAV *>(currentWidget);
+	if (gbsBizSettingAV != nullptr) {
+		gbsBizSettingAV->SaveAudioSettings();
+		gbsBizSettingAV->SaveVideoSettings();
+	}
+	
+
+
 }
 
 void GBSBizSettingPage::onClickBasic()
@@ -121,3 +139,5 @@ void GBSBizSettingPage::onClickAVSetting() {
         currentWidget = avWidget;
     }
 }
+
+

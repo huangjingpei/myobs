@@ -32,7 +32,7 @@
 #include "gbs/common/HoriNaviButton.h"
 #include "gbs/common/QBizLogger.h"
 #include "gbs/common/QToast.h"
-
+#include "gbs/bizWidgets/GBSMsgDialog.h"
 
 #include "GBSMainProfile.h"
 #include <thread>
@@ -169,6 +169,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	ui->btnData->changeStyle(true);
 
 	GBSNaviData *gbsNaviData = new GBSNaviData(this);
+	gbsNaviData->setMainBizWindow(this);
 	QHBoxLayout* bizPageLayout = new QHBoxLayout;
 	naviLayout = new QHBoxLayout;
 	bizLayout.reset(new QHBoxLayout);
@@ -192,7 +193,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 		}
 		qDebug() << "FILE: " << __FILE__ << " line " << __LINE__;
 
-		QCoreApplication::exit(0);
+		QCoreApplication::quit();
 		qDebug() << "FILE: " << __FILE__ << " line " << __LINE__;
 	});
 
@@ -300,11 +301,19 @@ void GBSMainBizWindow::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 void GBSMainBizWindow::onRoomInfo(GBSRoomInfo *info) {}
 void GBSMainBizWindow::onQRcodeInfo(std::string no, std::string url, int status) {}
 
-void GBSMainBizWindow::seeYouNext() {
+void GBSMainBizWindow::seeYouNext(QString title) {
 
-	QToast *toast = new QToast(this, "感谢你的关注!\n我们已经在努力开发中，敬请期待未来的版本...", 3000);
-	toast->show();
-	return;
+	QWidget *widget = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout(widget);
+	QLabel *label = new QLabel("感谢你的关注 !\n我们已经在努力开发中，敬请期待未来的版本... ");
+	QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	layout->addItem(spacer);
+	label->setStyleSheet("font-size: 32px;");
+	label->setAlignment(Qt::AlignHCenter);
+	
+	layout->addWidget(label);
+	GBSMsgDialog *dialog = new GBSMsgDialog(title, layout, this);
+	dialog->exec();
 }
 
 
@@ -313,6 +322,7 @@ void GBSMainBizWindow::onDataClick(bool checked) {
     markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
 	GBSNaviData *gbsNaviData = new GBSNaviData(this);
+	gbsNaviData->setMainBizWindow(this);
 	naviLayout->addWidget(gbsNaviData);
 
 	clearWidgetsFromLayout(bizLayout.data());
@@ -326,7 +336,7 @@ void GBSMainBizWindow::onDataClick(bool checked) {
 }
 void GBSMainBizWindow::onProductClick(bool checked) {
 
-	return seeYouNext();
+	return seeYouNext("全球货源");
 	HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
 	markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);
@@ -355,13 +365,14 @@ void GBSMainBizWindow::onLiveClick(bool checked) {
 	GBSBizLiveBroker*  gbsBizLiveBroker= reinterpret_cast<GBSBizLiveBroker *>(App()->GetMainWindow());
 	gbsNaviLive->addLayoutRef(bizLayout, gbsBizLiveBroker);
 	bizLayout->addWidget(gbsBizLiveBroker);
+	gbsBizLiveBroker->show();
 	currentBizWidget = gbsBizLiveBroker;
 
 
 
 }
 void GBSMainBizWindow::onTranslateClick(bool checked) {
-	return seeYouNext();
+	return seeYouNext("实时翻译");
 	HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
 	markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);

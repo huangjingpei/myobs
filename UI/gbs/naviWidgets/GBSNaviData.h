@@ -26,9 +26,11 @@ public slots:
 
 	void onMyIconDownloaded(QString path);
 
+	void setMainBizWindow(QWidget *widget);
+
 private:
 	void mariVertButton(VertNaviButton *button);
-	void seeYouNext();
+	void seeYouNext(QString title);
 
 
 private:
@@ -36,6 +38,7 @@ private:
 	QWeakPointer<QLayout> weakLayoutPtr;
 	QWidget* currentWidgetRef;
 	QList<VertNaviButton *> vertNaviButtons;
+	QWidget *mainWidget = nullptr;
 };
 
 #endif // GBSNAVIDATA_H

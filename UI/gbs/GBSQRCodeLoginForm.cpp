@@ -144,6 +144,7 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	connect(this, &GBSQRCodeLoginForm::onUseIconUpdate, this, &GBSQRCodeLoginForm::onMyIconDownloaded);
 	GBSHttpClient::getInstance()->registerHandler(this);
 	GBSHttpClient::getInstance()->createQrCodeScan();
+
 }
 
 GBSQRCodeLoginForm::~GBSQRCodeLoginForm()

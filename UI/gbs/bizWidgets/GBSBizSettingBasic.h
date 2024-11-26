@@ -13,6 +13,7 @@ class GBSBizSettingBasic : public QWidget {
 public:
 	explicit GBSBizSettingBasic(OBSBasicSettings *settings, QWidget *parent = nullptr);
 	~GBSBizSettingBasic();
+	void SaveBasicSettings();
 
 public slots:
 	void onClickCBXStartLiveInd();

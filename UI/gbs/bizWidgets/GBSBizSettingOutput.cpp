@@ -181,3 +181,7 @@ GBSBizSettingOutput::~GBSBizSettingOutput()
 	delete ui;
 }
 
+void GBSBizSettingOutput::SaveOutputSettings() {
+
+}
+
