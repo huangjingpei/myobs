@@ -1053,6 +1053,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_18135520DDA74E758C398D97A4F36A0D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_184A04C83B66464BACAB4239A883D8BD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -12499,6 +12505,20 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_C490389FA12B472F96B7DEB9FE30A24B"
+            {
+            "Name" = "8:msiexec.exe"
+            "Condition" = "8:"
+            "Object" = "8:_18135520DDA74E758C398D97A4F36A0D"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:/Uninstall"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_45F1A508_F6BB_42DC_AFBB_E65FCE6D76CA"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -15960,6 +15980,26 @@
             "TargetName" = "8:fil-PH.ini"
             "Tag" = "8:"
             "Folder" = "8:_42992145C1C24A5A9D67C9EC1E2978D0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_18135520DDA74E758C398D97A4F36A0D"
+            {
+            "SourcePath" = "8:..\\msiexec.exe"
+            "TargetName" = "8:msiexec.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -54951,15 +54991,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:国播出国"
-        "ProductCode" = "8:{59FCE15C-1DBA-443F-A1A9-723306812318}"
-        "PackageCode" = "8:{69FFDEF7-4E6C-4E13-92E2-5B63A382F04C}"
+        "ProductCode" = "8:{C27A0B27-C874-4CD2-B3D3-7B281D79272A}"
+        "PackageCode" = "8:{A5943EF4-5EAF-410D-A4D3-97EFE9F508CE}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:国博科技"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -55072,6 +55112,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3274E1F490E2417BA80EB2BE07C2C3A3"
+            {
+            "Name" = "8:UnInstall.exe"
+            "Arguments" = "8:/x {97434A30-8FC1-4631-B842-B75344B07B89}"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_18135520DDA74E758C398D97A4F36A0D"
+            "Folder" = "8:_2A4D424E0E704C419A3108B2B9B5B2F2"
+            "WorkingFolder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DC27C5019697458A8B735221BC706193"
             {
             "Name" = "8:国播出国"

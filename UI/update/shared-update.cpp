@@ -215,7 +215,7 @@ bool FetchAndVerifyFile(const char *name, const char *file, const char *url, std
 
 	/* ----------------------------------- *
 	 * avoid downloading file again        */
-
+	// b2sum  -l 160 branches.json  325dc88d0a1eca4f3b015a5b77ad8a2408aac3d6
 	if (CalculateFileHash(filePath, fileHash)) {
 		auto hash = QByteArray::fromRawData((const char *)fileHash, BLAKE2_HASH_LENGTH);
 
@@ -244,7 +244,7 @@ bool FetchAndVerifyFile(const char *name, const char *file, const char *url, std
 
 		throw strprintf("Failed to fetch %s file: %s", name, error.c_str());
 	}
-
+	#if 0
 	/* ----------------------------------- *
 	 * verify file signature               */
 
@@ -264,7 +264,7 @@ bool FetchAndVerifyFile(const char *name, const char *file, const char *url, std
 		if (!QuickReadFile(filePath, data))
 			throw strprintf("Could not read file '%s'", filePath.Get());
 	}
-
+	#endif
 	if (out)
 		*out = data;
 

@@ -27,7 +27,27 @@ using namespace std;
 using namespace updater;
 
 /* ------------------------------------------------------------------------ */
+#if 1
+#ifndef WIN_MANIFEST_URL
+#define WIN_MANIFEST_URL "http://121.43.150.109/obs-updater/manifest.json"
+#endif
 
+#ifndef WIN_MANIFEST_BASE_URL
+#define WIN_MANIFEST_BASE_URL "http://121.43.150.109/obs-updater/"
+#endif
+
+#ifndef WIN_BRANCHES_URL
+#define WIN_BRANCHES_URL "http://121.43.150.109/obs-updater/branches.json"
+#endif
+
+#ifndef WIN_DEFAULT_BRANCH
+#define WIN_DEFAULT_BRANCH "stable"
+#endif
+
+#ifndef WIN_UPDATER_URL
+#define WIN_UPDATER_URL "http://121.43.150.109/obs-updater/updater.exe"
+#endif
+#else
 #ifndef WIN_MANIFEST_URL
 #define WIN_MANIFEST_URL "https://obsproject.com/update_studio/manifest.json"
 #endif
@@ -46,6 +66,8 @@ using namespace updater;
 
 #ifndef WIN_UPDATER_URL
 #define WIN_UPDATER_URL "https://obsproject.com/update_studio/updater.exe"
+#endif
+
 #endif
 
 /* ------------------------------------------------------------------------ */
@@ -195,10 +217,10 @@ try {
 	/* ----------------------------------- *
 	 * check branch and get manifest url   */
 
-	if (!GetBranchAndUrl(branch, manifestUrl)) {
-		config_set_string(App()->GetAppConfig(), "General", "UpdateBranch", WIN_DEFAULT_BRANCH);
-		info(QTStr("Updater.BranchNotFound.Title"), QTStr("Updater.BranchNotFound.Text"));
-	}
+	//if (!GetBranchAndUrl(branch, manifestUrl)) {
+	//	config_set_string(App()->GetAppConfig(), "General", "UpdateBranch", WIN_DEFAULT_BRANCH);
+	//	info(QTStr("Updater.BranchNotFound.Title"), QTStr("Updater.BranchNotFound.Text"));
+	//}
 
 	/* allow server to know if this was a manual update check in case
 	 * we want to allow people to bypass a configured rollout rate */

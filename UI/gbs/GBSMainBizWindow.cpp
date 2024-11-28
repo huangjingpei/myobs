@@ -192,7 +192,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 			//mainWindow->close(); // 将触发 closeEvent
 		}
 		qDebug() << "FILE: " << __FILE__ << " line " << __LINE__;
-
+		mainWindow->activeClose();
 		QCoreApplication::quit();
 		qDebug() << "FILE: " << __FILE__ << " line " << __LINE__;
 	});

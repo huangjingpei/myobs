@@ -751,7 +751,7 @@ private slots:
 	void DeactivateAudioSource(OBSSource source);
 
 	void DuplicateSelectedScene();
-	void RemoveSelectedScene();
+	void RemoveSelectedScene(bool silence = false);
 
 	void ToggleAlwaysOnTop();
 
@@ -1285,6 +1285,7 @@ public:
 	OBSSource addCameraSource();
 	OBSSource addMicrophoneSource();
 	void removeMicrophoneSource();
+	OBSSource addSpeakerSource();
 
 	static QString GetVendor();
 
@@ -1383,6 +1384,14 @@ private slots:
 
 public slots:
 	bool CreateNewSceneCollection(const QString &name);
+
+public:
+	void activeClose();
+	void updateSystem();
+	void addGuarderCtrlScene();
+	void removeGuarderCtrlScene();
+	void activeIntercom(bool active);
+	void cleanGuarderCtrlScene();
 
 private:
 	// 通过 OBSHttpEventHandler 继承

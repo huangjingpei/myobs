@@ -53,9 +53,6 @@ public:
 
 	void StartRtmpPush(std::string rtmpUrl, GBSSource *source);
 
-	void list_audio_devices();
-	void list_video_devices();
-	
 
 
 private:

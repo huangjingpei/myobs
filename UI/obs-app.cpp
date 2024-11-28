@@ -2170,8 +2170,15 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 // 	"Woops, OBS has crashed!\n\nWould you like to copy the crash log " \
 // 	"to the clipboard? The crash log will still be saved to:\n\n%s"
 
-constexpr auto CRASH_MESSAGE = u8R"(糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
-
+//constexpr auto CRASH_MESSAGE = u8R"(糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
+constexpr auto CRASH_MESSAGE = LR"(糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
+std::wstring os_utf8_to_wcs(const char *utf8Str)
+{
+	int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, NULL, 0);
+	std::wstring wStr(sizeNeeded, 0);
+	MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, &wStr[0], sizeNeeded);
+	return wStr;
+}
 static void main_crash_handler(const char *format, va_list args, void * /* param */)
 {
 	char *text = new char[MAX_CRASH_REPORT_SIZE];
@@ -2207,16 +2214,13 @@ static void main_crash_handler(const char *format, va_list args, void * /* param
 #endif
 
 	string absolutePath = canonical(filesystem::path(pathString)).u8string();
+	std::wstring wAbsolutePath = os_utf8_to_wcs(absolutePath.c_str());
 
-	size_t size = snprintf(nullptr, 0, CRASH_MESSAGE, absolutePath.c_str());
 
-	unique_ptr<char[]> message_buffer(new char[size + 1]);
+	wchar_t wMessage[MAX_CRASH_REPORT_SIZE] = {0};
+	swprintf(wMessage, MAX_CRASH_REPORT_SIZE, CRASH_MESSAGE, wAbsolutePath.c_str());
 
-	snprintf(message_buffer.get(), size + 1, CRASH_MESSAGE, absolutePath.c_str());
-
-	string finalMessage = string(message_buffer.get(), message_buffer.get() + size);
-
-	int ret = MessageBoxA(NULL, finalMessage.c_str(), "OBS has crashed!", MB_YESNO | MB_ICONERROR | MB_TASKMODAL);
+	int ret = MessageBoxW(NULL, wMessage, L"OBS 崩溃了！", MB_YESNO | MB_ICONERROR | MB_TASKMODAL);
 
 	if (ret == IDYES) {
 		size_t len = strlen(text);

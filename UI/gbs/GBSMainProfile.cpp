@@ -184,6 +184,9 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 	    dialog->exec();
 	    });
 
+    connect(btnSoftWare, &QPushButton::clicked, this, [main]() { main->updateSystem();
+	    });
+
     timer = new QTimer(this);
     timer->setInterval(1000); // 1秒无点击重置计数器
     connect(ui->pushButton, &QPushButton::clicked, this, &GBSMainProfile::onShowSetting);

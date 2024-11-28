@@ -17,7 +17,7 @@
 
 #include "window-basic-main.hpp"
 #include "display-helpers.hpp"
-
+#include <QMovie>
 class GridButtons : public QWidget {
 
 
@@ -122,14 +122,16 @@ public:
             QVBoxLayout *layout = new QVBoxLayout(widget);
 
             layout->setAlignment(Qt::AlignCenter); // 整体内容居中
-
+	    QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	    layout->addItem(spacer0);
 
             layout->addLayout(createButtonLabelLayout("", "#C9DCFF", "浅色代表未开播未连接"));
 	    layout->addLayout(createButtonLabelLayout("", "#00C566", "绿色代表正常分发"));
 	    layout->addLayout(createButtonLabelLayout("", "#FFCD19", "黄色代表在线人数居多"));
 	    layout->addLayout(createButtonLabelLayout("", "#EB3F5E", "红色代表直播间异常"));
 	    layout->addLayout(createButtonLabelLayout("", "#2667FE", "蓝色语音输入按钮"));
-
+	    QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	    layout->addItem(spacer);
             GBSMsgDialog *dialog = new GBSMsgDialog("颜色含义解释", layout, this);
             dialog->exec();
         });
@@ -219,27 +221,39 @@ private:
         if (currentPage) {
             // 添加新的按钮到当前页面
             QPushButton* button = new QPushButton(text, this);
+	    QLabel *iconLabel = new QLabel(button);
+
             int row = (buttonCount % buttonsPerPage) / buttonsPerRow;
             int col = (buttonCount % buttonsPerPage) % buttonsPerRow;
             button->setFixedSize(78,60);
+	    QMovie *movie = new QMovie(":gbs/images/gbs/biz/gbs-sound-wave.gif", QByteArray(), iconLabel);
+	    if (!movie->isValid()) {
+		    qDebug() << "Failed to load GIF file.";
+	    }
+	    movie->setScaledSize(QSize{48, 48});
 
-            QLabel *iconLabel = new QLabel(button);
-            iconLabel->setPixmap(QPixmap(":gbs/images/gbs/biz/gbs-wave.png").scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            iconLabel->setGeometry(button->width() - 25, 0, 20, 20); // 设置位置
+	    iconLabel->setText("TTTT");
+	    iconLabel->setFixedSize(78, 60); // 设置 GIF 的显示区域大小
+
+            //iconLabel->setPixmap(QPixmap(":gbs/images/gbs/biz/gbs-wave.png").scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+	    iconLabel->setMovie(movie);
+            //iconLabel->setGeometry(button->width() - 25, 0, 20, 20); // 设置位置
+	    iconLabel->setAlignment(Qt::AlignCenter); // 设置 GIF 居中显示
+
             iconLabel->hide(); // 默认隐藏
             // 当按钮被按下时
             connect(button, &QPushButton::pressed, [=]() {
                 iconLabel->show(); // 显示小图片
 
-                button->setStyleSheet(
-                    "QPushButton {"
-                    "   background-color: #2667FE;"
-                    "   border: none;" // 无边框
-                    "   border-radius: 3px;" // 圆角
-                    "   font-size: 20px;"
-                    "   text-align: center;"
-                    "}"
-                    );
+                button->setStyleSheet("QPushButton {"
+				      "   background-color: #2667FE;"
+				      "   border: none;"       // 无边框
+				      "   border-radius: 3px;" // 圆角
+				      "   font-size: 20px;"
+				      "   text-align: center;"
+				      "}");
+		iconLabel->update(); // 强制重绘
+		movie->start();
 
             });
 
@@ -255,6 +269,7 @@ private:
                     "   text-align: center;"
                     "}"
                     );
+		    movie->stop();
             });
 
 
@@ -768,6 +783,9 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 	ui->wgtPreview->SetLocked(true);
 	ui->wgtPreview->Init();
 	connect(ui->wgtPreview, &OBSQTDisplay::DisplayCreated, addDisplay);
+
+	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
+	main->addGuarderCtrlScene();
 }
 
 void GBSBizLiveGuarderCtrl::onTabChanged(int index) {
@@ -797,6 +815,8 @@ void GBSBizLiveGuarderCtrl::onTabChanged(int index) {
 GBSBizLiveGuarderCtrl::~GBSBizLiveGuarderCtrl()
 {
 	obs_display_remove_draw_callback(ui->wgtPreview->GetDisplay(), GBSBizLiveGuarderCtrl::RenderMain, this);
+	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
+	main->removeGuarderCtrlScene();
     delete ui;
 }
 

@@ -315,8 +315,7 @@ OBSBasic::OBSBasic(QWidget *parent) : OBSMainWindow(parent), undo_s(ui), ui(new 
 #endif
 
 	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint |
-		       Qt::WindowCloseButtonHint);
+	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint);
 	setAcceptDrops(true);
 
 	setContextMenuPolicy(Qt::CustomContextMenu);
@@ -4011,15 +4010,15 @@ static inline void RemoveSceneAndReleaseNested(obs_source_t *source)
 	obs_enum_scenes(cb, NULL);
 }
 
-void OBSBasic::RemoveSelectedScene()
+void OBSBasic::RemoveSelectedScene(bool silence)
 {
 	OBSScene scene = GetCurrentScene();
 	obs_source_t *source = obs_scene_get_source(scene);
-
-	if (!source || !QueryRemoveSource(source)) {
-		return;
+	if (silence != true) {
+		if (!source || !QueryRemoveSource(source)) {
+			return;
+		}
 	}
-
 	/* ------------------------------ */
 	/* save all sources in scene      */
 

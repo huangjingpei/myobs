@@ -18,7 +18,7 @@ GBSMainWindow::GBSMainWindow(QWidget *parent)
 	ui->setupUi(this);
 	gbsMainForm->setMainWindow(this);
 	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint);
+	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint);
 
 	QLabel *imageLabel = new QLabel(this);
 	QPixmap pixmapBG(":gbs/images/gbs/login/login-right-bg.png");

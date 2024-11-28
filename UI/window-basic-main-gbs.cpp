@@ -97,7 +97,7 @@ void OBSBasic::OBSInit2() {
 
 	ui->actionMixerToolbarMenu->setVisible(false);
 
-
+	cleanGuarderCtrlScene();
 }
 
 void OBSBasic::OBSDeinit2() {
@@ -465,6 +465,85 @@ OBSSource OBSBasic::addMicrophoneSource() {
 	return newSource;
 }
 
+
+OBSSource OBSBasic::addSpeakerSource()
+{
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "wasapi_output_capture") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("场控对讲输出设备");
+			if (source) {
+
+			} else {
+
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("wasapi_output_capture");
+				source = obs_source_create(v_id, "场控对讲输出设备", NULL, nullptr);
+				OBSScene scene = GetCurrentScene();
+				if (source && scene) {
+					AddSourceData2 data;
+					data.source = source;
+					data.visible = true;
+
+					obs_enter_graphics();
+					obs_scene_atomic_update(scene, AddSource2, &data);
+					obs_leave_graphics();
+
+					newSource = source;
+					newSceneItem = data.scene_item;
+
+					/* set monitoring if source monitors by default */
+					uint32_t flags = obs_source_get_output_flags(source);
+					if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0) {
+						obs_source_set_monitoring_type(source,
+									       OBS_MONITORING_TYPE_MONITOR_ONLY);
+					}
+
+					bool closed = true;
+					if (properties)
+						closed = properties->close();
+
+					obs_properties_t *props = obs_source_properties(newSource);
+					obs_property_t *property = obs_properties_first(props);
+					obs_property_t *prop_device = obs_properties_get(props, "device_id");
+					if (prop_device) {
+						size_t count = obs_property_list_item_count(prop_device);
+						for (size_t i = 0; i < count; ++i) {
+							if (i == 0) {
+								const char *device_name =
+									obs_property_list_item_name(prop_device, i);
+								const char *device_id =
+									obs_property_list_item_string(prop_device, i);
+
+								// 选择合适的设备
+								obs_data_t *settings = obs_source_get_settings(source);
+								obs_data_set_string(settings, "device_id", device_id);
+								obs_source_update(source, settings);
+								obs_data_release(settings);
+							}
+						}
+					}
+
+					if (!closed) {
+						properties = new OBSBasicProperties(this, newSource);
+						properties->Init();
+						properties->setAttribute(Qt::WA_DeleteOnClose, true);
+					}
+				}
+			}
+		}
+	}
+	return newSource;
+}
+
 void OBSBasic::removeMicrophoneSource() {
 	std::vector<OBSSceneItem> items;
 	OBSScene scene = GetCurrentScene();
@@ -503,4 +582,90 @@ void OBSBasic::removeMicrophoneSource() {
 	}
 
 	CreateSceneUndoRedoAction(action_name, undo_data, redo_data);
+}
+
+
+void OBSBasic::updateSystem() {
+	CheckForUpdates(true);
+}
+
+void OBSBasic::activeClose()
+{
+	//FIXME 不建议直接调用 closeEvent，而是调用 close() 方法，因为它会自动触发 closeEvent。但为什么没有触发呢？
+	QCloseEvent event;  // 构造一个关闭事件
+	closeEvent(&event); // 手动调用 closeEvent 方法
+}
+
+
+void OBSBasic::addGuarderCtrlScene()
+{
+	std::string name = "场控对讲";
+	OBSSceneAutoRelease scene = obs_scene_create(name.c_str());	
+	obs_source_t *scene_source = obs_scene_get_source(scene);
+	SetCurrentScene(scene_source);
+	addMicrophoneSource();
+	addSpeakerSource();
+}
+
+void OBSBasic::removeGuarderCtrlScene()
+{
+	//RemoveSelectedScene(true);
+	cleanGuarderCtrlScene();
+}
+
+void OBSBasic::cleanGuarderCtrlScene()
+{
+	auto enumScenes = [](void *param, obs_source_t *source) {
+		if (source != nullptr) {
+			OBSBasic *basic = (OBSBasic *)param;
+			const char *name = obs_source_get_name(source);
+			OBSScene scene = obs_scene_from_source(source);
+			if ((name != nullptr) && (scene != nullptr)) {
+				qDebug() << "name " << name;
+				std::string sceneName = name;
+				std::string dstName = "场控对讲";
+
+				if (sceneName.compare(0, dstName.size(), dstName.c_str()) == 0) {
+					basic->SetCurrentScene(scene);
+					basic->RemoveSelectedScene(true);
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+	obs_enum_scenes(enumScenes, this);
+
+}
+void OBSBasic::activeIntercom(bool val)
+{
+	QMetaObject::invokeMethod(this, [&val, this]() {
+		OBSSceneItem sceneitem = GetCurrentSceneItem();
+		obs_scene_t *scene = obs_sceneitem_get_scene(sceneitem);
+		obs_source_t *scenesource = obs_scene_get_source(scene);
+		int64_t id = obs_sceneitem_get_id(sceneitem);
+		const char *name = obs_source_get_name(scenesource);
+		const char *uuid = obs_source_get_uuid(scenesource);
+		obs_source_t *source = obs_sceneitem_get_source(sceneitem);
+		#if 0
+		auto undo_redo = [](const std::string &uuid, int64_t id, bool val) {
+			OBSSourceAutoRelease s = obs_get_source_by_uuid(uuid.c_str());
+			obs_scene_t *sc = obs_group_or_scene_from_source(s);
+			obs_sceneitem_t *si = obs_scene_find_sceneitem_by_id(sc, id);
+			if (si)
+				obs_sceneitem_set_visible(si, val);
+		};
+
+		QString str = QTStr(val ? "Undo.ShowSceneItem" : "Undo.HideSceneItem");
+
+		OBSBasic *main = OBSBasic::Get();
+		main->undo_s.add_action(str.arg(obs_source_get_name(source), name),
+					std::bind(undo_redo, std::placeholders::_1, id, !val),
+					std::bind(undo_redo, std::placeholders::_1, id, val), uuid, uuid);
+		#endif
+
+		QSignalBlocker sourcesSignalBlocker(this);
+		obs_sceneitem_set_visible(sceneitem, val);
+	});
 }
