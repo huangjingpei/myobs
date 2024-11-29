@@ -83,7 +83,7 @@ class OBSBasicVCamConfig;
 #define SIMPLE_ENCODER_APPLE_H264 "apple_h264"
 #define SIMPLE_ENCODER_APPLE_HEVC "apple_hevc"
 
-#define PREVIEW_EDGE_SIZE 10
+#define PREVIEW_EDGE_SIZE 0
 
 struct BasicOutputHandler;
 
@@ -1392,6 +1392,13 @@ public:
 	void removeGuarderCtrlScene();
 	void activeIntercom(bool active);
 	void cleanGuarderCtrlScene();
+
+	OBSSource addSlideShowSource(QStringList files);
+	void removeSlideShowSource();
+
+	OBSScene querySceneBySceneName(std::string sceneName);
+	void changeTransform(int factor);
+	void changeOpacity(int opacity);
 
 private:
 	// 通过 OBSHttpEventHandler 继承

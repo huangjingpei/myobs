@@ -1907,6 +1907,9 @@ void WidgetInfo::EditableListChanged()
 		obs_data_set_bool(arrayItem, "selected", item->isSelected());
 		obs_data_set_bool(arrayItem, "hidden", item->isHidden());
 		obs_data_array_push_back(array, arrayItem);
+		qDebug() << "EditableListChanged value " << QT_TO_UTF8(item->text()) << " uuid "
+			 << QT_TO_UTF8(item->data(Qt::UserRole).toString()) << " selected" << item->isSelected()
+			 << " hidden " << item->isHidden();
 	}
 
 	obs_data_set_array(view->settings, setting, array);

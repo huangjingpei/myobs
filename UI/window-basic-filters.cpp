@@ -476,7 +476,7 @@ QMenu *OBSBasicFilters::CreateAddFilterPopupMenu(bool async)
 			continue;
 		if ((caps & OBS_SOURCE_CAP_OBSOLETE) != 0)
 			continue;
-
+		qDebug() << "CreateAddFilterPopupMenu " << name << " type_str " << type_str;
 		types.emplace_back(type_str, name);
 	}
 

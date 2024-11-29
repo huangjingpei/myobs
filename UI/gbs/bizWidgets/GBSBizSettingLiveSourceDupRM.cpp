@@ -1,6 +1,8 @@
 #include "GBSBizSettingLiveSourceDupRM.h"
 #include "ui_GBSBizSettingLiveSourceDupRM.h"
 #include <QFileDialog>
+#include "gbs/common/FileIOUtils.h"
+#include "window-basic-main.hpp"
 
 GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     : QWidget(parent)
@@ -94,6 +96,8 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     ui->hsJittterSlider->setValue(localJitter);
     connect(ui->hsJittterSlider, &QSlider::valueChanged, this, [this](int value) {
 	    ui->hsJittterSlider->setValue(value);
+	    OBSBasic *main = OBSBasic::Get();
+	    main->changeTransform(value);
 	    iniFile->setValue("RemoveDuplicate", "video.LocalJitter", value);
     });
     int localExtractFrame = iniFile->value("RemoveDuplicate", "video.LocalExtractFrame", 0).toInt();
@@ -145,6 +149,15 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     connect(ui->lineEdit_10, &QLineEdit::textChanged, this, [this](const QString &text) {
 	    ui->lineEdit_10->setText(text);
 	    iniFile->setValue("RemoveDuplicate", "audio.DedupImagePath", text);
+	    OBSBasic *main = OBSBasic::Get();
+	    if (text == "") {
+		    main->removeSlideShowSource();
+	    } else {
+		    QStringList files = FileIOUtils::getInstance()->OpenFiles(
+			    this, "获取图片文件", text,
+			    QObject::tr("Image files (*.bmp *.tga *.png *.jpeg *.jpg *.gif *.webp"));
+		    main->addSlideShowSource(files);
+	    }
     });
 
     QString timeClockImagePath = iniFile->value("RemoveDuplicate", "audio.TimeClockImagePath", "").toString();
@@ -186,12 +199,12 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 
     });
     connect(ui->pushButton_7, &QPushButton::clicked, this, [&]() {
-        QString filePath = QFileDialog::getOpenFileName(nullptr, QObject::tr("Open File"),
-                                                        "", QObject::tr("All Files (*)"));
-        if (!filePath.isEmpty()) {
-            qDebug() << "Selected file:" << filePath;
-            ui->lineEdit_10->setText(filePath);
-        }
+	   QString dir =  FileIOUtils::getInstance()->SelectDirectory(this, "请选择有有图片的目录", "");
+	    if (!dir.isEmpty()) {
+		   qDebug() << "Selected dir:" << dir;
+		    ui->lineEdit_10->setText(dir);
+		    iniFile->setValue("RemoveDuplicate", "audio.DedupImagePath", dir);
+	}
 
     });
     connect(ui->pushButton_8, &QPushButton::clicked, this, [&]() {

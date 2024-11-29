@@ -5676,9 +5676,32 @@ void OBSBasic::CreateSourcePopupMenu(int idx, bool preview)
 		popup.addSeparator();
 
 		//popup.addMenu(ui->orderMenu);
+		QMenu *orderMenu = popup.addMenu("排序");
+		orderMenu->addAction(ui->actionMoveDown);
+		orderMenu->addAction(ui->actionMoveToTop);
+		orderMenu->addAction(ui->actionMoveUp);
+		orderMenu->addAction(ui->actionMoveToBottom);
 
-		//if (hasVideo)
-		//	popup.addMenu(ui->transformMenu);
+
+		if (hasVideo) {
+			QMenu *subMenu = popup.addMenu("变换");
+			subMenu->addAction(ui->actionCenterToScreen);
+			subMenu->addAction(ui->actionCopyTransform);
+			subMenu->addAction(ui->actionEditTransform);
+			subMenu->addAction(ui->actionFitToScreen);
+			subMenu->addAction(ui->actionFlipHorizontal);
+			subMenu->addAction(ui->actionFlipVertical);
+			subMenu->addAction(ui->actionHorizontalCenter);
+			subMenu->addAction(ui->actionPasteTransform);
+			subMenu->addAction(ui->actionResetTransform);
+			subMenu->addAction(ui->actionRotate180);
+			subMenu->addAction(ui->actionRotate90CCW);
+			subMenu->addAction(ui->actionRotate90CW);
+			subMenu->addAction(ui->actionStretchToScreen);
+			subMenu->addAction(ui->actionVerticalCenter);
+			popup.addMenu(subMenu);
+		}
+		
 
 		popup.addSeparator();
 

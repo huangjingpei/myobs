@@ -50,6 +50,9 @@ target_sources(
     gbs/common/GBSHttpClient.h
     gbs/common/DoubleTextButton.h
 
+    gbs/common/FileIOUtils.h
+    gbs/common/FileIOUtils.cpp
+    
     gbs/common/XORPasswordProtecter.h
 
     gbs/GBSMainBizWindow.cpp
