@@ -6,6 +6,7 @@
 #include <QTextBrowser>
 #include <QDialogButtonBox>
 #include <QTimer>
+#include <QStyle>
 
 #include "gbs/common/GBSHttpClient.h"
 
@@ -167,7 +168,6 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 	connect(ui->btnLoginGBS,&QPushButton::clicked, this, &GBSNormalLoginForm::onLoginGBS);
 
 	GBSHttpClient::getInstance()->registerHandler(this);
-	GBSHttpClient::getInstance()->getUserInfo();
 }
 
 void GBSNormalLoginForm::onLinkActivated(const QString &link) {
@@ -199,7 +199,7 @@ void GBSNormalLoginForm::onPasswordForgot() {
 void GBSNormalLoginForm::onLoginGBS() {
 	qDebug() << "onLoginGBS click ";
 
-
+	ui->btnLoginGBS->setDisabled(true);
 	QString email = ui->leEmal->text();
 	QString password = ui->lePassword->text();
 
@@ -215,6 +215,7 @@ void GBSNormalLoginForm::onLoginGBS() {
 
 		GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
 		dialog->exec();
+		ui->btnLoginGBS->setDisabled(false);
 		return;
 	}
 
@@ -228,20 +229,27 @@ void GBSNormalLoginForm::onLoginGBS() {
 
 		GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
 		dialog->exec();
+		ui->btnLoginGBS->setDisabled(false);
 		return;
 	}
 
 	
 
-	GBSHttpClient::getInstance()->loginWithCheckVersion(
-	email.toUtf8().constData(), password.toUtf8().constData(), 5,"多多客");
-
-
+	GBSHttpClient::getInstance()->srsAccountLoginV2(email.toUtf8().constData(),
+		password.toUtf8().constData(),
+		"",
+		"多多客" ,5
+		);
 
 	
-}
-void GBSNormalLoginForm::onLoginResult(const int result) {
+	//GBSHttpClient::getInstance()->loginWithCheckVersion(email.toUtf8().constData(), password.toUtf8().constData(),
+	//						    5, "多多客");
 
+	//onLoginResult(0);
+}
+void GBSNormalLoginForm::onLoginResult(const int result)
+{
+	
 	if (result == 0) {
 		QMetaObject::invokeMethod(
 			this,
@@ -327,8 +335,12 @@ void GBSNormalLoginForm::onLoginResult(const int result) {
 				}
 
 				QLogD("Start to switch Login to MainBiz");
-				GBSMainBizWindow *gbsMainBizWindow =
-					new GBSMainBizWindow();
+				GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();
+				gbsMainBizWindow->setGeometry(QStyle::alignedRect(
+					Qt::LeftToRight,
+					Qt::AlignCenter,
+					gbsMainBizWindow->size(),
+					QGuiApplication::primaryScreen()->availableGeometry()));
 				gbsMainBizWindow->show();
 				emit notifyLoginSuccess();
 
@@ -336,35 +348,88 @@ void GBSNormalLoginForm::onLoginResult(const int result) {
 			Qt::QueuedConnection);
 
 	} else if (result == -1) {
+		QMetaObject::invokeMethod(this, [this]() {
+			QWidget *widget = new QWidget;
+			QVBoxLayout *layout = new QVBoxLayout(widget);
 
+
+			// 创建标签
+			QLabel *label = new QLabel("登录失败");
+			QLabel *subLabel = new QLabel("对不起，服务器返回错误");
+
+			// 设置标签样式
+			label->setStyleSheet("QLabel {"
+					     "font-size: 16px;"
+					     "color: black;"
+					     "}");
+			subLabel->setStyleSheet("QLabel {"
+						"font-size: 12px;"
+						"color: black;"
+						"}");
+			layout->addSpacing(40);
+			// 添加标签到布局，确保水平居中
+			layout->addWidget(label, 0, Qt::AlignHCenter);
+			layout->addSpacing(10); // 标签之间的间距
+			layout->addWidget(subLabel, 0, Qt::AlignHCenter);
+
+			// 添加底部弹性空间
+			layout->addStretch();
+
+			// 设置整体布局
+			//layout->setContentsMargins(20, 20, 20, 20); // 设置边距
+			layout->setAlignment(Qt::AlignVCenter);      // 确保整体布局居中
+
+			// 创建自定义对话框并显示
+			GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
+			dialog->exec();
+
+			
+			ui->btnLoginGBS->setDisabled(false);
+
+		});
 	} else if (result == -2) {
 
 	} else if (result == -3) {
 		QMetaObject::invokeMethod(this, [this]() {
 			QWidget *widget = new QWidget;
 			QVBoxLayout *layout = new QVBoxLayout(widget);
+
+			// 创建标签
 			QLabel *label = new QLabel("登录失败");
-			QLabel *subLabel = new QLabel("对不起，密码错误");
-			//label->setFixedSize(320, 80);
+			QLabel *subLabel = new QLabel("对不起，用户名或密码错误");
+
+			// 设置标签样式
 			label->setStyleSheet("QLabel {"
-					    "font-size: 16px;"
-					    "color: black;"
-					    "}");
-			subLabel->setStyleSheet("QLabel {"
-					     "font-size: 12px;"
+					     "font-size: 16px;"
 					     "color: black;"
 					     "}");
-			layout->addWidget(label);
+			subLabel->setStyleSheet("QLabel {"
+						"font-size: 12px;"
+						"color: black;"
+						"}");
 			layout->addSpacing(40);
-			layout->addWidget(subLabel);
-			layout->setAlignment(Qt::AlignCenter); // 整体内容居中
+			// 添加标签到布局，确保水平居中
+			layout->addWidget(label, 0, Qt::AlignHCenter);
+			layout->addSpacing(10); // 标签之间的间距
+			layout->addWidget(subLabel, 0, Qt::AlignHCenter);
+
+			// 添加底部弹性空间
+			layout->addStretch();
+
+			// 设置整体布局
+			//layout->setContentsMargins(20, 20, 20, 20); // 设置边距
+			layout->setAlignment(Qt::AlignVCenter); // 确保整体布局居中
+
+			// 创建自定义对话框并显示
 			GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
 			dialog->exec();
+			ui->btnLoginGBS->setDisabled(false);
+
 		});
 	}
 
 }
-void GBSNormalLoginForm::onRtmpPushUrl(const std::string url) {}
+
 void GBSNormalLoginForm::onPullRtmpUrl(const std::string url) {}
 void GBSNormalLoginForm::onUserInfo(const GBSUserInfo *info) {}
 void GBSNormalLoginForm::onUserFileDownLoad(const std::string &path, int type) {}

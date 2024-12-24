@@ -1,6 +1,10 @@
 #include "GBSBizLiveGuarderAuth.h"
 #include "ui_GBSBizLiveGuarderAuth.h"
 #include "GBSBizLiveGuarder.h"
+#include "gbs/common/GBSHttpClient.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/common/QBizLogger.h"
 #include <QList>
 #include<QLineEdit>
 #define AUTH_CODE_NUM 6
@@ -60,27 +64,22 @@ GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
     connect(this, &GBSBizLiveGuarderAuth::enterGuarderCtrl, reinterpret_cast<GBSBizLiveGuarder *>(parent), &GBSBizLiveGuarder::enterGuarderCtrl);
 
     connect(ui->pushButton, &QPushButton::clicked, this, [this](){
-        if (inputPassword == presetPassword) {
-            emit enterGuarderCtrl();
-        }
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	    GBSHttpClient::getInstance()->enterControlV2(getInputPassword().toUtf8().constData(), account.getId());
+	
     });
-
+    GBSHttpClient::getInstance()->registerHandler(this);
 }
 
 GBSBizLiveGuarderAuth::~GBSBizLiveGuarderAuth()
 {
+	GBSHttpClient::getInstance()->unRegisterHandler(this);
     qlists.clear();
 	delete ui;
 }
 
 void GBSBizLiveGuarderAuth::focusNextInput(int currentIndex) {
-    if ((currentIndex >=0) && (currentIndex < 5)) {
-        inputPassword+=qlists[currentIndex]->text();
-        qDebug() << "inputPassword " << inputPassword;
-    }
-    if (currentIndex < 4) {
-        qlists[currentIndex + 1]->setFocus(); // 跳到下一个输入框
-    }
+    qlists[(currentIndex+1) % 6]->setFocus(); // 跳到下一个输入框    
 }
 
 void GBSBizLiveGuarderAuth::keyPressEvent(QKeyEvent *event) {
@@ -101,8 +100,22 @@ QString GBSBizLiveGuarderAuth::getPresetPassword() {
     return presetPassword;
 }
 QString GBSBizLiveGuarderAuth::getInputPassword() {
+	inputPassword.clear();
+	for (int i = 0; i < qlists.count(); i++) {
+		inputPassword += qlists.at(i)->text();
+	}
+	qDebug() << "inputPassword " << inputPassword;
+
     return inputPassword;
 }
 void GBSBizLiveGuarderAuth::setPresetPassword(QString password) {
     presetPassword = password;
+}
+
+void GBSBizLiveGuarderAuth::onEnterGuardCtrl(int result) {
+	if (result == 1) {
+		emit enterGuarderCtrl();
+	} else {
+		QLogE("Enter guard ctrl error. input password: %s", getInputPassword().toUtf8().constData());
+	}
 }

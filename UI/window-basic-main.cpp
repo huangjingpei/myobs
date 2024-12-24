@@ -114,6 +114,7 @@ using namespace std;
 
 #include "ui-config.h"
 #include "gbs/bizWidgets/GBSBizDeviceInfo.h"
+#include "gbs/common/QBizLogger.h"
 
 struct QCef;
 struct QCefCookieManager;
@@ -4915,6 +4916,10 @@ void OBSBasic::closeEvent(QCloseEvent *event)
 	api = nullptr;
 
 	QMetaObject::invokeMethod(App(), "quit", Qt::QueuedConnection);
+
+	OBSDeinit2();
+	QLog::Logger::instance().shutdown();
+
 }
 
 bool OBSBasic::nativeEvent(const QByteArray &, void *message, qintptr *)

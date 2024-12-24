@@ -15,11 +15,18 @@
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/common/QBizLogger.h"
 #include "gbs/naviWidgets/GBSNaviData.h"
+#include "gbs/common/WebSocketClient.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/common/SystemUtils.h"
 
+#include "gbs/GBSAsioHttpServer.h"
 
 
 // 本窗体是为了初始化自己窗口的函数，区别于OBSInit的是: 后者是初始化OBS系统，前者只是简单的初始化一个窗口
 // 这里你也可以理解为OBSBasic 及负责了整个除登录页面生命周期意外的所有软件的生命周期
+
+/*Http server*/
+// std::shared_ptr<GBSAsioHttpServer> gHttpServer;
 
 struct AddSourceData2 {
 	/* Input data */
@@ -98,14 +105,79 @@ void OBSBasic::OBSInit2() {
 	ui->actionMixerToolbarMenu->setVisible(false);
 
 	cleanGuarderCtrlScene();
+
+	mAudioReader = std::make_unique<GBSAudioReader>();
+	mAudioReader->SetAudioReaderCallback(this);
+	mAudioReader->Initialize();
+	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
+	mRtcEngine = ZegoRTCEngine::Create();
+	mRtcEngine->CreateEngine();
+
+	//gHttpServer = GBSAsioHttpServer::Create();
+	//gHttpServer->start();
+
 }
+
 
 void OBSBasic::OBSDeinit2() {
 	QLogD("OBSDeinit2, End pull task.");
 	GBSHttpClient::getInstance()->unRegisterHandler(this);
 	endPullTask();
+	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
+
+	if (mRtcEngine != nullptr) {
+		mRtcEngine->DestroyEngine();
+		mRtcEngine = nullptr;
+	}
+
+	if (mWssClient != nullptr) {
+		mWssClient->Stop();
+	}
+
+	// if (gHttpServer != nullptr) {
+	// 	gHttpServer->stop();
+	// }
+	// 在应用程序退出前调用
+	QLog::Logger::instance().shutdown();
+}
+
+void OBSBasic::onAudioCapture(void *data, int size, uint64_t ts) {
+	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
+	if (mRtcEngine) {
+		mRtcEngine->PushAudioData(data, size, ts);
+	}
+}
+
+void OBSBasic::beginTalk(int id)
+{
+	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
+	if (mRtcEngine) {
+		mRtcEngine->BeginTalk(std::to_string(id), nullptr);
+	}
+}
+
+void OBSBasic::endTalk(int id)
+{
+	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
+	if (mRtcEngine) {
+		mRtcEngine->EndTalk();
+	}
+}
+
+void OBSBasic::onMessage(std::string msg){
+	QLogD("Receive message from PullStreamNotifier %s", msg.c_str());
+	if (msg == "接到刷新getPullStreamUrl接口通知") {
+		QLogD("收到开始拉流，客户端开始拉流");	
+	} else if (msg == "接到拉流端停止推流通知") {
+		QLogD("收到停止拉流，客户端停止拉流");	
+	}
 	
 }
+void OBSBasic::onOpen(){
+}
+void OBSBasic::onClose(){
+}
+
 
 QString OBSBasic::GetVendor()
 {
@@ -122,10 +194,13 @@ QString OBSBasic::GetVendor()
 
 void OBSBasic::beginPullTask() {
 	QLogD("Begin pull task.");
+	if (pullStreamTimer != nullptr) {
+		return;
+	}
 	pullStreamTimer = new QTimer(this);
 	connect(pullStreamTimer.data(), &QTimer::timeout, this,
 		[this]() {
-			GBSHttpClient::getInstance()->getPullStream();
+			GBSHttpClient::getInstance()->getPullStreamUrlV2();
 			QPoint center = this->rect().center(); // 获取窗口的矩形区域的中心点
 
 			//QScopedPointer<QMenu> popup(CreateAddSourcePopupMenu());
@@ -147,26 +222,26 @@ void OBSBasic::endPullTask() {
 }
 void OBSBasic::onLoginResult(const int result) {}
 
-void OBSBasic::onRtmpPushUrl(const std::string url) {}
-
 void OBSBasic::onPullRtmpUrl(const std::string url) {
 	qDebug() << "onPullRtmpUrl " << url;
+	
 	if (!url.empty()) {
 		QString newUrl = QString::fromStdString(url);
+		if (newUrl.startsWith("rtmp://",Qt::CaseInsensitive) == 0) {
+			stopPullStream();
+			return;
+		} 
 		if (pullRtmpUrl != newUrl) {
 			pullRtmpUrl = newUrl;
 			QMetaObject::invokeMethod(this, "startPullStream", Q_ARG(QString, pullRtmpUrl));
-
 		}
 	}
 }
-void OBSBasic::startPullStream(QString rtmp) {
+void OBSBasic::stopPullStream() {
 	size_t idx = 0;
 	const char *unversioned_type;
 	const char *type;
-	if (rtmp.startsWith("rtmp://",Qt::CaseInsensitive) == 0) {
-		return;
-	}
+	OBSSource newSource;
 	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
 		const char *name = obs_source_get_display_name(type);
 		uint32_t caps = obs_get_source_output_flags(type);
@@ -176,7 +251,51 @@ void OBSBasic::startPullStream(QString rtmp) {
 			//AddNew
 			OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
 			if (source) {
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("ffmpeg_source");
+				OBSScene scene = querySceneBySceneName("场景");
+				if (source && scene) {
+					obs_source_remove(source);
+					obs_source_release(source);
+				}
+			}
+		}
+	}
+}
 
+void OBSBasic::startPullStream(QString rtmp)
+{
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+
+	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+	iniFile->setValue("LiveBroker", "url", pullRtmpUrl);
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "ffmpeg_source") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
+			if (source) {
+				obs_properties_t *props = obs_source_properties(source);
+				obs_property_t *property = obs_properties_first(props);
+				obs_property_t *is_local_file = obs_properties_get(props, "is_local_file");
+				if (is_local_file) {
+					obs_data_t *settings = obs_source_get_settings(source);
+					obs_data_set_bool(settings, "is_local_file", false);
+					obs_source_update(source, settings);
+					obs_data_release(settings);
+				}
+				obs_property_t *input = obs_properties_get(props, "input");
+				if (input) {
+					obs_data_t *settings = obs_source_get_settings(source);
+					obs_data_set_string(settings, "input", rtmp.toStdString().c_str());
+					obs_source_update(source, settings);
+					obs_data_release(settings);
+				}
 			} else {
 
 				OBSSceneItem newSceneItem;
@@ -236,32 +355,14 @@ void OBSBasic::startPullStream(QString rtmp) {
 	}
 	
 }
-static QPixmap getRoundedPixmap(const QPixmap &src, int diameter) {
-    // 创建一个目标 QPixmap，设置为透明背景
-    QPixmap dst(diameter, diameter);
-    dst.fill(Qt::transparent);
-
-    // 缩放源图像到适合的大小，保持抗锯齿和平滑转换
-    QPixmap scaledSrc = src.scaled(diameter, diameter, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-
-    // 使用 QPainter 绘制裁剪后的圆形图片
-    QPainter painter(&dst);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-
-    // 创建圆形裁剪路径并设置裁剪区域
-    QPainterPath path;
-    path.addEllipse(0, 0, diameter, diameter);
-    painter.setClipPath(path);
-
-    // 将缩放后的图片绘制到目标图像上
-    QRect targetRect(0, 0, diameter, diameter);
-    QRect sourceRect((scaledSrc.width() - diameter) / 2, 
-                     (scaledSrc.height() - diameter) / 2, 
-                     diameter, diameter);
-    painter.drawPixmap(targetRect, scaledSrc, sourceRect);
-
-    return dst;
+QString OBSBasic::getAvator() {
+	QString file = QCoreApplication::applicationDirPath() + "/round-avator.png";
+	QFile qFile(file);
+	if (qFile.exists()) {
+		return file;
+	} else {
+		return QCoreApplication::applicationDirPath() + "/avator.png";
+	}
 }
 
 
@@ -272,38 +373,35 @@ void OBSBasic::onUserInfo(const GBSUserInfo *info) {
 	
 }
 
-void OBSBasic::onUserFileDownLoad(const std::string &path, int type) {
-	QMetaObject::invokeMethod(this, [path,type, this]() {
-		if (type == 0 && !path.empty()) {
-			QString qPath = QString::fromStdString(path);
-			QPixmap rounded = getRoundedPixmap(qPath, 64);
-
-			rounded.save("round-avator.png");
-			QString appDirPath = QCoreApplication::applicationDirPath();
-			QLogD("onUserFileDownLoad, %s.", appDirPath.toStdString().c_str());
-
-			appDirPath += "/round-avator.png";
-			emit onUseIconUpdate(qPath);
-		}
-		});
-
-
-}
-
-QString OBSBasic::getRoundedAvator() {
-	QString file = QCoreApplication::applicationDirPath() + "/avator.png";
-	QFile qFile(file);
-	if (qFile.exists()) {
-		return file;
-	} else {
-		return QCoreApplication::applicationDirPath() + "/avator.png";
-	}
-}
-
 void OBSBasic::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 
 void OBSBasic::onRoomInfo(GBSRoomInfo *info) {}
 void OBSBasic::onQRcodeInfo(std::string no, std::string url, int status){}
+void OBSBasic::onAccountInfo(GBSLiveAccountInfo result){
+	std::string roomId = result.getNickname();
+
+	GBSMainCollector::getInstance()->setAccountInfo(result);
+	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
+	if (mRtcEngine && !mRtcEngine->IsLogin()) {
+		std::string userId = GBSMainCollector::getInstance()->getSrsLiveId();
+		mRtcEngine->setScenario(true, false, userId, nullptr);
+		mRtcEngine->LoginRoom(roomId, userId);
+		
+	}
+
+	if (mWssClient == nullptr) {
+		std::string url = GBSMainCollector::getInstance()->getBaseWebSocketV2();
+		mWssClient = WebSocketClient::Create();
+		mWssClient->setName("PullStreamNotifier");
+		mWssClient->RegisterHandler(this);
+		std::string wssUrl = "wss://36be34f5.r27.cpolar.top/refreshPullStream/" + std::to_string(result.getId()) + "_" +
+				     GetMachineIdFromRegistry() +
+				     GetWindowsProductIDFromRegistery();
+		mWssClient->Start(wssUrl);
+	}
+	
+}
+
 
 OBSSource OBSBasic::addCameraSource()
 {
@@ -531,6 +629,65 @@ OBSSource OBSBasic::addSpeakerSource()
 							}
 						}
 					}
+
+					if (!closed) {
+						properties = new OBSBasicProperties(this, newSource);
+						properties->Init();
+						properties->setAttribute(Qt::WA_DeleteOnClose, true);
+					}
+				}
+			}
+		}
+	}
+	return newSource;
+}
+
+
+OBSSource OBSBasic::addPCMAudioSource()
+{
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "pcm_audio_source") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("场控对讲输出设备");
+			if (source) {
+
+			} else {
+
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("pcm_audio_source");
+				source = obs_source_create(v_id, "场控对讲输出设备", NULL, nullptr);
+				OBSScene scene = GetCurrentScene();
+				if (source && scene) {
+					AddSourceData2 data;
+					data.source = source;
+					data.visible = true;
+
+					obs_enter_graphics();
+					obs_scene_atomic_update(scene, AddSource2, &data);
+					obs_leave_graphics();
+
+					newSource = source;
+					newSceneItem = data.scene_item;
+
+					/* set monitoring if source monitors by default */
+					uint32_t flags = obs_source_get_output_flags(source);
+					if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0) {
+						obs_source_set_monitoring_type(source,
+									       OBS_MONITORING_TYPE_MONITOR_ONLY);
+					}
+
+					bool closed = true;
+					if (properties)
+						closed = properties->close();
+
 
 					if (!closed) {
 						properties = new OBSBasicProperties(this, newSource);
@@ -805,6 +962,94 @@ void OBSBasic::removeSlideShowSource() {
 	}
 }
 
+OBSSource OBSBasic::addTimeClockSource(QString file) {
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "browser_source") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("时钟去重");
+			if (source) {
+
+			} else {
+
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("browser_source");
+				source = obs_source_create(v_id, "时钟去重", NULL, nullptr);
+				//OBSScene scene = GetCurrentScene();
+				OBSScene scene = querySceneBySceneName("场景");
+				if (source && scene) {
+					AddSourceData2 data;
+					data.source = source;
+					data.visible = true;
+
+					obs_enter_graphics();
+					obs_scene_atomic_update(scene, AddSource2, &data);
+					obs_leave_graphics();
+
+					newSource = source;
+					newSceneItem = data.scene_item;
+
+					/* set monitoring if source monitors by default */
+					uint32_t flags = obs_source_get_output_flags(source);
+					if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0) {
+						obs_source_set_monitoring_type(source,
+									       OBS_MONITORING_TYPE_MONITOR_ONLY);
+					}
+
+					bool closed = true;
+					if (properties)
+						closed = properties->close();
+					obs_data_t *settings = obs_source_get_settings(source);
+					obs_data_set_bool(settings, "is_local_file",true);
+					obs_data_set_string(settings, "local_file", file.toUtf8().constData());
+		
+
+					obs_source_update(source, settings);
+
+					if (!closed) {
+						properties = new OBSBasicProperties(this, newSource);
+						properties->Init();
+						properties->setAttribute(Qt::WA_DeleteOnClose, true);
+					}
+				}
+			}
+		}
+	}
+	return newSource;
+}
+void OBSBasic::removeTimeClockSource() {
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "browser_source") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("时钟去重");
+			if (source) {
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("browser_source");
+				OBSScene scene = querySceneBySceneName("场景");
+				if (source && scene) {
+					obs_source_remove(source);
+					obs_source_release(source);
+				}
+			}
+		}
+	}
+}
+
 
 void OBSBasic::changeTransform(int factor) {
 	float fact = 1 - factor / 1000.0;
@@ -864,3 +1109,4 @@ void OBSBasic::changeOpacity(int opacity) {
 
 
 }
+

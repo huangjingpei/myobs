@@ -140,7 +140,8 @@ QWeH+tVM2g0vee09bFoB
 // }
 
 void processRecvMessage(const char* mesage) {
-	GBSHttpClient::getInstance()->sendWebsocketMsg(mesage);
+	
+	GBSHttpClient::getInstance()->sendWebsocketMsgV2(mesage);
 	//auto jsonObject = nlohmann::json::parse(mesage);
 	//if (jsonObject.is_object()) {
 	//	processDanmaItem(jsonObject);

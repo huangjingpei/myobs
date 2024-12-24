@@ -11,6 +11,8 @@
 #include "../bizWidgets/GBSBizSettingLiveEditor.h"
 #include "../bizWidgets/GBSBizSettingLiveSourceDupRM.h"
 #include "window-basic-main.hpp"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
 
 GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	: QWidget(parent),
@@ -39,11 +41,15 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
         )";
         ui->lblHelloMessage->setText(welcomeMessage);
 
-        QString nickName = R"(
+	QString nickNameTemplate = R"(
             <p style="font-size: 10px; text-align: center;">
-                <span style="color: black;">hjp9221@163.com</span>
+                <span style="color: black;">%1</span>
             </p>
         )";
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+
+	QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
+	ui->lblNickName->setText(nickName);
 
 	VertNaviButton *btnBasic = new VertNaviButton("  基础设置", ":gbs/images/gbs/biz/gbs-setting-basic.png", this);
 	VertNaviButton *btnProductDupRM =
@@ -77,7 +83,6 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	QSpacerItem *verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 	ui->verticalLayout->addSpacerItem(verticalSpacer);
 
-	ui->lblNickName->setText(nickName);
 
 	connect(btnBasic, &QPushButton::clicked, this, &GBSNaviSetting::onBaiscClick);
 	connect(btnProductDupRM, &QPushButton::clicked, this, &GBSNaviSetting::onProductDupRMClick);
@@ -88,9 +93,12 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	btnBasic->changeStyle(true);
 
 	OBSBasic *main = OBSBasic::Get();
-	QString path = main->getRoundedAvator();
-	QPixmap pixmap(path);
-	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	QString path = main->getAvator();
+	if (!path.isEmpty()) {
+		QPixmap pixmap(path);
+		ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	}
+
 
 	
 	btnBridgerMgr->setVisible(false);

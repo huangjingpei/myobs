@@ -33,6 +33,7 @@
 #include "gbs/common/QBizLogger.h"
 #include "gbs/common/QToast.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
+#include "gbs/GBSMainCollector.h"
 
 #include "GBSMainProfile.h"
 #include <thread>
@@ -215,10 +216,6 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	connect(ui->btnSetting, &QPushButton::clicked, this, &GBSMainBizWindow::onSettingClick);
 	connect(ui->btnAI, &QPushButton::clicked, this, &GBSMainBizWindow::onAIClick);
 	GBSHttpClient::getInstance()->registerHandler(this);
-
-
-	GBSHttpClient::getInstance()->queryByEquipmentNo();
-	GBSHttpClient::getInstance()->getUserInfo();
 	
 	//std::this_thread::sleep_for(std::chrono::microseconds(2000));
 	//connect(ui->btnClose, &QPushButton::clicked, this,
@@ -226,7 +223,7 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 
 
 
-	connect(ui->btnProfile, &QPushButton::clicked, this, &GBSMainBizWindow::onPopupProfile);
+    connect(ui->btnProfile, &QPushButton::clicked, this, &GBSMainBizWindow::onPopupProfile);
 
 	
     ui->btnData->setRealText("数据信息");
@@ -235,8 +232,13 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
     ui->btnTranslate->setRealText("实时翻译");
     ui->btnSetting->setRealText("直播设置");
     ui->btnAI->setRealText("大模型");
+
 }
 
+void GBSMainBizWindow::onTimeOut() {
+	//GBSLiveAccountInfo info = GBSMainCollector::getInstance()->getAccountInfo();
+	//GBSHttpClient::getInstance()->sendHeartbeatTimeV2(info.getUserId());
+}
 void GBSMainBizWindow::closeWindow()
 {
 	emit windowClosed();
@@ -262,6 +264,10 @@ void GBSMainBizWindow::clearWidgetsFromLayout(QBoxLayout* layout) {
 			if (qobject_cast<GBSBizLiveBroker *>(child->widget())) {
 				child->widget()->hide();
 				update();
+				update();
+				update();
+				update();
+				update();
 				return;
 			}
 			child->widget()->setParent(NULL);
@@ -284,22 +290,14 @@ void GBSMainBizWindow::markHoriButton(HoriNaviButton* button) {
 }
 
 void GBSMainBizWindow::onLoginResult(const int result) {}
-void GBSMainBizWindow::onRtmpPushUrl(const std::string url) {}
 void GBSMainBizWindow::onPullRtmpUrl(const std::string url) {}
-void GBSMainBizWindow::onUserInfo(const GBSUserInfo *info) {
-	int userId = info->GetId();
-	
-	if (!WebSocketClient::getInstance()->IsRunnig()) {
-		QLogD("Start Weboscket userid %d", userId);
-		WebSocketClient::getInstance()->Start(
-			"wss://guobowss.guobo.shop/adminDistributeGoods/" +
-			std::to_string(userId));
-	}
-}
+void GBSMainBizWindow::onUserInfo(const GBSUserInfo *info) {}
 void GBSMainBizWindow::onUserFileDownLoad(const std::string &path, int type) {}
 void GBSMainBizWindow::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 void GBSMainBizWindow::onRoomInfo(GBSRoomInfo *info) {}
 void GBSMainBizWindow::onQRcodeInfo(std::string no, std::string url, int status) {}
+void GBSMainBizWindow::onAccountInfo(GBSLiveAccountInfo result) {};
+
 
 void GBSMainBizWindow::seeYouNext(QString title) {
 
@@ -422,6 +420,8 @@ GBSMainBizWindow::~GBSMainBizWindow()
 	delete ui;
 }
 
+
+
 void GBSMainBizWindow::keyPressEvent(QKeyEvent *event) {
 	if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
 
@@ -463,7 +463,7 @@ void GBSMainBizWindow::keyPressEvent(QKeyEvent *event) {
 		QPushButton *button =horiButtons[currentHoriButtonIndex];
 
 		// 模拟按钮按下和松开的过程
-		QTimer::singleShot(2000, [button]() {
+		(2000, [button]() {
 			// 模拟按钮按下
 			Q_EMIT button->pressed();
 

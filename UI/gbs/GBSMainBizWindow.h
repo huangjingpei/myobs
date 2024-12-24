@@ -10,9 +10,11 @@
 #include <QSharedPointer>
 #include <QWeakPointer>
 #include <QPoint>
+#include <QTimer>
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/common/HoriNaviButton.h"
-
+#include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/common/WebSocketClient.h"
 namespace Ui {
 class GBSMainBizWindow;
 }
@@ -43,6 +45,7 @@ public slots:
 	void closeWindow();
 	void onPopupProfile(bool checked = false);
 
+	void onTimeOut();
 	
 private:
 	void mousePressEvent(QMouseEvent *event) override;
@@ -74,17 +77,18 @@ private:
 
 // 通过 OBSHttpEventHandler 继承
 	void onLoginResult(const int result) override;
-	void onRtmpPushUrl(const std::string url) override;
 	void onPullRtmpUrl(const std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status) override;
-
+	void onAccountInfo(GBSLiveAccountInfo result) override;
 private:
 	bool m_dragging = false;
 	QPoint m_dragStartPos;
+
+	
 };
 
 #endif // GBSMAINBIZWINDOW_H

@@ -9,6 +9,8 @@
 #include "window-basic-main.hpp"
 #include "window-basic-settings.hpp"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
 #include <QDialog>
 
 
@@ -140,9 +142,16 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 
 
     OBSBasic *main = OBSBasic::Get();
-    QString path = main->getRoundedAvator();
-	QPixmap pixmap(path);
-    ui->label_3->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+    QString path = main->getAvator();
+    if (!path.isEmpty()) {
+	    QPixmap pixmap(path);
+	    ui->label_3->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+    }
+    GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+
+    QString nickName = QString::fromStdString(account.getNickname());
+    ui->label_2->setText(nickName);
+    
     // ui->label_3->setStyleSheet(" border-radius: 50%;");
     connect(ui->pushButton_2,  &QPushButton::clicked, this, &GBSMainProfile::exitSystemAndGoLogin);
     connect(btnSetting, &QPushButton::clicked, this, [dialogStyleSheet, main]() {
@@ -187,6 +196,37 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
     connect(btnSoftWare, &QPushButton::clicked, this, [main]() { main->updateSystem();
 	    });
 
+    connect(btnAboutME, &QPushButton::clicked, this, [this]() {
+	    QWidget *widget = new QWidget;
+	    QVBoxLayout *layout = new QVBoxLayout(widget);
+
+	    layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
+	    QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	    layout->addSpacerItem(spacer0);
+	    QLabel *swVersion = new QLabel();
+	    QString qVersion = "软件版本号：";
+	    qVersion += GBSMainCollector::getInstance()->getSoftWareVersion();
+	    swVersion->setStyleSheet("font-size: 20px;");
+	    swVersion->setText(qVersion);
+	    QLabel *swBuildTime = new QLabel();
+	    QString qBuildTime = "软件编译时间：";
+	    swBuildTime->setStyleSheet("font-size: 20px;");
+	    qBuildTime += GBSMainCollector::getInstance()->getBuildInfo();
+	    swBuildTime->setText(qBuildTime);
+	    QLabel *swCopyright = new QLabel();
+	    swCopyright->setStyleSheet("font-size: 20px;");
+	    swCopyright->setText("软件版权：杭州国播技术有限公司");
+	    
+
+	    layout->addWidget(swVersion);
+	    layout->addWidget(swBuildTime);
+	    layout->addWidget(swCopyright);
+
+	    QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	    layout->addSpacerItem(spacer);
+	    GBSMsgDialog *dialog = new GBSMsgDialog("颜色含义解释", layout, this);
+	    dialog->exec();
+	    });
     timer = new QTimer(this);
     timer->setInterval(1000); // 1秒无点击重置计数器
     connect(ui->pushButton, &QPushButton::clicked, this, &GBSMainProfile::onShowSetting);

@@ -1,5 +1,52 @@
 #include "GBSBizLiveDanmaku.h"
 #include "ui_GBSBizLiveDanmaku.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/common/QBizLogger.h"
+
+
+#include <windows.h>
+#include <tlhelp32.h>
+
+static bool killDanmakuProcess(const QString &processName)
+{
+	bool killed = false;
+	DWORD currentProcessId = GetCurrentProcessId();
+
+	// Create a snapshot of all processes
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		qDebug() << "Failed to take a snapshot of processes.";
+		return false;
+	}
+
+	PROCESSENTRY32 processEntry;
+	processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+	// Loop through all processes in the snapshot
+	if (Process32First(snapshot, &processEntry)) {
+		do {
+			QString currentProcessName = QString::fromWCharArray(processEntry.szExeFile);
+
+			// Check if the process name matches and it's not the current instance
+			if (currentProcessName.compare(processName, Qt::CaseInsensitive) == 0 &&
+			    processEntry.th32ProcessID != currentProcessId) {
+				HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, processEntry.th32ProcessID);
+				if (hProcess) {
+					if (TerminateProcess(hProcess, 0)) {
+						qDebug() << "Killed process:" << processName;
+						killed = true;
+					} else {
+						qDebug() << "Failed to terminate process:" << processName;
+					}
+					CloseHandle(hProcess);
+				}
+			}
+		} while (Process32Next(snapshot, &processEntry));
+	}
+	CloseHandle(snapshot);
+	return killed;
+}
+
 
 GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 	: QWidget(parent),
@@ -244,16 +291,33 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 		[this](const QString &text) {
 			iniFile->setValue("broadcast", "other", text);
 		});
-	ui->cbxPlat->addItem("抖音");
-	ui->cbxPlat->addItem("快手");
-	ui->cbxPlat->addItem("视频号");
-	ui->cbxPlat->addItem("TikTok");
-	ui->cbxPlat->addItem("淘宝");
-	ui->cbxPlat->addItem("哔哩哔哩");
-	ui->cbxPlat->addItem("拼多多");
-	ui->cbxPlat->addItem("其他");
 
-
+	QList<QString> livePlats = GBSMainCollector::getInstance() -> getLivePlats();
+	ui->cbxPlat->addItems(livePlats);
+	QString cbxplatString = iniFile->value("broadcast", "plat", "douyin").toString();
+	if (cbxplatString == "douyin") {
+		ui->cbxPlat->setCurrentText(livePlats[0]);
+	} else if (cbxplatString == "kuaishou")
+	{
+		ui->cbxPlat->setCurrentText(livePlats[1]);
+	} else if (cbxplatString == "shipinhao")
+	{
+		ui->cbxPlat->setCurrentText(livePlats[3]);
+	} else if (cbxplatString == "TikTok")
+	{
+		ui->cbxPlat->setCurrentText(livePlats[5]);
+	} else if (cbxplatString == "淘宝")
+	{
+	} else if (cbxplatString == "bili")
+	{
+		ui->cbxPlat->setCurrentText(livePlats[2]);
+	} else if (cbxplatString == "pdd")
+	{
+		ui->cbxPlat->setCurrentText(livePlats[4]);
+	} else if (cbxplatString == "facebook")
+	{
+		ui->cbxPlat->setCurrentText(livePlats[6]);
+	}
 
 	connect(ui->cbxPlat, &QComboBox::activated, this,
 		[this](int index) {
@@ -276,13 +340,15 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 						  "bili");
 			} else if (plat == "拼多多") {
 				iniFile->setValue("broadcast", "plat", "pdd");
-			} else if (plat == "其他") {
-				iniFile->setValue("broadcast", "plat", "");
+			} else if (plat == "Facebook") {
+				iniFile->setValue("broadcast", "plat", "facebook");
 			}
 
 		});
 
 
+
+	
 	ui->pushButton_15->setStyleSheet("QPushButton {"
 					"background-color: #00C566;"
 					"border-radius:5px;"
@@ -295,7 +361,8 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 	connect(ui->pushButton_15, &QPushButton::clicked, this, [this]() {
 
 		QPushButton *button = qobject_cast<QPushButton *>(sender());
-		if (button->isChecked()) {
+		if (!danmakuRunning) {
+			
 			QProcess *chromeProcess = nullptr;
 			launchDanmuExe(chromeProcess);
 			HWND chromeHwnd = nullptr;
@@ -310,6 +377,10 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 			//	}
 			//});
 
+			QList<QString> liveAbbreviations = GBSMainCollector::getInstance()->getLiveAbbreviations();
+			QString liveAbbreviation = liveAbbreviations.at(ui->cbxPlat->currentIndex());
+			GBSMainCollector::getInstance()->setDanmakuPlat(liveAbbreviation.toStdString());
+			QLogD("Start danmaku crawling");
 			ui->pushButton_15->setText("开启");
 			ui->pushButton_15->setStyleSheet("QPushButton {"
 							 "background-color: #D7D7D7;" 
@@ -325,8 +396,13 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 							 "color: white;"
 							 "font-size: 16px;"
 							 "}");
-		}
+			QLogD("Stop danmaku crawling");
+			GBSMainCollector::getInstance()->setDanmakuPlat("");
+			QString procceessName = "main.exe";
+			killDanmakuProcess(procceessName);
 
+		}
+		danmakuRunning = !danmakuRunning;
 		});
 
 }

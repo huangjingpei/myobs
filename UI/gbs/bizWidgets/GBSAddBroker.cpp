@@ -1,6 +1,7 @@
 #include "GBSAddBroker.h"
 #include "ui_GBSAddBroker.h"
-
+#include "gbs/GBSMainCollector.h"
+#include "gbs/common/GBSHttpClient.h"
 GBSAddBroker::GBSAddBroker(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::GBSAddBroker)
@@ -67,9 +68,39 @@ GBSAddBroker::GBSAddBroker(QWidget *parent)
 			     "}"
     );
 
-    
+	ui->comboBox->setStyleSheet("QComboBox {"
+				"    padding-left: 10px;" // 为左侧箭头和文本之间留出足够的空间
+				"    border: 1px solid transparent;" // 去除边框
+				"    background: transparent;"       // 背景透明
+
+				"}"
+				"QComboBox::drop-down {"
+				"    width: 20px;" // 设置下拉箭头的宽度
+				"    subcontrol-origin: padding;"
+				"    subcontrol-position: left center;" // 将下拉按钮移到左侧
+				"    margin-left: 5px;"                 // 控制箭头与左边框的距离
+				"}"
+				"QComboBox::down-arrow {"
+				"    image: url(:gbs/images/gbs/biz/gbs-right-combox-arrow.png);" // 替换为你的箭头图标
+				"    width: 16px;"                                                // 箭头的宽度
+				"    height: 16px;"                                               // 箭头的高度
+				"    border: none;"
+				"    background: transparent;" // 透明背景
+				"}"
+				"QComboBox QAbstractItemView {"
+				"border: 1px solid #cccccc;"
+				"   selection-background-color: #f0f0f0;"
+				"   selection-color: black;"
+				"border-radius: 0px;" /* 移除下拉列表的圆角 */
+
+				"}");
+
+	QList<QString> plats = GBSMainCollector::getInstance()->getLivePlats();
+    ui->comboBox->addItems(plats);
     ui->btnOK->setObjectName("myButton");
     ui->btnCancel->setObjectName("myButton");
+
+
     connect(ui->btnClose, &QPushButton::clicked, this, [this]() { close();
 	    });
 
@@ -77,8 +108,27 @@ GBSAddBroker::GBSAddBroker(QWidget *parent)
 	    });
 
     connect(ui->btnOK, &QPushButton::clicked, this, [this]() {
+	    GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	    QString activationCode = ui->leActivationCode->text();
+	    QString deviceName = ui->leDeviceName->text();
+	    int liveAccountId = account.getId();
+	    QString deviceNo = ui->leDeviceNo->text();
+	    QString productNo = ui->leProductNo->text();
+	    QString notes = ui->leRemark1->text() + "/" + ui->leRemark2->text();
+	    QString platformAccount = ui->lePlatformAccount->text();
+	    QString toDeskAccount = ui->leRemoteAccount->text();
+	    QString toDeskPassword = ui->leRemotePassword->text();
+	    QString livePlatform = ui->comboBox->currentText();
+
+	    GBSHttpClient::getInstance()->addSrsLiveDeviceV2(
+		    activationCode.toUtf8().constData(), deviceName.toUtf8().constData(), deviceNo.toUtf8().constData(),
+		    liveAccountId, livePlatform.toUtf8().constData(), notes.toUtf8().constData(),
+		    platformAccount.toUtf8().constData(), productNo.toUtf8().constData(),
+		    toDeskAccount.toUtf8().constData(), toDeskPassword.toUtf8().constData());
 
 	    accept();
+
+		GBSHttpClient::getInstance()->pageSrsLiveDeviceV2(account.getId(), 0);
 	    });
     
 

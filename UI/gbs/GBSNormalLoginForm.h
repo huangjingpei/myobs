@@ -38,7 +38,6 @@ private:
 
 // 通过 OBSHttpEventHandler 继承
 	void onLoginResult(const int result) override;
-	void onRtmpPushUrl(const std::string url) override;
 	void onPullRtmpUrl(const std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onUserFileDownLoad(const std::string &path, int type) override;

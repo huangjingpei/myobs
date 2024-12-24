@@ -28,6 +28,13 @@ endif()
 if(NOT TARGET OBS::http-server)
   add_subdirectory("${CMAKE_SOURCE_DIR}/shared/http-server" "${CMAKE_BINARY_DIR}/shared/http-server")
 endif()
+if(NOT TARGET OBS::zego-rtc)
+  add_subdirectory("${CMAKE_SOURCE_DIR}/shared/zego-rtc" "${CMAKE_BINARY_DIR}/shared/zego-rtc")
+endif()
+
+if(NOT TARGET OBS::rtc-pcm-source)
+  add_subdirectory("${CMAKE_SOURCE_DIR}/plugins/rtc-source" "${CMAKE_BINARY_DIR}/plugins/rtc-pcm-source")
+endif()
 
 add_executable(obs-studio)
 add_executable(OBS::studio ALIAS obs-studio)
@@ -48,6 +55,8 @@ target_link_libraries(
     OBS::json11
     OBS::http-util
     OBS::http-server
+    OBS::zego-rtc
+    OBS::rtc-pcm-source
 )
 
 include(cmake/ui-qt.cmake)

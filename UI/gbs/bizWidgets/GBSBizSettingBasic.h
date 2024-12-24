@@ -16,10 +16,11 @@ public:
 	void SaveBasicSettings();
 
 public slots:
-	void onClickCBXStartLiveInd();
-	void onClickCBXStopLiveInd();
-	void onClickCBXStopRecordInd();
-	void onClickCBXAutoRecordInd();
+	void onClickCBXStartLiveInd(bool checked);
+	void onClickCBXStopLiveInd(bool checked);
+	void onClickCBXStopRecordInd(bool checked);
+	void onClickCBXAutoRecordInd(bool checked);
+
 private:
 	Ui::GBSBizSettingBasic *ui;
 	OBSBasicSettings *settings;

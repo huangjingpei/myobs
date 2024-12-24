@@ -19,6 +19,14 @@ option(ENABLE_UI "Enable building with UI (requires Qt)" ON)
 option(ENABLE_SCRIPTING "Enable scripting support" ON)
 option(ENABLE_HEVC "Enable HEVC encoders" ON)
 
+# 获取当前时间
+string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
+string(TIMESTAMP BUILD_TIME "%H:%M:%S")
+
+# 将日期和时间传递给代码
+add_definitions(-DBUILD_DATE="${BUILD_DATE}")
+add_definitions(-DBUILD_TIME="${BUILD_TIME}")
+
 add_subdirectory(libobs)
 if(OS_WINDOWS)
   add_subdirectory(libobs-d3d11)

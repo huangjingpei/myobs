@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QList>
 #include <QColor>
+#include <QTimer>
 #include <QTime>
 #include "../common/DanmakuWidget.h"
 #include "../common/SelectedIDSDialog.h"
@@ -13,21 +14,17 @@
 #include "window-basic-main-outputs.hpp"
 #include "obs-frontend-api.h"
 #include "gbs/common/GBSHttpClient.h"
+#include "gbs/GBSDanmaType.h"
+#include "gbs/common/WebSocketClient.h"
+#include "gbs/media/GBSAudioWriter.h"
+
 
 namespace Ui {
 class GBSBizLivePusherCtrl;
 }
 
-typedef struct tagDammaItem {
-	QTime  currentTime;
-	QString deviceName;
-	QString iamgePath;
-	QString danmaku;
-	QString type;
-} DanmaItem;
 
-class GBSBizLivePusherCtrl : public QWidget,
-	public OBSHttpEventHandler {
+class GBSBizLivePusherCtrl : public QWidget, public OBSHttpEventHandler, public WssEventListener {
 	Q_OBJECT
 
 public:
@@ -40,13 +37,13 @@ public:
 
 public:
 	static void RenderMain(void *data, uint32_t cx, uint32_t cy);
-	void processDanmaku();
 public slots:
 	// 添加新 widget 的槽函数
 	//void addNewWidget();
 	void onComboBoxIndexChanged(int index);
 	void onStartRtmpPush(bool checked);
 	void StartStreaming(std::string server, std::string key);
+	void StopStreaming();
 	void StartReplayBuffer();
 	//void OnEvent(enum obs_frontend_event event);
 
@@ -59,7 +56,10 @@ public slots:
 	QColor GetHoverColor() const;
 	OBSScene GetCurrentScene();
 
-
+	
+signals:
+	void signalDanmakuReceived(const QString &text, const QString &imagePath, const QString &text2,
+				   const QString &type);
 
 public slots:
 	void addNewWidget(const QString &text, const QString &imagePath, const QString &text2, const QString &type);
@@ -67,6 +67,8 @@ public slots:
 
 private slots:
 	void updateStyle(bool checked);
+	void onTimeout();
+	void onTabChanged(int index);
 
 private:
 	OBSService service;
@@ -91,6 +93,15 @@ public:
 
 
 private:
+	// 通过 WssEventListener 继承
+	void onMessage(std::string msg) override;
+	void onOpen() override;
+	void onClose() override;
+
+
+	void processDanmaItem(const nlohmann::json jsonObject);
+
+private:
 	QString qPushUrl;
 	QString qUserId;
 	QString qEquipments;
@@ -104,21 +115,27 @@ private:
 
 // 通过 OBSHttpEventHandler 继承
 	void onLoginResult(int result) override;
-	void onRtmpPushUrl(std::string url) override;
 	void onPullRtmpUrl(std::string url) override;
+	void onPushRtmpClosed() override;
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status) override;
-
+	void onRtmpPushUrl(std::string url, int liveAccountId) override;
+	void onRtmpPushError(std::string errMsg) override;
 	QList<DanmaItem> whoIsDanmukus;
 	QList<DanmaItem> allDanmakus;
 	QList<DanmaItem> giftDanmakus;
 	QList<DanmaItem> likeDanmakus;
 
-	private:
+private:
 	bool startLive {false};
+	QTimer *mHeartBeatTimer;
+	int mLiveAccountId = {0};
+	QString danmaPlatIconString;
+	std::shared_ptr<WebSocketClient> mWebSocketClient;
+	std::shared_ptr<GBSAudioWriter> audioWriter;
 };
 
 #endif // GBSBIZLIVEPUSHERCTRL_H

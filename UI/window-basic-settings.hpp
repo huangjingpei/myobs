@@ -400,9 +400,9 @@ private slots:
 	void on_colorSpace_currentIndexChanged(int idx);
 
 	void on_filenameFormatting_textEdited(const QString &text);
-	void on_outputResolution_editTextChanged(const QString &text);
 
-public slots:
+
+	void on_outputResolution_editTextChanged(const QString &text);
 	void on_baseResolution_editTextChanged(const QString &text);
 private slots:
 

@@ -11,6 +11,8 @@
 #include "gbs/dto/GBSUserInfo.h"
 #include "gbs/dto/GBSRoomInfo.h"
 #include "gbs/dto/GBSMemberInfo.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/dto/GBSLiveDevices.h"
 
 
 
@@ -19,8 +21,10 @@ public:
 	OBSHttpEventHandler() = default;
 	virtual ~OBSHttpEventHandler(){}
 	virtual void onLoginResult(const int result){};
-	virtual void onRtmpPushUrl(const std::string url){};
+	virtual void onRtmpPushUrl(const std::string url, int liveAccountId) {};
+	virtual void onRtmpPushError(std::string errMsg) {};
 	virtual void onPullRtmpUrl(const std::string url){};
+	virtual void onPushRtmpClosed() {};
 	virtual void onUserInfo(const GBSUserInfo *info){};
 	virtual void onUserFileDownLoad(const std::string &path, int type){};
 	virtual void onRoomInfos(std::list<GBSRoomInfo> &info){};
@@ -28,6 +32,11 @@ public:
 	virtual void onQRcodeInfo(std::string no, std::string url, int status){};
 	virtual void onMemberInfo(GBSMemberInfo info){};
 	virtual void onAgreementInfo(std::string richText, int type){};
+	virtual void onAccountInfo(GBSLiveAccountInfo result){};
+	virtual void onActiveResult(int result){};
+	virtual void onHeartBeat(int result){};
+	virtual void onEnterGuardCtrl(int result){};
+	virtual void onListDevices(std::list<GBSLiveDevices> devices,int pageNum){};
 };
 
 class GBSHttpClient {
@@ -105,8 +114,76 @@ public:
     void agreement(int type);
     void agreementTask(int type);
 
+
+    //v2
+    void srsScanLoginV2(std::string version);
+    void srsScanLoginTaskV2(std::string deviceNo, std::string productNo, std::string version);
+
+    void srsAccountLoginV2(std::string account, std::string password, std::string smsCode, std::string version,
+			   int type);
+    void srsAccountLoginTaskV2(std::string account, std::string password, std::string smsCode, std::string version,
+			       int type);
+    void scanLoginQrCodeInfoV2(std::string qrCodeNo);
+    void scanLoginQrCodeInfoTaskV2(std::string qrCodeNo);
+
+    void srsLiveAccountInfoV2(std::string version);
+    void srsLiveAccountInfoTaskV2(std::string deviceNo, std::string productNo, std::string version);
+
+    void activateDeviceV2(std::string activationCode, std::string deviceName, int liveAccountId,
+			  std::string livePlatform,
+			  std::string notes, std::string platformAccount,
+			  std ::string toDeskAccount, std::string toDeskPassword);
+    void activateDeviceTaskV2(std::string activationCode, std::string deviceName, std::string deviceNo,
+			      int liveAccountId,
+			      std::string livePlatform, std::string notes, std::string platformAccount,
+			      std::string productNo, std ::string toDeskAccount, std::string toDeskPassword);
+
+    void createSrsStreamV2(int streamSource);
+    void createSrsStreamTaskV2(int streamSource);
+
+    void enterControlV2(std::string password, int liveAccountId);
+    void enterControlTaskV2(std::string password, int liveAccountId);
+
+    void pageSrsLiveDeviceV2(int liveAccountId, int pageNum, int pagesize = 10);
+    void pageSrsLiveDeviceTaskV2(int liveAccountId, int pageNum, int pagesize = 10);
+
+    void addSrsLiveDeviceV2(std::string activationCode, std::string deviceName, std::string deviceNo,
+			    int liveAccountId,
+			    std::string livePlatform, std::string notes, std::string platformAccount,
+			    std::string productNo, std::string toDeskAccount, std::string toDeskPassword);
+    void addSrsLiveDeviceTaskV2(std::string activationCode, std::string deviceName, std::string deviceNo,
+				int liveAccountId, std::string livePlatform, std::string notes,
+				std::string platformAccount, std::string productNo, std::string toDeskAccount,
+				std::string toDeskPassword);
+
+    void closeSrsStreamLogV2(int id);
+    void closeSrsStreamLogTaskV2(int id);
+
+
+    void deletedSrsLiveDeviceV2(int id);
+    void deletedSrsLiveDeviceTaskV2(int id);
+
+    /*
+    *	矩阵账号未配置,或矩阵账号已被禁用: 1分钟后刷新接口
+	矩阵服务器已停用:1分钟后刷新接口
+	当前矩阵设备未激活或矩阵设备已被停用: 1分钟后刷新接口
+	矩阵账号未进行直播或直播已结束: 1分钟后刷新接口
+
+	上面这4中 你写个if判断 直接比较返回的字符串 如果符合上面的 就用程序1分钟后刷
+
+	如果返回你rtmp的 你就去拉流
+    */
+    void getPullStreamUrlV2();
+    void getPullStreamUrlTaskV2(std::string deviceNo, std::string productNo);
+
+    void sendHeartbeatTimeV2(int userId);
+    void sendHeartbeatTimeTaskV2(int userId);
+
+    void sendWebsocketMsgV2(std::string msg);
+    void sendWebsocketMsgTaskV2(std::string msg, std::string liveId);
+
     private:
-    std::string getDeviceNo();
+	std::string getDeviceNo();
 	std::string getDeviceNoWithoutBraces();
 
 public:
@@ -135,9 +212,11 @@ private:
     GBSHttpClient();
 
 private:
-    std::string baseUrl = {"https://preferred-api.guobo.shop"};
-	//std::string baseUrl = {"http://75546e84.r27.cpolar.top"};
+    
+    std::string baseUrl;
+    std::string baseUrlV2;
     std::string httpHost;
+    std::string httpHostV2;
     bool verifySsl = {false};
     struct MemFile qrCodeBuf {nullptr, 0};
 
@@ -163,8 +242,6 @@ public:
 extern "C" {
 #endif
 
-void gbsLoginWithCheckVersion(std::string phone, std::string password,
-			      int loginType, std::string vendor);
 
 #ifdef __cplusplus
 }

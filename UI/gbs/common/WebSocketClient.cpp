@@ -8,6 +8,7 @@
 #include "WebSocketClient.h"
 #include <QDebug>
 #include "gbs/common/QBizLogger.h"
+
 typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
 
 using websocketpp::lib::placeholders::_1;
@@ -46,7 +47,14 @@ public:
 		m_endpoint.set_ping_handler(bind(&type::on_ping, this, ::_1, ::_2));
 		m_endpoint.set_pong_handler(bind(&type::on_pong, this, ::_1, ::_2));
 		m_endpoint.set_pong_timeout_handler(bind(&type::on_pong_timeout, this, ::_1, ::_2));
+		m_endpoint.start_perpetual();
 
+
+	}
+	~WebSocketClientImpl() override { Stop();
+	}
+
+	void setName(std::string name) override { m_socket_name = name;
 	}
 
 private:
@@ -120,6 +128,9 @@ private:
 					
 		//qDebug() << con->get_ec();
 		qDebug() << con->get_ec().message();
+
+		QLogD("on faled [%#x] tag:%s reason %s， url %s", this, m_socket_name.c_str(), con->get_ec().message().c_str(), m_url.c_str());
+
 			
 	}
 
@@ -136,7 +147,7 @@ private:
 
 	void on_open(websocketpp::connection_hdl)
 	{
-		QLogD("on open %#x", this);
+		QLogD("on open [%#x] tag:%s", this, m_socket_name.c_str());
 
 		m_open = std::chrono::high_resolution_clock::now();
 		std::lock_guard<std::mutex> lock(listenerMutex);
@@ -155,7 +166,7 @@ private:
 	}
 	void on_close(websocketpp::connection_hdl)
 	{
-		QLogD("on close %#x", this);
+		QLogD("on close [%#x] tag:%s", this, m_socket_name.c_str());
 		m_close = std::chrono::high_resolution_clock::now();
 
 		std::cout << "Socket Init: "
@@ -203,7 +214,8 @@ private:
 
 	void retry_connection()
 	{
-		QLogD("retry connect %#x", this);
+		++m_retry_times;
+		QLogD("retry connect %#x retry times %d", this, m_retry_times);
 		while ((m_should_reconnect) && (!m_exited)){
 			m_running = false;
 			m_endpoint.stop_perpetual();
@@ -237,7 +249,7 @@ public:
 	void Start(std::string url) override
 	{
 		DWORD threadId = GetCurrentThreadId();
-		qDebug() << "start thread id" << threadId;
+		qDebug() << "start thread id" << threadId << " url " <<  url;
 		QLogD("Start thread id %d", threadId);
 		start(url);
 	}
@@ -292,21 +304,24 @@ private:
 	std::atomic<bool> m_exited{false};
 	std::atomic<bool> m_running{false};
 	int m_reconnect_interval{5};
+	int m_retry_times{0};
 	std::string m_url;
 	
 	websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_thread;
 
 	std::mutex stopMutex;
 	std::condition_variable stopCondition;
+	std::string m_socket_name;
 };
 
 WebSocketClient::WebSocketClient() {}
-WebSocketClient::~WebSocketClient() {}
+WebSocketClient::~WebSocketClient() {
+}
 
-//std::shared_ptr<WebSocketClient> WebSocketClient::Create()
-//{
-//	return std::make_shared<WebSocketClientImpl>();
-//}
+std::shared_ptr<WebSocketClient> WebSocketClient::Create()
+{
+	return std::make_shared<WebSocketClientImpl>();
+}
 
 
 
@@ -322,10 +337,3 @@ void WebSocketClient::UnRegisterHandler(WssEventListener* handler) {
 	});
 }
 
-
-std::shared_ptr<WebSocketClient> WebSocketClient::getInstance()
-{
-	static std::shared_ptr<WebSocketClient> instance(
-		new WebSocketClientImpl());
-	return instance;
-}

@@ -45,7 +45,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>15268459423@163.com</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">

@@ -165,6 +165,15 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     connect(ui->lineEdit_6, &QLineEdit::textChanged, this, [this](const QString &text) {
 	    ui->lineEdit_6->setText(text);
 	    iniFile->setValue("RemoveDuplicate", "audio.TimeClockImagePath", text);
+	    OBSBasic *main = OBSBasic::Get();
+	    if (text == "") {
+		    main->removeTimeClockSource();
+	    } else {
+		    QString file = FileIOUtils::getInstance()->OpenFile(
+			    this, "获取时钟文件", text,
+			    QObject::tr("Image files (*.htm *.html"));
+		    main->addTimeClockSource(file);
+	    }
     });
 
     QString otherPlatformMateralImagePath = iniFile->value("RemoveDuplicate", "audio.OtherPlatformMateralImagePath", "").toString();

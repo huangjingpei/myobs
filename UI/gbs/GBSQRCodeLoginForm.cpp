@@ -143,7 +143,7 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 
 	connect(this, &GBSQRCodeLoginForm::onUseIconUpdate, this, &GBSQRCodeLoginForm::onMyIconDownloaded);
 	GBSHttpClient::getInstance()->registerHandler(this);
-	GBSHttpClient::getInstance()->createQrCodeScan();
+	GBSHttpClient::getInstance()->srsScanLoginV2("多多客");
 
 }
 
@@ -178,8 +178,6 @@ void GBSQRCodeLoginForm::onLoginGBS() {
 
 void GBSQRCodeLoginForm::onLoginResult(const int result) {}
 
-void GBSQRCodeLoginForm::onRtmpPushUrl(const std::string url) {}
-
 void GBSQRCodeLoginForm::onPullRtmpUrl(const std::string url) {}
 
 void GBSQRCodeLoginForm::onUserInfo(const GBSUserInfo *info) {}
@@ -201,6 +199,11 @@ void GBSQRCodeLoginForm::onQRcodeInfo(std::string no, std::string url, int statu
 		qDebug() << "onQRcodeInfo 2.";
 		QMetaObject::invokeMethod(QCoreApplication::instance()->thread(), [](){
 			GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();
+			gbsMainBizWindow->setGeometry(QStyle::alignedRect(
+				Qt::LeftToRight,
+				Qt::AlignCenter,
+				gbsMainBizWindow->size(),
+				QGuiApplication::primaryScreen()->availableGeometry()));
 			gbsMainBizWindow->show();
 			});
 
@@ -211,7 +214,7 @@ void GBSQRCodeLoginForm::onQRcodeInfo(std::string no, std::string url, int statu
 
 		    std::thread myThread([no]() { qDebug() << "Hello from thread!";
 			QThread::sleep(2);
-			GBSHttpClient::getInstance()->scanLoginInfo(no);
+			GBSHttpClient::getInstance()->scanLoginQrCodeInfoV2(no);
 			qDebug() << "onQRcodeInfo 4.";
 			});
 		myThread.detach();

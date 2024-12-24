@@ -4,12 +4,14 @@
 #include "../common/VertNaviButton.h"
 
 #include "../bizWidgets/GBSBizLivePusher.h"
+#include "../bizWidgets/GBSBizLivePusherCtrl.h"
 #include "../bizWidgets/GBSBizLiveBridger.h"
 #include "../bizWidgets/GBSBizLiveBroker.h"
 #include "../bizWidgets/GBSBizLiveDanmaku.h"
 #include "../bizWidgets/GBSBizLiveGuarder.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
 #include "gbs/common/QBizLogger.h"
-
 
 GBSNaviLive::GBSNaviLive(QWidget *parent)
 	: QWidget(parent),
@@ -36,14 +38,15 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
         )";
         ui->lblHelloMessage->setText(welcomeMessage);
 
-        QString nickName = R"(
+	QString nickNameTemplate = R"(
             <p style="font-size: 10px; text-align: center;">
-                <span style="color: black;">hjp9221@163.com</span>
+                <span style="color: black;">%1</span>
             </p>
         )";
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 
-        ui->lblNickName->setText(nickName);
-
+	QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
+	ui->lblNickName->setText(nickName);
 
 	VertNaviButton* btnDBZB = new VertNaviButton("代播直播", ":gbs/images/gbs/biz/gbs-live-dbzb.png", this);
 	VertNaviButton* btnCKGL = new VertNaviButton("场控管理", ":gbs/images/gbs/biz/gbs-live-ckgl.png", this);
@@ -74,18 +77,18 @@ GBSNaviLive::GBSNaviLive(QWidget *parent)
 	connect(btnCKGL, &QPushButton::clicked, this,
 		&GBSNaviLive::onCKGLClicked);
 
-	GBSHttpClient::getInstance()->pageQuery();
-	
-	WebSocketClient::getInstance()->RegisterHandler(this);
+
 	
 	gbsBizLiveBroker = reinterpret_cast<GBSBizLiveBroker *>(App()->GetMainWindow());
 	OBSBasic *main = OBSBasic::Get();
-	QString path = main->getRoundedAvator();
-	QPixmap pixmap(path);
-	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	QString path = main->getAvator();
+	if (!path.isEmpty()) {
+		QPixmap pixmap(path);
+		ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	}
 
 	useLiveBroker = true;
-
+	gbsBizLiveBroker->beginPullTask();
 }
 
 void GBSNaviLive::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) {
@@ -96,9 +99,7 @@ void GBSNaviLive::addLayoutRef(QSharedPointer<QLayout> layout, QWidget* widget) 
 
 
 GBSNaviLive::~GBSNaviLive()
-{
-	WebSocketClient::getInstance()->UnRegisterHandler(this);
-	
+{	
 	delete ui;
 }
 
@@ -134,8 +135,8 @@ void GBSNaviLive::onZBZBClicked() {
 		GBSBizLivePusher* gbsBizLivePusher = new GBSBizLivePusher(this);
 		layout->addWidget(gbsBizLivePusher);
 		currentWidgetRef = gbsBizLivePusher;
-		//connect(this, &GBSNaviLive::signalDanmakuReceived,
-		//	gbsBizLivePusher, &GBSBizLivePusher::addNewWidget);
+		/*connect(this, &GBSNaviLive::signalDanmakuReceived, gbsBizLivePusher,
+			&GBSBizLivePusher::addNewWidget);*/
 
 	}
 	layout->invalidate(); // 使布局无效并重新调整
@@ -209,123 +210,4 @@ void GBSNaviLive::onCKGLClicked() {
 
 	useLiveBroker = false;
 
-}
-
-void GBSNaviLive::onMessage(std::string msg) {
-	try {
-		auto jsonObject = nlohmann::json::parse(msg);
-		if (jsonObject.is_object()) {
-			processDanmaItem(jsonObject);
-		} else if (jsonObject.is_array()) {
-			int size = (int)jsonObject.size();
-			for (int i = 0; i < size; i++) {
-				processDanmaItem(jsonObject[i]);
-			}
-		}
-	} catch (const nlohmann::json::parse_error &e) {
-		qDebug() << "JSON 解析错误: " << msg
-			 << " Execption: " << e.what();
-	} catch (const std::exception &e) {
-		qDebug() << "标准异常: " << msg << " Execption: " << e.what();
-	}
-
-}
-
-
-void GBSNaviLive::onOpen() {}
-
-void GBSNaviLive::onClose() {}
-
-
-void GBSNaviLive::processDanmaItem(const nlohmann::json jsonObject) {
-	QString plat = "other";
-	if (danmaPlatIconString.isEmpty()) {
-		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("danmu/setting/setting.ini");
-		plat = iniFile->value("broadcast", "plat", "other").toString();
-		if (plat == "douyin") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-douyin.png";
-		} else if (plat == "kuaishou") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-kuai.png";
-		} else if (plat == "shipinhao") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-wechat.png";
-		} else if (plat == "tiktok") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-tiktok.png";
-		} else if (plat == "bili") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-bilibili.png";
-		} else if (plat == "pdd") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-bilibili.png";
-		} else if (plat == "facebook") {
-			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-facebook.png";
-		} else if (plat == "other") {
-			
-		}
-	}
-	if (danmaPlatIconString.isEmpty()) {
-		QLogE("No platform about danmaku, ProcessDanmaItem failed.");
-		return;
-	}
-
-	std::string type = jsonObject["type"].get<std::string>();
-	qDebug() << "damaku type " << type;
-	if (type == "MemberMessage") {
-		auto danma = std::make_shared<DammaMemberMSG>();
-		danma->type = "MemberMessage";
-		danma->name = jsonObject["name"].get<std::string>();
-		danma->head_image = jsonObject["head_image"].get<std::string>();
-		
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->msgType = 1;
-		 
-		QString danmaText = QString::fromStdString(danma->name) + ":" +
-				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
-
-	} else if (type == "ChatMessage") {
-		auto danma = std::make_shared<DanmaChatMessage>();
-		danma->type = "ChatMessage";
-		danma->name = jsonObject["name"].get<std::string>();
-		danma->head_image = jsonObject["head_image"].get<std::string>();
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->msgType = 2;
-		QString danmaText = QString::fromStdString(danma->name) + ":" +
-				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
-
-	} else if (type == "GiftMessage") {
-		auto danma = std::make_shared<DanmaGiftMessage>();
-		danma->type = "GiftMessage";
-		danma->name = jsonObject["name"].get<std::string>();
-		danma->head_image = jsonObject["head_image"].get<std::string>();
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->gift_name = jsonObject["gift_name"].get<std::string>();
-		danma->gift_count = jsonObject["gift_count"].get<std::string>();
-		danma->msgType = 3;
-		QString danmaText = QString::fromStdString(danma->name) + ":" +
-				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
-
-	} else if (type == "SocialMessage") {
-		auto danma = std::make_shared<DanmaSocialMessage>();
-		danma->type = "SocialMessage";
-		danma->name = jsonObject["name"].get<std::string>();
-		danma->head_image = jsonObject["head_image"].get<std::string>();
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->msgType = 4;
-		QString danmaText = QString::fromStdString(danma->name) + ":" +
-				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
-	} else if (type == "LikeMessage") {
-		auto danma = std::make_shared<DanmaLikeMessage>();
-		danma->type = "LikeMessage";
-		danma->name = jsonObject["name"].get<std::string>();
-		danma->head_image = jsonObject["head_image"].get<std::string>();
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->count = jsonObject["count"].get<std::string>();
-		danma->msgType = 5;
-		QString danmaText = QString::fromStdString(danma->name) + ":" +
-				    QString::fromStdString(danma->content);
-		emit signalDanmakuReceived("D01", danmaPlatIconString, danmaText, QString::fromStdString(type));
-
-		
-	}
 }

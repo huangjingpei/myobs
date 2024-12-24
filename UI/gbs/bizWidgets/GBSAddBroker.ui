@@ -74,13 +74,35 @@
      <height>411</height>
     </rect>
    </property>
-   <widget class="QLineEdit" name="leActiveNo">
+   <widget class="QLineEdit" name="leActivationCode">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>87</x>
+      <y>10</y>
+      <width>490</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>  激活编号(必填)</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leDeviceName">
+    <property name="geometry">
+     <rect>
+      <x>87</x>
       <y>60</y>
       <width>490</width>
-      <height>59</height>
+      <height>40</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -90,33 +112,14 @@ border-radius: 8px;
 </string>
     </property>
     <property name="placeholderText">
-     <string>  请输入激活编号</string>
+     <string>  设备名称(必填)</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="leRecordCache_2">
+   <widget class="QPushButton" name="btnOK">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>160</y>
-      <width>490</width>
-      <height>59</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color:transparent;
-border: 1px solid  #7E7E7E;
-border-radius: 8px;
-</string>
-    </property>
-    <property name="placeholderText">
-     <string>  请输入激活密码</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnCancel">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>250</y>
+      <x>540</x>
+      <y>320</y>
       <width>96</width>
       <height>59</height>
      </rect>
@@ -131,11 +134,11 @@ font-size:20px;</string>
      <string>确定</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnOK">
+   <widget class="QPushButton" name="btnCancel">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>250</y>
+      <x>170</x>
+      <y>320</y>
       <width>96</width>
       <height>59</height>
      </rect>
@@ -148,6 +151,302 @@ font-size:20px;</string>
     </property>
     <property name="text">
      <string>取消</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lePlatformAccount">
+    <property name="geometry">
+     <rect>
+      <x>87</x>
+      <y>110</y>
+      <width>490</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  平台账号(必填)</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leDeviceNo">
+    <property name="geometry">
+     <rect>
+      <x>87</x>
+      <y>160</y>
+      <width>490</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  设备ID(必填)</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leProductNo">
+    <property name="geometry">
+     <rect>
+      <x>87</x>
+      <y>210</y>
+      <width>490</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  产品ID(必填)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>激活编号</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>设备名称</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>平台账号</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>170</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>设备ID</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>220</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>产品ID</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>10</y>
+      <width>171</width>
+      <height>40</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>20</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>直播平台</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>579</x>
+      <y>70</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>备注</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leRemark1">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>60</y>
+      <width>81</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  备注1</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leRemark2">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>60</y>
+      <width>81</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  备注2</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leRemoteAccount">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>160</y>
+      <width>171</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  远程账号</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>170</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>远程账号</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leRemotePassword">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>210</y>
+      <width>171</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:transparent;
+border: 1px solid  #7E7E7E;
+border-radius: 8px;
+</string>
+    </property>
+    <property name="placeholderText">
+     <string>  远程密码</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>579</x>
+      <y>220</y>
+      <width>61</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>远程密码</string>
     </property>
    </widget>
   </widget>

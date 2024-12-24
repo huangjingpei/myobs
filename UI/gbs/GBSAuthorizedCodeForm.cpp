@@ -8,7 +8,7 @@ GBSAuthorizedCodeForm::GBSAuthorizedCodeForm(QWidget *parent)
 	ui->setupUi(this);
 	ui->imgBanner->setStyleSheet("border-image:url(:/gbs/images/gbs/login/gbs-banner.png)");
 	ui->btnScanQRodeLogin->setStyleSheet("border-image:url(:/gbs/images/gbs/login/scan-qrcode-login.png)");
-	ui->btnAuthorizeCodeLogin->setStyleSheet("border-image:url(:/gbs/images/gbs/login/authorized-code-login.png)");
+	ui->btnAuthorizeCodeLogin->setStyleSheet("border-image:url(:/gbs/images/gbs/login/account-password-login.png)");
 
         QString welcomeMessage = R"(
             <p style="font-size: 32px; text-align: center;">
@@ -81,7 +81,7 @@ GBSAuthorizedCodeForm::GBSAuthorizedCodeForm(QWidget *parent)
 
 	ui->btnAuthorizeCodeLogin->setStyleSheet(
 		"QPushButton {"
-		"   background-image: url(:/gbs/images/gbs/login/authorized-code-login.png);"
+		"   background-image: url(:/gbs/images/gbs/login/account-password-login.png);"
 		"   background-repeat: no-repeat;"
 		"   background-position: center;"
 		"   color: white;"
@@ -97,7 +97,7 @@ GBSAuthorizedCodeForm::GBSAuthorizedCodeForm(QWidget *parent)
 		"   background-color: #D1D8DD;" // 按下时背景颜色
 		"   padding-left: 3px;"  // 向左移动 3px
 		"   padding-top: 3px;"    // 向上移动 3px
-		"   background-image: url(:/gbs/images/gbs/login/authorized-code-login.png);"
+		"   background-image: url(:/gbs/images/gbs/login/account-password-login.png);"
 		"   background-repeat: no-repeat;"
 		"   background-position: center;"
 		"}"
@@ -122,7 +122,7 @@ void GBSAuthorizedCodeForm::onQRcodeLogin() {
 
 void GBSAuthorizedCodeForm::onAuthorizedLogin() {
 	qDebug() << "onAuthorizedLogin click ";
-	emit loginTypeChanged(1);
+	emit loginTypeChanged(0);
 }
 
 void GBSAuthorizedCodeForm::onLinkActivated(const QString &link) {

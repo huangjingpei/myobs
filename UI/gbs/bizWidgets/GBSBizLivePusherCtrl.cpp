@@ -12,6 +12,12 @@
 #include "display-helpers.hpp"
 #include "gbs/common/QBizLogger.h"
 #include "gbs/common/DoubleTextButton.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/common/QIniFile.h"
+#include "gbs/GBSDanmaType.h"
+#include "gbs/common/QToast.h"
+#include "gbs/bizWidgets/GBSMsgDialog.h"
+
 
 /**
 QFrame边框的样式
@@ -38,6 +44,58 @@ border-radius: 20px;
 #include "../GBSToolKits.h"
 
 
+
+class PCMReader {
+public:
+	PCMReader() : file_(nullptr), frame_size_(480) {} // 10ms的数据为一帧
+
+	bool Open(const char *filename)
+	{
+		file_ = fopen(filename, "rb");
+		return file_ != nullptr;
+	}
+
+	void Close()
+	{
+		if (file_) {
+			fclose(file_);
+			file_ = nullptr;
+		}
+	}
+
+	// 读取一帧数据
+	// frame_buffer: 输出缓冲区
+	// return: 实际读取的样本数（单个通道），失败返回0
+	size_t ReadFrame(std::vector<int> &frame_buffer)
+	{
+		if (!file_)
+			return 0;
+
+		// 一帧的总样本数 = 每通道样本数 * 通道数
+		const size_t total_samples = frame_size_ * 2; // 2表示双通道
+		frame_buffer.resize(total_samples);
+
+		// 读取一帧数据
+		size_t read_samples = fread(frame_buffer.data(), sizeof(int), total_samples, file_);
+
+		if (read_samples == 0) {
+			// 文件结束或读取错误
+			if (feof(file_)) {
+				// 可选：循环播放
+				fseek(file_, 0, SEEK_SET);
+				read_samples = fread(frame_buffer.data(), sizeof(int), total_samples, file_);
+			}
+		}
+
+		return read_samples / 2; // 返回单通道的样本数
+	}
+
+	~PCMReader() { Close(); }
+
+private:
+	FILE *file_;
+	const size_t frame_size_; // 每帧的样本数（单通道）
+};
 
 
 
@@ -117,8 +175,12 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 					       "    margin-left: 100px;" // 调整第一个tab项的左外边距
 					       "}");
 
+	connect(ui->tabWidget, &QTabWidget::currentChanged, this, &GBSBizLivePusherCtrl::onTabChanged);
+
+	QWidget *currentWidget = ui->tabWidget->currentWidget();
+
 	// ScrollArea 包裹 widgets 的容器
-	danmakuscrollArea = new QScrollArea(this);
+	danmakuscrollArea = new QScrollArea(currentWidget);
 	danmakuscrollArea->setWidget(containerWidget);
 	danmakuscrollArea->setWidgetResizable(true);
 	danmakuscrollArea->setStyleSheet("QScrollArea { border: none; }"
@@ -126,7 +188,16 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 					 "QScrollBar::handle:vertical { background: #CCCCCC; }" // 滚动条手柄颜色
 	);
 
+	// 限制ScrollArea尺寸，防止几何超出问题
+	danmakuscrollArea->setMinimumSize(535, 878);
+	danmakuscrollArea->setMaximumHeight(3000);
+
+	//QVBoxLayout *outerLayout = new QVBoxLayout(this);
+	//outerLayout->addWidget(danmakuscrollArea);
+	
+
 	ui->verticalLayout->addWidget(danmakuscrollArea);
+	//ui->verticalLayout->addLayout(outerLayout);
 
 	ui->btnAgainstRule->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-widget-docking.png)");
 
@@ -230,7 +301,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	////}
 	////
 	connect(ui->cbxCamera, &QComboBox::currentIndexChanged, this, &GBSBizLivePusherCtrl::onComboBoxIndexChanged);
-	connect(ui->cbxCamera, &QComboBox::currentIndexChanged, this, &GBSBizLivePusherCtrl::onComboBoxIndexChanged);
 
 	auto addDisplay = [this](OBSQTDisplay *window) {
 		OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
@@ -252,7 +322,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	outputHandler.reset(CreateSimpleOutputHandler(main));
 
 	GBSHttpClient::getInstance()->registerHandler(this);
-	GBSHttpClient::getInstance()->pageQuery();
 
 	ui->btnAll->setCheckable(true);  // 允许按钮被选中
 	ui->btnFans->setCheckable(true); // 允许按钮被选中
@@ -272,7 +341,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 		for (DanmaItem item : allDanmakus) {
 			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
 		}
-		allDanmakus.clear();
 		});
 	connect(ui->btnFans, &QPushButton::clicked, this, [this]() {
 		for (DanmakuWidget *widget : danmaKuAreaLayout->findChildren<DanmakuWidget *>()) {
@@ -282,7 +350,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 		for (DanmaItem item : whoIsDanmukus) {
 			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
 		}
-		whoIsDanmukus.clear();
 	});
 	connect(ui->btnTips, &QPushButton::clicked, this, [this]() {
 		for (DanmakuWidget *widget : danmaKuAreaLayout->findChildren<DanmakuWidget *>()) {
@@ -292,7 +359,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 		for (DanmaItem item : giftDanmakus) {
 			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
 		}
-		giftDanmakus.clear();
 	});
 	connect(ui->btnF2F, &QPushButton::clicked, this, [this]() {
 		for (DanmakuWidget *widget : danmaKuAreaLayout->findChildren<DanmakuWidget *>()) {
@@ -302,7 +368,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 		for (DanmaItem item : likeDanmakus) {
 			addNewWidget(item.deviceName, item.iamgePath, item.danmaku, item.type);
 		}
-		likeDanmakus.clear();
 		});
 	btnDanmaLists.append(ui->btnAll);
 	btnDanmaLists.append(ui->btnFans);
@@ -336,6 +401,96 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 			      "   background-repeat: no-repeat;"
 			      "   background-position: center;"
 			      "}");
+
+	mHeartBeatTimer = new QTimer(this);
+	connect(mHeartBeatTimer, &QTimer::timeout, this, &GBSBizLivePusherCtrl::onTimeout);
+	mHeartBeatTimer->setInterval(5000*60);
+	mHeartBeatTimer->start();
+
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	int userId = account.getUserId();
+	mWebSocketClient = WebSocketClient::Create();
+	mWebSocketClient->setName("DamakuReciver");
+	if (!mWebSocketClient->IsRunnig()) {
+		QLogD("Start Weboscket userid %d", userId);
+		std::string url = GBSMainCollector::getInstance()->getBaseWebSocketV2();
+		std::string wssUrl = url + "/adminDistributeGoods/" + std::to_string(userId);
+		mWebSocketClient->Start(wssUrl);
+	}
+	mWebSocketClient->RegisterHandler(this);
+	connect(this, &GBSBizLivePusherCtrl::signalDanmakuReceived, this, &GBSBizLivePusherCtrl::addNewWidget);
+
+	//audioWriter = GBSAudioWriter::Create();
+	//static PCMReader pcmReader;
+	//pcmReader.Open("D:\\GBYX\\github\\obs-studio\\build_x64\\rundir\\Debug\\bin\\64bit\\audio_data.pcm");
+	//std::thread writerThread([this]() {
+	//	//while (1) {
+	//	//	std::vector<int> frame_buffer;
+	//	//	pcmReader.ReadFrame(frame_buffer);
+	//	//	audioWriter->write((const uint8_t *)(&(frame_buffer[0])), 3840);
+	//	//	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	//	//}
+	//});
+	//writerThread.detach();
+}
+void GBSBizLivePusherCtrl::onTabChanged(int index) {
+
+
+
+}
+void GBSBizLivePusherCtrl::onMessage(std::string msg){
+	try {
+		auto jsonObject = nlohmann::json::parse(msg);
+		if (jsonObject.is_object()) {
+			processDanmaItem(jsonObject);
+		} else if (jsonObject.is_array()) {
+			int size = (int)jsonObject.size();
+			for (int i = 0; i < size; i++) {
+				processDanmaItem(jsonObject[i]);
+			}
+		}
+	} catch (const nlohmann::json::parse_error &e) {
+		qDebug() << "JSON 解析错误: " << msg << " Execption: " << e.what();
+	} catch (const std::exception &e) {
+		qDebug() << "标准异常: " << msg << " Execption: " << e.what();
+	}
+}
+void GBSBizLivePusherCtrl::onOpen() {
+	qDebug() << "onOpen";
+}
+void GBSBizLivePusherCtrl::onClose() {
+	qDebug() << "onClose";
+}
+
+void GBSBizLivePusherCtrl::onTimeout()
+{
+	if (startLive) {
+		GBSHttpClient::getInstance()->sendHeartbeatTimeV2(mLiveAccountId);
+	}
+}
+
+void GBSBizLivePusherCtrl::onRtmpPushError(std::string errMsg) {
+	QMetaObject::invokeMethod(this, [errMsg, this]() {
+		if (!errMsg.empty()) {
+			QWidget *widget = new QWidget;
+			QVBoxLayout *layout = new QVBoxLayout(widget);
+			QLabel *label = new QLabel(QString::fromStdString(errMsg));
+			label->setWordWrap(true);
+			label->setStyleSheet("QLabel {"
+					    "  font-size: 24px;"
+					    "}");
+			QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+			layout->addSpacerItem(spacer0);
+			layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
+			layout->addWidget(label);
+			QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+			layout->addSpacerItem(spacer);
+			GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
+			dialog->exec();
+		}
+		ui->btnStartLive->click();
+	});
+
 }
 
 void GBSBizLivePusherCtrl::updateStyle(bool checked) {
@@ -407,20 +562,17 @@ void GBSBizLivePusherCtrl::onStartRtmpPush(bool checked) {
 	startLive = !startLive;
 
 	if (button) {
+		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 		if (startLive) {
 			button->pressed("关播", "直播中", true);
-			selectIDSDialog->show();
-			std::string equipments = qEquipments.toStdString();
-			GBSHttpClient::getInstance()->startLive(equipments);
+			GBSHttpClient::getInstance()->createSrsStreamV2(1);
 		} else {
 			button->pressed("开播", "已关播", false);
-			GBSHttpClient::getInstance()->endLive("");
+			GBSHttpClient::getInstance()->closeSrsStreamLogV2(mLiveAccountId);
 
 		}
 	}
 
-
-	
 }
 
 
@@ -579,23 +731,30 @@ void GBSBizLivePusherCtrl::addNewWidget(const QString &atext,
 	}
 	allDanmakus.push_back(item);
 	// 创建新 widget
-	DanmakuWidget *newWidget = new DanmakuWidget(this);
+	
+	DanmakuWidget *newWidget = new DanmakuWidget(ui->tabWidget->currentWidget());
 	newWidget->setFirstRowContent(text, imagePath);
 	newWidget->setSecondRowContent(text2);
 
 	// 添加到布局
 	widgetList.append(newWidget);
+	danmaKuAreaLayout->setEnabled(false);
 
 	// 插入到布局的最底部
-	danmaKuAreaLayout->insertWidget(danmaKuAreaLayout->count(), newWidget);  // 最新的 widget 添加到布局的最后
-	qDebug() << "danmaKuAreaLayout count " << danmaKuAreaLayout->count();
+	int count = danmaKuAreaLayout->count();
+	//danmaKuAreaLayout->insertWidget(danmaKuAreaLayout->count(), newWidget);  // 最新的 widget 添加到布局的最后
+	danmaKuAreaLayout->addWidget(newWidget);
+	qDebug() << "danmaKuAreaLayout count " << danmaKuAreaLayout->count() << " count " << count;
 
 	// 滚动到最底部显示最新添加的widget
 	QScrollBar *vScrollBar = danmakuscrollArea->verticalScrollBar();
+	vScrollBar->blockSignals(true); // 避免不必要的信号触发
 	vScrollBar->setValue(vScrollBar->maximum());
+	vScrollBar->blockSignals(false);
+	danmaKuAreaLayout->setEnabled(true);
 
 	// 检查是否超过 50 个 widget
-	if (widgetList.size() > 1000) {
+	if (widgetList.size() > 500) {
 		// 移除最早的 widget
 		DanmakuWidget *oldestWidget = widgetList.takeFirst();
 		danmaKuAreaLayout->removeWidget(oldestWidget);
@@ -608,7 +767,7 @@ void GBSBizLivePusherCtrl::onLoginResult(int result) {
 
 }
 
-void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url) {
+void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url, int liveAccountId) {
 	
 	qDebug() << "GBSBizLivePusherCtrl URL: " << url;
 	QLogD("Rtmp url %s", url.c_str());
@@ -633,11 +792,20 @@ void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url) {
 		QString key = qPushUrl.mid(liveIndex + 6);
 
 		StartStreaming(serverUrl.toStdString(), key.toStdString());
+
+		GBSMainCollector::getInstance()->updateLivePushUrl(url);
+		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+		iniFile->setValue("livePusher", "url", qPushUrl);
+		iniFile->setValue("livePusher", "running", true);
 	}
-
-
-
+	mLiveAccountId = liveAccountId;
 }
+
+
+void GBSBizLivePusherCtrl::onPushRtmpClosed() {
+	StopStreaming();
+}
+
 
 void GBSBizLivePusherCtrl::onPullRtmpUrl(std::string url) {
 }
@@ -673,8 +841,8 @@ void GBSBizLivePusherCtrl::onRoomInfos(std::list<GBSRoomInfo>& infos) {
 			qEquipments = qEquipments.left(qEquipments.length() - 1);
 
 		}
-		connect(selectIDSDialog, &SelectedIDSDialog::dataSubmitted, this,
-				&GBSBizLivePusherCtrl::dialogSubmitted);	
+		//connect(selectIDSDialog, &SelectedIDSDialog::dataSubmitted, this,
+		//		&GBSBizLivePusherCtrl::dialogSubmitted);	
 	}, Qt::QueuedConnection);
 
 }
@@ -694,13 +862,17 @@ void GBSBizLivePusherCtrl::onQRcodeInfo(std::string no, std::string url, int sta
 
 GBSBizLivePusherCtrl::~GBSBizLivePusherCtrl()
 {
+	mWebSocketClient->UnRegisterHandler(this);
+	mWebSocketClient->Stop();
+
+	mHeartBeatTimer->stop();
 	service = nullptr;
 	outputHandler.reset();
 	obs_display_remove_draw_callback(ui->wgtPreview->GetDisplay(),
 					 GBSBizLivePusherCtrl::RenderMain,
 					 this);
 
-
+	
 	if (cameraSource) {
 		//GBSToolKits::getInstance()->StopPreview(cameraSource);
 	}
@@ -778,6 +950,30 @@ void GBSBizLivePusherCtrl::StartStreaming(std::string server, std::string key)
 }
 
 
+void GBSBizLivePusherCtrl::StopStreaming() {
+	OBSBasic *main = OBSBasic::Get();
+	main->SaveProject();
+
+	if (outputHandler->StreamingActive())
+		outputHandler->StopStreaming(true);
+	
+
+
+	bool recordWhenStreaming = config_get_bool(App()->GetUserConfig(), "BasicWindow", "RecordWhenStreaming");
+	bool keepRecordingWhenStreamStops =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow", "KeepRecordingWhenStreamStops");
+	if (recordWhenStreaming && !keepRecordingWhenStreamStops)
+		main->StopRecording();
+
+	bool replayBufferWhileStreaming =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow", "ReplayBufferWhileStreaming");
+	bool keepReplayBufferStreamStops =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow", "KeepReplayBufferStreamStops");
+	if (replayBufferWhileStreaming && !keepReplayBufferStreamStops)
+		main->StopReplayBuffer();
+}
+
+
 
 void GBSBizLivePusherCtrl::StartReplayBuffer()
 {
@@ -824,4 +1020,109 @@ QColor GBSBizLivePusherCtrl::GetHoverColor() const
 OBSScene GBSBizLivePusherCtrl::GetCurrentScene()
 {
 	return currentScene.load();
+}
+
+
+
+void GBSBizLivePusherCtrl::processDanmaItem(const nlohmann::json jsonObject)
+{
+	QString plat = "other";
+	std::string uniqueName = GBSMainCollector::getInstance()->getDanmaKuName();
+	if (uniqueName.empty()) {
+		return;
+	}
+	QString qUniqueName = QString::fromStdString(uniqueName);
+	if (danmaPlatIconString.isEmpty()) {
+		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("danmu/setting/setting.ini");
+		plat = iniFile->value("broadcast", "plat", "other").toString();
+		if (plat == "douyin") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-douyin.png";
+		} else if (plat == "kuaishou") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-kuai.png";
+		} else if (plat == "shipinhao") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-wechat.png";
+		} else if (plat == "tiktok") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-tiktok.png";
+		} else if (plat == "bili") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-bilibili.png";
+		} else if (plat == "pdd") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-bilibili.png";
+		} else if (plat == "facebook") {
+			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-facebook.png";
+		} else if (plat == "other") {
+		}
+	}
+	if (danmaPlatIconString.isEmpty()) {
+		QLogE("No platform about danmaku, ProcessDanmaItem failed.");
+		return;
+	}
+
+	std::string type = jsonObject["type"].get<std::string>();
+	qDebug() << "damaku type " << type;
+	if (type == "MemberMessage") {
+		auto danma = std::make_shared<DammaMemberMSG>();
+		danma->type = "MemberMessage";
+		danma->name = jsonObject["name"].get<std::string>();
+		danma->head_image = jsonObject["head_image"].get<std::string>();
+
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->msgType = 1;
+
+		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
+
+	} else if (type == "ChatMessage") {
+		auto danma = std::make_shared<DanmaChatMessage>();
+		danma->type = "ChatMessage";
+		danma->name = jsonObject["name"].get<std::string>();
+		danma->head_image = jsonObject["head_image"].get<std::string>();
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->msgType = 2;
+		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
+
+	} else if (type == "GiftMessage") {
+		auto danma = std::make_shared<DanmaGiftMessage>();
+		danma->type = "GiftMessage";
+		danma->name = jsonObject["name"].get<std::string>();
+		danma->head_image = jsonObject["head_image"].get<std::string>();
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->gift_name = jsonObject["gift_name"].get<std::string>();
+		danma->gift_count = jsonObject["gift_count"].get<std::string>();
+		danma->msgType = 3;
+		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
+
+	} else if (type == "SocialMessage") {
+		auto danma = std::make_shared<DanmaSocialMessage>();
+		danma->type = "SocialMessage";
+		danma->name = jsonObject["name"].get<std::string>();
+		danma->head_image = jsonObject["head_image"].get<std::string>();
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->msgType = 4;
+		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
+	} else if (type == "LikeMessage") {
+		auto danma = std::make_shared<DanmaLikeMessage>();
+		danma->type = "LikeMessage";
+		danma->name = jsonObject["name"].get<std::string>();
+		danma->head_image = jsonObject["head_image"].get<std::string>();
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->count = jsonObject["count"].get<std::string>();
+		danma->msgType = 5;
+		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
+	} else if (type == "RoomMessage") {
+
+		auto danma = std::make_shared<DanmaRoomMessage>();
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->count = jsonObject["count"].get<std::string>();
+		danma->msgType = 6;
+		QString danmaText = QString::fromStdString(uniqueName) + ":" + QString::fromStdString(danma->content);
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
+
+
+
+	}
 }

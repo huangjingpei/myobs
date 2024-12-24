@@ -3,7 +3,8 @@
 #include "../common/VertNaviButton.h"
 #include "../bizWidgets/GBSBizSoYoung.h"
 #include "window-basic-main.hpp"
-
+#include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/GBSMainCollector.h"
 GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 {
 	ui->setupUi(this);
@@ -31,12 +32,15 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
         )";
         ui->lblHelloMessage->setText(welcomeMessage);
 
-        QString nickName = R"(
+	QString nickNameTemplate = R"(
             <p style="font-size: 10px; text-align: center;">
-                <span style="color: black;">hjp9221@163.com</span>
+                <span style="color: black;">%1</span>
             </p>
         )";
-        ui->lblNickName->setText(nickName);
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+
+	QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
+	ui->lblNickName->setText(nickName);
 
 	VertNaviButton* btnTTS = new VertNaviButton("TTS (语音合成)", ":gbs/images/gbs/biz/gbs-ai-tts.png", this);
 	VertNaviButton* btnFacefusion = new VertNaviButton("Facefusion (换脸)", ":gbs/images/gbs/biz/gbs-ai-facefusion.png", this);
@@ -92,9 +96,11 @@ GBSNaviAI::GBSNaviAI(QWidget *parent) : QWidget(parent), ui(new Ui::GBSNaviAI)
 	// 	);
 
 	OBSBasic *main = OBSBasic::Get();
-    QString path = main->getRoundedAvator();
-	QPixmap pixmap(path);
-	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	QString path = main->getAvator();
+	if (!path.isEmpty()) {
+		QPixmap pixmap(path);
+		ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	}
 
 }
 

@@ -1053,12 +1053,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_18135520DDA74E758C398D97A4F36A0D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_184A04C83B66464BACAB4239A883D8BD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3165,6 +3159,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4227C7062E4346CBA22B1BBA7888D7C9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_422A4F640ECF4DE6A9946BD9B8D2A67B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3178,6 +3178,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4236F367EDA14AE2980E20278385D8EF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4248363383FD4CF7BD9ACAFA01508E71"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -10527,12 +10533,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D85FA03855BF4017A02BCBFB9525C490"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D87C3970137C414F9E899CA99E0563FB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -12462,8 +12462,13 @@
                 {
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 和 x64)"
                     "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.14.0.x64"
+                    {
+                    "Name" = "8:Visual C++ \"14\" Runtime Libraries (x64)"
+                    "ProductCode" = "8:Microsoft.Visual.C++.14.0.x64"
                     }
                 }
             }
@@ -12505,20 +12510,6 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_C490389FA12B472F96B7DEB9FE30A24B"
-            {
-            "Name" = "8:msiexec.exe"
-            "Condition" = "8:"
-            "Object" = "8:_18135520DDA74E758C398D97A4F36A0D"
-            "FileType" = "3:2"
-            "InstallAction" = "3:4"
-            "Arguments" = "8:/Uninstall"
-            "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_45F1A508_F6BB_42DC_AFBB_E65FCE6D76CA"
-            "InstallerClass" = "11:FALSE"
-            "CustomActionData" = "8:"
-            }
         }
         "DefaultFeature"
         {
@@ -15980,26 +15971,6 @@
             "TargetName" = "8:fil-PH.ini"
             "Tag" = "8:"
             "Folder" = "8:_42992145C1C24A5A9D67C9EC1E2978D0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_18135520DDA74E758C398D97A4F36A0D"
-            {
-            "SourcePath" = "8:..\\msiexec.exe"
-            "TargetName" = "8:msiexec.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -23034,6 +23005,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4227C7062E4346CBA22B1BBA7888D7C9"
+            {
+            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\obs-plugins\\64bit\\rtc-source.dll"
+            "TargetName" = "8:rtc-source.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_E90A5016B02A415796ECE46D4E4EC990"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_422A4F640ECF4DE6A9946BD9B8D2A67B"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\vlc-video\\locale\\szl-PL.ini"
@@ -23080,6 +23071,26 @@
             "TargetName" = "8:gl-ES.ini"
             "Tag" = "8:"
             "Folder" = "8:_84FDE6FE5A64425782027F174C8EFA65"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4248363383FD4CF7BD9ACAFA01508E71"
+            {
+            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\ZegoExpressEngine.dll"
+            "TargetName" = "8:ZegoExpressEngine.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -47574,26 +47585,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D85FA03855BF4017A02BCBFB9525C490"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\DigiClock.exe"
-            "TargetName" = "8:DigiClock.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D87C3970137C414F9E899CA99E0563FB"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\coreaudio-encoder\\locale\\bn-BD.ini"
@@ -54991,16 +54982,16 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:国播出国"
-        "ProductCode" = "8:{32C22061-8564-4A4F-AFB8-1D928B9C0302}"
-        "PackageCode" = "8:{2BBDEBE0-8F53-4572-BF8D-7720914F5E0C}"
+        "ProductCode" = "8:{E0121D17-B663-4F6A-8827-43B48AF66326}"
+        "PackageCode" = "8:{9633F437-FC38-4787-AB29-1C84CF58DBE4}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.7"
-        "Manufacturer" = "8:国博科技"
+        "ProductVersion" = "8:1.0.15"
+        "Manufacturer" = "8:国播科技"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:GbyxSetup"
@@ -55112,20 +55103,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3274E1F490E2417BA80EB2BE07C2C3A3"
-            {
-            "Name" = "8:UnInstall.exe"
-            "Arguments" = "8:/x {97434A30-8FC1-4631-B842-B75344B07B89}"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_18135520DDA74E758C398D97A4F36A0D"
-            "Folder" = "8:_2A4D424E0E704C419A3108B2B9B5B2F2"
-            "WorkingFolder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DC27C5019697458A8B735221BC706193"
             {
             "Name" = "8:国播出国"

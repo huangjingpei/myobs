@@ -105,11 +105,14 @@ color:#FFFFFF</string>
      <height>61</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="lineWidth">
     <number>0</number>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="page_4">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -126,7 +129,7 @@ color:#FFFFFF</string>
       <number>0</number>
      </property>
      <item alignment="Qt::AlignmentFlag::AlignTop">
-      <widget class="QComboBox" name="fpsCommon_2">
+      <widget class="QComboBox" name="fpsCommon">
        <property name="currentText">
         <string notr="true">10</string>
        </property>
@@ -202,7 +205,7 @@ color:#FFFFFF</string>
       <number>0</number>
      </property>
      <item alignment="Qt::AlignmentFlag::AlignTop">
-      <widget class="QSpinBox" name="fpsInteger_2">
+      <widget class="QSpinBox" name="fpsInteger">
        <property name="minimum">
         <number>1</number>
        </property>
@@ -244,7 +247,7 @@ color:#FFFFFF</string>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QSpinBox" name="fpsNumerator_2">
+      <widget class="QSpinBox" name="fpsNumerator">
        <property name="minimum">
         <number>1</number>
        </property>
@@ -264,7 +267,7 @@ color:#FFFFFF</string>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QSpinBox" name="fpsDenominator_2">
+      <widget class="QSpinBox" name="fpsDenominator">
        <property name="minimum">
         <number>1</number>
        </property>

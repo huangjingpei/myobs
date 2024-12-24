@@ -61,9 +61,9 @@ GBSBizLivePusherAuth::GBSBizLivePusherAuth(QWidget *parent)
 	    &GBSBizLivePusher::enterGuarderCtrl);
 
     connect(ui->pushButton, &QPushButton::clicked, this, [this](){
-        if (inputPassword == presetPassword) {
+        //if (inputPassword == presetPassword) {
             emit enterGuarderCtrl();
-        }
+        //}
     });
 
 }
@@ -102,7 +102,13 @@ QString GBSBizLivePusherAuth::getPresetPassword() {
     return presetPassword;
 }
 QString GBSBizLivePusherAuth::getInputPassword() {
-    return inputPassword;
+	inputPassword.clear();
+	for (int i = 0; i < qlists.count(); i++) {
+		inputPassword += qlists.at(i)->text();
+	}
+	qDebug() << "inputPassword " << inputPassword;
+
+	return inputPassword;
 }
 void GBSBizLivePusherAuth::setPresetPassword(QString password) {
     presetPassword = password;

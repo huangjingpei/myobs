@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QPoint>
 #include <QPoint>
+#include <QTimer>
+#include <QList>
 #include <QMouseEvent>
 #include "GBSNormalLoginForm.h"
 #include "GBSRegisterForm.h"
@@ -83,16 +85,21 @@ public slots:
     int GetProfilePath(char *path, size_t size,
 		       const char *file) const override;
 
+    void onPlayAds();
+
 private:
     private:
     bool m_dragging = false;
     QPoint m_dragStartPos;
 
 private:
+    int randomIndex = 0;
+    QTimer timer;
     QPixmap normalLoginPixmap;
     QPixmap qrCodeLoginPixmap;
     QPixmap registerPixmap;
     QPixmap authCodeLoginPixmap;
+    QList<QPixmap> qPixmapLists;
 	
 
     

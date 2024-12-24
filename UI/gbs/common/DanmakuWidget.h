@@ -16,6 +16,8 @@ public:
 	// 构造函数
 	DanmakuWidget(QWidget *parent = nullptr) : QWidget(parent)
 	{
+		setObjectName("DanmakuWidget");
+
 		// 创建第一行的文本标签和图片标签
 		textLabel1 = new QLabel();
 		textLabel1->setAlignment(Qt::AlignLeft);  // 文本左对齐
@@ -51,6 +53,8 @@ public:
 
 		// 设置窗口大小策略为自适应
 		setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+		setStyleSheet("QWidget#DanmakuWidget { background-color: lightgray; border: 1px solid gray; }");
+
 	}
 
 	// 设置第一行的文本和图片
@@ -66,6 +70,28 @@ public:
 	{
 		textLabel2->setText(text);  // 设置文本
 	}
+
+	void setSelected(bool selected)
+	{
+		isSelected = selected;
+		if (isSelected) {
+			setStyleSheet("QWidget#DanmakuWidget { background-color: lightblue; border: 1px solid white; }");
+		} else {
+			setStyleSheet("QWidget#DanmakuWidget { background-color: lightgray; border: 1px solid gray; }");
+		}
+		// 强制刷新样式
+		update();
+	}
+
+protected:
+	void mousePressEvent(QMouseEvent *event) override
+	{
+		setSelected(!isSelected); // 点击切换选中状态
+		QWidget::mousePressEvent(event);
+	}
+
+private:
+	bool isSelected;
 
 private:
 	QLabel *textLabel1;  // 第一行的文本标签

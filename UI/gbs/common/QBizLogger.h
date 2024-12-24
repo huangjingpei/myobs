@@ -14,8 +14,8 @@
 
 namespace QLog {
 enum LogLevel {
-    QDEBUG,
     QINFO,
+    QDEBUG,
     QWARNING,
     QERROR
 };
@@ -24,12 +24,14 @@ class LoggerThread : public QThread {
     Q_OBJECT
 
 public:
+    LoggerThread() : m_exit(false) {}
+
     void run() override {
-        while (true) {
+        while (!m_exit) {
             QString message;
             {
                 QMutexLocker locker(&mutex);
-                if (queue.isEmpty()) {
+                if (queue.isEmpty() && !m_exit) {
                     waitCondition.wait(&mutex);
                 }
                 if (!queue.isEmpty()) {
@@ -50,6 +52,14 @@ public:
         }
     }
 
+    void stop() {
+        {
+            QMutexLocker locker(&mutex);
+            m_exit = true;
+        }
+        waitCondition.wakeOne();
+    }
+
     void enqueue(const QString &message) {
         {
             QMutexLocker locker(&mutex);
@@ -60,14 +70,15 @@ public:
 
     void setLogFile(const QString &fileName) {
         logFile.setFileName(fileName);
-        logFile.open(QIODevice::Append | QIODevice::Text);
+        logFile.open(QIODevice::WriteOnly | QIODevice::Text);
     }
 
 private:
+    bool m_exit;
     QFile logFile;
-    QQueue<QString> queue; // 缓冲队列
-    QMutex mutex; // 互斥锁
-    QWaitCondition waitCondition; // 等待条件
+    QQueue<QString> queue;
+    QMutex mutex;
+    QWaitCondition waitCondition;
 };
 
 class Logger {
@@ -83,34 +94,40 @@ public:
         logLevel = level;
     }
     void log(LogLevel level, const QString &file, const QString &function, int line, const QString format, ... ) {
-        if (level >= logLevel) return; // 过滤低于当前日志级别的日志
+        if (level < logLevel) return;
         va_list list;
         va_start(list, format);
         QString message = QString(format).vasprintf(format.toStdString().c_str(), list);
         va_end(list);
         log2(level, file, function, line, message);
     }
+
+    // 添加显式退出方法
+    void shutdown() {
+        loggerThread.stop();
+        loggerThread.quit();
+        loggerThread.wait();
+    }
+
 private:
     void log2(LogLevel level, const QString &file, const QString &function, int line, const QString &message) {
-        if (level >= logLevel) return; // 过滤低于当前日志级别的日志
+        if (level < logLevel) return;
 
         QString logMessage = QString("[%1] [%2] %3")
                                  .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"),
                                       logLevelToString(level), message);
 
-        // 将日志消息放入队列
         loggerThread.enqueue(logMessage);
 
-        // 输出到 Debug Viewer
         OutputDebugStringA(logMessage.toLocal8Bit().constData());
     }
 
 private:
-    Logger() = default; // 禁止外部实例化
+    Logger() = default;
     ~Logger() {
-        loggerThread.quit();
-        loggerThread.wait();
-    }
+	    loggerThread.quit();
+	    loggerThread.wait();
+	}
 
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;

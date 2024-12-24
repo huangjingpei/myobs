@@ -259,7 +259,7 @@ border-radius: 16px;
                 <widget class="QLabel" name="lblLiveSource_2">
                  <property name="geometry">
                   <rect>
-                   <x>20</x>
+                   <x>70</x>
                    <y>20</y>
                    <width>80</width>
                    <height>25</height>
@@ -279,8 +279,8 @@ font-size: 24px;
                 <widget class="FatButton" name="pushButton">
                  <property name="geometry">
                   <rect>
-                   <x>60</x>
-                   <y>60</y>
+                   <x>150</x>
+                   <y>80</y>
                    <width>150</width>
                    <height>80</height>
                   </rect>
@@ -292,8 +292,8 @@ font-size: 24px;
                 <widget class="FatButton" name="pushButton_2">
                  <property name="geometry">
                   <rect>
-                   <x>230</x>
-                   <y>60</y>
+                   <x>320</x>
+                   <y>80</y>
                    <width>150</width>
                    <height>80</height>
                   </rect>
@@ -305,8 +305,8 @@ font-size: 24px;
                 <widget class="FatButton" name="pushButton_3">
                  <property name="geometry">
                   <rect>
-                   <x>60</x>
-                   <y>160</y>
+                   <x>150</x>
+                   <y>180</y>
                    <width>150</width>
                    <height>80</height>
                   </rect>
@@ -318,8 +318,8 @@ font-size: 24px;
                 <widget class="FatButton" name="pushButton_4">
                  <property name="geometry">
                   <rect>
-                   <x>230</x>
-                   <y>160</y>
+                   <x>320</x>
+                   <y>180</y>
                    <width>150</width>
                    <height>80</height>
                   </rect>
@@ -331,8 +331,8 @@ font-size: 24px;
                 <widget class="FatButton" name="pushButton_5">
                  <property name="geometry">
                   <rect>
-                   <x>60</x>
-                   <y>260</y>
+                   <x>150</x>
+                   <y>280</y>
                    <width>150</width>
                    <height>80</height>
                   </rect>
@@ -344,8 +344,8 @@ font-size: 24px;
                 <widget class="FatButton" name="pushButton_6">
                  <property name="geometry">
                   <rect>
-                   <x>230</x>
-                   <y>260</y>
+                   <x>320</x>
+                   <y>280</y>
                    <width>150</width>
                    <height>80</height>
                   </rect>

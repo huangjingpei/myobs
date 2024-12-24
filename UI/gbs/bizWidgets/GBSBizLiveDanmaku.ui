@@ -28,13 +28,13 @@ font-size:16px;
 </string>
    </property>
    <property name="tabShape">
-    <enum>QTabWidget::TabShape::Rounded</enum>
+    <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
    <property name="elideMode">
-    <enum>Qt::TextElideMode::ElideLeft</enum>
+    <enum>Qt::ElideLeft</enum>
    </property>
    <widget class="QWidget" name="tabAdvanced">
     <attribute name="title">
@@ -526,7 +526,7 @@ border-radius:5px;
 color:#FFFFFF</string>
      </property>
      <property name="text">
-      <string>其他</string>
+      <string>Facebook</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="lePddLive">

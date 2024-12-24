@@ -60,6 +60,10 @@ inline std::string GetMachineIdFromRegistry()
 	} else {
 		std::cerr << "Failed to open registry key." << std::endl;
 	}
+	machineId.erase(std::remove(machineId.begin(), machineId.end(), '\0'), machineId.end());
+	if (machineId.front() == '{' && machineId.back() == '}') {
+		machineId = machineId.substr(1, machineId.size() - 2); // 去掉首尾的大括号
+	}
 
 	return machineId;
 }

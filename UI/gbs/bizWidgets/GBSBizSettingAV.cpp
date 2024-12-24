@@ -5,6 +5,126 @@
 #include "window-basic-main.hpp"
 #include "window-basic-settings.hpp"
 #include "qt-wrappers.hpp"
+
+
+/* some nice default output resolution vals */
+static const double vals[] = {1.0, 1.25, (1.0 / 0.75), 1.5, (1.0 / 0.6), 1.75, 2.0, 2.25, 2.5, 2.75, 3.0};
+
+static const size_t numVals = sizeof(vals) / sizeof(double);
+
+static std::string ResString(uint32_t cx, uint32_t cy)
+{
+	std::stringstream res;
+	res << cx << "x" << cy;
+	return res.str();
+}
+static std::tuple<int, int> aspect_ratio(int cx, int cy)
+{
+	int common = std::gcd(cx, cy);
+	int newCX = cx / common;
+	int newCY = cy / common;
+
+	if (newCX == 8 && newCY == 5) {
+		newCX = 16;
+		newCY = 10;
+	}
+
+	return std::make_tuple(newCX, newCY);
+}
+static inline bool ResTooHigh(uint32_t cx, uint32_t cy)
+{
+	return cx > 16384 || cy > 16384;
+}
+
+static inline bool ResTooLow(uint32_t cx, uint32_t cy)
+{
+	return cx < 32 || cy < 32;
+}
+
+/* parses "[width]x[height]", string, i.e. 1024x768 */
+static bool ConvertResText(const char *res, uint32_t &cx, uint32_t &cy)
+{
+	BaseLexer lex;
+	base_token token;
+
+	lexer_start(lex, res);
+
+	/* parse width */
+	if (!lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
+		return false;
+	if (token.type != BASETOKEN_DIGIT)
+		return false;
+
+	cx = std::stoul(token.text.array);
+
+	/* parse 'x' */
+	if (!lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
+		return false;
+	if (strref_cmpi(&token.text, "x") != 0)
+		return false;
+
+	/* parse height */
+	if (!lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
+		return false;
+	if (token.type != BASETOKEN_DIGIT)
+		return false;
+
+	cy = std::stoul(token.text.array);
+
+	/* shouldn't be any more tokens after this */
+	if (lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
+		return false;
+
+	if (ResTooHigh(cx, cy) || ResTooLow(cx, cy)) {
+		cx = cy = 0;
+		return false;
+	}
+
+	return true;
+}
+
+
+void GBSBizSettingAV::LoadFPSCommon(OBSBasic *main)
+{
+	const char *val = config_get_string(main->Config(), "Video", "FPSCommon");
+
+	int idx = ui->fpsCommon->findText(val);
+	if (idx == -1)
+		idx = 4;
+	ui->fpsCommon->setCurrentIndex(idx);
+}
+
+void GBSBizSettingAV::LoadFPSInteger(OBSBasic *main)
+{
+	uint32_t val = config_get_uint(main->Config(), "Video", "FPSInt");
+	ui->fpsInteger->setValue(val);
+}
+
+void GBSBizSettingAV::LoadFPSFraction(OBSBasic *main)
+{
+	uint32_t num = config_get_uint(main->Config(), "Video", "FPSNum");
+	uint32_t den = config_get_uint(main->Config(), "Video", "FPSDen");
+
+	ui->fpsNumerator->setValue(num);
+	ui->fpsDenominator->setValue(den);
+}
+
+void GBSBizSettingAV::LoadFPSData()
+{
+	OBSBasic *main = OBSBasic::Get();
+	LoadFPSCommon(main);
+	LoadFPSInteger(main);
+	LoadFPSFraction(main);
+
+	uint32_t fpsType = config_get_uint(main->Config(), "Video", "FPSType");
+	if (fpsType > 2)
+		fpsType = 0;
+
+	ui->cbxFpsType->setCurrentIndex(fpsType);
+	ui->fpsTypes->setCurrentIndex(fpsType);
+}
+
+
 GBSBizSettingAV::GBSBizSettingAV(OBSBasicSettings *settings, QWidget *parent)
 	: settings(settings),QWidget(parent),
 	  ui(new Ui::GBSBizSettingAV)
@@ -176,95 +296,102 @@ if (comboBox) {
 	ui->cbxBasicResolution->setEditable(true);
 	ui->cbxOutputResolution->setEditable(true);
 
-	connect(ui->cbxBasicResolution, &QComboBox::currentTextChanged, this,
-		[settings, this](const QString &text) {
-			//settings->on_cbxBasicResolution_editTextChanged(text);
+	connect(ui->cbxBasicResolution, &QComboBox::currentTextChanged, this, [this](const QString &text) {
+		
+		on_cbxBasicResolution_editTextChanged(text);
 		});
 
+	connect(ui->cbxBasicResolution, &QComboBox::currentTextChanged, this,
+		[this](const QString &text) { on_cbxOutputResolution_editTextChanged(text); });
+
 	LoadResolutionLists();
+	LoadFPSData();
+	LoadDownscaleFilters();
+	ui->fpsTypes->setStyleSheet("");
 }
 
+bool GBSBizSettingAV::ValidResolutions() {
+	QString baseRes = ui->cbxBasicResolution->lineEdit()->text();
+	uint32_t cx, cy;
+
+	if (!ConvertResText(QT_TO_UTF8(baseRes), cx, cy)) {
+		//ui->videoMsg->setText(QTStr(INVALID_RES_STR));
+		return false;
+	}
+
+	bool lockedOutRes = !ui->cbxOutputResolution->isEditable();
+	if (!lockedOutRes) {
+		QString outRes = ui->cbxOutputResolution->lineEdit()->text();
+		if (!ConvertResText(QT_TO_UTF8(outRes), cx, cy)) {
+			//ui->videoMsg->setText(QTStr(INVALID_RES_STR));
+			return false;
+		}
+	}
+
+	//ui->videoMsg->setText("");
+	return true;
+}
+void GBSBizSettingAV::LoadDownscaleFilters()
+{
+	OBSBasic* main = OBSBasic::Get();
+	QString cbxScaleAlgo = ui->cbxScaleAlgo->currentData().toString();
+	if (cbxScaleAlgo.isEmpty())
+		cbxScaleAlgo = config_get_string(main->Config(), "Video", "ScaleType");
+
+	ui->cbxScaleAlgo->clear();
+	if (ui->cbxBasicResolution->currentText() == ui->cbxOutputResolution->currentText()) {
+		ui->cbxScaleAlgo->setEnabled(false);
+		ui->cbxScaleAlgo->addItem(QTStr("Basic.Settings.Video.DownscaleFilter.Unavailable"),
+					     cbxScaleAlgo);
+	} else {
+		ui->cbxScaleAlgo->setEnabled(true);
+		ui->cbxScaleAlgo->addItem(QTStr("Basic.Settings.Video.DownscaleFilter.Bilinear"),
+					     QT_UTF8("bilinear"));
+		ui->cbxScaleAlgo->addItem(QTStr("Basic.Settings.Video.DownscaleFilter.Area"), QT_UTF8("area"));
+		ui->cbxScaleAlgo->addItem(QTStr("Basic.Settings.Video.DownscaleFilter.Bicubic"), QT_UTF8("bicubic"));
+		ui->cbxScaleAlgo->addItem(QTStr("Basic.Settings.Video.DownscaleFilter.Lanczos"), QT_UTF8("lanczos"));
+
+		if (cbxScaleAlgo == "bilinear")
+			ui->cbxScaleAlgo->setCurrentIndex(0);
+		else if (cbxScaleAlgo == "lanczos")
+			ui->cbxScaleAlgo->setCurrentIndex(3);
+		else if (cbxScaleAlgo == "area")
+			ui->cbxScaleAlgo->setCurrentIndex(1);
+		else
+			ui->cbxScaleAlgo->setCurrentIndex(2);
+	}
+}
+
+void GBSBizSettingAV::on_cbxBasicResolution_editTextChanged(const QString &text) {
+	
+	RecalcOutputResPixels(QT_TO_UTF8(text));
+	LoadDownscaleFilters();
+	
+}
+void GBSBizSettingAV::on_cbxOutputResolution_editTextChanged(const QString &text)
+{
+	if (!ValidResolutions()) {
+		return ;
+	}
+	QString cbxBasicResolution = text;
+	uint32_t cx, cy;
+
+	ConvertResText(QT_TO_UTF8(cbxBasicResolution), cx, cy);
+
+	std::tuple<int, int> aspect = aspect_ratio(cx, cy);
+
+	ui->label_4->setText(
+		QTStr("AspectRatio")
+			.arg(QString::number(std::get<0>(aspect)), QString::number(std::get<1>(aspect))));
+
+	ResetDownscales(cx, cy);
+	
+}
 
 
 GBSBizSettingAV::~GBSBizSettingAV()
 {
 	delete ui;
-}
-
-/* some nice default output resolution vals */
-static const double vals[] = {1.0, 1.25, (1.0 / 0.75), 1.5, (1.0 / 0.6), 1.75, 2.0, 2.25, 2.5, 2.75, 3.0};
-
-static const size_t numVals = sizeof(vals) / sizeof(double);
-
-static std::string ResString(uint32_t cx, uint32_t cy)
-{
-	std::stringstream res;
-	res << cx << "x" << cy;
-	return res.str();
-}
-static std::tuple<int, int> aspect_ratio(int cx, int cy)
-{
-	int common = std::gcd(cx, cy);
-	int newCX = cx / common;
-	int newCY = cy / common;
-
-	if (newCX == 8 && newCY == 5) {
-		newCX = 16;
-		newCY = 10;
-	}
-
-	return std::make_tuple(newCX, newCY);
-}
-static inline bool ResTooHigh(uint32_t cx, uint32_t cy)
-{
-	return cx > 16384 || cy > 16384;
-}
-
-static inline bool ResTooLow(uint32_t cx, uint32_t cy)
-{
-	return cx < 32 || cy < 32;
-}
-
-/* parses "[width]x[height]", string, i.e. 1024x768 */
-static bool ConvertResText(const char *res, uint32_t &cx, uint32_t &cy)
-{
-	BaseLexer lex;
-	base_token token;
-
-	lexer_start(lex, res);
-
-	/* parse width */
-	if (!lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
-		return false;
-	if (token.type != BASETOKEN_DIGIT)
-		return false;
-
-	cx = std::stoul(token.text.array);
-
-	/* parse 'x' */
-	if (!lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
-		return false;
-	if (strref_cmpi(&token.text, "x") != 0)
-		return false;
-
-	/* parse height */
-	if (!lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
-		return false;
-	if (token.type != BASETOKEN_DIGIT)
-		return false;
-
-	cy = std::stoul(token.text.array);
-
-	/* shouldn't be any more tokens after this */
-	if (lexer_getbasetoken(lex, &token, IGNORE_WHITESPACE))
-		return false;
-
-	if (ResTooHigh(cx, cy) || ResTooLow(cx, cy)) {
-		cx = cy = 0;
-		return false;
-	}
-
-	return true;
 }
 
 void GBSBizSettingAV::LoadResolutionLists()
@@ -398,10 +525,10 @@ void GBSBizSettingAV::ResetDownscales(uint32_t cx, uint32_t cy, bool ignoreAllSi
 
 		if (closeAspect) {
 			ui->cbxOutputResolution->lineEdit()->setText(oldOutputRes);
-			//on_outputResolution_editTextChanged(oldOutputRes);
+			//on_cbxOutputResolution_editTextChanged(oldOutputRes);
 		} else {
 			ui->cbxOutputResolution->lineEdit()->setText(bestScale.c_str());
-			//on_outputResolution_editTextChanged(bestScale.c_str());
+			//on_cbxOutputResolution_editTextChanged(bestScale.c_str());
 		}
 
 		ui->cbxOutputResolution->blockSignals(false);
@@ -437,20 +564,20 @@ void GBSBizSettingAV::GeneralChanged()
 
 void GBSBizSettingAV::SaveVideoSettings()
 {
-	QString baseResolution = ui->cbxBasicResolution->currentText();
-	QString outputResolution = ui->cbxOutputResolution->currentText();
+	QString cbxBasicResolution = ui->cbxBasicResolution->currentText();
+	QString cbxOutputResolution = ui->cbxOutputResolution->currentText();
 	int fpsType = ui->fpsTypes->currentIndex();
 	uint32_t cx = 0, cy = 0;
 	OBSBasic *main = OBSBasic::Get();
 
 	/* ------------------- */
 
-	if (WidgetChanged(ui->cbxBasicResolution) && ConvertResText(QT_TO_UTF8(baseResolution), cx, cy)) {
+	if (WidgetChanged(ui->cbxBasicResolution) && ConvertResText(QT_TO_UTF8(cbxBasicResolution), cx, cy)) {
 		config_set_uint(main->Config(), "Video", "BaseCX", cx);
 		config_set_uint(main->Config(), "Video", "BaseCY", cy);
 	}
 
-	if (WidgetChanged(ui->cbxOutputResolution) && ConvertResText(QT_TO_UTF8(outputResolution), cx, cy)) {
+	if (WidgetChanged(ui->cbxOutputResolution) && ConvertResText(QT_TO_UTF8(cbxOutputResolution), cx, cy)) {
 		config_set_uint(main->Config(), "Video", "OutputCX", cx);
 		config_set_uint(main->Config(), "Video", "OutputCY", cy);
 	}
@@ -459,6 +586,12 @@ void GBSBizSettingAV::SaveVideoSettings()
 		config_set_uint(main->Config(), "Video", "FPSType", fpsType);
 
 
+	config_set_string(main->Config(), "Video", "ScaleType",
+			  QT_TO_UTF8(ui->cbxScaleAlgo->itemData(ui->cbxScaleAlgo->currentIndex()).toString()));
+
+
+	config_set_string(main->Config(), "Video", "ScaleType",
+			QT_TO_UTF8(ui->cbxScaleAlgo->itemData(ui->cbxScaleAlgo->currentIndex()).toString()));
 }
 
 void GBSBizSettingAV::SaveAudioSettings() {

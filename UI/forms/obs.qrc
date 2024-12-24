@@ -363,5 +363,6 @@
         <file>images/gbs/biz/gbs-setting-output.png</file>
         <file>images/gbs/biz/gbs-setting-output-blue.png</file>
         <file>images/gbs/biz/gbs-sound-wave.gif</file>
+        <file>images/gbs/login/account-password-login.png</file>
     </qresource>
 </RCC>

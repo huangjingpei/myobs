@@ -4,6 +4,8 @@
 #include "../common/VertNaviButton.h"
 #include "../bizWidgets/GBSBizSoYoung.h"
 #include "window-basic-main.hpp"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
 GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GBSNaviTranslate)
@@ -24,21 +26,23 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	ui->lblNaviTitle->setText("实时翻译");
 
 
-        QString welcomeMessage = R"(
-            <p style="font-size: 12px; text-align: center;">
-                <span style="color: black;">Hi！</span>
-                <span style="color: black;">尊贵的用户</span>
-            </p>
-        )";
-        ui->lblHelloMessage->setText(welcomeMessage);
+	QString welcomeMessage = R"(
+		<p style="font-size: 12px; text-align: center;">
+			<span style="color: black;">Hi！</span>
+			<span style="color: black;">尊贵的用户</span>
+		</p>
+	)";
+	ui->lblHelloMessage->setText(welcomeMessage);
 
-        QString nickName = R"(
+	QString nickNameTemplate = R"(
             <p style="font-size: 10px; text-align: center;">
-                <span style="color: black;">hjp9221@163.com</span>
+                <span style="color: black;">%1</span>
             </p>
         )";
-
-        ui->lblNickName->setText(nickName);
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	
+	QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
+	ui->lblNickName->setText(nickName);
 
 	VertNaviButton* btnDMXHCYY = new VertNaviButton("大模型合成语音", ":gbs/images/gbs/biz/gbs-translate-intertrans.png", this);
 	VertNaviButton* btnWBHCZB = new VertNaviButton("文本合成直播", ":gbs/images/gbs/biz/gbs-translate-speech.png", this);
@@ -82,9 +86,12 @@ GBSNaviTranslate::GBSNaviTranslate(QWidget *parent)
 	connect(btnWBHCZB, &QPushButton::clicked, this, &GBSNaviTranslate::onTextAIClick);
 	connect(btnSPFYHC, &QPushButton::clicked, this, &GBSNaviTranslate::onVideoAIClick);
 	OBSBasic *main = OBSBasic::Get();
-	QString path = main->getRoundedAvator();
-	QPixmap pixmap(path);
-	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	QString path = main->getAvator();
+	if (!path.isEmpty()) {
+		QPixmap pixmap(path);
+		ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	}
+	
 
 }
 

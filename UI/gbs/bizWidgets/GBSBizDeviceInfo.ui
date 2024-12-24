@@ -177,7 +177,7 @@ color: #00C566;</string>
 color: #00C566;</string>
     </property>
     <property name="text">
-     <string>获取</string>
+     <string>激活</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnDevInfo04">
@@ -561,7 +561,7 @@ font-size: 14px;</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>240</x>
       <y>270</y>
       <width>32</width>
       <height>20</height>
@@ -578,7 +578,7 @@ font-size: 14px;</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>420</x>
       <y>270</y>
       <width>104</width>
       <height>20</height>
@@ -646,14 +646,14 @@ font-size: 13px;</string>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>230</x>
       <y>330</y>
       <width>56</width>
       <height>18</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -664,14 +664,14 @@ font-size: 13px;
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>430</x>
       <y>330</y>
       <width>91</width>
       <height>18</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -689,7 +689,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -707,7 +707,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -735,14 +735,14 @@ font-size: 13px;</string>
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>230</x>
       <y>380</y>
       <width>56</width>
       <height>18</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -753,14 +753,14 @@ font-size: 13px;
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>430</x>
       <y>380</y>
       <width>91</width>
       <height>18</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -772,13 +772,13 @@ font-size: 13px;
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>370</y>
+      <y>380</y>
       <width>91</width>
       <height>18</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -790,13 +790,13 @@ font-size: 13px;
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>370</y>
+      <y>380</y>
       <width>91</width>
       <height>18</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -899,7 +899,7 @@ font-size: 14px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -917,7 +917,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -935,7 +935,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -953,7 +953,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -1039,7 +1039,7 @@ font-size: 14px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -1057,7 +1057,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -1075,7 +1075,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -1093,12 +1093,12 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
     <property name="text">
-     <string>0/0(0.0%</string>
+     <string>0/0(0.0%)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_33">
@@ -1179,7 +1179,7 @@ font-size: 14px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>
@@ -1197,7 +1197,7 @@ font-size: 13px;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #FF0000;
+     <string notr="true">color: #00C566;
 font-size: 13px;
 </string>
     </property>

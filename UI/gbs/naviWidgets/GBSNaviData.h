@@ -7,6 +7,7 @@
 #include <QSharedPointer>
 #include <QWeakPointer>
 #include <QList>
+#include <QTimer>
 #include "gbs/common/VertNaviButton.h"
 namespace Ui {
 class GBSNaviData;
@@ -24,9 +25,9 @@ public slots:
 	void onEShopDataClicked();
 	void onAIDataClicked();
 
-	void onMyIconDownloaded(QString path);
-
 	void setMainBizWindow(QWidget *widget);
+
+	void onTimeout();
 
 private:
 	void mariVertButton(VertNaviButton *button);
@@ -39,6 +40,8 @@ private:
 	QWidget* currentWidgetRef;
 	QList<VertNaviButton *> vertNaviButtons;
 	QWidget *mainWidget = nullptr;
+	int timerExecCount = 0;
+	QTimer *timer;
 };
 
 #endif // GBSNAVIDATA_H

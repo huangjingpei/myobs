@@ -21,12 +21,23 @@ public:
 private:
 	void LoadResolutionLists();
 	void RecalcOutputResPixels(const char *resText);
-	void ResetDownscales(uint32_t cx, uint32_t cy, bool ignoreAllSignals);
+	void ResetDownscales(uint32_t cx, uint32_t cy, bool ignoreAllSignals = false);
 	
 	bool WidgetChanged(QWidget *widget);
 
+	void LoadDownscaleFilters();
+
+	bool ValidResolutions();
+	void LoadFPSData();
+	void LoadFPSFraction(OBSBasic *main);
+	void LoadFPSInteger(OBSBasic *main);
+	void LoadFPSCommon(OBSBasic *main);
+
+
 private slots:
 	void GeneralChanged();
+	void on_cbxBasicResolution_editTextChanged(const QString &text);
+	void on_cbxOutputResolution_editTextChanged(const QString &text);
 
 private:
 	Ui::GBSBizSettingAV *ui;

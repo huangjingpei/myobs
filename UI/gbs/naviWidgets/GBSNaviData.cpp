@@ -7,6 +7,9 @@
 #include "gbs/common/QToast.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
+
 
 GBSNaviData::GBSNaviData(QWidget *parent)
 	: QWidget(parent),
@@ -35,15 +38,31 @@ GBSNaviData::GBSNaviData(QWidget *parent)
         )";
         ui->lblHelloMessage->setText(welcomeMessage);
 
-        QString nickName = R"(
+	QString nickNameTemplate = R"(
             <p style="font-size: 10px; text-align: center;">
-                <span style="color: black;">hjp9221@163.com</span>
+                <span style="color: black;">%1</span>
             </p>
         )";
-
-
-
-	ui->lblNickName->setText(nickName);
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	QPointer<GBSNaviData> safeThis = this;
+	if (QString::fromStdString(account.getNickname()).isEmpty()) {
+		QTimer::singleShot(2000, [nickNameTemplate, safeThis]() {
+			if (!safeThis)
+				return; // 检查对象是否已销毁
+			GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+			if (account.getNickname().empty()) {
+				QString nickName = nickNameTemplate.arg(QString::fromStdString("unknown"));
+				safeThis->ui->lblNickName->setText(nickName);
+			} else {
+				QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
+				safeThis->ui->lblNickName->setText(nickName);
+			}
+			});
+	} else {
+		QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
+		ui->lblNickName->setText(nickName);
+	}
+	
 
 	VertNaviButton* btnDeviceInfo = new VertNaviButton("数据信息", ":gbs/images/gbs/biz/gbs-data-device-info.png", this);
 	VertNaviButton* btnEShopData = new VertNaviButton("电商数据", ":gbs/images/gbs/biz/gbs-data-running-data.png", this);
@@ -65,18 +84,39 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 		&GBSNaviData::onEShopDataClicked);
 	connect(btnAIData, &VertNaviButton::clicked, this,
 		&GBSNaviData::onAIDataClicked);
-	OBSBasic *main = OBSBasic::Get();
-
-	connect(main, &OBSBasic::onUseIconUpdate, this, &GBSNaviData::onMyIconDownloaded);
 
 
-
-
+	OBSBasic *main = OBSBasic::Get();	
+	QString path = main->getAvator();
+	if (!path.isEmpty()) {
+		QPixmap pixmap(path);
+		ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	} else {
+		timer = new QTimer(this);
+		connect(timer, &QTimer::timeout, this, &GBSNaviData::onTimeout);
+		timer->setInterval(1000);
+		
+	}
 }
 
 GBSNaviData::~GBSNaviData()
 {
 	delete ui;
+}
+
+void GBSNaviData::onTimeout() {
+	timerExecCount++;
+	if (timerExecCount >= 5) {
+		timer->stop();
+		QLogE("Get the avator error. so cannot show it in navi data.");
+		return;
+	}
+	OBSBasic *main = OBSBasic::Get();
+	QString path = main->getAvator();
+	if (!path.isEmpty()) {
+		QPixmap pixmap(path);
+		ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+	}
 }
 
 void GBSNaviData::seeYouNext(QString title)
@@ -169,12 +209,3 @@ void GBSNaviData::onAIDataClicked() {
 	}
 }
 
-
-void GBSNaviData::onMyIconDownloaded(QString path) {
-
-	QLogD("onMyIconDownloaded . %s.", path.toStdString().c_str());
-	QPixmap pixmap(path);
-	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
-	ui->imgAvator->setStyleSheet(
-		" border-radius: 50%;");
-}

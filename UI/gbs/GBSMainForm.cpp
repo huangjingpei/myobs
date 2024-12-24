@@ -3,12 +3,14 @@
 #include "gbsbasicwindow.h"
 #include "gbsmainwindow.h"
 #include "window-basic-main.hpp"
-
+#include <ctime>
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSpacerItem>
+#include <QRandomGenerator>
+#include <QTime>
 #include "GBSNormalLoginForm.h"
 
 #include "PixmapOverlay.h"
@@ -60,7 +62,12 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	QRect rect3(88, 128, 515, 164);
 	PixmapOverlay *overlayWidget3 = new PixmapOverlay(authCodeLogin, authCodeLoginAd, rect3);
 	authCodeLoginPixmap = overlayWidget3->overlay()->scaled(739, 990, Qt::KeepAspectRatio);
-	
+
+	qPixmapLists << normalLoginPixmap << registerPixmap << qrCodeLoginPixmap;
+
+	QObject::connect(&timer, &QTimer::timeout, this, &GBSMainForm::onPlayAds);
+	timer.setInterval(2000);
+	timer.start();
 
 	leftImage->setPixmap(normalLoginPixmap);
 	leftImage->setSizePolicy(QSizePolicy::Expanding,
@@ -175,8 +182,13 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 
 GBSMainForm::~GBSMainForm()
 {
-
+    timer.start();
+    qPixmapLists.clear();
     delete ui;
+}
+
+void GBSMainForm::onPlayAds() {
+	setleftImage(qPixmapLists.at(randomIndex++% 3));
 }
 
 void GBSMainForm::setleftImage(QPixmap pixmap) {
@@ -193,7 +205,7 @@ void GBSMainForm::onLinkActivated(const QString &link) {
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
 
-			setleftImage(registerPixmap);
+			//setleftImage(registerPixmap);
 
 			currentFrom = nullptr;
 			registerForm = new GBSRegisterForm(this);
@@ -237,7 +249,7 @@ void GBSMainForm::onLoginTypeChanged(int type){
 		if (currentFrom != nullptr) {
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
-			setleftImage(normalLoginPixmap);
+			//setleftImage(normalLoginPixmap);
 
 
 			currentFrom = nullptr;
@@ -263,7 +275,7 @@ void GBSMainForm::onLoginTypeChanged(int type){
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
 			currentFrom = nullptr;
-			setleftImage(authCodeLoginPixmap);
+			//setleftImage(authCodeLoginPixmap);
 
 
 			authorizedCodeForm = new GBSAuthorizedCodeForm(this);
@@ -283,7 +295,7 @@ void GBSMainForm::onLoginTypeChanged(int type){
 			loginBizLayout->removeWidget(currentFrom);
 			delete currentFrom;
 			currentFrom = nullptr;
-			setleftImage(qrCodeLoginPixmap);
+			//setleftImage(qrCodeLoginPixmap);
 
 			scanQRcodeForm = new GBSQRCodeLoginForm(this);
 			loginBizLayout->addWidget(scanQRcodeForm);

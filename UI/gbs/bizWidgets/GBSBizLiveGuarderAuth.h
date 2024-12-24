@@ -5,12 +5,12 @@
 #include <QKeyEvent>
 #include <QList>
 #include <QLineEdit>
-
+#include "gbs/common/GBSHttpClient.h"
 namespace Ui {
 class GBSBizLiveGuarderAuth;
 }
 
-class GBSBizLiveGuarderAuth : public QWidget {
+class GBSBizLiveGuarderAuth : public QWidget, public OBSHttpEventHandler {
 	Q_OBJECT
 
 public:
@@ -23,7 +23,10 @@ public:
     QString getPresetPassword();
     QString getInputPassword();
     void setPresetPassword(QString password);
-private:
+
+    void onEnterGuardCtrl(int result) override;
+
+    private:
     void focusNextInput(int currentIndex);
     void keyPressEvent(QKeyEvent *event) override;
 private:

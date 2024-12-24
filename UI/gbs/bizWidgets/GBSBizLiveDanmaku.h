@@ -43,6 +43,9 @@ private:
 	void onMessage(std::string msg) override;
 	void onOpen() override;
 	void onClose() override;
+
+
+	bool danmakuRunning{false};
 };
 
 #endif // GBSLIVEDANMAKU_H

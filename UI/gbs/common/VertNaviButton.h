@@ -25,7 +25,7 @@ public:
     explicit VertNaviButton(const QString &text, const QString &iconPath, QWidget *parent = nullptr)
         : QPushButton(parent), icon(iconPath), pressedIcon(changeIconFile(iconPath, "-transparent")), currentIcon(&icon)
     {
-        qDebug() << "iconPath " << iconPath << " transparent path " << changeIconFile(iconPath, "-transparent");
+   //     qDebug() << "iconPath " << iconPath << " transparent path " << changeIconFile(iconPath, "-transparent");
    //          QString myStyle = R"(
    //                  QPushButton {
    //                      border: 2px solid #1B2846;

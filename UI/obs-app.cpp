@@ -1047,8 +1047,7 @@ OBSApp::~OBSApp()
 	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
 	GBSHttpsDestroy(httpsServerHandle);
 	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
-	WebSocketClient::getInstance()->Stop();
-	qDebug() << "FILE: "<< __FILE__ << " line "  << __LINE__;
+
 
 #ifdef _WIN32
 	bool disableAudioDucking = config_get_bool(appConfig, "Audio", "DisableAudioDucking");
@@ -1361,6 +1360,12 @@ bool OBSApp::OBSInit()
 
 	mainWindow = new OBSBasic();
 	loginWindow = new GBSMainForm();
+
+	loginWindow->setGeometry(QStyle::alignedRect(
+		Qt::LeftToRight,
+		Qt::AlignCenter,
+		loginWindow->size(),
+		QGuiApplication::primaryScreen()->availableGeometry()));
 	
 	mainWindow->setAttribute(Qt::WA_DeleteOnClose, true);
 	connect(mainWindow, &OBSBasic::destroyed, this, &OBSApp::quit);
@@ -1921,7 +1926,41 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
 
 	return nullptr;
 }
+// 备份并管理 application.log 文件
+static void manageLogFile(const QString &logFileName, int maxHistory = 5)
+{
+	// 获取当前日期时间，格式为 年月日_时分秒
+	QString dateSuffix = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
 
+	// 判断是否存在当前目录的 application.log 文件
+	QFile logFile(logFileName);
+	if (logFile.exists()) {
+		// 生成带日期时间后缀的文件名
+		QString backupFileName = QString("%1.%2").arg(logFileName).arg(dateSuffix);
+
+		// 重命名当前 application.log 文件
+		if (!logFile.rename(backupFileName)) {
+			qDebug() << "Failed to rename log file to" << backupFileName;
+			return;
+		}
+		qDebug() << "Renamed log file to" << backupFileName;
+	}
+
+	// 保留最近的 maxHistory 个文件，删除多余的旧日志
+	QDir dir(QDir::currentPath());
+	QStringList logFiles = dir.entryList({QString("%1.*").arg(logFileName)}, QDir::Files, QDir::Time);
+
+	if (logFiles.size() > maxHistory) {
+		for (int i = maxHistory; i < logFiles.size(); ++i) {
+			QString oldFile = logFiles.at(i);
+			if (dir.remove(oldFile)) {
+				qDebug() << "Deleted old log file:" << oldFile;
+			} else {
+				qDebug() << "Failed to delete old log file:" << oldFile;
+			}
+		}
+	}
+}
 static const char *run_program_init = "run_program_init";
 static int run_program(fstream &logFile, int argc, char *argv[])
 {
@@ -1970,6 +2009,14 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 	qputenv("QT_NO_SUBTRACTOPAQUESIBLINGS", "1");
 
 	OBSApp program(argc, argv, profilerNameStore.get());
+	manageLogFile(QCoreApplication::applicationDirPath() + "/" + "application.log", 5);
+	QLog::Logger::instance().configure(QCoreApplication::applicationDirPath() + "/"+ "application.log", QLog::LogLevel::QINFO);
+	
+	std::string data1 = BUILD_DATE;
+	std::string time1 = BUILD_TIME;
+	QString buildInfo = QString("%1, %2").arg(QString::fromLocal8Bit(data1)).arg(QString::fromLocal8Bit(time1));
+	QLogD("App was built at %s", buildInfo.toUtf8().constData());
+	QLogD("App start up...");
 	try {
 		QAccessible::installFactory(accessibleFactory);
 		QFontDatabase::addApplicationFont(":/fonts/pingfang.ttf");
@@ -2522,14 +2569,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 #endif
-	QLog::Logger::instance().configure("application.log", QLog::LogLevel::QINFO);
-	QString buildInfo =
-		QString("%1, %2").arg(QString::fromLocal8Bit(__DATE__)).arg(QString::fromLocal8Bit(__TIME__));
-	qDebug() << "Date:" << __DATE__ << "Time:" << __TIME__;
 
-	qDebug() << "HUANGJINGPEI" << buildInfo.toUtf8().constData();
-	QLogD("App was built at %s", buildInfo.toUtf8().constData());
-	QLogD("App start up...");
 	qRegisterMetaType<EllipticalSlider>("EllipticalSlider");
 	qRegisterMetaType<HoriNaviButton>("HoriNaviButton");
 	qRegisterMetaType<EllipticalSlider>("EllipticalSliderExt");

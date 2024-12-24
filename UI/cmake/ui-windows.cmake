@@ -135,8 +135,8 @@ target_sources(
     gbs/bizWidgets/GBSBizEShopData.h
     gbs/bizWidgets/GBSAddBroker.cpp
     gbs/bizWidgets/GBSAddBroker.h
-    gbs/bizWidgets/GBSAddConsumer.cpp
-    gbs/bizWidgets/GBSAddConsumer.h
+    gbs/bizWidgets/GBSActivateDevice.cpp
+    gbs/bizWidgets/GBSActivateDevice.h
     gbs/bizWidgets/GBSRemoveBroker.cpp
     gbs/bizWidgets/GBSRemoveBroker.h
 
@@ -146,15 +146,42 @@ target_sources(
     gbs/dto/GBSRoomInfo.cpp
     gbs/dto/GBSMemberInfo.h
     gbs/dto/GBSMemberInfo.cpp
+    gbs/dto/GBSQrCodeResponse.h
+    gbs/dto/GBSQrCodeResponse.cpp
+    gbs/dto/GBSLiveAccountInfo.h
+    gbs/dto/GBSLiveAccountInfo.cpp
+    gbs/dto/GBSLiveDevices.h
+    gbs/dto/GBSLiveDevices.cpp
+
+    gbs/codec/GBSOpusEncoder.h
+    gbs/codec/GBSOpusEncoder.cpp
+    gbs/codec/GBSAACEncoder.h
+    gbs/codec/GBSAACEncoder.cpp
+    gbs/codec/GBSOpusDecoder.h
+    gbs/codec/GBSOpusDecoder.cpp
+    gbs/codec/GBSAudioCodec.h
+
+    gbs/media/GBSAudioReader.h
+    gbs/media/GBSAudioReader.cpp
+    gbs/media/GBSAudioWriter.h
+    gbs/media/GBSAudioWriter.cpp
+    gbs/media/GBSAudioResampler.h
+    
 
     gbs/utils/TaskExecutor.h
     gbs/GBSToolKits.h
     gbs/GBSToolKits.cpp
     gbs/GBSHttpsServer.h
     gbs/GBSHttpsServer.cpp
+    gbs/GBSAsioHttpServer.h
+    gbs/GBSAsioHttpServer.cpp
     gbs/GBSMainProfile.h
     gbs/GBSMainProfile.cpp
     
+    gbs/GBSMainCollector.h
+    gbs/GBSMainCollector.cpp
+
+
     window-basic-preview.cpp
     window-basic-preview.hpp
     window-basic-properties.cpp

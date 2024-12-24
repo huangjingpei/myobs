@@ -52,6 +52,9 @@
 #include <util/util.hpp>
 
 #include <QPointer>
+#include "ZegoRTCEngine.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/media/GBSAudioReader.h"
 
 class QMessageBox;
 class QListWidgetItem;
@@ -62,6 +65,7 @@ class OBSBasicVCamConfig;
 #include "ui_OBSBasic.h"
 #include "ui_ColorSelect.h"
 #include "gbs/common/GBSHttpClient.h"
+#include "gbs/common/WebSocketClient.h"
 
 #define DESKTOP_AUDIO_1 Str("DesktopAudioDevice1")
 #define DESKTOP_AUDIO_2 Str("DesktopAudioDevice2")
@@ -176,7 +180,7 @@ private:
 	std::unique_ptr<Ui::ColorSelect> ui;
 };
 
-class OBSBasic : public OBSMainWindow, public OBSHttpEventHandler {
+class OBSBasic : public OBSMainWindow, public OBSHttpEventHandler, public WssEventListener, public IAudioReaderCallback {
 	Q_OBJECT
 	Q_PROPERTY(QIcon imageIcon READ GetImageIcon WRITE SetImageIcon DESIGNABLE true)
 	Q_PROPERTY(QIcon colorIcon READ GetColorIcon WRITE SetColorIcon DESIGNABLE true)
@@ -1286,6 +1290,7 @@ public:
 	OBSSource addMicrophoneSource();
 	void removeMicrophoneSource();
 	OBSSource addSpeakerSource();
+	OBSSource addPCMAudioSource();
 
 	static QString GetVendor();
 
@@ -1396,6 +1401,9 @@ public:
 	OBSSource addSlideShowSource(QStringList files);
 	void removeSlideShowSource();
 
+	OBSSource addTimeClockSource(QString file);
+	void removeTimeClockSource();
+
 	OBSScene querySceneBySceneName(std::string sceneName);
 	void changeTransform(int factor);
 	void changeOpacity(int opacity);
@@ -1403,24 +1411,38 @@ public:
 private:
 	// 通过 OBSHttpEventHandler 继承
 	void onLoginResult(const int result) override;
-	void onRtmpPushUrl(const std::string url) override;
 	void onPullRtmpUrl(const std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
-	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status) override;
+	void onAccountInfo(GBSLiveAccountInfo result) override;
+	// 通过 WssEventListener 继承
+	void onMessage(std::string msg) override;
+	void onOpen() override;
+	void onClose() override;
 
+public:
+	QString getAvator();
+	
 private slots:
 	void startPullStream(QString rtmp);
+	void stopPullStream();
 
-signals:
-	void onUseIconUpdate(QString iconPaht);
-public:
-	QString getRoundedAvator();
-
-private:
+ private:
 	QString pullRtmpUrl;
+
+	std::shared_ptr<WebSocketClient> mWssClient;
+	/* 对讲开始*/
+	std::mutex mRtcEngineMutex;
+	void onAudioCapture(void *data, int size, uint64_t ts) override;
+	std::shared_ptr<ZegoRTCEngine> mRtcEngine;
+	std::unique_ptr<GBSAudioReader> mAudioReader;
+
+public:
+	void beginTalk(int id);
+	void endTalk(int id);
+	/*对讲结束*/
 };
 
 extern bool cef_js_avail;
