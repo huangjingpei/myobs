@@ -32,6 +32,8 @@ target_sources(
     update/update-window.hpp
     update/win-update.cpp
     update/win-update.hpp
+    update/win-update-gbs.cpp
+    update/win-update-gbs.hpp
     win-dll-blocklist.c
     win-update/updater/manifest.hpp
 )

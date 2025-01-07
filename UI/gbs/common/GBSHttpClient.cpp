@@ -423,7 +423,8 @@ void GBSHttpClient::checkDeviceNoCreateQrCodeScanTask()
 }
 
 
-void GBSHttpClient::sendWebsocketMsg(std::string msg) {
+void GBSHttpClient::sendWebsocketMsg(std::string msg)
+{
 	std::string plat = GBSMainCollector::getInstance()->getDanmakuPlat();
 	if (plat.empty()) {
 		return;
@@ -1448,6 +1449,7 @@ void GBSHttpClient::srsLiveAccountInfoV2(std::string version)
 {
 	std::string productId = GetWindowsProductIDFromRegistery();
 	std::string deviceId = GetMachineIdFromRegistry();
+	std::string boarderNo = GBSMainCollector::getInstance()->getSystemUniqueNo();
 	if (productId.empty() || deviceId.empty()) {
 		std::cerr << "product Id is "
 			  << "[" << productId << "]"
@@ -1459,12 +1461,16 @@ void GBSHttpClient::srsLiveAccountInfoV2(std::string version)
 	}
 	QLogD("Product Id is %s", productId.c_str());
 	QLogD("Device Id is %s", deviceId.c_str());
-	executor->addTask(std::bind(&GBSHttpClient::srsLiveAccountInfoTaskV2, this, deviceId, productId, version));
+	executor->addTask(
+		std::bind(&GBSHttpClient::srsLiveAccountInfoTaskV2, this, deviceId, productId, boarderNo, version));
 }
-void GBSHttpClient::srsLiveAccountInfoTaskV2(std::string deviceNo, std::string productNo, std::string version) {
+void GBSHttpClient::srsLiveAccountInfoTaskV2(std::string deviceNo, std::string productNo, std::string boarderNo,
+					     std::string version)
+{
 	json body = {
 		{"deviceNo", deviceNo},
 		{"productNo", productNo},
+		{"motherboardNo", boarderNo},
 		{"version", version},
 	};
 	//std::string url = baseUrlV2 + "/preferred/srs/srsLiveAccountInfo";
@@ -1521,9 +1527,10 @@ void GBSHttpClient::srsLiveAccountInfoTaskV2(std::string deviceNo, std::string p
 }
 
 
-void GBSHttpClient::activateDeviceV2(std::string activationCode, std::string deviceName, int liveAccountId,
-				   std::string livePlatform,
-		      std::string notes, std::string platformAccount, std ::string toDeskAccount, std::string toDeskPassword)
+void GBSHttpClient::activateDeviceV2(std::string activationCode, std::string deviceName, std::string deviceNo,
+					  int liveAccountId, std::string livePlatform, std::string motherboardNo,
+					  std::string notes, std::string platformAccount, std::string productNo,
+					  std ::string toDeskAccount, std::string toDeskPassword)
 {
 	std::string productId = GetWindowsProductIDFromRegistery();
 	std::string deviceId = GetMachineIdFromRegistry();
@@ -1538,22 +1545,24 @@ void GBSHttpClient::activateDeviceV2(std::string activationCode, std::string dev
 	}
 	QLogD("Product Id is %s", productId.c_str());
 	QLogD("Device Id is %s", deviceId.c_str());
-	executor->addTask(std::bind(&GBSHttpClient::activateDeviceTaskV2, this, activationCode, deviceName, deviceId,
-				    liveAccountId,
-				    livePlatform, notes, platformAccount, productId, toDeskAccount,
+	executor->addTask(std::bind(&GBSHttpClient::activateDeviceTaskV2, this, activationCode, deviceName, deviceNo,
+				    liveAccountId, livePlatform, motherboardNo, notes, platformAccount, productId,
+				    toDeskAccount,
 				    toDeskPassword));
 }
 void GBSHttpClient::activateDeviceTaskV2(std::string activationCode, std::string deviceName, std::string deviceNo,
-					 int liveAccountId,
-				       std::string livePlatform,
-			  std::string notes, std::string platformAccount, std::string productNo, std ::string toDeskAccount, std::string toDeskPassword)
+					 int liveAccountId, std::string livePlatform, std::string motherboardNo,
+					 std::string notes, std::string platformAccount, std::string productNo,
+					 std ::string toDeskAccount, std::string toDeskPassword)
 {
 	json body = {
 		{"activationCode", activationCode},
 		{"deviceName", deviceName},
 		{"deviceNo", deviceNo},
 		{"liveAccountId", liveAccountId},   {"productNo", productNo},
-		{"livePlatform", livePlatform},     {"notes", notes},
+		{"livePlatform", livePlatform},
+		{"motherboardNo", motherboardNo},
+		{"notes", notes},
 		{"platformAccount", platformAccount},
 		{"toDeskAccount", toDeskAccount},
 		{"toDeskPassword", toDeskPassword},
@@ -1865,24 +1874,28 @@ void GBSHttpClient::pageSrsLiveDeviceTaskV2(int liveAccountId, int pageNum, int 
 }
 
 
-void GBSHttpClient::addSrsLiveDeviceV2(std::string activationCode, std::string deviceName, std::string deviceNo,
-				       int liveAccountId,
-			std::string livePlatform, std::string notes, std::string platformAccount, std::string productNo, std::string toDeskAccount,
+void GBSHttpClient::addSrsLiveDeviceV2(std::string activationCode, std::string deviceCode, std::string deviceName,
+				       int liveAccountId, std::string livePlatform, std::string notes,
+				       std::string platformAccount, std::string toDeskAccount,
 				       std::string toDeskPassword)
 {
-	executor->addTask(std::bind(&GBSHttpClient::addSrsLiveDeviceTaskV2, this, activationCode, deviceName, deviceNo,
-				    liveAccountId, livePlatform, notes, platformAccount, productNo, toDeskAccount,
+	executor->addTask(std::bind(&GBSHttpClient::addSrsLiveDeviceTaskV2, this, activationCode, deviceCode,
+				    deviceName,
+				    liveAccountId, livePlatform, notes, platformAccount, toDeskAccount,
 				    toDeskPassword));
     }
-void GBSHttpClient::addSrsLiveDeviceTaskV2(std::string activationCode, std::string deviceName, std::string deviceNo,
-					   int liveAccountId,
-			    std::string livePlatform, std::string notes, std::string platformAccount, std::string productNo,
-					   std::string toDeskAccount, std::string toDeskPassword)
+
+
+void GBSHttpClient::addSrsLiveDeviceTaskV2(std::string activationCode,
+					std::string deviceCode, std::string deviceName,
+					int liveAccountId,
+					std::string livePlatform, std::string notes, std::string platformAccount,
+					std::string toDeskAccount, std::string toDeskPassword)
 {
 	json body = {
-		{"activationCode", activationCode}, {"deviceName", deviceName},       {"deviceNo", deviceNo},
+		{"activationCode", activationCode},   {"deviceCode", deviceCode},     {"deviceName", deviceName},
 		{"liveAccountId", liveAccountId},   {"livePlatform", livePlatform},   {"notes", notes},
-		{"platformAccount", platformAccount}, {"productNo", productNo},       {"toDeskAccount", toDeskAccount},
+		{"platformAccount", platformAccount},{"toDeskAccount", toDeskAccount},
 		{"toDeskPassword", toDeskPassword},
 
 	};
@@ -1927,6 +1940,7 @@ void GBSHttpClient::addSrsLiveDeviceTaskV2(std::string activationCode, std::stri
 void GBSHttpClient::getPullStreamUrlV2() {
 	std::string productId = GetWindowsProductIDFromRegistery();
 	std::string deviceId = GetMachineIdFromRegistry();
+	std::string motherboardNo = GBSMainCollector::getInstance()->getSystemUniqueNo();
 	if (productId.empty() || deviceId.empty()) {
 		std::cerr << "product Id is "
 			  << "[" << productId << "]"
@@ -1938,13 +1952,15 @@ void GBSHttpClient::getPullStreamUrlV2() {
 	}
 	QLogD("Product Id is %s", productId.c_str());
 	QLogD("Device Id is %s", deviceId.c_str());
-	executor->addTask(std::bind(&GBSHttpClient::getPullStreamUrlTaskV2, this, deviceId, productId));
+	executor->addTask(std::bind(&GBSHttpClient::getPullStreamUrlTaskV2, this, deviceId, productId, motherboardNo));
 
     }
-void GBSHttpClient::getPullStreamUrlTaskV2(std::string deviceNo, std::string productNo) {
+void GBSHttpClient::getPullStreamUrlTaskV2(std::string deviceNo, std::string productNo, std::string motherboardNo)
+{
 	json body = {
 		{"deviceNo", deviceNo},
-		{"productNo", productNo}
+		{"productNo", productNo},
+		{"motherboardNo", motherboardNo},
 	};
 
 #ifdef DEBUG_MSG
@@ -2012,7 +2028,7 @@ void GBSHttpClient::closeSrsStreamLogTaskV2(int id) {
 							    {"token", token}},
 						cpr::VerifySsl{false})
 					 .get();
-
+			QLogE("closeSrsStreamLogTaskV2 %s", body.c_str());
 			if (r.status_code == 200) {
 				return r.text;
 
@@ -2097,18 +2113,62 @@ void GBSHttpClient::deletedSrsLiveDeviceTaskV2(int id) {
 
 void GBSHttpClient::sendWebsocketMsgV2(std::string msg)
 {
-	std::string danmakuPlat = GBSMainCollector::getInstance()->getDanmakuPlat();
-	if (danmakuPlat.empty()) {
-		return;
-	}
-
-	std::string liveId = GBSMainCollector::getInstance()->getDanmaKuName();
-	executor->addTask([msg, liveId, this]() { this->sendWebsocketMsgTaskV2(msg, liveId); });
+	executor->addTask(
+		[msg, this]() { this->sendWebsocketMsgTaskV2(msg); });
 }
-void GBSHttpClient::sendWebsocketMsgTaskV2(std::string msg, std::string liveId)
+void GBSHttpClient::sendWebsocketMsgTaskV2(std::string msg)
 {
-	json body = {{"info", msg}, {"liveId", liveId}};
+	json body = {{"info", msg}};
 	std::string url = baseUrlV2 + "/preferred/distribute/sendAdminDistributeGoodsWebSocketInfo";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false});
+					 //.get();
+			//if (r.status_code == 200) {
+			//	return r.text;
+			//} else {
+			//	std::cerr << "[ERROR] send websocket"
+			//		  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+			//		  << std::endl;
+			//	QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+			//	return "Error";
+			//}
+			return "OK";
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::modifyZlmLiveDevice(std::string deviceName, int id, std::string livePlatform,
+					     std::string notes,
+			      std::string platformAccount, int remoteSwitch, std::string toDeskAccount,
+			      std::string toDeskPassword)
+{
+	executor->addTask(std::bind(&GBSHttpClient::modifyZlmLiveDeviceTaskV2, this, deviceName,id,livePlatform, notes, platformAccount, remoteSwitch, toDeskAccount, toDeskPassword));
+}
+
+void GBSHttpClient::modifyZlmLiveDeviceTaskV2(std::string deviceName, int id, std::string livePlatform,
+						std::string notes,
+				std::string platformAccount, int remoteSwitch, std::string toDeskAccount, std::string toDeskPassword)
+{
+	json body = {{"deviceName", deviceName},
+		     {"id", id},
+		     {"livePlatform", livePlatform},
+		     {"notes", notes},
+		     {"platformAccount", platformAccount},
+		     {"remoteSwitch", remoteSwitch},
+		     {"toDeskAccount", toDeskAccount},
+		{"toDeskPassword", toDeskPassword}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/modifyZlmLiveDevice";
 	auto task = new HttpRequestTask(
 		[this](std::string url, std::string body, std::string token) -> std::string {
 			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
@@ -2135,4 +2195,3 @@ void GBSHttpClient::sendWebsocketMsgTaskV2(std::string msg, std::string liveId)
 		url, body.dump(), token);
 	task->run();
 }
-

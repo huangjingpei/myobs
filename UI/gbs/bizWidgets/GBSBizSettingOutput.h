@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QSharedPointer>
 #include "window-basic-settings.hpp"
 namespace Ui {
 class GBSBizSettingOutput;
@@ -12,7 +13,7 @@ class GBSBizSettingOutput : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit GBSBizSettingOutput(OBSBasicSettings *settings, QWidget *parent = nullptr);
+	explicit GBSBizSettingOutput(QSharedPointer<OBSBasicSettings> settings, QWidget *parent = nullptr);
 	~GBSBizSettingOutput();
 	void SaveOutputSettings();
 
@@ -23,7 +24,7 @@ private:
 	QList<QWidget*> basicWidgets;
 	QList<QWidget*> advancedWidgets;
 
-	OBSBasicSettings *settings;
+	QSharedPointer<OBSBasicSettings> settings;
 
 };
 

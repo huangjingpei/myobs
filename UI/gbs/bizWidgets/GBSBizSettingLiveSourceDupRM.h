@@ -20,10 +20,20 @@ public:
     void setStyleForAllSliders(QWidget *widget);
 public slots:
     void onTabChanged(int index);
+	void onApply(bool checked = false);
+    void onCancel(bool checked = false);
+	void onConfirm(bool checked = false);
 
 private:
     Ui::GBSBizSettingLiveSourceDupRM *ui;
 	std::unique_ptr<IniSettings> iniFile;
+
+    private:
+	QString mImageDupRm{""};
+	QString mOtherPlatDmpRm{""};
+	QString mTimerClockDupRm{""};
+	QString mWhosCommingDupRm{""};
+	QString mAudioEffectDupRm{""};
 };
 
 #endif // GBSBIZSETTINGLIVESOURCEDUPRM_H

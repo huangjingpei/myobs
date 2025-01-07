@@ -42,6 +42,7 @@ private:
 	// 通过 WssEventListener 继承
 	void onMessage(std::string msg) override;
 	void onOpen() override;
+	void onFail() override;
 	void onClose() override;
 
 

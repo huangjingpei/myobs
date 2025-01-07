@@ -63,35 +63,41 @@ GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
 
     connect(this, &GBSBizLiveGuarderAuth::enterGuarderCtrl, reinterpret_cast<GBSBizLiveGuarder *>(parent), &GBSBizLiveGuarder::enterGuarderCtrl);
 
-    connect(ui->pushButton, &QPushButton::clicked, this, [this](){
-	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-	    GBSHttpClient::getInstance()->enterControlV2(getInputPassword().toUtf8().constData(), account.getId());
-	
-    });
+    connect(ui->pushButton, &QPushButton::clicked, this, &GBSBizLiveGuarderAuth::sendEnterCtrl);
     GBSHttpClient::getInstance()->registerHandler(this);
+}
+
+void GBSBizLiveGuarderAuth::sendEnterCtrl() {
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	GBSHttpClient::getInstance()->enterControlV2(getInputPassword().toUtf8().constData(), account.getId());
 }
 
 GBSBizLiveGuarderAuth::~GBSBizLiveGuarderAuth()
 {
 	GBSHttpClient::getInstance()->unRegisterHandler(this);
-    qlists.clear();
+	qlists.clear();
 	delete ui;
 }
 
 void GBSBizLiveGuarderAuth::focusNextInput(int currentIndex) {
-    qlists[(currentIndex+1) % 6]->setFocus(); // 跳到下一个输入框    
+    qlists[(currentIndex+1) % 6]->setFocus(); // 跳到下一个输入框
+	if (currentIndex == 5) {
+	    ui->pushButton->setFocus();
+	}
 }
 
 void GBSBizLiveGuarderAuth::keyPressEvent(QKeyEvent *event) {
-    // if (event->key() == Qt::Key_Tab) {
-    //     QWidget *focusedWidget = focusWidget();
-    //     for (int i = 0; i < 5; ++i) {
-    //         if (qlists[i] == focusedWidget && i < 4) {
-    //             qlists[i + 1]->setFocus();
-    //             return;
-    //         }
-    //     }
-    // }
+	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+		bool valid = true;
+		for (auto le : qlists) {
+			if (le->text().isEmpty()) {
+				valid = false;
+			}
+		}
+		if (valid) {
+			sendEnterCtrl();
+		}
+	}
     QWidget::keyPressEvent(event); // 调用父类的默认行为
 }
 

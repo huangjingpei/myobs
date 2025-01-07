@@ -4,7 +4,7 @@
 #include "window-basic-settings.hpp"
 
 
-GBSBizSettingOutput::GBSBizSettingOutput(OBSBasicSettings *settings, QWidget *parent)
+GBSBizSettingOutput::GBSBizSettingOutput(QSharedPointer<OBSBasicSettings> settings, QWidget *parent)
 	:settings(settings), QWidget(parent),
 	  ui(new Ui::GBSBizSettingOutput)
 {

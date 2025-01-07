@@ -3,6 +3,9 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QScreen>
+#if defined(_WIN32)
+#define NOMINMAX
+#endif
 #include <qt-wrappers.hpp>
 #include "moc_window-projector.cpp"
 #include "obs-app.hpp"

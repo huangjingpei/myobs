@@ -127,16 +127,17 @@ public:
     void scanLoginQrCodeInfoTaskV2(std::string qrCodeNo);
 
     void srsLiveAccountInfoV2(std::string version);
-    void srsLiveAccountInfoTaskV2(std::string deviceNo, std::string productNo, std::string version);
+    void srsLiveAccountInfoTaskV2(std::string deviceNo, std::string productNo,
+				  std::string boarderNo, std::string version);
 
-    void activateDeviceV2(std::string activationCode, std::string deviceName, int liveAccountId,
-			  std::string livePlatform,
-			  std::string notes, std::string platformAccount,
-			  std ::string toDeskAccount, std::string toDeskPassword);
+    void activateDeviceV2(std::string activationCode, std::string deviceName, std::string deviceNo, int liveAccountId,
+			  std::string livePlatform, std::string motherboardNo, std::string notes,
+			  std::string platformAccount, std::string productNo, std ::string toDeskAccount,
+			  std::string toDeskPassword);
     void activateDeviceTaskV2(std::string activationCode, std::string deviceName, std::string deviceNo,
-			      int liveAccountId,
-			      std::string livePlatform, std::string notes, std::string platformAccount,
-			      std::string productNo, std ::string toDeskAccount, std::string toDeskPassword);
+			      int liveAccountId, std::string livePlatform, std::string motherboardNo, std::string notes,
+			      std::string platformAccount, std::string productNo, std ::string toDeskAccount,
+			      std::string toDeskPassword);
 
     void createSrsStreamV2(int streamSource);
     void createSrsStreamTaskV2(int streamSource);
@@ -144,17 +145,15 @@ public:
     void enterControlV2(std::string password, int liveAccountId);
     void enterControlTaskV2(std::string password, int liveAccountId);
 
-    void pageSrsLiveDeviceV2(int liveAccountId, int pageNum, int pagesize = 10);
-    void pageSrsLiveDeviceTaskV2(int liveAccountId, int pageNum, int pagesize = 10);
+    void pageSrsLiveDeviceV2(int liveAccountId, int pageNum, int pagesize = 30);
+    void pageSrsLiveDeviceTaskV2(int liveAccountId, int pageNum, int pagesize = 30);
 
-    void addSrsLiveDeviceV2(std::string activationCode, std::string deviceName, std::string deviceNo,
-			    int liveAccountId,
-			    std::string livePlatform, std::string notes, std::string platformAccount,
-			    std::string productNo, std::string toDeskAccount, std::string toDeskPassword);
-    void addSrsLiveDeviceTaskV2(std::string activationCode, std::string deviceName, std::string deviceNo,
+    void addSrsLiveDeviceV2(std::string activationCode, std::string deviceCode, std::string deviceName,
+			    int liveAccountId, std::string livePlatform, std::string notes, std::string platformAccount,
+			    std::string toDeskAccount, std::string toDeskPassword);
+    void addSrsLiveDeviceTaskV2(std::string activationCode, std::string deviceCode, std::string deviceName,
 				int liveAccountId, std::string livePlatform, std::string notes,
-				std::string platformAccount, std::string productNo, std::string toDeskAccount,
-				std::string toDeskPassword);
+				std::string platformAccount, std::string toDeskAccount, std::string toDeskPassword);
 
     void closeSrsStreamLogV2(int id);
     void closeSrsStreamLogTaskV2(int id);
@@ -162,6 +161,14 @@ public:
 
     void deletedSrsLiveDeviceV2(int id);
     void deletedSrsLiveDeviceTaskV2(int id);
+
+    void modifyZlmLiveDevice(std::string deviceName, int id, std::string livePlatform, std::string notes,
+			     std::string platformAccount, int remoteSwitch, std::string toDeskAccount,
+			     std::string toDeskPassword);
+
+    void modifyZlmLiveDeviceTaskV2(std::string deviceName, int id, std::string livePlatform, std::string notes,
+			     std::string platformAccount, int remoteSwitch, std::string toDeskAccount,
+			     std::string toDeskPassword);
 
     /*
     *	矩阵账号未配置,或矩阵账号已被禁用: 1分钟后刷新接口
@@ -174,13 +181,13 @@ public:
 	如果返回你rtmp的 你就去拉流
     */
     void getPullStreamUrlV2();
-    void getPullStreamUrlTaskV2(std::string deviceNo, std::string productNo);
+    void getPullStreamUrlTaskV2(std::string deviceNo, std::string productNo, std::string motherboardNo);
 
     void sendHeartbeatTimeV2(int userId);
     void sendHeartbeatTimeTaskV2(int userId);
 
     void sendWebsocketMsgV2(std::string msg);
-    void sendWebsocketMsgTaskV2(std::string msg, std::string liveId);
+    void sendWebsocketMsgTaskV2(std::string msg);
 
     private:
 	std::string getDeviceNo();

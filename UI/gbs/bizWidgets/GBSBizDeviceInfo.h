@@ -31,7 +31,7 @@ public slots:
     static void InitializeValues();
 	
 	qint64 converYMDHMStoSec(std::string &date);
-
+    void copyToClipboard(const QString text);
 
 	void onMemberInfo(GBSMemberInfo info) override;
 	void UpdateRecAndLive(obs_output_t *output, bool rec);

@@ -19,10 +19,17 @@
 
 #include <graphics/vec4.h>
 #include <graphics/matrix4.h>
+#include "gbs/common/QBizLogger.h"
 
 static inline void GetScaleAndCenterPos(int baseCX, int baseCY, int windowCX, int windowCY, int &x, int &y,
 					float &scale)
 {
+
+	qDebug() << "HUANGJINGPEI"<<  "baseCX" << baseCX << " baseCY " << baseCY << " windowCX " << windowCX << " windowCY " << windowCY
+		 << " x " << x << " y " << y << " scale " << scale;
+	QLogE("baseCX %d baseCY %d windowCX %d windowCY %d x %d y %d scale %f\n", baseCX, baseCY, windowCX, windowCY, x,
+	      y, scale);
+
 	double windowAspect, baseAspect;
 	int newCX, newCY;
 
@@ -52,6 +59,7 @@ static inline void GetCenterPosFromFixedScale(int baseCX, int baseCY, int window
 
 static inline QSize GetPixelSize(QWidget *widget)
 {
+	qDebug() << widget->size() << widget->devicePixelRatioF();
 	return widget->size() * widget->devicePixelRatioF();
 }
 

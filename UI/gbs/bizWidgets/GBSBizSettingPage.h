@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QList>
 #include <QPushButton>
+#include <QSharedPointer>
 #include "window-basic-settings.hpp"
 
 namespace Ui {
@@ -35,7 +36,7 @@ private:
 
     QList<QPushButton *> buttons;
     QList<QString> iconPathes;
-    OBSBasicSettings *settings;
+    QSharedPointer<OBSBasicSettings> settings;
 
     
     

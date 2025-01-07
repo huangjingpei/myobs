@@ -495,6 +495,8 @@ void GBSBizLiveDanmaku::onMessage(std::string msg) {}
 
 void GBSBizLiveDanmaku::onOpen() {}
 
+void GBSBizLiveDanmaku::onFail() {}
+
 void GBSBizLiveDanmaku::onClose() {}
 
 

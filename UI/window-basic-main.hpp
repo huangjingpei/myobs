@@ -297,7 +297,6 @@ private:
 	QPointer<QTimer> diskFullTimer;
 
 	QPointer<QTimer> nudge_timer;
-	QPointer<QTimer> pullStreamTimer;
 	bool recent_nudge = false;
 
 	os_cpu_usage_info_t *cpuUsageInfo = nullptr;
@@ -1407,6 +1406,7 @@ public:
 	OBSScene querySceneBySceneName(std::string sceneName);
 	void changeTransform(int factor);
 	void changeOpacity(int opacity);
+	void dumpFFmegSourceLog();
 
 private:
 	// 通过 OBSHttpEventHandler 继承
@@ -1420,7 +1420,9 @@ private:
 	// 通过 WssEventListener 继承
 	void onMessage(std::string msg) override;
 	void onOpen() override;
+	void onFail() override;
 	void onClose() override;
+	
 
 public:
 	QString getAvator();
@@ -1429,15 +1431,28 @@ private slots:
 	void startPullStream(QString rtmp);
 	void stopPullStream();
 
+	void onWssKeepAlive();
+
  private:
 	QString pullRtmpUrl;
 
+	std::string mWssKeepaliveId = "";
+	QPointer<QTimer> mWssTimer;
+	std::atomic_bool mWssRunning{false};
 	std::shared_ptr<WebSocketClient> mWssClient;
 	/* 对讲开始*/
 	std::mutex mRtcEngineMutex;
 	void onAudioCapture(void *data, int size, uint64_t ts) override;
 	std::shared_ptr<ZegoRTCEngine> mRtcEngine;
 	std::unique_ptr<GBSAudioReader> mAudioReader;
+
+public:
+	void StartGBSStreaming(std::string server, std::string key);
+	void StopGBSStreaming();
+
+	void checkGBSForUpdate();
+private:
+	QScopedPointer<QThread> updateGBSCheckThread;
 
 public:
 	void beginTalk(int id);

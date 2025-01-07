@@ -1,7 +1,9 @@
+#include <QClipboard>
 #include "GBSAddBroker.h"
 #include "ui_GBSAddBroker.h"
 #include "gbs/GBSMainCollector.h"
 #include "gbs/common/GBSHttpClient.h"
+#include "gbs/dto/GBSBundleData.h"
 GBSAddBroker::GBSAddBroker(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::GBSAddBroker)
@@ -100,6 +102,29 @@ GBSAddBroker::GBSAddBroker(QWidget *parent)
     ui->btnOK->setObjectName("myButton");
     ui->btnCancel->setObjectName("myButton");
 
+    QClipboard *clipboard = QApplication::clipboard();
+    QString text = clipboard->text();
+    bool isValidContent = true;
+    if (!text.isEmpty()) {
+	    GBSBundleData bundleData = GBSBundleData::deserialize(text.toStdString());
+	    if ((bundleData.getActivateId() == "") && (bundleData.getDeviceID() == "") &&
+		(bundleData.getProductID() == "") && (bundleData.getUniqueIID() == "")) {
+		    isValidContent = false;
+	    }
+	    if (isValidContent) {
+		    GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+		    QString deviceCode = QString::fromLocal8Bit(bundleData.getActivateId()); //激活编号
+		    QString deviceId = QString::fromLocal8Bit(bundleData.getDeviceID());     //设备ID
+		    QString productId = QString::fromLocal8Bit(bundleData.getProductID());   //产品ID
+		    QString uniqueId = QString::fromLocal8Bit(bundleData.getUniqueIID());    //主板ID
+
+		    ui->leActivationNo->setText(deviceCode);
+		    ui->leDeviceNo->setText(deviceId);
+		    ui->leProductNo->setText(productId);
+		    ui->leUniqueID->setText(uniqueId);
+	    }
+    }
+
 
     connect(ui->btnClose, &QPushButton::clicked, this, [this]() { close();
 	    });
@@ -108,8 +133,12 @@ GBSAddBroker::GBSAddBroker(QWidget *parent)
 	    });
 
     connect(ui->btnOK, &QPushButton::clicked, this, [this]() {
+	    QClipboard *clipboard = QApplication::clipboard();
+	    QString text = clipboard->text();
+
 	    GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 	    QString activationCode = ui->leActivationCode->text();
+	    QString deviceCode = ui->leActivationNo->text();
 	    QString deviceName = ui->leDeviceName->text();
 	    int liveAccountId = account.getId();
 	    QString deviceNo = ui->leDeviceNo->text();
@@ -119,12 +148,28 @@ GBSAddBroker::GBSAddBroker(QWidget *parent)
 	    QString toDeskAccount = ui->leRemoteAccount->text();
 	    QString toDeskPassword = ui->leRemotePassword->text();
 	    QString livePlatform = ui->comboBox->currentText();
+	    QString leUniqueId = ui->leUniqueID->text();
 
-	    GBSHttpClient::getInstance()->addSrsLiveDeviceV2(
-		    activationCode.toUtf8().constData(), deviceName.toUtf8().constData(), deviceNo.toUtf8().constData(),
-		    liveAccountId, livePlatform.toUtf8().constData(), notes.toUtf8().constData(),
-		    platformAccount.toUtf8().constData(), productNo.toUtf8().constData(),
-		    toDeskAccount.toUtf8().constData(), toDeskPassword.toUtf8().constData());
+
+	    GBSHttpClient::getInstance()->activateDeviceV2(
+			activationCode.toUtf8().constData(), deviceName.toUtf8().constData(),
+			deviceNo.toUtf8().constData(), liveAccountId, livePlatform.toUtf8().constData(),
+			leUniqueId.toUtf8().constData(),
+			notes.toUtf8().constData(), 
+			platformAccount.toUtf8().constData(),
+			productNo.toUtf8().constData(),
+			toDeskAccount.toUtf8().constData(), toDeskPassword.toUtf8().constData());
+
+	    GBSHttpClient::getInstance()->addSrsLiveDeviceV2(activationCode.toUtf8().constData(),
+						deviceCode.toUtf8().constData(),
+						deviceName.toUtf8().constData(),
+						liveAccountId,
+						livePlatform.toUtf8().constData(),
+						notes.toUtf8().constData(),
+						platformAccount.toUtf8().constData(), 
+						toDeskAccount.toUtf8().constData(),
+						toDeskPassword.toUtf8().constData());
+
 
 	    accept();
 

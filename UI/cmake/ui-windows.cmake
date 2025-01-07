@@ -55,6 +55,12 @@ target_sources(
     
     gbs/common/XORPasswordProtecter.h
 
+    gbs/updater/GBSXMLParser.h
+    gbs/updater/GBSXMLParser.cpp
+    gbs/updater/GBSFileDownloader.h
+    gbs/updater/GBSFileDownloader.cpp
+
+
     gbs/GBSMainBizWindow.cpp
     gbs/GBSMainBizWindow.h
     gbs/GBSMainForm.cpp
@@ -152,6 +158,9 @@ target_sources(
     gbs/dto/GBSLiveAccountInfo.cpp
     gbs/dto/GBSLiveDevices.h
     gbs/dto/GBSLiveDevices.cpp
+    gbs/dto/GBSBundleData.h
+    gbs/dto/GBSBundleData.cpp
+    
 
     gbs/codec/GBSOpusEncoder.h
     gbs/codec/GBSOpusEncoder.cpp

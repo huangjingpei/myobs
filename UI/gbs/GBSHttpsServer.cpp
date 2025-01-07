@@ -74,6 +74,7 @@ QWeH+tVM2g0vee09bFoB
 #include <mutex>
 #include "nlohmann/json.hpp"
 #include "gbs/common/GBSHttpClient.h"
+#include "gbs/GBSMainCollector.h"
 // static std::mutex gMutex;
 // static std::list<std::shared_ptr<DammaMSG>> glbDanmaMsg;
 
@@ -139,18 +140,28 @@ QWeH+tVM2g0vee09bFoB
 
 // }
 
+
+void processDanmaItem(nlohmann::json &jsonObject) {
+	std::string liveId = GBSMainCollector::getInstance()->getDanmaKuName();
+	std::string liveDeviceId = GBSMainCollector::getInstance()->getLiveDeviceId();
+	std::string platform = GBSMainCollector::getInstance()->getDanmakuPlat();
+	jsonObject["liveId"] = liveId;
+	jsonObject["liveDeviceId"] = liveDeviceId;
+	jsonObject["platform"] = platform;
+}
 void processRecvMessage(const char* mesage) {
 	
-	GBSHttpClient::getInstance()->sendWebsocketMsgV2(mesage);
-	//auto jsonObject = nlohmann::json::parse(mesage);
-	//if (jsonObject.is_object()) {
-	//	processDanmaItem(jsonObject);
-	//} else if (jsonObject.is_array()) {
-	//	int size = (int)jsonObject.size();
-	//	for (int i = 0; i < size; i++) {
-	//		processDanmaItem(jsonObject[i]);
-	//	}
-	//}
+	auto jsonObject = nlohmann::json::parse(mesage);
+	if (jsonObject.is_object()) {
+		processDanmaItem(jsonObject);
+	} else if (jsonObject.is_array()) {
+		int size = (int)jsonObject.size();
+		for (int i = 0; i < size; i++) {
+			processDanmaItem(jsonObject[i]);
+		}
+	}
+	std::string newMsg =jsonObject.dump();
+	GBSHttpClient::getInstance()->sendWebsocketMsgV2(newMsg);
 }
 static void cb(struct mg_connection *c, int ev, void *ev_data)
 {
@@ -173,11 +184,15 @@ static void cb(struct mg_connection *c, int ev, void *ev_data)
 				      "Content-Type: application/json\r\n",
 				      "{%m:%g}\n", mg_print_esc, 0, "result",
 				      0);
+		} else if (mg_match(hm->uri, mg_str("/test"), NULL)) {
+			mg_http_reply(c, 200, "Content-Type: application/json\r\n", "{%s:%s}\n", 
+				      "result", "OK");
+			return;
 		}
-		// Log request
-		MG_INFO(("%.*s %.*s %lu -> %.*s %lu", hm->method.len,
-			 hm->method.buf, hm->uri.len, hm->uri.buf, hm->body.len,
-			 3, c->send.buf + 9, c->send.len));
+		//// Log request
+		//MG_INFO(("%.*s %.*s %lu -> %.*s %lu", hm->method.len,
+		//	 hm->method.buf, hm->uri.len, hm->uri.buf, hm->body.len,
+		//	 3, c->send.buf + 9, c->send.len));
 	}
 }
 

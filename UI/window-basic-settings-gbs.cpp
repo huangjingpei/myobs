@@ -135,5 +135,12 @@ void OBSBasicSettings::onCancel() {
 
 
 void OBSBasicSettings::onApply() {
+	generalChanged = true;
+	outputsChanged = true;
+	videoChanged = true;
+	advancedChanged = true;
     SaveSettings();
+
+
+
 }

@@ -130,6 +130,7 @@ void GBSMainCollector::setAccountInfo(GBSLiveAccountInfo info) {
 	const std::lock_guard<std::mutex> lock(mMutex);
 	mAccountInfo = info;
 	setSrsLiveId(info.getId());
+	setLiveDeviceId(std::to_string(info.getLiveDeviceId()));
 }
 GBSLiveAccountInfo& GBSMainCollector::getAccountInfo() {
 	const std::lock_guard<std::mutex> lock(mMutex);
@@ -171,6 +172,16 @@ std::string& GBSMainCollector::getSrsLiveId() {
 }
 
 
+void GBSMainCollector::setLiveDeviceId(std::string deviceId){
+	liveDeviceId = deviceId;
+}
+
+std::string &GBSMainCollector::getLiveDeviceId()
+{
+	const std::lock_guard<std::mutex> lock(mMutex);
+	return liveDeviceId;
+}
+
 void GBSMainCollector::setDanmakuPlat(std::string plat)
 {
 	const std::lock_guard<std::mutex> lock(mMutex);
@@ -182,7 +193,7 @@ std::string& GBSMainCollector::getDanmakuPlat() {
 }
 
 std::string& GBSMainCollector::getDanmaKuName() {
-	std::string srsLiveId = getSrsLiveId();
+	std::string srsLiveId = getLiveDeviceId();
 	std::string livePlat = getDanmakuPlat();
 	if (srsLiveId.empty() || livePlat.empty()) {
 		return danmakuId;
@@ -191,11 +202,45 @@ std::string& GBSMainCollector::getDanmaKuName() {
 	return danmakuId;
 }
 
+void GBSMainCollector::setLiving(bool living) {
+	mbLiving = living;
+}
+bool GBSMainCollector::isLiving() {
+	return mbLiving;
+}
+
 std::string& GBSMainCollector::getSoftWareVersion() {return mSoftWareVersion;}
+
+std::string &GBSMainCollector::getLivePlatAcct() {
+	const std::lock_guard<std::mutex> lock(mMutex);
+	mPlatLiveAcct = mAccountInfo.getPlatformAccount();
+	return mPlatLiveAcct;
+	
+}
+
+void GBSMainCollector::setSystemUniqueNo(std::string uniqueNo)
+{
+	mUniqueNo = uniqueNo;
+}
+std::string &GBSMainCollector::getSystemUniqueNo()
+{
+	assert(!mUniqueNo.empty());
+	return mUniqueNo;
+}
+
+std::string &GBSMainCollector::getDeviceName() {
+	const std::lock_guard<std::mutex> lock(mMutex);
+	return mDeviceName;
+}
+void GBSMainCollector::setDeviceName(std::string deviceName) {
+	const std::lock_guard<std::mutex> lock(mMutex);
+	mDeviceName = deviceName;
+}
 
 std::string &GBSMainCollector::getBuildInfo()
 {
-	static std::string buildInfo = BUILD_DATE;
+	buildInfo = "";
+	buildInfo += BUILD_DATE;
 	buildInfo += " ";
 	buildInfo += BUILD_TIME;
 	

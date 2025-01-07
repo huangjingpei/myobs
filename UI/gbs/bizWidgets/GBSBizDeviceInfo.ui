@@ -174,10 +174,16 @@ color: #00C566;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">border: none;
-color: #00C566;</string>
+color: #00C566;
+pressed {
+   padding-left: 3px;
+   padding-top: 3px;
+   background-repeat: no-repeat;
+   background-position: center;
+}</string>
     </property>
     <property name="text">
-     <string>激活</string>
+     <string>复制</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnDevInfo04">
@@ -290,9 +296,6 @@ font-size: 14px;</string>
     </property>
     <property name="maximum">
      <number>1</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
     </property>
    </widget>
    <widget class="QLabel" name="lblMngred01">
@@ -453,7 +456,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>开通时间：     2024年04月26日17:00</string>
+     <string>开通时间：     </string>
     </property>
    </widget>
    <widget class="QLabel" name="lbsSysInfo02">
@@ -470,7 +473,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>至到期时间：  50天 17:45:59    </string>
+     <string>至到期时间：   </string>
     </property>
    </widget>
    <widget class="QLabel" name="lbsSysInfo03">
@@ -487,7 +490,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>绑定代播号：  45645245@qq.com</string>
+     <string>绑定代播号：  </string>
     </property>
    </widget>
    <widget class="QLabel" name="lbsSysInfo04">
@@ -504,7 +507,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>设备直播时长：50天 17:45:59 </string>
+     <string>设备直播时长：</string>
     </property>
    </widget>
   </widget>
@@ -535,10 +538,7 @@ border: 1px solid #F5F5F5;</string>
      <string notr="true">border: 1px solid #ACACAC</string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label">

@@ -19,6 +19,8 @@ public:
 
 signals:
     void enterGuarderCtrl();
+private slots:
+    void sendEnterCtrl();
 public:
     QString getPresetPassword();
     QString getInputPassword();

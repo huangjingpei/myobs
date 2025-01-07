@@ -74,7 +74,7 @@ private:
 		m_endpoint.connect(con);
 		m_thread = websocketpp::lib::make_shared<websocketpp::lib::thread>(&client::run, &m_endpoint);
 
-
+		QLogD("start");
 
 	}
 
@@ -130,6 +130,12 @@ private:
 		qDebug() << con->get_ec().message();
 
 		QLogD("on faled [%#x] tag:%s reason %s， url %s", this, m_socket_name.c_str(), con->get_ec().message().c_str(), m_url.c_str());
+
+		std::lock_guard<std::mutex> lock(listenerMutex);
+		//m_endpoint.send(hdl, "", websocketpp::frame::opcode::text);
+		for (auto it = listeners.begin(); it != listeners.end(); it++) {
+			(*it)->onFail();
+		}
 
 			
 	}
@@ -194,11 +200,12 @@ private:
 								  m_start)
 				     .count()
 			  << std::endl;
-		if (!m_exited) {
-			std::thread(&WebSocketClientImpl::retry_connection,
-				    this)
-				.detach();
-		} else {
+		if (m_should_reconnect) {
+			if (!m_exited) {
+				std::thread(&WebSocketClientImpl::retry_connection, this).detach();
+			} 
+		}
+		else {
 			for (auto it = listeners.begin(); it != listeners.end();
 			     it++) {
 				(*it)->onClose();
@@ -255,6 +262,7 @@ public:
 	}
 	void Stop() override
 	{
+		m_endpoint.stop();
 		m_endpoint.stop_perpetual();
 		DWORD threadId = GetCurrentThreadId();
 		qDebug() << "stop thread id" << threadId;
@@ -282,7 +290,7 @@ public:
 
 	void Send(std::string msg) override { send_mseeage(msg); }
 
-	void SetReconnect(bool reconnect = true) override
+	void SetReconnect(bool reconnect = false) override
 	{
 		m_should_reconnect = reconnect;
 	}
@@ -300,7 +308,7 @@ private:
 	std::chrono::high_resolution_clock::time_point m_open;
 	std::chrono::high_resolution_clock::time_point m_message;
 	std::chrono::high_resolution_clock::time_point m_close;
-	std::atomic<bool> m_should_reconnect{true}; // 是否应该重连
+	std::atomic<bool> m_should_reconnect{false}; // 是否应该重连
 	std::atomic<bool> m_exited{false};
 	std::atomic<bool> m_running{false};
 	int m_reconnect_interval{5};

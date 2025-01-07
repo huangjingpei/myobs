@@ -9,6 +9,8 @@
 #include <chrono>
 #include <atomic>
 #include <unordered_set>
+#include <QDebug>
+
 
 class TaskExecutor {
 public:
@@ -166,7 +168,14 @@ private:
 
             // 执行任务
             if (taskToRun) {
+		auto start_time = std::chrono::steady_clock::now();
                 taskToRun();
+		auto end_time = std::chrono::steady_clock::now();
+		auto execution_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time);
+		if (execution_time.count() > 50) {
+			qWarning("exec time is too long, spent %d (ms)\n", execution_time.count());
+		}
+
             }
         }
     }

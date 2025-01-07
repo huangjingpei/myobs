@@ -8,6 +8,8 @@
 #include <QColor>
 #include <QTimer>
 #include <QTime>
+#include <QPointer>
+#include <QThreadStorage>
 #include "../common/DanmakuWidget.h"
 #include "../common/SelectedIDSDialog.h"
 #include "../GBSToolKits.h"
@@ -69,6 +71,7 @@ private slots:
 	void updateStyle(bool checked);
 	void onTimeout();
 	void onTabChanged(int index);
+	void onWssKeepAlive();
 
 private:
 	OBSService service;
@@ -96,6 +99,7 @@ private:
 	// 通过 WssEventListener 继承
 	void onMessage(std::string msg) override;
 	void onOpen() override;
+	void onFail() override;
 	void onClose() override;
 
 
@@ -129,13 +133,26 @@ private:
 	QList<DanmaItem> giftDanmakus;
 	QList<DanmaItem> likeDanmakus;
 
+	QThreadStorage<QList<DanmaItem>> thlWhoIsDanmukus;
+	QThreadStorage<QList<DanmaItem>> thlAllDanmakus;
+	QThreadStorage<QList<DanmaItem>> thlGiftDanmakus;
+	QThreadStorage<QList<DanmaItem>> thlLikeDanmakus;
+	QThreadStorage<QList<DanmaItem>> thlChatDanmakus;
+
 private:
 	bool startLive {false};
 	QTimer *mHeartBeatTimer;
 	int mLiveAccountId = {0};
 	QString danmaPlatIconString;
+	QPointer<QTimer> mWssTimer;
+	std::atomic_bool mWssRunning{false};
+	std::string mWssKeepaliveId{""};
 	std::shared_ptr<WebSocketClient> mWebSocketClient;
 	std::shared_ptr<GBSAudioWriter> audioWriter;
+	std::mutex mDanmakuListMtx;
+	int mDanmakuType{DANITEM_TYPE_ALL};
+
+	std::atomic<bool> onFailedProcessing{false};
 };
 
 #endif // GBSBIZLIVEPUSHERCTRL_H

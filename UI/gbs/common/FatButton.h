@@ -96,7 +96,7 @@ private slots:
             imageLabel->setPixmap(m_image.scaled(60, 40, Qt::KeepAspectRatio)); // 调整图片大小
             imageLabel->setStyleSheet("border:none;");
             setStyleSheet("background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1, stop: 0 #1B2846, stop: 1 #000000);"
-                          "border: 1px solid #D7D4D4;");
+                          "border: 1px solid #D7D4D4!important;");
             textLabel->setStyleSheet("border:none;"
                                      "font-size: 12px;" // 字体大小
                                      "color:#F9F9F9;"
@@ -104,7 +104,7 @@ private slots:
         } else {
             imageLabel->setPixmap(m_color_image.scaled(60, 40, Qt::KeepAspectRatio)); // 调整图片大小
             imageLabel->setStyleSheet("border:none;");
-            setStyleSheet("background-color:#FFFFFF;border: 1px solid #D7D4D4;");
+            setStyleSheet("background-color:#FFFFFF;border: 1px solid #D7D4D4!important;");
             textLabel->setStyleSheet("border:none;"
                                      "font-size: 12px;" // 字体大小
                                      "color:#D7D4D4;"

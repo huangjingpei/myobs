@@ -164,6 +164,12 @@ AutoConfigVideoPage::AutoConfigVideoPage(QWidget *parent) : QWizardPage(parent),
 		as_width = round(as_width * screen->devicePixelRatio());
 		as_height = round(as_height * screen->devicePixelRatio());
 
+		if (as_height < as_width) {
+			int tmp = as_width;
+			as_width = as_height;
+			as_height = tmp;
+		}
+
 		encRes = as_width << 16 | as_height;
 
 		QString str =
@@ -174,14 +180,21 @@ AutoConfigVideoPage::AutoConfigVideoPage(QWidget *parent) : QWizardPage(parent),
 	}
 
 	auto addRes = [&](int cx, int cy) {
+		if (cy < cx) {
+			int tmp = cy;
+			cy = cx;
+			cx = tmp;
+		}
+
 		encRes = (cx << 16) | cy;
 		QString str = QString("%1x%2").arg(QString::number(cx), QString::number(cy));
 		ui->canvasRes->addItem(str, encRes);
 	};
 
-	addRes(1920, 1080);
-	addRes(1280, 720);
-
+	// addRes(1920, 1080);
+	// addRes(1280, 720);
+	addRes(1080, 1920);
+	addRes(720, 1280);
 	ui->canvasRes->setCurrentIndex(0);
 }
 

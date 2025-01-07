@@ -4,7 +4,7 @@
 #include <QCheckBox>
 #include "gbs/common/QIniFile.h"
 
-GBSBizSettingBasic::GBSBizSettingBasic(OBSBasicSettings *settings, QWidget *parent)
+GBSBizSettingBasic::GBSBizSettingBasic(QSharedPointer<OBSBasicSettings> settings, QWidget *parent)
 	: settings(settings),
 	  QWidget(parent),
 	  ui(new Ui::GBSBizSettingBasic)

@@ -120,6 +120,7 @@ private:
         loggerThread.enqueue(logMessage);
 
         OutputDebugStringA(logMessage.toLocal8Bit().constData());
+	OutputDebugStringA("\n");
     }
 
 private:

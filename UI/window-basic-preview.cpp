@@ -3,6 +3,9 @@
 
 #include <cmath>
 #include <string>
+#if defined(_WIN32)
+#define NOMINMAX
+#endif
 #include <graphics/vec4.h>
 #include <graphics/matrix4.h>
 #include <util/dstr.hpp>

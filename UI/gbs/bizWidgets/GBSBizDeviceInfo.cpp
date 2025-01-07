@@ -6,6 +6,7 @@
 #include <QSlider>
 #include <QDateTime>
 #include <QPainterPath>
+#include <QClipboard>
 #include "window-basic-main.hpp"
 #include "gbs/common/QIniFile.h"
 #include "gbs/common/SystemUtils.h"
@@ -15,11 +16,11 @@
 #include "gbs/dto/GBSMemberInfo.h"
 #include "gbs/bizWidgets/GBSActivateDevice.h"
 #include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/dto/GBSBundleData.h"
 #include "gbs/GBSMainCollector.h"
 #include "gbs/media/GBSAudioReader.h"
 #include "gbs/media/GBSAudioResampler.h"
 #include "ZegoRTCEngine.h"
-
 
 extern "C" {
 #include "gbs/common/SystemUtils.h"
@@ -389,6 +390,25 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//	dialog->exec();
 	//});
 
+	ui->btnDevInfo03->setStyleSheet(
+		"QPushButton {"
+		"   color: #00C566;"
+		"   border: none;"       // 无边框
+		"   border-radius: 2px;" // 圆角
+		"   font-size: 12px;"
+		"   padding: 0;" // 不添加内边距
+		"}"
+		"QPushButton:hover {"
+		"   background-color: #F9F9F9;"
+		"}"
+		"QPushButton:pressed {"
+		"   background-color: #D1D8DD;" // 按下时背景颜色
+		"   padding-left: 3px;"         // 向左移动 3px
+		"   padding-top: 3px;"          // 向上移动 3px
+		"   background-repeat: no-repeat;"
+		"   background-position: center;"
+		"}");
+
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 	QString str1 = iniFile->value("DeviceData", "Alias.Plat", "DY").toString();
 
@@ -450,17 +470,23 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 		QString str1 = "DY";
 		if (currentIndex == 0) {
 			str1 = "DY";
-		} else if (currentIndex == 1) {
+		}
+		else if (currentIndex == 1) {
 			str1 = "KS";
-		} else if (currentIndex == 2) {
+		}
+		else if (currentIndex == 2) {
 			str1 = "BILI";
-		} else if (currentIndex == 3) {
+		}
+		else if (currentIndex == 3) {
 			str1 = "SPH";
-		} else if (currentIndex == 4) {
+		}
+		else if (currentIndex == 4) {
 			str1 = "PDD";
-		} else if (currentIndex == 5) {
+		}
+		else if (currentIndex == 5) {
 			str1 = "TK";
-		} else if (currentIndex == 6) {
+		}
+		else if (currentIndex == 6) {
 			str1 = "FB";
 		}
 		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
@@ -468,8 +494,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 
 	});
 
-	ui->btnDevInfo03->setEnabled(false);
-	
+
 	GBSHttpClient::getInstance()->registerHandler(this);
 	//GBSHttpClient::getInstance()->memberInfo("9");
 	//GBSHttpClient::getInstance()->codeList(9);
@@ -487,30 +512,32 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 
 	connect(ui->btnDevInfo03, &QPushButton::clicked, this,
 		[this]() {
-		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-		if (account.getActivationStatus() == 1) { //has activated
-			GBSActivateDevice *addConsumer = new GBSActivateDevice();
-			GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-			addConsumer->addCustomerNo(account.getCustomerNo());
-			addConsumer->addLiveAccountId(account.getId());
-			addConsumer->addActivateCode(account.getActivationCode());
-			std::string remark = account.getNotes();
-			size_t pos = remark.find('/');
+			//GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+			//if (account.getActivationStatus() != 1) { //hasnt activated
+			//	GBSActivateDevice *addConsumer = new GBSActivateDevice();
+			//	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+			//	addConsumer->addCustomerNo(account.getCustomerNo());
+			//	addConsumer->addLiveAccountId(account.getId());
+			//	addConsumer->addActivateCode(account.getActivationCode());
+			//	std::string remark = account.getNotes();
+			//	size_t pos = remark.find('/');
 
-			if (pos != std::string::npos) {
-				std::string left = remark.substr(0, pos);
-				std::string right = remark.substr(pos + 1);
-				addConsumer->addRemark1(left);
-				addConsumer->addRemark2(right);
-			} else {
-				addConsumer->addRemark1(remark);
-			}
-			addConsumer->addRemoteUsername(account.getToDeskAccount());
-			addConsumer->addRemotePassword(account.getToDeskPassword());
-			addConsumer->addPlatformAccount(account.getPlatformAccount());
-			addConsumer->diableActivate();
-			addConsumer->show();
-		} 
+			//	if (pos != std::string::npos) {
+			//		std::string left = remark.substr(0, pos);
+			//		std::string right = remark.substr(pos + 1);
+			//		addConsumer->addRemark1(left);
+			//		addConsumer->addRemark2(right);
+			//	} else {
+			//		addConsumer->addRemark1(remark);
+			//	}
+			//	addConsumer->addRemoteUsername(account.getToDeskAccount());
+			//	addConsumer->addRemotePassword(account.getToDeskPassword());
+			//	addConsumer->addPlatformAccount(account.getPlatformAccount());
+
+			//	addConsumer->show();
+			//}
+
+			GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
 
 		});
 
@@ -526,21 +553,38 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//rtcEngine->BeginTalk("12345", nullptr);
 }
 
-qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string &date) {
-    QString format = "yyyy-MM-dd HH:mm:ss";
+qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string& date) {
+	QString format = "yyyy-MM-dd HH:mm:ss";
 	QString qData = QString::fromStdString(date);
-    QDateTime dateTime = QDateTime::fromString(qData, format);
-    if (dateTime.isValid()) {
-        // 获取自 1970-01-01 以来的秒数（时间戳）
-        qint64 secondsSinceEpoch = dateTime.toSecsSinceEpoch();
-        qDebug() << "秒数:" << secondsSinceEpoch;
+	QDateTime dateTime = QDateTime::fromString(qData, format);
+	if (dateTime.isValid()) {
+		// 获取自 1970-01-01 以来的秒数（时间戳）
+		qint64 secondsSinceEpoch = dateTime.toSecsSinceEpoch();
+		qDebug() << "秒数:" << secondsSinceEpoch;
 		return secondsSinceEpoch;
-    } else {
-        qDebug() << "时间格式错误";
+	}
+	else {
+		qDebug() << "时间格式错误";
 		return -1;
-    }
+	}
 
 }
+
+void GBSBizDeviceInfo::copyToClipboard(const QString text)
+{
+	
+	std::string productId = GetWindowsProductIDFromRegistery();
+	std::string deviceId = GetMachineIdFromRegistry();
+	std::string boarderNo = GBSMainCollector::getInstance()->getSystemUniqueNo();
+	GBSLiveAccountInfo acctInfo = GBSMainCollector::getInstance()->getAccountInfo();
+	std::string deviceCode = acctInfo.getDeviceCode();
+
+	GBSBundleData bundleData(deviceCode, deviceId, productId, boarderNo);
+	QString qData = QString::fromLocal8Bit(bundleData.serialize());
+	QClipboard *clipboard = QApplication::clipboard();
+	clipboard->setText(qData); // 将文本复制到剪贴板
+}
+
 
 
 void GBSBizDeviceInfo::onMemberInfo(GBSMemberInfo info) {
@@ -861,44 +905,40 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 {
 	GBSMainCollector::getInstance()->setAccountInfo(result);
 	QMetaObject::invokeMethod(this, [result, this]() {
-		ui->btnDevInfo03->setEnabled(true);
+		copyToClipboard(QString::fromStdString(result.getDeviceCode()));
 		
-		if (result.getActivationStatus() == 1) {
-			ui->btnDevInfo03->setText("获取");
-			GBSHttpClient::getInstance()->downFile(result.getHead(), "avator.png", 0);
+		GBSHttpClient::getInstance()->downFile(result.getHead(), "avator.png", 0);
 
-			ui->lblDevInfo01->setText("设备ID：" + ObfuscateString(QString::fromStdString(result.getProductNo())));
-			QString deviceNoBraces = removeBraces(QString::fromStdString(result.getDeviceNo()));
-			QString obfuscateString = ObfuscateString(deviceNoBraces);
-			ui->lblDevInfo02->setText("产品ID：" + obfuscateString);
+		ui->lblDevInfo01->setText("设备ID：" +
+						ObfuscateString(QString::fromStdString(result.getDeviceNo())));
+		QString deviceNoBraces = removeBraces(QString::fromStdString(result.getProductNo()));
+		QString obfuscateString = ObfuscateString(deviceNoBraces);
+		ui->lblDevInfo02->setText("产品ID：" + obfuscateString);
 
-			ui->lblDevInfo03->setText("激活编号：" + QString::fromStdString(result.getActivationCode()));
+		ui->lblDevInfo03->setText("激活编号：" + QString::fromStdString(result.getDeviceCode()));
 
-			ui->lblDevInfo04->setText("备注编号：" + QString::fromStdString(result.getNotes()));
+		ui->lblDevInfo04->setText("备注编号：" + QString::fromStdString(result.getNotes()));
 
-			ui->horizontalSlider->setValue(result.getRemoteSwitch());
+		ui->horizontalSlider->setValue(result.getRemoteSwitch());
 
-			ui->lblMngred01->setText("远程账号：" +
-						 ObfuscateString(QString::fromStdString(result.getToDeskAccount())));
+		ui->lblMngred01->setText("远程账号：" +
+						ObfuscateString(QString::fromStdString(result.getToDeskAccount())));
 
-			ui->lblMngred02->setText("远程密码：" +
-						 ObfuscateString(QString::fromStdString(result.getToDeskPassword())));
+		ui->lblMngred02->setText("远程密码：" +
+						ObfuscateString(QString::fromStdString(result.getToDeskPassword())));
 
-			QList<QString> abbreviations = GBSMainCollector::getInstance()->getLiveAbbreviations();
-			QString remark = QString::fromStdString(result.getNotes());
+		QList<QString> abbreviations = GBSMainCollector::getInstance()->getLiveAbbreviations();
+		QString remark = QString::fromStdString(result.getNotes());
 			
-			int index = remark.indexOf("/");
+		int index = remark.indexOf("/");
 			
-			ui->comboBox->setCurrentText(remark.left(index));
+		ui->comboBox->setCurrentText(remark.left(index));
 
-			ui->lblMngred03->setText("平台账号：" + QString::fromStdString(result.getPlatformAccount()));
+		ui->lblMngred03->setText("平台账号：" + QString::fromStdString(result.getPlatformAccount()));
 
-			ui->lbsSysInfo03->setText("绑定代播号：  " + QString::fromStdString(result.getNickname()));
+		ui->lbsSysInfo03->setText("绑定代播号：  " + QString::fromStdString(result.getNickname()));
 
-		} else {
-			ui->btnDevInfo03->setText("获取");
-
-		}	
+		
 
 		});
 }
@@ -913,7 +953,7 @@ void GBSBizDeviceInfo::onUserFileDownLoad(const std::string &path, int type)
 {
 	QMetaObject::invokeMethod(this, [path, type, this]() {
 		if (type == 0 && !path.empty()) {
-			QString qPath = QString::fromStdString(path);
+			QString qPath = QString::fromLocal8Bit(path);
 			QPixmap rounded = getRoundedPixmap(qPath, 64);
 
 			rounded.save("round-avator.png");
@@ -921,7 +961,7 @@ void GBSBizDeviceInfo::onUserFileDownLoad(const std::string &path, int type)
 			QLogD("onUserFileDownLoad, %s.", appDirPath.toStdString().c_str());
 
 			appDirPath += "/round-avator.png";
-			emit onUseIconUpdate(qPath);
+			emit onUseIconUpdate(appDirPath);
 		}
 	});
 }

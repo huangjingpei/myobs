@@ -11,7 +11,7 @@ class GBSBizSettingAV : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit GBSBizSettingAV(OBSBasicSettings* settings, QWidget *parent = nullptr);
+	explicit GBSBizSettingAV(QSharedPointer<OBSBasicSettings> settings, QWidget *parent = nullptr);
 	~GBSBizSettingAV();
 
 public:
@@ -41,7 +41,7 @@ private slots:
 
 private:
 	Ui::GBSBizSettingAV *ui;
-	OBSBasicSettings *settings;
+	QSharedPointer<OBSBasicSettings> settings;
 	uint32_t outputCX = 0;
 	uint32_t outputCY = 0;
 	bool generalChanged = false;

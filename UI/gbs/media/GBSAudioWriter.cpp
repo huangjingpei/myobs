@@ -31,6 +31,9 @@ private:
 	// 写入线程函数
 	void writerThread();
 
+	OBSWeakSource weak_source;
+
+
 public:
 	GBSAudioWriterImpl();
 	virtual ~GBSAudioWriterImpl();
@@ -71,6 +74,7 @@ GBSAudioWriterImpl::GBSAudioWriterImpl() : running(true) {
 	pcm_source =
 		OBSBasic::Get()
 			->addPCMAudioSource().Get(); //obs_source_create("pcm_audio_source", "My PCM Source", settings, NULL);
+	weak_source = OBSGetWeakRef(pcm_source);
 
 	obs_data_release(settings);
 	
@@ -86,8 +90,8 @@ GBSAudioWriterImpl::~GBSAudioWriterImpl() {
 		writer_thread.join();
 	}
 	
-	obs_source_release(pcm_source);
-	pcm_source = nullptr;
+	//obs_source_release(pcm_source);
+	//pcm_source = nullptr;
 }
 
 void GBSAudioWriterImpl::write(const uint8_t* data, size_t size) {
@@ -102,7 +106,10 @@ void GBSAudioWriterImpl::write(const uint8_t* data, size_t size) {
 	//	data_queue.push(std::vector<uint8_t>(data, data + size));
 	//}
 	//cv.notify_one();
-
+	OBSSource source = OBSGetStrongRef(weak_source);
+	if (!source) {
+		return;
+	}
 	if (data != nullptr) {
 		push_pcm_data(obs_obj_get_data((void *)pcm_source), data, size);
 	}

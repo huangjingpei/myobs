@@ -90,6 +90,9 @@
 #include "gbs/common/HoriNaviButton.h"
 #include "gbs/common/EllipticalSliderExt.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/common/SystemUtils.h"
+#include "gbs/GBSMainCollector.h"
+
 
 static GBSHttpsHandle *httpsServerHandle = nullptr;
 
@@ -497,7 +500,7 @@ void OBSApp::InitUserConfigDefaults()
 	config_set_default_bool(userConfig, "BasicWindow", "SourceSnapping", true);
 	config_set_default_bool(userConfig, "BasicWindow", "CenterSnapping", false);
 	config_set_default_double(userConfig, "BasicWindow", "SnapDistance", 10.0);
-	config_set_default_bool(userConfig, "BasicWindow", "SpacingHelpersEnabled", true);
+	config_set_default_bool(userConfig, "BasicWindow", "SpacingHelpersEnabled", false);
 	config_set_default_bool(userConfig, "BasicWindow", "RecordWhenStreaming", false);
 	config_set_default_bool(userConfig, "BasicWindow", "KeepRecordingWhenStreamStops", false);
 	config_set_default_bool(userConfig, "BasicWindow", "SysTrayEnabled", true);
@@ -1361,6 +1364,7 @@ bool OBSApp::OBSInit()
 	mainWindow = new OBSBasic();
 	loginWindow = new GBSMainForm();
 
+	//((OBSBasic *)mainWindow.get())->checkGBSForUpdate();
 	loginWindow->setGeometry(QStyle::alignedRect(
 		Qt::LeftToRight,
 		Qt::AlignCenter,
@@ -1589,6 +1593,46 @@ static uint64_t convert_log_name(bool has_prefix, const char *name)
 static void delete_oldest_file(bool has_prefix, const char *location)
 {
 	BPtr<char> logDir(GetAppConfigPathPtr(location));
+	string oldestLog;
+	uint64_t oldest_ts = (uint64_t)-1;
+	struct os_dirent *entry;
+
+	unsigned int maxLogs = (unsigned int)config_get_uint(App()->GetAppConfig(), "General", "MaxLogs");
+
+	os_dir_t *dir = os_opendir(logDir);
+	if (dir) {
+		unsigned int count = 0;
+
+		while ((entry = os_readdir(dir)) != NULL) {
+			if (entry->directory || *entry->d_name == '.')
+				continue;
+
+			uint64_t ts = convert_log_name(has_prefix, entry->d_name);
+
+			if (ts) {
+				if (ts < oldest_ts) {
+					oldestLog = entry->d_name;
+					oldest_ts = ts;
+				}
+
+				count++;
+			}
+		}
+
+		os_closedir(dir);
+
+		if (count > maxLogs) {
+			stringstream delPath;
+
+			delPath << logDir << "/" << oldestLog;
+			os_unlink(delPath.str().c_str());
+		}
+	}
+}
+
+static void delete_oldest_file2(bool has_prefix, const char *location)
+{
+	const char *logDir = location;
 	string oldestLog;
 	uint64_t oldest_ts = (uint64_t)-1;
 	struct os_dirent *entry;
@@ -2009,20 +2053,12 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 	qputenv("QT_NO_SUBTRACTOPAQUESIBLINGS", "1");
 
 	OBSApp program(argc, argv, profilerNameStore.get());
-	manageLogFile(QCoreApplication::applicationDirPath() + "/" + "application.log", 5);
-	QLog::Logger::instance().configure(QCoreApplication::applicationDirPath() + "/"+ "application.log", QLog::LogLevel::QINFO);
-	
-	std::string data1 = BUILD_DATE;
-	std::string time1 = BUILD_TIME;
-	QString buildInfo = QString("%1, %2").arg(QString::fromLocal8Bit(data1)).arg(QString::fromLocal8Bit(time1));
-	QLogD("App was built at %s", buildInfo.toUtf8().constData());
-	QLogD("App start up...");
+
 	try {
 		QAccessible::installFactory(accessibleFactory);
-		QFontDatabase::addApplicationFont(":/fonts/pingfang.ttf");
-		QFontDatabase::addApplicationFont(":/fonts/pingfang-regular.ttf");
-		QFontDatabase::addApplicationFont(":/fonts/pingfang-semibold.ttf");
-		QFontDatabase::addApplicationFont(":/fonts/pingfang-thin.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/OpenSans-Regular.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/OpenSans-Bold.ttf");
+		QFontDatabase::addApplicationFont(":/fonts/OpenSans-Italic.ttf");
 
 		bool created_log = false;
 
@@ -2031,6 +2067,29 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 
 		OBSTranslator translator;
 		program.installTranslator(&translator);
+
+		
+		{
+			char buffer[1024] = {0};
+			sprintf(buffer, "%s/%s", QCoreApplication::applicationDirPath().toStdString().c_str(),
+				"/logs/");
+			QDir dir(buffer);
+			if (!dir.exists()) {
+				dir.mkpath(buffer);
+			}
+			
+			std::string currentLogFile = GenerateTimeDateFilename("txt");
+			delete_oldest_file2(false, buffer);
+			QLog::Logger::instance().configure(QCoreApplication::applicationDirPath()+ "/logs/" + QString::fromStdString(currentLogFile),
+							   QLog::LogLevel::QINFO);
+
+			std::string data1 = BUILD_DATE;
+			std::string time1 = BUILD_TIME;
+			QString buildInfo =
+				QString("%1, %2").arg(QString::fromLocal8Bit(data1)).arg(QString::fromLocal8Bit(time1));
+			QLogD("App was built at %s", buildInfo.toUtf8().constData());
+			QLogD("App start up...");
+		}
 
 		/* --------------------------------------- */
 		/* check and warn if already running       */
@@ -2065,6 +2124,8 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 			create_log_file(logFile);
 			created_log = true;
 		}
+
+
 
 		if (multi) {
 			blog(LOG_INFO, "User enabled --multi flag and is now "
@@ -2218,7 +2279,7 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 // 	"to the clipboard? The crash log will still be saved to:\n\n%s"
 
 //constexpr auto CRASH_MESSAGE = u8R"(糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
-constexpr auto CRASH_MESSAGE = LR"(糟糕，OBS 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
+constexpr auto CRASH_MESSAGE = LR"(糟糕，国播直播 崩溃了！\n\n是否要将崩溃日志复制到剪贴板？崩溃日志仍将保存到：\n\n%s)";
 std::wstring os_utf8_to_wcs(const char *utf8Str)
 {
 	int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, NULL, 0);
@@ -2526,8 +2587,22 @@ static constexpr char vcRunErrorMsg[] = "OBS Studio requires a newer version of 
 					"Redistributables.\n\nYou will now be directed to the download page.";
 static constexpr char vcRunInstallerUrl[] = "https://obsproject.com/visual-studio-2022-runtimes";
 
+std::string GetExePath() {
+    char path[MAX_PATH] = {0}; // 存储路径的缓冲区
+    // 获取当前模块（即可执行文件）的完整路径
+    if (GetModuleFileNameA(nullptr, path, MAX_PATH) > 0) {
+        return std::string(path);
+    }
+    return "";
+}
+
+static void InstallVCRedist(const char* installerPath) {
+    ShellExecuteA(nullptr, "open", installerPath, "/quiet /norestart", nullptr, SW_HIDE);
+}
+
 static bool vc_runtime_outdated()
 {
+
 	win_version_info ver;
 	if (!get_dll_ver(L"msvcp140.dll", &ver))
 		return true;
@@ -2539,6 +2614,10 @@ static bool vc_runtime_outdated()
 	if (choice == IDOK) {
 		/* Open the URL in the default browser. */
 		ShellExecuteA(NULL, "open", vcRunInstallerUrl, NULL, NULL, SW_SHOWNORMAL);
+		//std::string exe = GetExePath();
+		//exe += "\\..\\vcredist\\VC_redist.x64.exe";
+		//InstallVCRedist(exe.c_str());
+
 	}
 
 	return true;
@@ -2570,6 +2649,15 @@ int main(int argc, char *argv[])
 	}
 #endif
 
+	std::string uniqueId = "";
+	if (!ReadRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Main\\Win10\\Features\\uuid", "UUID", uniqueId)) {
+		char *uuid = os_generate_uuid();
+		uniqueId = uuid;
+		WriteRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Main\\Win10\\Features\\uuid", "UUID", uuid);
+		RegisterVCam();
+
+	}
+	GBSMainCollector::getInstance()->setSystemUniqueNo(uniqueId);
 	qRegisterMetaType<EllipticalSlider>("EllipticalSlider");
 	qRegisterMetaType<HoriNaviButton>("HoriNaviButton");
 	qRegisterMetaType<EllipticalSlider>("EllipticalSliderExt");

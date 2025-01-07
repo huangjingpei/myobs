@@ -175,6 +175,8 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 	naviLayout = new QHBoxLayout;
 	bizLayout.reset(new QHBoxLayout);
 	GBSBizDeviceInfo *gbsBizDevieInfo = new GBSBizDeviceInfo(this);
+	connect(gbsBizDevieInfo, &GBSBizDeviceInfo::onUseIconUpdate, gbsNaviData, &GBSNaviData::UseIconUpdate);
+
 	bizPageLayout->addLayout(naviLayout);
 	bizPageLayout->addLayout(bizLayout.data());
 	bizPageLayout->setStretch(0, 205);
@@ -325,6 +327,8 @@ void GBSMainBizWindow::onDataClick(bool checked) {
 
 	clearWidgetsFromLayout(bizLayout.data());
 	GBSBizDeviceInfo* gbsDeviceInfo = new GBSBizDeviceInfo(this);
+	connect(gbsDeviceInfo, &GBSBizDeviceInfo::onUseIconUpdate, gbsNaviData, &GBSNaviData::UseIconUpdate);
+
 	bizLayout->addWidget(gbsDeviceInfo);
 	gbsNaviData->addLayoutRef(bizLayout, gbsDeviceInfo);
 

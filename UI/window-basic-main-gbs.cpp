@@ -8,8 +8,10 @@
 #include <QFile>
 #include <QPainterPath>
 #include "window-basic-main.hpp"
+#include "update/win-update-gbs.hpp"
 
 #include <qt-wrappers.hpp>
+#include <window-basic-main-outputs.hpp>
 #include "gbs/common/FatButton.h"
 #include "gbs/common/QIniFile.h"
 #include "gbs/common/GBSHttpClient.h"
@@ -20,6 +22,10 @@
 #include "gbs/common/SystemUtils.h"
 
 #include "gbs/GBSAsioHttpServer.h"
+
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 
 // 本窗体是为了初始化自己窗口的函数，区别于OBSInit的是: 后者是初始化OBS系统，前者只是简单的初始化一个窗口
@@ -116,11 +122,25 @@ void OBSBasic::OBSInit2() {
 	//gHttpServer = GBSAsioHttpServer::Create();
 	//gHttpServer->start();
 
+	mWssTimer = new QTimer(this);
+	connect(mWssTimer, &QTimer::timeout, this, &OBSBasic::onWssKeepAlive);
+	if (!mWssTimer->isActive()) {
+		mWssTimer->start();
+		mWssTimer->setInterval(10000);
+	}
+
 }
 
 
 void OBSBasic::OBSDeinit2() {
+	if (mWssTimer->isActive()) {
+		mWssTimer->stop();
+	}
 	QLogD("OBSDeinit2, End pull task.");
+	if (mWssClient) {
+		mWssClient->UnRegisterHandler(this);
+		mWssClient->Stop();
+	}
 	GBSHttpClient::getInstance()->unRegisterHandler(this);
 	endPullTask();
 	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
@@ -165,17 +185,53 @@ void OBSBasic::endTalk(int id)
 }
 
 void OBSBasic::onMessage(std::string msg){
-	QLogD("Receive message from PullStreamNotifier %s", msg.c_str());
-	if (msg == "接到刷新getPullStreamUrl接口通知") {
-		QLogD("收到开始拉流，客户端开始拉流");	
-	} else if (msg == "接到拉流端停止推流通知") {
-		QLogD("收到停止拉流，客户端停止拉流");	
+	bool needProcess = !GBSMainCollector::getInstance()->isLiving();
+	if (needProcess) {
+		QMetaObject::invokeMethod(this, [msg, this]() {
+			QLogD("Receive message from PullStreamNotifier %s", msg.c_str());
+			if (msg == "接到刷新getPullStreamUrl接口通知") {
+				QLogD("收到开始拉流，客户端开始拉流");
+				beginPullTask();
+			} else if (msg == "接到拉流端停止推流通知") {
+				QLogD("收到停止拉流，客户端停止拉流");
+				endPullTask();
+				stopPullStream();
+			}
+			});
 	}
-	
 }
 void OBSBasic::onOpen(){
+	mWssRunning = true;
 }
-void OBSBasic::onClose(){
+
+void OBSBasic::onFail(){
+	mWssRunning = false;
+	Sleep(5 * 1000);
+	QMetaObject::invokeMethod(this, [this]() {
+		mWssClient->UnRegisterHandler(this);
+		mWssClient->Stop();
+		mWssClient = WebSocketClient::Create();
+		mWssClient->RegisterHandler(this);
+		mWssClient->setName("PullStreamNotifier");
+		std::string url = GBSMainCollector::getInstance()->getBaseWebSocketV2();
+		std::string wssUrl = url + "/refreshPullStream/" + mWssKeepaliveId;
+		mWssClient->Start(wssUrl);
+		});
+
+}
+
+void OBSBasic::onWssKeepAlive() {
+	if (mWssClient && mWssRunning) {
+		std::string target = "ping_" + mWssKeepaliveId;
+		mWssClient->Send(target);
+		dumpFFmegSourceLog();
+
+	}
+}
+
+void OBSBasic::onClose()
+{
+	mWssRunning = false;
 }
 
 
@@ -194,31 +250,26 @@ QString OBSBasic::GetVendor()
 
 void OBSBasic::beginPullTask() {
 	QLogD("Begin pull task.");
-	if (pullStreamTimer != nullptr) {
-		return;
-	}
-	pullStreamTimer = new QTimer(this);
-	connect(pullStreamTimer.data(), &QTimer::timeout, this,
-		[this]() {
+	//if (pullStreamTimer != nullptr) {
+	//	return;
+	//}
+	//pullStreamTimer = new QTimer(this);
+	//connect(pullStreamTimer.data(), &QTimer::timeout, this,
+	//	[this]() {
 			GBSHttpClient::getInstance()->getPullStreamUrlV2();
 			QPoint center = this->rect().center(); // 获取窗口的矩形区域的中心点
-
-			//QScopedPointer<QMenu> popup(CreateAddSourcePopupMenu());
-			//if (popup) {
-			//	popup->exec(center);
-			//}
-
 			
-		});
-	pullStreamTimer->start(5000);
+		//});
+	
+	//pullStreamTimer->start(5000);
 }
 void OBSBasic::endPullTask() {
 	QLogD("End pull task.");
-	if (pullStreamTimer != nullptr) {
-		pullStreamTimer->stop();
-		delete pullStreamTimer;
-		pullStreamTimer = nullptr;
-	}
+	//if (pullStreamTimer != nullptr) {
+	//	pullStreamTimer->stop();
+	//	delete pullStreamTimer;
+	//	pullStreamTimer = nullptr;
+	//}
 }
 void OBSBasic::onLoginResult(const int result) {}
 
@@ -230,44 +281,110 @@ void OBSBasic::onPullRtmpUrl(const std::string url) {
 		if (newUrl.startsWith("rtmp://",Qt::CaseInsensitive) == 0) {
 			stopPullStream();
 			return;
-		} 
+		}
 		if (pullRtmpUrl != newUrl) {
 			pullRtmpUrl = newUrl;
 			QMetaObject::invokeMethod(this, "startPullStream", Q_ARG(QString, pullRtmpUrl));
 		}
-	}
-}
-void OBSBasic::stopPullStream() {
-	size_t idx = 0;
-	const char *unversioned_type;
-	const char *type;
-	OBSSource newSource;
-	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
-		const char *name = obs_source_get_display_name(type);
-		uint32_t caps = obs_get_source_output_flags(type);
-
-		if (strcmp(type, "ffmpeg_source") == 0) {
-			//AddSource(unversioned_type);
-			//AddNew
-			OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
-			if (source) {
-				OBSSceneItem newSceneItem;
-				const char *v_id = obs_get_latest_input_type_id("ffmpeg_source");
-				OBSScene scene = querySceneBySceneName("场景");
-				if (source && scene) {
-					obs_source_remove(source);
-					obs_source_release(source);
-				}
-			}
+		obs_source_t *source = obs_get_source_by_name("RTMP 矩阵地址");
+		if (source) {
+			obs_source_set_enabled(source, true);
+			return;
 		}
 	}
 }
+//void OBSBasic::stopPullStream() {
+//	size_t idx = 0;
+//	const char *unversioned_type;
+//	const char *type;
+//	OBSSource newSource;
+//	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+//		const char *name = obs_source_get_display_name(type);
+//		uint32_t caps = obs_get_source_output_flags(type);
+//
+//		if (strcmp(type, "ffmpeg_source") == 0) {
+//			//AddSource(unversioned_type);
+//			//AddNew
+//			OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
+//			if (source) {
+//				OBSSceneItem newSceneItem;
+//				const char *v_id = obs_get_latest_input_type_id("ffmpeg_source");
+//				OBSScene scene = querySceneBySceneName("场景");
+//				if (source && scene) {
+//					obs_source_set_audio_active(source, false); // 停止音频
+//					obs_source_remove(source);
+//					obs_source_release(source);
+//				}
+//			}
+//		}
+//	}
+//}
+
+void OBSBasic::stopPullStream()
+{
+	#if 0
+	obs_source_t *source = obs_get_source_by_name("RTMP 矩阵地址");
+	if (source) {
+		// 获取所有场景
+		obs_scene_t *scene = obs_scene_from_source(obs_frontend_get_current_scene());
+		if (scene) {
+			
+			obs_sceneitem_t *item = obs_scene_find_source(scene, "RTMP 矩阵地址");
+			if (item) {
+				obs_sceneitem_remove(item); // 删除场景项
+			}
+		}
+
+		// 删除源
+		obs_source_remove(source);
+		obs_source_release(source);
+	}
+	#else
+	obs_source_t *source = obs_get_source_by_name("RTMP 矩阵地址");
+	if (source) {
+		obs_source_set_enabled(source, false);
+	}
+	
+	#endif
+}
+
+void OBSBasic::dumpFFmegSourceLog () {
+	//size_t idx = 0;
+	//const char *unversioned_type;
+	//const char *type;
+	//OBSSource newSource;
+	//while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+	//	const char *name = obs_source_get_display_name(type);
+	//	uint32_t caps = obs_get_source_output_flags(type);
+
+	//	if (strcmp(type, "ffmpeg_source") == 0) {
+	//		//AddSource(unversioned_type);
+	//		//AddNew
+	//		OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
+	//		if (source) {
+	//			OBSSceneItem newSceneItem;
+	//			const char *v_id = obs_get_latest_input_type_id("ffmpeg_source");
+	//			OBSScene scene = querySceneBySceneName("场景");
+	//			if (source && scene) {
+	//				obs_data_t *settings = obs_source_get_settings(source);
+	//				obs_data_set_bool(settings, "log_changes", true);
+	//				obs_source_update(source, settings);
+	//				obs_data_release(settings);
+	//				
+	//			}
+	//		}
+	//	}
+	//}
+}
+
 
 void OBSBasic::startPullStream(QString rtmp)
 {
 	size_t idx = 0;
 	const char *unversioned_type;
 	const char *type;
+
+
 
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 	iniFile->setValue("LiveBroker", "url", pullRtmpUrl);
@@ -355,6 +472,7 @@ void OBSBasic::startPullStream(QString rtmp)
 	}
 	
 }
+
 QString OBSBasic::getAvator() {
 	QString file = QCoreApplication::applicationDirPath() + "/round-avator.png";
 	QFile qFile(file);
@@ -383,7 +501,7 @@ void OBSBasic::onAccountInfo(GBSLiveAccountInfo result){
 	GBSMainCollector::getInstance()->setAccountInfo(result);
 	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
 	if (mRtcEngine && !mRtcEngine->IsLogin()) {
-		std::string userId = GBSMainCollector::getInstance()->getSrsLiveId();
+		std::string userId = GBSMainCollector::getInstance()->getLiveDeviceId();
 		mRtcEngine->setScenario(true, false, userId, nullptr);
 		mRtcEngine->LoginRoom(roomId, userId);
 		
@@ -391,12 +509,13 @@ void OBSBasic::onAccountInfo(GBSLiveAccountInfo result){
 
 	if (mWssClient == nullptr) {
 		std::string url = GBSMainCollector::getInstance()->getBaseWebSocketV2();
+		std::string uniqueId = GBSMainCollector::getInstance()->getSystemUniqueNo();
 		mWssClient = WebSocketClient::Create();
 		mWssClient->setName("PullStreamNotifier");
 		mWssClient->RegisterHandler(this);
-		std::string wssUrl = "wss://36be34f5.r27.cpolar.top/refreshPullStream/" + std::to_string(result.getId()) + "_" +
-				     GetMachineIdFromRegistry() +
-				     GetWindowsProductIDFromRegistery();
+		std::string id = std::to_string(result.getId()) + "_" + GetMachineIdFromRegistry() + GetWindowsProductIDFromRegistery() + uniqueId;
+		mWssKeepaliveId = id;
+		std::string wssUrl = url + "/refreshPullStream/" + id;
 		mWssClient->Start(wssUrl);
 	}
 	
@@ -658,7 +777,7 @@ OBSSource OBSBasic::addPCMAudioSource()
 			//AddNew
 			OBSSourceAutoRelease source = obs_get_source_by_name("场控对讲输出设备");
 			if (source) {
-
+				newSource = source;
 			} else {
 
 				OBSSceneItem newSceneItem;
@@ -1110,3 +1229,80 @@ void OBSBasic::changeOpacity(int opacity) {
 
 }
 
+
+
+void OBSBasic::StartGBSStreaming(std::string server, std::string key)
+{
+	service = obs_service_create("rtmp_custom", "default_service", nullptr, nullptr);
+	if (!service)
+		return;
+	obs_service_release(service);
+
+	obs_data_t *settings1 = obs_service_get_settings(service);
+	obs_data_set_string(settings1, "server",
+			    server.c_str()); // 设置 RTMP 服务器地址
+	obs_data_set_string(settings1, "key",
+			    key.c_str()); // 设置推流码 (Stream Key)
+
+	obs_service_update(service, settings1);
+	obs_data_release(settings1);
+
+	if (outputHandler->StreamingActive())
+		return;
+
+	auto finish_stream_setup = [&](bool setupStreamingResult) {
+		if (!setupStreamingResult) {
+			return;
+		}
+		//OnEvent(OBS_FRONTEND_EVENT_STREAMING_STARTING);
+
+		if (!outputHandler->StartStreaming(service)) {
+			return;
+		}
+
+		bool recordWhenStreaming =
+			config_get_bool(App()->GetUserConfig(), "BasicWindow", "RecordWhenStreaming");
+
+		bool replayBufferWhileStreaming =
+			config_get_bool(App()->GetUserConfig(), "BasicWindow", "ReplayBufferWhileStreaming");
+		if (replayBufferWhileStreaming)
+			StartReplayBuffer();
+
+#ifdef YOUTUBE_ENABLED
+		if (!autoStartBroadcast)
+			OBSBasic::ShowYouTubeAutoStartWarning();
+#endif
+	};
+
+	setupStreamingGuard = outputHandler->SetupStreaming(service, finish_stream_setup);
+}
+
+void OBSBasic::StopGBSStreaming()
+{
+	OBSBasic *main = OBSBasic::Get();
+	main->SaveProject();
+
+	if (outputHandler->StreamingActive())
+		outputHandler->StopStreaming(true);
+
+	bool recordWhenStreaming = config_get_bool(App()->GetUserConfig(), "BasicWindow", "RecordWhenStreaming");
+	bool keepRecordingWhenStreamStops =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow", "KeepRecordingWhenStreamStops");
+	if (recordWhenStreaming && !keepRecordingWhenStreamStops)
+		main->StopRecording();
+
+	bool replayBufferWhileStreaming =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow", "ReplayBufferWhileStreaming");
+	bool keepReplayBufferStreamStops =
+		config_get_bool(App()->GetUserConfig(), "BasicWindow", "KeepReplayBufferStreamStops");
+	if (replayBufferWhileStreaming && !keepReplayBufferStreamStops)
+		main->StopReplayBuffer();
+}
+
+
+void OBSBasic::checkGBSForUpdate() {
+	if (updateGBSCheckThread && updateGBSCheckThread->isRunning())
+		return;
+	updateGBSCheckThread.reset(new GBSAutoUpdateThread(true));
+	updateGBSCheckThread->start();
+}

@@ -125,7 +125,7 @@ void GBSBizSettingAV::LoadFPSData()
 }
 
 
-GBSBizSettingAV::GBSBizSettingAV(OBSBasicSettings *settings, QWidget *parent)
+GBSBizSettingAV::GBSBizSettingAV(QSharedPointer<OBSBasicSettings> settings, QWidget *parent)
 	: settings(settings),QWidget(parent),
 	  ui(new Ui::GBSBizSettingAV)
 {
@@ -419,12 +419,19 @@ void GBSBizSettingAV::LoadResolutionLists()
 		// They might differ if scaling is enabled, e.g. for HiDPI screens
 		as_width = round(as_width * screen->devicePixelRatio());
 		as_height = round(as_height * screen->devicePixelRatio());
+		
+		if (as_height < as_width) {
+			int tmp = as_width;
+			as_width = as_height;
+			as_height = tmp;
+		}
 
 		addRes(as_width, as_height);
 	}
-
-	addRes(1920, 1080);
-	addRes(1280, 720);
+	// addRes(1920, 1080);
+	// addRes(1280, 720);
+	addRes(1080, 1920);
+	addRes(720, 1280);
 
 	std::string outputResString = ResString(out_cx, out_cy);
 
@@ -553,6 +560,7 @@ void GBSBizSettingAV::GeneralChanged()
 {
 	
 	generalChanged = true;
+
 	sender()->setProperty("changed", QVariant(true));
 	
 }
@@ -577,7 +585,7 @@ void GBSBizSettingAV::SaveVideoSettings()
 		config_set_uint(main->Config(), "Video", "BaseCY", cy);
 	}
 
-	if (WidgetChanged(ui->cbxOutputResolution) && ConvertResText(QT_TO_UTF8(cbxOutputResolution), cx, cy)) {
+	if (ConvertResText(QT_TO_UTF8(cbxOutputResolution), cx, cy)) {
 		config_set_uint(main->Config(), "Video", "OutputCX", cx);
 		config_set_uint(main->Config(), "Video", "OutputCY", cy);
 	}

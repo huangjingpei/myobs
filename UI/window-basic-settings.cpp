@@ -1602,12 +1602,18 @@ void OBSBasicSettings::LoadResolutionLists()
 		// They might differ if scaling is enabled, e.g. for HiDPI screens
 		as_width = round(as_width * screen->devicePixelRatio());
 		as_height = round(as_height * screen->devicePixelRatio());
+		if (as_height < as_width) {
+			int tmp = as_width;
+			as_width = as_height;
+			as_height = tmp;
+		}
 
 		addRes(as_width, as_height);
 	}
-
-	addRes(1920, 1080);
-	addRes(1280, 720);
+	// addRes(1920, 1080);
+	// addRes(1280, 720);
+	addRes(1080, 1920);
+	addRes(720, 1280);
 
 	string outputResString = ResString(out_cx, out_cy);
 

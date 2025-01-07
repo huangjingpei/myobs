@@ -263,8 +263,11 @@ void GBSNormalLoginForm::onLoginResult(const int result)
 				emailValue = iniFile->value("User", "login.Username", "unknown").toString();
 				passwordValue = iniFile->value("User", "login.Password", "unknown").toString();
 				
-
-				if ((emailValue== "unknown") || (passwordValue == "unknown")) {
+				QString email = ui->leEmal->text();
+				QString password = ui->lePassword->text();
+				if (((emailValue == "unknown") || (passwordValue == "unknown")) ||
+				    ((email != emailValue) && (password != passwordValue))
+					) {
 					QWidget *widget = new QWidget;
 					QVBoxLayout *layout = new QVBoxLayout(widget);
 					QHBoxLayout *layout1 = new QHBoxLayout(widget);

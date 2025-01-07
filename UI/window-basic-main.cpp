@@ -22,6 +22,9 @@
 #include <ctime>
 #include <functional>
 #include <unordered_set>
+#if defined(_WIN32)
+#define NOMINMAX
+#endif
 #include <obs-data.h>
 #include <obs.h>
 #include <obs.hpp>
@@ -1595,10 +1598,14 @@ bool OBSBasic::InitBasicConfigDefaults()
 	}
 
 	QScreen *primaryScreen = QGuiApplication::primaryScreen();
+	
 
 	uint32_t cx = primaryScreen->size().width();
 	uint32_t cy = primaryScreen->size().height();
-
+	if (cx > cy) {
+		std::swap(cx, cy);
+	}
+	
 	cx *= devicePixelRatioF();
 	cy *= devicePixelRatioF();
 
@@ -1608,8 +1615,8 @@ bool OBSBasic::InitBasicConfigDefaults()
 	 * 1920x1080, but don't apply for people from older builds -- only to
 	 * new users */
 	if (!oldResolutionDefaults && (cx * cy) > (1920 * 1080)) {
-		cx = 1920;
-		cy = 1080;
+		cx = 1080;
+		cy = 1920;
 	}
 
 	bool changed = false;
@@ -4352,9 +4359,9 @@ void OBSBasic::RenderMain(void *data, uint32_t, uint32_t)
 	}
 
 	window->ui->preview->DrawSceneEditing();
-
-	if (window->drawSpacingHelpers)
-		window->ui->preview->DrawSpacingHelpers();
+	//FIXME the app will crash in obs-text.cpp after setting the preview layout and exit the program.???
+	// if (window->drawSpacingHelpers)
+	// 	window->ui->preview->DrawSpacingHelpers();
 
 	/* --------------------------------------- */
 
@@ -4621,6 +4628,9 @@ void OBSBasic::ResizePreview(uint32_t cx, uint32_t cy)
 	/* resize preview panel to fix to the top section of the window */
 	targetSize = GetPixelSize(ui->preview);
 
+	qDebug() << "OBSBasic::ResizePreview" << ui->preview->size();
+	QLogD("OBSBasic::ResizePreview widget size x %d y %d ", ui->preview->size().width(), ui->preview->size().height());
+
 	isFixedScaling = ui->preview->IsFixedScaling();
 	obs_get_video_info(&ovi);
 
@@ -4868,6 +4878,11 @@ void OBSBasic::closeEvent(QCloseEvent *event)
 
 	if (outputHandler && outputHandler->VirtualCamActive())
 		outputHandler->StopVirtualCam();
+		
+	if (outputHandler) {
+		StopGBSStreaming();
+	}
+		
 
 	if (introCheckThread)
 		introCheckThread->wait();

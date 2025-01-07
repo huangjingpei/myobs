@@ -39,13 +39,13 @@ font-size:16px;
 </string>
    </property>
    <property name="tabShape">
-    <enum>QTabWidget::TabShape::Rounded</enum>
+    <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
    <property name="elideMode">
-    <enum>Qt::TextElideMode::ElideLeft</enum>
+    <enum>Qt::ElideLeft</enum>
    </property>
    <widget class="QWidget" name="tabBasic_3">
     <attribute name="title">
@@ -63,9 +63,6 @@ font-size:16px;
      <property name="maximum">
       <number>1</number>
      </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_20">
      <property name="geometry">
@@ -78,9 +75,6 @@ font-size:16px;
      </property>
      <property name="maximum">
       <number>1</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_21">
@@ -95,9 +89,6 @@ font-size:16px;
      <property name="maximum">
       <number>1</number>
      </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_22">
      <property name="geometry">
@@ -107,9 +98,6 @@ font-size:16px;
        <width>60</width>
        <height>22</height>
       </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_23">
@@ -121,9 +109,6 @@ font-size:16px;
        <height>22</height>
       </rect>
      </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_24">
      <property name="geometry">
@@ -134,9 +119,6 @@ font-size:16px;
        <height>22</height>
       </rect>
      </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_25">
      <property name="geometry">
@@ -146,9 +128,6 @@ font-size:16px;
        <width>60</width>
        <height>22</height>
       </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
     <widget class="QLabel" name="label_33">
@@ -363,9 +342,6 @@ color: #78828A;
        <height>22</height>
       </rect>
      </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_27">
      <property name="geometry">
@@ -375,9 +351,6 @@ color: #78828A;
        <width>60</width>
        <height>22</height>
       </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_28">
@@ -389,9 +362,6 @@ color: #78828A;
        <height>22</height>
       </rect>
      </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
     </widget>
     <widget class="EllipticalSlider" name="horizontalSlider_29">
      <property name="geometry">
@@ -401,9 +371,6 @@ color: #78828A;
        <width>60</width>
        <height>22</height>
       </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
      </property>
     </widget>
    </widget>
@@ -438,10 +405,7 @@ color:#000000;</string>
     <string notr="true">background-color:#F5F5F5;</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
+    <enum>QFrame::NoFrame</enum>
    </property>
   </widget>
   <widget class="QLabel" name="label_44">
@@ -471,9 +435,6 @@ color: #78828A;
      <height>22</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Orientation::Horizontal</enum>
-   </property>
   </widget>
   <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
@@ -497,10 +458,7 @@ color: #78828A;
      <string notr="true">background-color:#F5F5F5;</string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label_45">
@@ -611,10 +569,7 @@ color: #78828A;
      <string notr="true">background-color:#F5F5F5;</string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label_48">
@@ -734,10 +689,7 @@ font-size:16px;</string>
      <string notr="true">background-color:#F5F5F5;</string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
    <widget class="QFrame" name="seprater1_9">
@@ -753,10 +705,7 @@ font-size:16px;</string>
      <string notr="true">background-color:#F5F5F5;</string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
    <widget class="EllipticalSliderExt" name="hsTransparentSlider">
@@ -767,9 +716,6 @@ font-size:16px;</string>
       <width>521</width>
       <height>16</height>
      </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_8">
@@ -812,9 +758,6 @@ color: #78828A;
       <height>16</height>
      </rect>
     </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
-    </property>
    </widget>
    <widget class="QLabel" name="label_55">
     <property name="geometry">
@@ -846,10 +789,7 @@ color:#000000</string>
      <string notr="true">background-color:#F5F5F5;</string>
     </property>
     <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_9">
@@ -951,9 +891,6 @@ font-size:16px;</string>
       <width>521</width>
       <height>16</height>
      </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label_59">
@@ -1098,6 +1035,139 @@ color:#000000</string>
     <property name="text">
      <string>随机抽帧</string>
     </property>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>740</y>
+      <width>821</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:#F9F9F9;
+border: 1px solid  #FFFFFF;
+border-radius: 16px;
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <widget class="QPushButton" name="btnConfirm_4">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>10</y>
+       <width>80</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: qlineargradient(
+        spread: pad, 
+        x1: 0, y1: 0, x2: 1, y2: 1, 
+        stop: 0.1054 #1B2846, 
+        stop: 0.9062 #000000
+    ); /* 渐变背景 */
+    border: 1px solid white;       /* 边框为白色 */
+    border-radius: 5px;            /* 圆角半径 */
+    font-size: 16px;               /* 字体大小 */
+    color: #FFFFFF;                /* 字体颜色 */
+}
+
+QPushButton:pressed {
+    background-color: #D1D8DD;     /* 按下时的背景颜色 */
+    padding-left: 3px;             /* 左侧内边距 */
+    padding-top: 3px;              /* 顶部内边距 */
+    background-repeat: no-repeat;  /* 禁止背景重复 */
+    background-position: center;   /* 背景居中 */
+}
+
+
+</string>
+     </property>
+     <property name="text">
+      <string>确定</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnCancel_4">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>10</y>
+       <width>80</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: qlineargradient(
+        spread: pad, 
+        x1: 0, y1: 0, x2: 1, y2: 1, 
+        stop: 0.1054 #1B2846, 
+        stop: 0.9062 #000000
+    ); /* 渐变背景 */
+    border: 1px solid white;       /* 边框为白色 */
+    border-radius: 5px;            /* 圆角半径 */
+    font-size: 16px;               /* 字体大小 */
+    color: #FFFFFF;                /* 字体颜色 */
+}
+
+QPushButton:pressed {
+    background-color: #D1D8DD;     /* 按下时的背景颜色 */
+    padding-left: 3px;             /* 左侧内边距 */
+    padding-top: 3px;              /* 顶部内边距 */
+    background-repeat: no-repeat;  /* 禁止背景重复 */
+    background-position: center;   /* 背景居中 */
+}
+
+
+</string>
+     </property>
+     <property name="text">
+      <string>取消</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnApply_4">
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>10</y>
+       <width>80</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: qlineargradient(
+        spread: pad, 
+        x1: 0, y1: 0, x2: 1, y2: 1, 
+        stop: 0.1054 #1B2846, 
+        stop: 0.9062 #000000
+    ); /* 渐变背景 */
+    border: 1px solid white;       /* 边框为白色 */
+    border-radius: 5px;            /* 圆角半径 */
+    font-size: 16px;               /* 字体大小 */
+    color: #FFFFFF;                /* 字体颜色 */
+}
+
+QPushButton:pressed {
+    background-color: #D1D8DD;     /* 按下时的背景颜色 */
+    padding-left: 3px;             /* 左侧内边距 */
+    padding-top: 3px;              /* 顶部内边距 */
+    background-repeat: no-repeat;  /* 禁止背景重复 */
+    background-position: center;   /* 背景居中 */
+}
+
+
+</string>
+     </property>
+     <property name="text">
+      <string>应用</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

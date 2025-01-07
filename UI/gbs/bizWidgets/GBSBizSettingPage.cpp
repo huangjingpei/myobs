@@ -16,7 +16,7 @@ GBSBizSettingPage::GBSBizSettingPage(QWidget *parent)
     connect(ui->pushButton_12, &QPushButton::clicked, this, &GBSBizSettingPage::onClickBasic);
     connect(ui->pushButton_13, &QPushButton::clicked, this, &GBSBizSettingPage::onClickAVOutput);
     connect(ui->pushButton_14, &QPushButton::clicked, this, &GBSBizSettingPage::onClickAVSetting);
-    settings = new OBSBasicSettings(OBSBasic::Get());
+    settings = QSharedPointer<OBSBasicSettings>::create(OBSBasic::Get()); //new OBSBasicSettings(OBSBasic::Get());
     GBSBizSettingOutput *avSetting = new GBSBizSettingOutput(settings);
     ui->horizontalLayout->addWidget(avSetting);
     currentWidget = avSetting;
@@ -77,7 +77,6 @@ void GBSBizSettingPage::onCancel() {
 	settings->onCancel();
 }
 void GBSBizSettingPage::onApply() {
-	settings->onApply();
 	GBSBizSettingBasic *gbsBizSettingBasic = qobject_cast<GBSBizSettingBasic *>(currentWidget);
 	if (gbsBizSettingBasic != nullptr) {
 		gbsBizSettingBasic->SaveBasicSettings();
@@ -93,8 +92,10 @@ void GBSBizSettingPage::onApply() {
 		gbsBizSettingAV->SaveAudioSettings();
 		gbsBizSettingAV->SaveVideoSettings();
 	}
-	
+    settings->onApply();
 
+
+	
 
 }
 

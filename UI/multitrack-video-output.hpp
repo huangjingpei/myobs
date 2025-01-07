@@ -10,7 +10,6 @@
 
 #include <QObject>
 
-#define NOMINMAX
 
 class QString;
 

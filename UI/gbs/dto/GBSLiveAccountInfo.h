@@ -17,6 +17,7 @@ public:
 		std::string activationCode,
 		int activationStatus,
 		std::string customerNo,
+		std::string deviceCode,
 		std::string deviceNo,
 		std::string head,
 		int id,
@@ -24,6 +25,7 @@ public:
 		int liveDeviceId,
 		std::string livePlatform,
 		int liveServerId,
+		std::string motherboardNo,
 		std::string nickname,
 		std::string notes,
 		std::string platformAccount,
@@ -43,13 +45,15 @@ public:
 	int getActivationStatus() const { return activationStatus; }
 	const std::string& getCustomerNo() const { return customerNo; }
 	const std::string& getDeviceNo() const { return deviceNo; }
+	const std::string &getDeviceCode() const { return deviceCode; }
 	const std::string& getHead() const { return head; }
 	int getId() const { return id; }
 	const std::string& getLiveAccount() const { return liveAccount; }
 	int getLiveDeviceId() const { return liveDeviceId; }
 	const std::string& getLivePlatform() const { return livePlatform; }
 	int getLiveServerId() const { return liveServerId; }
-	const std::string& getNickname() const { return nickname; }
+	const std::string &getNickname() const { return nickname; }
+	const std::string &getMotherboardNo() const { return motherboardNo; }
 	const std::string& getNotes() const { return notes; }
 	const std::string& getPlatformAccount() const { return platformAccount; }
 	const std::string& getProductNo() const { return productNo; }
@@ -64,12 +68,14 @@ public:
 	void setActivationStatus(int value) { activationStatus = value; }
 	void setCustomerNo(const std::string& value) { customerNo = value; }
 	void setDeviceNo(const std::string& value) { deviceNo = value; }
+	void setDeviceCode(const std::string &value) { deviceCode = value; }
 	void setHead(const std::string& value) { head = value; }
 	void setId(int value) { id = value; }
 	void setLiveAccount(const std::string &value) { liveAccount = value; }
 	void setLiveDeviceId(int value) { liveDeviceId = value; }
 	void setLivePlatform(const std::string& value) { livePlatform = value; }
 	void setLiveServerId(int value) { liveServerId = value; }
+	void setMotherboardNo(int value) { motherboardNo = value; }
 	void setNickname(const std::string& value) { nickname = value; }
 	void setNotes(const std::string& value) { notes = value; }
 	void setPlatformAccount(const std::string& value) { platformAccount = value; }
@@ -89,6 +95,7 @@ private:
 	std::string activationCode;
 	int activationStatus;
 	std::string customerNo;
+	std::string deviceCode;
 	std::string deviceNo;
 	std::string head;
 	int id;
@@ -96,6 +103,7 @@ private:
 	int liveDeviceId;
 	std::string livePlatform;
 	int liveServerId;
+	std::string motherboardNo;
 	std::string nickname;
 	std::string notes;
 	std::string platformAccount;

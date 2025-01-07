@@ -122,11 +122,24 @@ void push_pcm_data(void *data, const uint8_t *pcm_data, size_t size)
     // 创建音频帧
     struct obs_source_audio audio = {0};
     audio.format = AUDIO_FORMAT_16BIT;
-    audio.frames = (uint32_t)(size / (sizeof(int) * context->channels));
+    audio.frames = (uint32_t)(size / (sizeof(short) * context->channels));
     audio.speakers = context->channels == 1 ? SPEAKERS_MONO : SPEAKERS_STEREO;
     audio.samples_per_sec = context->sample_rate;
     audio.timestamp = os_gettime_ns();
     audio.data[0] = context->buffer;
+
+
+    // 处理编码后的数据
+    // 示例：写入文件
+    //static FILE *pcm_file = NULL;
+    //if (!pcm_file) {
+	   // pcm_file = fopen("recv16k.pcm", "wb");
+	   // if (!pcm_file) {
+		  //  return;
+	   // }
+    //}
+    //fwrite(pcm_data, 1, size, pcm_file);
+    //fflush(pcm_file);
     
     // 输出音频
     obs_source_output_audio(context->source, &audio);
@@ -150,7 +163,8 @@ struct obs_source_info pcm_source = {
     .destroy = pcm_source_destroy,
     .get_properties = pcm_source_properties,
     .get_defaults = pcm_source_defaults,
-    .update = pcm_source_update
+    .update = pcm_source_update,
+    
 };
 
 // 模块加载时注册源

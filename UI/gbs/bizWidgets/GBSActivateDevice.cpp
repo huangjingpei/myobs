@@ -136,14 +136,14 @@ GBSActivateDevice::GBSActivateDevice(QWidget *parent)
 	    QString toDeskAccount = ui->leRemoteAccount->text();
 	    QString toDeskPassword = ui->leRemotePassword->text();
 	    QString deviceName = ui->leDeviceName->text();
-	    GBSHttpClient::getInstance()->activateDeviceV2(
-		    "123456", deviceName.toUtf8().constData(),
-							    mLiveAccoutnId,
-							    livePlatform.toUtf8().constData(),
-							    notes.toUtf8().constData(), livePlatform.toUtf8().constData(),
-							    toDeskAccount.toUtf8().constData(),
-							    toDeskPassword.toUtf8().constData()
-							    );
+	    //GBSHttpClient::getInstance()->activateDeviceV2(
+		   // "123456", deviceName.toUtf8().constData(),
+					//		    mLiveAccoutnId,
+					//		    livePlatform.toUtf8().constData(),
+					//		    notes.toUtf8().constData(), livePlatform.toUtf8().constData(),
+					//		    toDeskAccount.toUtf8().constData(),
+					//		    toDeskPassword.toUtf8().constData()
+					//		    );
 	    accept();
 	    });
 

@@ -224,7 +224,7 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 
 	    QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 	    layout->addSpacerItem(spacer);
-	    GBSMsgDialog *dialog = new GBSMsgDialog("颜色含义解释", layout, this);
+	    GBSMsgDialog *dialog = new GBSMsgDialog("关于我们", layout, this);
 	    dialog->exec();
 	    });
     timer = new QTimer(this);

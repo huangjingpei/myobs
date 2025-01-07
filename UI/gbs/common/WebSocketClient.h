@@ -8,6 +8,7 @@ public:
 	virtual ~WssEventListener(){};
 	virtual void onMessage(std::string msg) = 0;
 	virtual void onOpen() = 0;
+	virtual void onFail() = 0;
 	virtual void onClose() = 0;
 };
 

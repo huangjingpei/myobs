@@ -6411,12 +6411,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_838D9B798670495B8C111D94634232C3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_8397D651B78B475DBF5FA19D85790271"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -8500,12 +8494,6 @@
         "Entry"
         {
         "MsmKey" = "8:_AE2B39FC8C5745A495C85440B1AAA83D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_AE46C6807D8F4BE2BF234C121454C023"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -10864,12 +10852,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DF869512EA9346D796289C0E0639042D"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DF86E27C93C5473BAC72A704414CBA92"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -33845,26 +33827,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_838D9B798670495B8C111D94634232C3"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\gbs.ini"
-            "TargetName" = "8:gbs.ini"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8397D651B78B475DBF5FA19D85790271"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\obs-browser\\locale\\az-AZ.ini"
@@ -40811,26 +40773,6 @@
             "TargetName" = "8:fr-FR.ini"
             "Tag" = "8:"
             "Folder" = "8:_3F9E3FA89784443B9DEDFCA2A47F115C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE46C6807D8F4BE2BF234C121454C023"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\login-qrcode.png"
-            "TargetName" = "8:login-qrcode.png"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -48705,26 +48647,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF86E27C93C5473BAC72A704414CBA92"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\debug.log"
-            "TargetName" = "8:debug.log"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF8E4DAFFD864E79991D25AAA659068F"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\obs-text\\locale\\ro-RO.ini"
@@ -53944,7 +53866,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_3275FFA55E974E1D8527D27F97713DC4"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:D:\\[Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
@@ -54982,15 +54904,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:国播出国"
-        "ProductCode" = "8:{E0121D17-B663-4F6A-8827-43B48AF66326}"
-        "PackageCode" = "8:{9633F437-FC38-4787-AB29-1C84CF58DBE4}"
+        "ProductCode" = "8:{8CAEAD14-CE47-4B9A-A9B0-2ED5CFA188AE}"
+        "PackageCode" = "8:{1CD164CA-42C5-4C6F-850B-CC1239E2C3B3}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.15"
+        "ProductVersion" = "8:1.0.25"
         "Manufacturer" = "8:国播科技"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

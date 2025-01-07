@@ -57,6 +57,13 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 				QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
 				safeThis->ui->lblNickName->setText(nickName);
 			}
+			QString appDirPath = QCoreApplication::applicationDirPath();
+			appDirPath += "/round-avator.png";
+	
+			if (QFile::exists(appDirPath)) {
+				QPixmap pixmap(appDirPath);
+				safeThis->ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
+			}			
 			});
 	} else {
 		QString nickName = nickNameTemplate.arg(QString::fromStdString(account.getNickname()));
@@ -169,6 +176,7 @@ void GBSNaviData::onDeviceInfoClicked() {
 		layout->removeWidget(currentWidgetRef);
 		delete currentWidgetRef;
 		GBSBizDeviceInfo* gbsBizDeviceInfo = new GBSBizDeviceInfo(this);
+		connect(gbsBizDeviceInfo, &GBSBizDeviceInfo::onUseIconUpdate, this, &GBSNaviData::UseIconUpdate);
 		layout->addWidget(gbsBizDeviceInfo);
 		currentWidgetRef = gbsBizDeviceInfo;
 
@@ -207,5 +215,10 @@ void GBSNaviData::onAIDataClicked() {
 
 
 	}
+}
+
+void GBSNaviData::UseIconUpdate(QString imageFile) {
+	QPixmap pixmap(imageFile);
+	ui->imgAvator->setPixmap(pixmap.scaled(48, 48, Qt::KeepAspectRatio));
 }
 

@@ -1,14 +1,26 @@
 #pragma once
 #include <QTime>
 #include <QString>
+enum {
+	DANITEM_TYPE_WHOIS = 0,
+	DANITEM_TYPE_ALL = 1,
+	DANITEM_TYPE_GIFT = 2,
+	DANITEM_TYPE_CHAT = 3,
+	DANITEM_TYPE_LIKE = 4,
+	DANITEM_TYPE_SINGLE = 10,
 
+	
+
+};
 typedef struct tagDammaItem {
 	QTime  currentTime;
 	QString deviceName;
 	QString iamgePath;
 	QString danmaku;
 	QString type;
+	QString liveId;
 } DanmaItem;
+
 
 	
 class DammaMSG {

@@ -4,6 +4,7 @@
 #include "window-basic-main.hpp"
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/GBSMainBizWindow.h"
+#include "gbs/common/QBizLogger.h"
 
 GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	: QWidget(parent),
@@ -183,8 +184,9 @@ void GBSQRCodeLoginForm::onPullRtmpUrl(const std::string url) {}
 void GBSQRCodeLoginForm::onUserInfo(const GBSUserInfo *info) {}
 
 void GBSQRCodeLoginForm::onUserFileDownLoad(const std::string &path, int type) {
+	QLogE("GBSQRCodeLoginForm onUserFileDownLoad %s", path.c_str());
 	if (type == 1) {
-		QString qPath = QString::fromStdString(path);
+		QString qPath = QString::fromLocal8Bit(path);
 		emit onUseIconUpdate(qPath);
 	}
 }
@@ -225,6 +227,8 @@ void GBSQRCodeLoginForm::onQRcodeInfo(std::string no, std::string url, int statu
 
 void GBSQRCodeLoginForm::onMyIconDownloaded(QString path)
 {
+	QLogE("GBSQRCodeLoginForm onMyIconDownloaded %s", path.toStdString().c_str());
+
 	QPixmap pixmap(path);
 	ui->lblQRCode->setPixmap(pixmap.scaled(245, 245, Qt::KeepAspectRatio));
 }

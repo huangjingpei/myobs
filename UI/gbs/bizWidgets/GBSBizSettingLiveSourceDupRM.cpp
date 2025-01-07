@@ -153,10 +153,20 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 	    if (text == "") {
 		    main->removeSlideShowSource();
 	    } else {
-		    QStringList files = FileIOUtils::getInstance()->OpenFiles(
-			    this, "获取图片文件", text,
-			    QObject::tr("Image files (*.bmp *.tga *.png *.jpeg *.jpg *.gif *.webp"));
-		    main->addSlideShowSource(files);
+		    QDir dir(text);
+		    if (dir.exists()) {
+			    QStringList filters;
+			    filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
+			    QStringList files = dir.entryList(filters, QDir::Files);
+			    QStringList absoluteFiles;
+			    for (const QString &file : files) {
+				    // 使用 absoluteFilePath 获取文件的完整路径
+				    QString fullPath = dir.absoluteFilePath(file);
+				    absoluteFiles << fullPath;
+			    }
+			    main->addSlideShowSource(absoluteFiles);
+		    }
+		    
 	    }
     });
 
@@ -169,10 +179,13 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 	    if (text == "") {
 		    main->removeTimeClockSource();
 	    } else {
-		    QString file = FileIOUtils::getInstance()->OpenFile(
-			    this, "获取时钟文件", text,
-			    QObject::tr("Image files (*.htm *.html"));
-		    main->addTimeClockSource(file);
+
+		    QFileInfo fileInfo(text);
+		    if (fileInfo.isFile()) {
+			    main->addTimeClockSource(text);
+		    }
+
+		    
 	    }
     });
 
@@ -208,21 +221,55 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 
     });
     connect(ui->pushButton_7, &QPushButton::clicked, this, [&]() {
-	   QString dir =  FileIOUtils::getInstance()->SelectDirectory(this, "请选择有有图片的目录", "");
+	    QString text = ui->lineEdit_10->text();
+	    QDir dirPath(text);
+
+	    if (dirPath.isEmpty()) {
+		    dirPath = QDir::homePath(); // 默认路径
+	    } else {
+		    if (!dirPath.exists()) {
+			    dirPath = QDir::homePath();
+		    }
+	    }
+	    QString dir = FileIOUtils::getInstance()->SelectDirectory(this, "请选择有图片的目录", dirPath.absolutePath());
+
+
 	    if (!dir.isEmpty()) {
-		   qDebug() << "Selected dir:" << dir;
-		    ui->lineEdit_10->setText(dir);
-		    iniFile->setValue("RemoveDuplicate", "audio.DedupImagePath", dir);
+		qDebug() << "Selected dir:" << dir;
+		ui->lineEdit_10->setText(dir);
+		ui->lineEdit_10->setProperty("changed", true);
+		iniFile->setValue("RemoveDuplicate", "audio.DedupImagePath", dir);
 	}
 
     });
-    connect(ui->pushButton_8, &QPushButton::clicked, this, [&]() {
-        QString filePath = QFileDialog::getOpenFileName(nullptr, QObject::tr("Open File"),
-                                                        "", QObject::tr("All Files (*)"));
-        if (!filePath.isEmpty()) {
-            qDebug() << "Selected file:" << filePath;
-            ui->lineEdit_6->setText(filePath);
-        }
+    connect(ui->pushButton_8, &QPushButton::clicked, this, [this]() {
+		QString directoryPath = ui->lineEdit_6->text();
+	    QFileInfo fileInfo(directoryPath);
+
+
+	    if (directoryPath.isEmpty()) {
+			directoryPath = QDir::homePath(); // 默认路径
+	    } else {
+		    if (fileInfo.exists() && fileInfo.isFile()) {
+			    directoryPath = fileInfo.absolutePath();
+		    } else {
+			    directoryPath = QDir::homePath();
+		    }
+	    }
+
+	QString filePath = FileIOUtils::getInstance()->OpenFile(this, "获取时钟文件", directoryPath,
+							QObject::tr("Html files (*.htm *.html"));
+        
+	if (!filePath.isEmpty()) {
+		qDebug() << "Selected file:" << filePath;
+
+		ui->lineEdit_6->setText(filePath);
+
+		mTimerClockDupRm = filePath;
+		
+		ui->lineEdit_6->setProperty("changed", true);
+	}
+		
 
     });
     connect(ui->pushButton_9, &QPushButton::clicked, this, [&]() {
@@ -231,6 +278,8 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
         if (!filePath.isEmpty()) {
             qDebug() << "Selected file:" << filePath;
             ui->lineEdit_9->setText(filePath);
+	    ui->lineEdit_9->setProperty("changed", true);
+
         }
 
     });
@@ -240,6 +289,8 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
         if (!filePath.isEmpty()) {
             qDebug() << "Selected file:" << filePath;
             ui->lineEdit_8->setText(filePath);
+	    ui->lineEdit_8->setProperty("changed", true);
+
         }
 
     });
@@ -293,8 +344,23 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     connect(ui->hsExtractFrameSlider, &QSlider::valueChanged, this, []() {
 	    
 	    });
+
+
+    connect(ui->btnApply_4, &QPushButton::clicked, this, &GBSBizSettingLiveSourceDupRM::onApply);
+    connect(ui->btnCancel_4, &QPushButton::clicked, this, &GBSBizSettingLiveSourceDupRM::onCancel);
+    connect(ui->btnConfirm_4, &QPushButton::clicked, this, &GBSBizSettingLiveSourceDupRM::onConfirm);
 }
 
+
+void GBSBizSettingLiveSourceDupRM::onApply(bool checked) {
+
+}
+void GBSBizSettingLiveSourceDupRM::onCancel(bool checked) {
+
+}
+void GBSBizSettingLiveSourceDupRM::onConfirm(bool checked) {
+
+}
 
 void GBSBizSettingLiveSourceDupRM::onTabChanged(int index) {
     qDebug() << "当前选项卡索引为:" << index;
@@ -348,5 +414,22 @@ void GBSBizSettingLiveSourceDupRM::setStyleForAllSliders(QWidget *widget) {
 
 GBSBizSettingLiveSourceDupRM::~GBSBizSettingLiveSourceDupRM()
 {
+	QVariant data;
+	data = ui->lineEdit_6->property("changed");
+	//if (data.value<bool>() == true) {
+	//	emit ui->lineEdit_6->textChanged(ui->lineEdit_6->text());
+	//}
+	////data = ui->lineEdit_10->property("changed");
+	////if (data.value<std::string>() == "true") {
+	////	emit ui->lineEdit_10->textChanged(ui->lineEdit_10->text());
+	////}
+	////data = ui->lineEdit_8->property("changed");
+	////if (data.value<std::string>() == "true") {
+	////	emit ui->lineEdit_8->textChanged(ui->lineEdit_8->text());
+	////}
+	////data = ui->lineEdit_9->property("changed");
+	////if (data.value<std::string>() == "true") {
+	////	emit ui->lineEdit_9->textChanged(ui->lineEdit_9->text());
+	////}
     delete ui;
 }

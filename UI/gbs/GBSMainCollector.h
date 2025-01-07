@@ -40,11 +40,26 @@ public:
 	void updateLivePushUrl(std::string url);
 	std::string obtainLivePushUrl();
 
+	std::string &getLivePlatAcct();
+
+	void setLiving(bool living);
+	bool isLiving();
+
+	std::string& getDeviceName();
+	void setDeviceName(std::string plat);
+
+
+	void setSystemUniqueNo(std::string uniqueNo);
+	std::string &getSystemUniqueNo();
+
 private:
 	void setSrsLiveId(int srsLiveId);
+	void setLiveDeviceId(std::string liveDeviceId);
 
 public:
 	std::string& getSrsLiveId();
+	std::string &getLiveDeviceId();//直播设备ID，每一个转发设备对应一个不同的ID
+
 
 	std::string &getDanmaKuName();
 
@@ -94,15 +109,21 @@ private:
 
 	std::string danmakuPlat{""};
 	std::string srsLiveId {""};
+	std::string liveDeviceId{""};//直播设备ID，每一个转发设备对应一个不同的ID
+	std::string mPlatLiveAcct{""};
+	std::string mDeviceName{""}; //弹幕标签上显示的内容用于区分不同的矩阵
+	std::atomic<bool> mbLiving{false};
+	std::string mUniqueNo{""};
 	std::string danmakuId{""};//主要有srsliveId 和 弹幕被抓平台id构成
+	std::string buildInfo{""};
 
-	 std::string baseUrl = {"http://36be34f5.r27.cpolar.top"};
-	 std::string baseUrlV2 = {"http://36be34f5.r27.cpolar.top"};
-	 //std::string baseUrl = {"https://preferred-api.guobo.shop"};
-	 //std::string baseUrlV2 = {"https://preferred-api.guobo.shop"};
+	 //std::string baseUrl = {"http://36be34f5.r27.cpolar.top"};
+	 //std::string baseUrlV2 = {"http://36be34f5.r27.cpolar.top"};
+	 std::string baseUrl = {"https://preferred-api.guobo.shop"};
+	 std::string baseUrlV2 = {"https://preferred-api.guobo.shop"};
 	 std::string baseWssV2 = {"wss://guobowss.guobo.shop"};
-
-	 std::string mSoftWareVersion{"1.1.17"};
+	 
+	 std::string mSoftWareVersion{"1.0.25"};
 	
 	
 };

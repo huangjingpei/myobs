@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1322</width>
+    <width>1238</width>
     <height>920</height>
    </rect>
   </property>
@@ -54,7 +54,10 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="10">
+      <property name="sizeConstraint">
+       <enum>QLayout::SizeConstraint::SetFixedSize</enum>
+      </property>
       <item>
        <layout class="QHBoxLayout" name="previewLayout">
         <property name="spacing">
@@ -243,6 +246,24 @@
                   <width>621</width>
                   <height>591</height>
                  </rect>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>621</width>
+                  <height>591</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>621</width>
+                  <height>591</height>
+                 </size>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">background-color:#F9F9F9;
@@ -953,7 +974,7 @@ font-size: 24px;
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>409</width>
+              <width>343</width>
               <height>16</height>
              </rect>
             </property>
@@ -1007,7 +1028,7 @@ font-size: 24px;
               <x>0</x>
               <y>0</y>
               <width>16</width>
-              <height>28</height>
+              <height>30</height>
              </rect>
             </property>
             <property name="sizePolicy">

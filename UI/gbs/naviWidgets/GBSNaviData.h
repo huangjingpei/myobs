@@ -29,6 +29,8 @@ public slots:
 
 	void onTimeout();
 
+	void UseIconUpdate(QString imageFile);
+
 private:
 	void mariVertButton(VertNaviButton *button);
 	void seeYouNext(QString title);

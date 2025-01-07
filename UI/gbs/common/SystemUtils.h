@@ -222,4 +222,227 @@ inline std::string GetWindowsProductID()
 	return productID;
 }
 
+inline std::string GetMainboardSerialNumber()
+{
+	HRESULT hres;
+
+	// 初始化COM库
+	hres = CoInitializeEx(0, COINIT_MULTITHREADED);
+	if (FAILED(hres)) {
+		std::cerr << "Failed to initialize COM library. Error code: " << hres << std::endl;
+		return "";
+	}
+
+	// 设置COM安全
+	hres = CoInitializeSecurity(NULL,
+				    -1,                          // COM authentication
+				    NULL,                        // Authentication services
+				    NULL,                        // Reserved
+				    RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication
+				    RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation
+				    NULL,                        // Authentication info
+				    EOAC_NONE,                   // Additional capabilities
+				    NULL                         // Reserved
+	);
+
+	if (FAILED(hres)) {
+		std::cerr << "Failed to initialize security. Error code: " << hres << std::endl;
+		CoUninitialize();
+		return "";
+	}
+
+	// 获取WMI服务
+	IWbemLocator *pLoc = NULL;
+
+	hres = CoCreateInstance(CLSID_WbemLocator, 0, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID *)&pLoc);
+
+	if (FAILED(hres)) {
+		std::cerr << "Failed to create IWbemLocator object. Error code: " << hres << std::endl;
+		CoUninitialize();
+		return "";
+	}
+
+	IWbemServices *pSvc = NULL;
+
+	hres = pLoc->ConnectServer(_bstr_t(L"ROOT\\CIMV2"), // WMI namespace
+				   NULL,                    // User name
+				   NULL,                    // User password
+				   0,                       // Locale
+				   NULL,                    // Security flags
+				   0,                       // Authority
+				   0,                       // Context object
+				   &pSvc                    // IWbemServices proxy
+	);
+
+	if (FAILED(hres)) {
+		std::cerr << "Could not connect. Error code: " << hres << std::endl;
+		pLoc->Release();
+		CoUninitialize();
+		return "";
+	}
+
+	// 设置WMI服务安全级别
+	hres = CoSetProxyBlanket(pSvc,                        // Indicates the proxy to set
+				 RPC_C_AUTHN_WINNT,           // RPC_C_AUTHN_xxx
+				 RPC_C_AUTHZ_NONE,            // RPC_C_AUTHZ_xxx
+				 NULL,                        // Server principal name
+				 RPC_C_AUTHN_LEVEL_CALL,      // RPC_C_AUTHN_LEVEL_xxx
+				 RPC_C_IMP_LEVEL_IMPERSONATE, // RPC_C_IMP_LEVEL_xxx
+				 NULL,                        // Client identity
+				 EOAC_NONE                    // Proxy capabilities
+	);
+
+	if (FAILED(hres)) {
+		std::cerr << "Could not set proxy blanket. Error code: " << hres << std::endl;
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+		return "";
+	}
+
+	// 执行WMI查询
+	IEnumWbemClassObject *pEnumerator = NULL;
+
+	hres = pSvc->ExecQuery(bstr_t("WQL"), bstr_t("SELECT SerialNumber FROM Win32_BaseBoard"),
+			       WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, NULL, &pEnumerator);
+
+	if (FAILED(hres)) {
+		std::cerr << "Query for serial number failed. Error code: " << hres << std::endl;
+		pSvc->Release();
+		pLoc->Release();
+		CoUninitialize();
+		return "";
+	}
+
+	// 获取查询结果
+	IWbemClassObject *pclsObj = NULL;
+	ULONG uReturn = 0;
+	std::string serialNumber;
+
+	while (pEnumerator) {
+		HRESULT hr = pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn);
+
+		if (0 == uReturn) {
+			break;
+		}
+
+		VARIANT vtProp;
+		hr = pclsObj->Get(L"SerialNumber", 0, &vtProp, 0, 0);
+
+		if (SUCCEEDED(hr) && vtProp.vt == VT_BSTR) {
+			serialNumber = _bstr_t(vtProp.bstrVal);
+		}
+
+		VariantClear(&vtProp);
+		pclsObj->Release();
+	}
+
+	// 清理
+	pEnumerator->Release();
+	pSvc->Release();
+	pLoc->Release();
+	CoUninitialize();
+
+	return serialNumber;
+}
+
+inline bool ReadRegistryValue(HKEY rootKey, const std::string &subKey, const std::string &valueName, std::string &outValue)
+{
+	HKEY hKey;
+	if (RegOpenKeyExA(rootKey, subKey.c_str(), 0, KEY_READ, &hKey) != ERROR_SUCCESS) {
+		return false; // 打开键失败
+	}
+
+	char buffer[256];
+	DWORD bufferSize = sizeof(buffer);
+	DWORD valueType;
+	LONG result = RegQueryValueExA(hKey, valueName.c_str(), 0, &valueType, (LPBYTE)buffer, &bufferSize);
+
+	RegCloseKey(hKey);
+
+	if (result == ERROR_SUCCESS && (valueType == REG_SZ || valueType == REG_EXPAND_SZ)) {
+		outValue.assign(buffer, bufferSize - 1); // 去掉尾部的 null 字符
+		return true;
+	}
+	return false; // 读取失败或值类型不匹配
+}
+
+inline bool WriteRegistryValue(HKEY rootKey, const std::string &subKey, const std::string &valueName,
+			       const std::string &value)
+{
+	HKEY hKey;
+	// 创建或打开注册表键
+	if (RegCreateKeyExA(rootKey, subKey.c_str(), 0, NULL, 0, KEY_WRITE, NULL, &hKey, NULL) != ERROR_SUCCESS) {
+		return false; // 打开或创建键失败
+	}
+
+	// 设置值
+	LONG result = RegSetValueExA(hKey, valueName.c_str(), 0, REG_SZ, (const BYTE *)value.c_str(), DWORD(value.size() + 1));
+	RegCloseKey(hKey);
+
+	return result == ERROR_SUCCESS;
+}
+
+inline bool RegisterVCam()
+{
+	// 获取当前可执行文件的路径
+	char buffer[MAX_PATH];
+	GetModuleFileNameA(NULL, buffer, MAX_PATH);
+
+	// 获取当前目录的路径
+	std::string exePath(buffer);
+	size_t pos = exePath.find_last_of("\\/");
+	std::string exeDir = exePath.substr(0, pos);
+
+	// 获取上级目录的路径（..\data）
+	std::string targetDir = exeDir + "\\..\\..\\data\\obs-plugins\\win-dshow";
+
+	// 拼接完整路径，指向 virtualcam-install.bat
+	std::string batFilePath = targetDir + "\\virtualcam-install.bat";
+
+	// 打印调试信息
+	std::cout << "Executing batch file: " << batFilePath << std::endl;
+
+	// 创建一个命令行来执行批处理文件
+	std::string command = "\"" + batFilePath + "\"";
+
+	// 使用 CreateProcess 执行批处理文件
+	STARTUPINFOA si = {0};
+	PROCESS_INFORMATION pi = {0};
+
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESHOWWINDOW; // 设置窗口样式
+	si.wShowWindow = SW_HIDE;          // 隐藏窗口（后台执行）
+
+	if (CreateProcessA(NULL,                   // 可执行文件路径
+			   (LPSTR)command.c_str(), // 命令行参数
+			   NULL,                   // 进程安全属性
+			   NULL,                   // 线程安全属性
+			   FALSE,                  // 不继承句柄
+			   CREATE_NO_WINDOW,       // 无标志
+			   NULL,                   // 环境变量
+			   NULL,                   // 当前目录
+			   &si,                    // 启动信息
+			   &pi                     // 进程信息
+			   )) {
+		// 等待批处理执行完成
+		DWORD dwWaitResult = WaitForSingleObject(pi.hProcess, INFINITE);
+		if (dwWaitResult == WAIT_FAILED) {
+			std::cerr << "WaitForSingleObject failed with error code " << GetLastError() << std::endl;
+		}
+
+		// 清理
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+
+		std::cout << "Batch file executed successfully." << std::endl;
+	} else {
+		
+		std::cerr << "Failed to execute batch file." << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
 #endif //__SYSTEM_UTILS_H__

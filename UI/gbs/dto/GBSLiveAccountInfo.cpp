@@ -4,6 +4,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     std::string activationCode,
     int activationStatus,
     std::string customerNo,
+    std::string deviceCode,
     std::string deviceNo,
     std::string head,
     int id,
@@ -11,6 +12,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     int liveDeviceId,
     std::string livePlatform,
     int liveServerId,
+    std::string motherBoarderNo,
     std::string nickname,
     std::string notes,
     std::string platformAccount,
@@ -23,6 +25,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
 ) : activationCode(std::move(activationCode)),
     activationStatus(activationStatus),
     customerNo(std::move(customerNo)),
+    deviceCode(std::move(deviceCode)),
     deviceNo(std::move(deviceNo)),
     head(std::move(head)),
     id(id),
@@ -30,6 +33,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     liveDeviceId(std::move(liveDeviceId)),
     livePlatform(std::move(livePlatform)),
     liveServerId(liveServerId),
+    motherboardNo(motherBoarderNo),
     nickname(std::move(nickname)),
     notes(std::move(notes)),
     platformAccount(std::move(platformAccount)),
@@ -46,6 +50,7 @@ GBSLiveAccountInfo& GBSLiveAccountInfo::operator=(const GBSLiveAccountInfo& othe
         activationCode = other.activationCode;
         activationStatus = other.activationStatus;
         customerNo = other.customerNo;
+	deviceCode = other.deviceCode;
         deviceNo = other.deviceNo;
         head = other.head;
         id = other.id;
@@ -53,6 +58,7 @@ GBSLiveAccountInfo& GBSLiveAccountInfo::operator=(const GBSLiveAccountInfo& othe
         liveDeviceId = other.liveDeviceId;
         livePlatform = other.livePlatform;
         liveServerId = other.liveServerId;
+	motherboardNo = other.motherboardNo;
         nickname = other.nickname;
         notes = other.notes;
         platformAccount = other.platformAccount;
@@ -72,6 +78,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
     std::string activationCode = j["activationCode"].is_null() ? "" : j["activationCode"].get<std::string>();
     int activationStatus = j["activationStatus"].is_null() ? 0 : j["activationStatus"].get<int>();
     std::string customerNo = j["customerNo"].is_null() ? "" : j["customerNo"].get<std::string>();
+    std::string deviceCode = j["deviceCode"].is_null() ? "" : j["deviceCode"].get<std::string>();
     std::string deviceNo = j["deviceNo"].is_null() ? "" : j["deviceNo"].get<std::string>();
     std::string head = j["head"].is_null() ? "" : j["head"].get<std::string>();
     int id = j["id"].is_null() ? 0 : j["id"].get<int>();
@@ -79,6 +86,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
     int liveDeviceId = j["liveDeviceId"].is_null() ? 0 : j["liveDeviceId"].get<int>();
     std::string livePlatform = j["livePlatform"].is_null() ? "" : j["livePlatform"].get<std::string>();
     int liveServerId = j["liveServerId"].is_null() ? 0 : j["liveServerId"].get<int>();
+    std::string motherboardNo = j["motherboardNo"].is_null() ? 0 : j["motherboardNo"].get<std::string>();
     std::string nickname = j["nickname"].is_null() ? "" : j["nickname"].get<std::string>();
     std::string notes = j["notes"].is_null() ? "" : j["notes"].get<std::string>();
     std::string platformAccount = j["platformAccount"].is_null() ? "" : j["platformAccount"].get<std::string>();
@@ -94,6 +102,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
         activationCode,
         activationStatus,
         customerNo,
+	deviceCode,
         deviceNo,
         head,
         id,
@@ -101,6 +110,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
         liveDeviceId,
         livePlatform,
         liveServerId,
+	motherboardNo,
         nickname,
         notes,
         platformAccount,
