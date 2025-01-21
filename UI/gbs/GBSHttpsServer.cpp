@@ -144,9 +144,11 @@ QWeH+tVM2g0vee09bFoB
 void processDanmaItem(nlohmann::json &jsonObject) {
 	std::string liveId = GBSMainCollector::getInstance()->getDanmaKuName();
 	std::string liveDeviceId = GBSMainCollector::getInstance()->getLiveDeviceId();
+	std::string deviceName = GBSMainCollector::getInstance()->getDeviceName();
 	std::string platform = GBSMainCollector::getInstance()->getDanmakuPlat();
 	jsonObject["liveId"] = liveId;
 	jsonObject["liveDeviceId"] = liveDeviceId;
+	jsonObject["deviceName"] = deviceName;
 	jsonObject["platform"] = platform;
 }
 void processRecvMessage(const char* mesage) {

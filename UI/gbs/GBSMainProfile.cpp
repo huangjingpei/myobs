@@ -35,7 +35,44 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
     VertNaviButton* btnMaterial = new VertNaviButton("素材背景库", ":gbs/images/gbs/biz/gbs-menu-material.png", this);
     VertNaviButton* btnDriver = new VertNaviButton("摄像头驱动", ":gbs/images/gbs/biz/gbs-menu-driver.png", this);
     VertNaviButton* btnSquare = new VertNaviButton("音色广场", ":gbs/images/gbs/biz/gbs-menu-timbre-square.png", this);
+    vertNaviButtons << btnAccount << btnAboutME << btnSoftWare << btnSetting << btnHotkey << btnAPI << btnMaterial
+		    << btnDriver << btnSquare;
+    for (auto vertNaviButton : vertNaviButtons) {
+	    connect(vertNaviButton, &VertNaviButton::clicked, this,
+		    [this, vertNaviButton](bool checked) {
+		    VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
+			for (int i = 0; i < vertNaviButtons.count(); i++) {
+				VertNaviButton *it = vertNaviButtons.at(i);
+				if (it == button) {
+					it->changeStyle(true);
+				} else {
+					it->changeStyle(false);
+				}
+			}
+	
+	    });
+    }
+	//QString btnStyle = R"(
+	//	QPushButton {
+	//		background-color:#00C566;
+	//		border: 1px solid white;
+	//		border-radius:10px;
+	//		font-size:20px;
+	//	}
 
+	//	QPushButton:pressed {
+	//		background-color: #D1D8DD;
+	//		padding-left: 3px;"       
+	//		padding-top: 3px;"        
+	//		background-repeat: no-repeat;
+	//		background-position: center;
+	//	}
+	//	QPushButton:hover {
+	//	   background-color: #F9F9F9;
+	//	}
+	//)";
+
+	//btnSoftWare->setStyleSheet(btnStyle);
 
     btnAccount->setFixedSize(300, 40);
     btnAboutME->setFixedSize(300, 40);
@@ -193,7 +230,7 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 	    dialog->exec();
 	    });
 
-    connect(btnSoftWare, &QPushButton::clicked, this, [main]() { main->updateSystem();
+    connect(btnSoftWare, &QPushButton::clicked, this, [main]() { main->checkGBSForUpdate(true);
 	    });
 
     connect(btnAboutME, &QPushButton::clicked, this, [this]() {
@@ -234,11 +271,9 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 }
 
 void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
-    close();
-
-
-    App()->quit();
-    delete App();
+    
+	QMetaObject::invokeMethod(App()->GetMainWindow(), "close");
+	
     QTimer::singleShot(2000, [this]() {
 	    GBSNormalLoginForm *loginForm = new GBSNormalLoginForm(this);
 	    loginForm->show();

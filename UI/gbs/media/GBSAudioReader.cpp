@@ -104,13 +104,13 @@ bool GBSAudioReader::Initialize() {
 	    if (!m_audioSource) {
 		    return false;
 	    }
+	    m_isOurSource = true;
     }
     
     // 初始化编码器和启动编码线程
     m_isRunning = true;
     InitializeAudioEncoder();
     
-    m_isOurSource = true;
     SetupAudioCallback();
     return true;
 }
@@ -122,7 +122,7 @@ void GBSAudioReader::Stop() {
     CleanupAudioEncoder();
     
     if (m_audioSource) {
-        obs_source_remove_audio_capture_callback(m_audioSource, AudioCallback, this);
+        //obs_source_remove_audio_capture_callback(m_audioSource, AudioCallback, this);
         
         if (m_isOurSource) {
             obs_source_release(m_audioSource);

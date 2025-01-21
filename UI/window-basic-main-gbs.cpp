@@ -22,6 +22,9 @@
 #include "gbs/common/SystemUtils.h"
 
 #include "gbs/GBSAsioHttpServer.h"
+#include <QScrollBar>
+#include <QTimer>
+#include "gbs/bizWidgets/GBSMsgDialog.h"
 
 #include <iostream>
 #include <chrono>
@@ -1300,9 +1303,183 @@ void OBSBasic::StopGBSStreaming()
 }
 
 
-void OBSBasic::checkGBSForUpdate() {
+void OBSBasic::checkGBSForUpdate(bool manualUpdate)
+{
 	if (updateGBSCheckThread && updateGBSCheckThread->isRunning())
 		return;
-	updateGBSCheckThread.reset(new GBSAutoUpdateThread(true));
+	updateGBSCheckThread.reset(new GBSAutoUpdateThread(manualUpdate));
 	updateGBSCheckThread->start();
+
+	//升级分两种情况，
+	//1. 程序启动完成之后，自动开始升级线程，这里会判断是否有文件可以更新，如果有的话自动下载，下载完成后弹框提示[提示升级内容]，
+	// 有新的升级包需要安装，有现在和稍后两个选项，如果用户点击现在退出程序，马上升级。否则下次启动执行进行升级。
+	//2. 程序启动后，已经登录成功，用户在Profile里面点击软件升级，属于手动升级，这个时候弹框提示[提示升级内容] 有确定和取消两个按钮选择。
+	// 如果用户点击了确认，程序马上退出，并进行升级，否则，等待下次程序启动升级。
+
+
+
+	connect((GBSAutoUpdateThread *)(updateGBSCheckThread.get()), &GBSAutoUpdateThread::sigHasNewerVersion,
+		[this](QList<QString> features) {
+			QMetaObject::invokeMethod(this, "showNewFeaturesDialog", Qt::QueuedConnection,
+						  Q_ARG(QList<QString>, features));
+
+		});
+
 }
+
+void OBSBasic::showNewFeaturesDialog(QList<QString> features) {
+	QString textEditStyle = R"(
+	    QTextEdit {
+		background-color: #f9f9f9;            /* 背景色 */
+		border: 1px solid #cccccc;            /* 边框 */
+		border-radius: 4px;                  /* 圆角 */
+		padding: 8px;                         /* 内边距 */
+		font-size: 14px;                      /* 字体大小 */
+		font-family: "Segoe UI", sans-serif;   /* 字体 */
+		color: #333333;                       /* 文本颜色 */
+		selection-background-color: #6ec1e4;  /* 选中文本背景 */
+		selection-color: white;               /* 选中文本颜色 */
+	    }
+    
+	    QTextEdit:focus {
+		border-color: #3d9b7f;                /* 聚焦时的边框颜色 */
+		box-shadow: 0 0 10px rgba(61, 155, 127, 0.6); /* 聚焦时的阴影效果 */
+	    }
+    
+	    QTextEdit::cursor {
+		width: 2px;
+		background-color: #6ec1e4;            /* 光标颜色 */
+	    }
+	)";
+
+	QWidget *widget = new QWidget(this);
+	QVBoxLayout *layout = new QVBoxLayout(widget);
+	layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
+
+	// Spacer
+	QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+	// 创建 QTextEdit 组件
+	QTextEdit *featureTexts = new QTextEdit();
+	featureTexts->setFixedWidth(480);
+	featureTexts->setFixedHeight(320);
+
+	featureTexts->setReadOnly(true);
+
+	// 保证 QTextEdit 组件本身居中
+	featureTexts->setAlignment(Qt::AlignLeft); // 保证文本是左对齐
+	featureTexts->setStyleSheet(textEditStyle);
+
+	// 构造 featureAttrs 文本内容
+	QString featureAttrs;
+	for (auto feature : features) {
+		featureAttrs += feature;
+		featureAttrs += "\n";
+	}
+	featureTexts->setPlainText(featureAttrs);
+
+	// 设置滚动条
+	QScrollBar *scrollBar = featureTexts->verticalScrollBar();
+	scrollBar->setSingleStep(1);
+	scrollBar->setPageStep(3);
+
+	// 将 QTextEdit 添加到布局中，确保它在布局中居中
+	layout->addWidget(featureTexts, Qt::AlignVCenter);
+
+	QString btnStyle = R"(
+		QPushButton {
+			background-color:#00C566;
+			border: 1px solid white;
+			border-radius:10px;
+			font-size:20px;
+		}
+
+		QPushButton:pressed {
+			background-color: #D1D8DD;
+			padding-left: 3px;"       
+			padding-top: 3px;"        
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+	)";
+	    
+
+
+	QPushButton *cancel = new QPushButton("取消");
+	QPushButton *ok = new QPushButton("确认");
+	ok->setFixedSize(QSize{90, 48});
+	cancel->setFixedSize(QSize{90, 48});
+	ok->setStyleSheet(btnStyle);
+	cancel->setStyleSheet(btnStyle);
+
+	QHBoxLayout *buttonLayout = new QHBoxLayout();
+	buttonLayout->addWidget(cancel);
+	buttonLayout->addWidget(ok);
+	layout->addLayout(buttonLayout);
+
+	// Spacer
+	QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	layout->addSpacerItem(spacer);
+
+
+
+	// 创建对话框
+	GBSMsgDialog *dialog = new GBSMsgDialog("有新的版本可以更新", layout);
+	connect(cancel, &QPushButton::clicked, dialog, &QDialog::reject);
+	connect(ok, &QPushButton::clicked, this, [dialog, this]() {
+		if (updateGBSCheckThread && updateGBSCheckThread->isRunning())
+			return;
+		updateGBSCheckThread.reset(new GBSAutoUpdateThread(false));
+		updateGBSCheckThread->start();
+		dialog->accept();
+		connect((GBSAutoUpdateThread *)(updateGBSCheckThread.get()), &GBSAutoUpdateThread::sigDownloadFinished,
+			[this]() { QMetaObject::invokeMethod(this, "showNewReleaseDialog", Qt::QueuedConnection); });
+
+	});
+	dialog->exec();
+}
+
+void OBSBasic::showNewReleaseDialog() {
+	QWidget *widget = new QWidget();
+	QVBoxLayout *layout = new QVBoxLayout(widget);
+	layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
+	QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	QTextEdit *featureTexts = new QTextEdit();
+	featureTexts->setReadOnly(true);
+
+	QScrollBar *scrollBar = featureTexts->verticalScrollBar();
+	scrollBar->setSingleStep(1);
+	scrollBar->setPageStep(3);
+
+	QPushButton *cancel = new QPushButton("取消");
+	QPushButton *ok = new QPushButton("确认");
+
+	ok->setFixedSize(QSize{90, 48});
+	cancel->setFixedSize(QSize{90, 48});
+	QHBoxLayout *buttonLayout = new QHBoxLayout();
+	buttonLayout->addWidget(cancel);
+	buttonLayout->addWidget(ok);
+	layout->addLayout(buttonLayout);
+
+	QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	layout->addSpacerItem(spacer);
+	GBSMsgDialog *dialog = new GBSMsgDialog("立刻马上重启应用，完成升级", layout);
+	connect(cancel, &QPushButton::clicked, dialog, &QDialog::reject);
+	connect(ok, &QPushButton::clicked, this, [dialog, this]() {
+		std::filesystem::path exePath = std::filesystem::absolute(std::filesystem::current_path());
+		std::string exePathStr = exePath.string();
+		QString qExePath = QString::fromLocal8Bit(exePathStr);
+		QString qExePathFile = qExePath  + "\\update.lock";
+		QFile file(qExePathFile);
+		if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+			file.close();
+		}
+
+		QMetaObject::invokeMethod(App()->GetMainWindow(), "close");
+		dialog->accept();
+	});
+	dialog->exec();
+}
+
+
+

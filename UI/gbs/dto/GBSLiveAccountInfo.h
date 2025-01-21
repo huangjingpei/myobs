@@ -18,6 +18,7 @@ public:
 		int activationStatus,
 		std::string customerNo,
 		std::string deviceCode,
+		std::string deviceName,
 		std::string deviceNo,
 		std::string head,
 		int id,
@@ -46,6 +47,7 @@ public:
 	const std::string& getCustomerNo() const { return customerNo; }
 	const std::string& getDeviceNo() const { return deviceNo; }
 	const std::string &getDeviceCode() const { return deviceCode; }
+	const std::string &getDeviceName() const { return deviceName; }
 	const std::string& getHead() const { return head; }
 	int getId() const { return id; }
 	const std::string& getLiveAccount() const { return liveAccount; }
@@ -69,6 +71,7 @@ public:
 	void setCustomerNo(const std::string& value) { customerNo = value; }
 	void setDeviceNo(const std::string& value) { deviceNo = value; }
 	void setDeviceCode(const std::string &value) { deviceCode = value; }
+	void setDeviceName(const std::string &value) { deviceName = value; }
 	void setHead(const std::string& value) { head = value; }
 	void setId(int value) { id = value; }
 	void setLiveAccount(const std::string &value) { liveAccount = value; }
@@ -96,6 +99,7 @@ private:
 	int activationStatus;
 	std::string customerNo;
 	std::string deviceCode;
+	std::string deviceName;
 	std::string deviceNo;
 	std::string head;
 	int id;

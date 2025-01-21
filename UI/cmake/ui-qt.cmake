@@ -97,6 +97,7 @@ set(
 
 
   gbs/bizWidgets/GBSAddBroker.ui
+  gbs/bizWidgets/GBSModifyDevice.ui
   gbs/bizWidgets/GBSRemoveBroker.ui
   gbs/bizWidgets/GBSActivateDevice.ui
 

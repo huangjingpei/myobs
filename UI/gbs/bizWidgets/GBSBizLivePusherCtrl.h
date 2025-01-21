@@ -51,6 +51,8 @@ public slots:
 
 	void dialogSubmitted(const QString &data);
 
+	void streamCheck();
+
 
 
 	QColor GetSelectionColor() const;

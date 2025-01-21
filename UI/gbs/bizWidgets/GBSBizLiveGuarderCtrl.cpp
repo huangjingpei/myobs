@@ -1132,7 +1132,8 @@ void GBSBizLiveGuarderCtrl::onFail()
 			mWebSocketClient->Start(wssUrl);
 		}
 		mWebSocketClient->RegisterHandler(this);
-	});
+	},
+	Qt::QueuedConnection);
 }
 
 void GBSBizLiveGuarderCtrl::onClose()
@@ -1147,13 +1148,15 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 	std::string platform = jsonObject["platform"].get<std::string>();
 	std::string liveId = jsonObject["liveId"].get<std::string>();//类似于D01，K01之类
 	std::string liveDeviceId = jsonObject["liveDeviceId"].get<std::string>(); //类似于D01，K01之类
+	std::string deviceName = jsonObject["deviceName"].get<std::string>(); 
+
 	
 	if (mDanmakuType != DANITEM_TYPE_ALL) {
 		if (std::stoi(liveDeviceId) != mDanmakuValue) {
 			return;
 		}
 	}
-	std::string uniqueName = liveId;
+	std::string uniqueName = deviceName;
 	if (uniqueName.empty()) {
 		return;
 	}

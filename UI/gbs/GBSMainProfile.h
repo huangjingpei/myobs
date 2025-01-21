@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QList>
+#include "gbs/common/VertNaviButton.h"
 namespace Ui {
 class GBSMainProfile;
 }
@@ -26,6 +28,7 @@ private:
     Ui::GBSMainProfile *ui;
 	QTimer *timer;
 	int clickCount = 0;
+	QList<VertNaviButton *> vertNaviButtons;
 };
 
 #endif // GBSMAINPROFILE_H

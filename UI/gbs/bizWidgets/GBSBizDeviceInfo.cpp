@@ -15,6 +15,7 @@
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/dto/GBSMemberInfo.h"
 #include "gbs/bizWidgets/GBSActivateDevice.h"
+#include "gbs/bizWidgets/GBSModifyDevice.h"
 #include "gbs/dto/GBSLiveAccountInfo.h"
 #include "gbs/dto/GBSBundleData.h"
 #include "gbs/GBSMainCollector.h"
@@ -34,7 +35,19 @@ static uint32_t first_skipped = 0xFFFFFFFF;
 static uint32_t first_rendered = 0xFFFFFFFF;
 static uint32_t first_lagged = 0xFFFFFFFF;
 
-
+static void split(std::string &s, std::string &delim, std::vector<std::string> *ret)
+{
+	size_t last = 0;
+	size_t index = s.find_first_of(delim, last);
+	while (index != std::string::npos) {
+		ret->push_back(s.substr(last, index - last));
+		last = index + 1;
+		index = s.find_first_of(delim, last);
+	}
+	if (index - last > 0) {
+		ret->push_back(s.substr(last, index - last));
+	}
+}
 
 static QString MakeMissedFramesText(uint32_t total_lagged, uint32_t total_rendered, long double num)
 {
@@ -390,24 +403,107 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//	dialog->exec();
 	//});
 
-	ui->btnDevInfo03->setStyleSheet(
-		"QPushButton {"
-		"   color: #00C566;"
-		"   border: none;"       // 无边框
-		"   border-radius: 2px;" // 圆角
-		"   font-size: 12px;"
-		"   padding: 0;" // 不添加内边距
-		"}"
-		"QPushButton:hover {"
-		"   background-color: #F9F9F9;"
-		"}"
-		"QPushButton:pressed {"
-		"   background-color: #D1D8DD;" // 按下时背景颜色
-		"   padding-left: 3px;"         // 向左移动 3px
-		"   padding-top: 3px;"          // 向上移动 3px
-		"   background-repeat: no-repeat;"
-		"   background-position: center;"
-		"}");
+	QList<QPushButton*> qButtons;
+	qButtons << ui->btnDevInfo01 << ui->btnDevInfo02 << ui->btnDevInfo03 << ui->btnDevInfo04 << ui->btnDevInfo05
+		 << ui->btnRmoteSwitch << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
+	for (auto button : qButtons) {
+		button->setStyleSheet("QPushButton {"
+				      "   color: #00C566;"
+				      "   border: none;"       // 无边框
+				      "   border-radius: 2px;" // 圆角
+				      "   font-size: 12px;"
+				      "   padding: 0;" // 不添加内边距
+				      "}"
+				      "QPushButton:hover {"
+				      "   background-color: #F9F9F9;"
+				      "}"
+				      "QPushButton:pressed {"
+				      "   background-color: #D1D8DD;" // 按下时背景颜色
+				      "   padding-left: 3px;"         // 向左移动 3px
+				      "   padding-top: 3px;"          // 向上移动 3px
+				      "   background-repeat: no-repeat;"
+				      "   background-position: center;"
+				      "}");
+	}
+
+	QList<QPushButton *> qModifyButtons;
+	qModifyButtons << ui->btnDevInfo04 << ui->btnRmoteSwitch << ui->btnRmoteAccount << ui->btnRemotePassword
+		       << ui->btnLiveAccountId;
+
+	//	QList<QLineEdit *> qLineEdits;
+	//qLineEdits << ui->leLiveDeviceID << ui->leDeviceName << ui->lePlatformAccount << ui->leRemoteAccount
+	//	   << ui->leRemotePassword;
+
+	for (auto *button : qModifyButtons) {
+		connect(button, &QPushButton::clicked, this, [button, qModifyButtons, this]() {
+			QPushButton *btn = qobject_cast<QPushButton *>(sender());
+			QSlider *slider = qobject_cast<QSlider *>(sender());
+			QComboBox *box = qobject_cast<QComboBox *>(sender());
+			int i = 0;
+			GBSModifyDevice *dialog = new GBSModifyDevice(this);
+			GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+			int liveDeviceId =account.getLiveDeviceId();
+
+			std::string liveDeviceName = account.getDeviceName();
+			std::string liveAccountId = account.getLiveAccount();
+			std::string remoteAccount = account.getToDeskAccount();
+			std::string remotePassword = account.getToDeskPassword();
+			std::string remark = account.getNotes();
+			std::vector<std::string> vec;
+			std::string delim = "/";
+			split(remark, delim, &vec);
+			bool remoteSwitch = account.getRemoteSwitch();
+			dialog->setLiveDeviceId(liveDeviceId);
+			if (btn == ui->btnDevInfo05) {
+				dialog->setLiveDeviceName(liveDeviceName, true);
+			} else {
+				dialog->setLiveDeviceName(liveDeviceName, false);
+			}
+
+			if (btn == ui->btnLiveAccountId) {
+				dialog->setLiveAccountId(liveAccountId, true);
+			} else {
+				dialog->setLiveAccountId(liveAccountId, false);
+			}
+			
+			if (btn == ui->btnRmoteAccount) {
+				dialog->setRemoteAccountId(remoteAccount, true);
+			} else {
+				dialog->setRemoteAccountId(remoteAccount, false);
+			}
+			if (btn == ui->btnRemotePassword) {
+				dialog->setRemotePassword(remotePassword, true);
+			} else {
+				dialog->setRemotePassword(remotePassword, false);
+			}
+			if (btn == ui->btnDevInfo04) {
+				dialog->setRemarks(vec[0], vec[1], true);
+
+			} else {
+				dialog->setRemarks(vec[0], vec[1], false);
+			}
+
+			if (btn == ui->btnLivePlat) {
+				dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
+						    ui->comboBox->currentIndex(), true);
+
+			} else {
+				dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
+						    ui->comboBox->currentIndex(), false);
+			}
+			if (slider) {
+				dialog->setRemoteSwitch(remoteSwitch, true);
+			} else {
+				dialog->setRemoteSwitch(remoteSwitch, false);
+			}
+
+
+			
+			dialog->show();
+			GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
+			});
+	}
+
 
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 	QString str1 = iniFile->value("DeviceData", "Alias.Plat", "DY").toString();
@@ -427,15 +523,16 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 		});
 
 
+
 	
 	std::string productId = GetWindowsProductIDFromRegistery();
 	std::string deviceId = GetMachineIdFromRegistry();
 	
-	ui->lblDevInfo01->setText("设备ID：" + ObfuscateString(QString::fromStdString(productId)));
+	ui->lblDevInfo01->setText(ObfuscateString(QString::fromStdString(productId)));
 	if (!deviceId.empty()) {
 		QString deviceNoBraces = removeBraces(QString::fromStdString(deviceId));
 		QString obfuscateString = ObfuscateString(deviceNoBraces);
-		ui->lblDevInfo02->setText("产品ID：" + obfuscateString);
+		ui->lblDevInfo02->setText(obfuscateString);
 	}
 
 
@@ -506,9 +603,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//Disable widgets .will be open later.
 
 	ui->horizontalSlider->setDisabled(true);
-	ui->btnMngredInfo01->setDisabled(true);
-	ui->btnMngredInfo02->setDisabled(true);
-	ui->comboBox->setDisabled(true);
+	
 
 	connect(ui->btnDevInfo03, &QPushButton::clicked, this,
 		[this]() {
@@ -904,28 +999,27 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
 void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 {
 	GBSMainCollector::getInstance()->setAccountInfo(result);
+	GBSMainCollector::getInstance()->setDeviceName(result.getDeviceName());
+	ui->lblDevInfo05->setText(QString::fromStdString(result.getDeviceName()));
 	QMetaObject::invokeMethod(this, [result, this]() {
 		copyToClipboard(QString::fromStdString(result.getDeviceCode()));
 		
 		GBSHttpClient::getInstance()->downFile(result.getHead(), "avator.png", 0);
 
-		ui->lblDevInfo01->setText("设备ID：" +
-						ObfuscateString(QString::fromStdString(result.getDeviceNo())));
+		ui->lblDevInfo01->setText(ObfuscateString(QString::fromStdString(result.getDeviceNo())));
 		QString deviceNoBraces = removeBraces(QString::fromStdString(result.getProductNo()));
 		QString obfuscateString = ObfuscateString(deviceNoBraces);
-		ui->lblDevInfo02->setText("产品ID：" + obfuscateString);
+		ui->lblDevInfo02->setText(obfuscateString);
 
-		ui->lblDevInfo03->setText("激活编号：" + QString::fromStdString(result.getDeviceCode()));
+		ui->lblDevInfo03->setText(QString::fromStdString(result.getDeviceCode()));
 
-		ui->lblDevInfo04->setText("备注编号：" + QString::fromStdString(result.getNotes()));
+		ui->lblDevInfo04->setText(QString::fromStdString(result.getNotes()));
 
 		ui->horizontalSlider->setValue(result.getRemoteSwitch());
 
-		ui->lblMngred01->setText("远程账号：" +
-						ObfuscateString(QString::fromStdString(result.getToDeskAccount())));
+		ui->lblMngred01->setText(ObfuscateString(QString::fromStdString(result.getToDeskAccount())));
 
-		ui->lblMngred02->setText("远程密码：" +
-						ObfuscateString(QString::fromStdString(result.getToDeskPassword())));
+		ui->lblMngred02->setText(ObfuscateString(QString::fromStdString(result.getToDeskPassword())));
 
 		QList<QString> abbreviations = GBSMainCollector::getInstance()->getLiveAbbreviations();
 		QString remark = QString::fromStdString(result.getNotes());
@@ -934,7 +1028,7 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 			
 		ui->comboBox->setCurrentText(remark.left(index));
 
-		ui->lblMngred03->setText("平台账号：" + QString::fromStdString(result.getPlatformAccount()));
+		ui->lblMngred03->setText(QString::fromStdString(result.getPlatformAccount()));
 
 		ui->lbsSysInfo03->setText("绑定代播号：  " + QString::fromStdString(result.getNickname()));
 

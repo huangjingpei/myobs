@@ -5,6 +5,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     int activationStatus,
     std::string customerNo,
     std::string deviceCode,
+    std::string deviceName,
     std::string deviceNo,
     std::string head,
     int id,
@@ -26,6 +27,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     activationStatus(activationStatus),
     customerNo(std::move(customerNo)),
     deviceCode(std::move(deviceCode)),
+    deviceName(std::move(deviceName)),
     deviceNo(std::move(deviceNo)),
     head(std::move(head)),
     id(id),
@@ -51,6 +53,7 @@ GBSLiveAccountInfo& GBSLiveAccountInfo::operator=(const GBSLiveAccountInfo& othe
         activationStatus = other.activationStatus;
         customerNo = other.customerNo;
 	deviceCode = other.deviceCode;
+    deviceName = other.deviceName;
         deviceNo = other.deviceNo;
         head = other.head;
         id = other.id;
@@ -79,6 +82,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
     int activationStatus = j["activationStatus"].is_null() ? 0 : j["activationStatus"].get<int>();
     std::string customerNo = j["customerNo"].is_null() ? "" : j["customerNo"].get<std::string>();
     std::string deviceCode = j["deviceCode"].is_null() ? "" : j["deviceCode"].get<std::string>();
+    std::string deviceName = j["deviceName"].is_null() ? "" : j["deviceName"].get<std::string>();
     std::string deviceNo = j["deviceNo"].is_null() ? "" : j["deviceNo"].get<std::string>();
     std::string head = j["head"].is_null() ? "" : j["head"].get<std::string>();
     int id = j["id"].is_null() ? 0 : j["id"].get<int>();
@@ -103,6 +107,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
         activationStatus,
         customerNo,
 	deviceCode,
+    deviceName,
         deviceNo,
         head,
         id,
@@ -128,6 +133,8 @@ nlohmann::json GBSLiveAccountInfo::toJson() const {
         {"activationCode", activationCode},
         {"activationStatus", activationStatus},
         {"customerNo", customerNo},
+        {"deviceCode", deviceCode},
+        {"deviceName", deviceName},
         {"deviceNo", deviceNo},
         {"head", head},
         {"id", id},
@@ -150,6 +157,8 @@ bool GBSLiveAccountInfo::operator==(const GBSLiveAccountInfo& other) const noexc
     return activationCode == other.activationCode
         && activationStatus == other.activationStatus
         && customerNo == other.customerNo
+        && deviceCode == other.deviceCode
+        && deviceName == other.deviceName
         && deviceNo == other.deviceNo
         && head == other.head
         && id == other.id

@@ -1364,7 +1364,7 @@ bool OBSApp::OBSInit()
 	mainWindow = new OBSBasic();
 	loginWindow = new GBSMainForm();
 
-	//((OBSBasic *)mainWindow.get())->checkGBSForUpdate();
+	((OBSBasic *)mainWindow.get())->checkGBSForUpdate(true);
 	loginWindow->setGeometry(QStyle::alignedRect(
 		Qt::LeftToRight,
 		Qt::AlignCenter,
@@ -2595,10 +2595,60 @@ std::string GetExePath() {
     }
     return "";
 }
+std::string GetExeDirectory()
+{
+	// 获取当前模块（即可执行文件）的完整路径
+	std::filesystem::path exePath = std::filesystem::absolute(std::filesystem::current_path());
+	return exePath.string(); // 返回父路径，即 exe 所在目录
+}
 
 static void InstallVCRedist(const char* installerPath) {
     ShellExecuteA(nullptr, "open", installerPath, "/quiet /norestart", nullptr, SW_HIDE);
 }
+
+static void UninstallMSI(const std::string &uuid)
+{
+	// 构建命令行
+	std::string command = "C:\\Windows\\System32\\msiexec.exe /X{" + uuid + "}";
+
+	STARTUPINFO si = {sizeof(si)};
+	PROCESS_INFORMATION pi;
+
+	// 设置窗口的显示模式为隐藏
+	//si.dwFlags = STARTF_USESHOWWINDOW;
+	//si.wShowWindow = SW_HIDE;
+	std::wstring wcommand(command.begin(), command.end());
+
+	// 启动进程
+	if (CreateProcess(NULL, &wcommand[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+		// 等待进程完成
+		WaitForSingleObject(pi.hProcess, INFINITE);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+}
+
+static void InstallMSI(const std::string file)
+{
+	std::string command = "C:\\Windows\\System32\\msiexec.exe /i \"" + file + "\""; // 使用双引号包围路径
+
+	STARTUPINFO si = {sizeof(si)};
+	PROCESS_INFORMATION pi;
+
+	// 设置窗口的显示模式为隐藏
+	//si.dwFlags = STARTF_USESHOWWINDOW;
+	//si.wShowWindow = SW_HIDE;
+	std::wstring wcommand(command.begin(), command.end());
+
+	// 启动进程
+	if (CreateProcess(NULL, &wcommand[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+		// 等待进程完成
+		WaitForSingleObject(pi.hProcess, INFINITE);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+}
+
 
 static bool vc_runtime_outdated()
 {
@@ -2648,7 +2698,23 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 #endif
-
+	//检查时候有可升级文件
+	std::string exePath = GetExeDirectory();
+	
+	QString updateConfigFile = QString::fromLocal8Bit(exePath) + "\\appcast.xml";
+	QString updateExeFile = QString::fromLocal8Bit(exePath) + "\\GbyxSetup.msi";
+	QFile configFile(updateConfigFile);
+	QFile exeFile(updateExeFile);
+	if (configFile.exists() && exeFile.exists()) {
+		//step1:先卸载文件
+		UninstallMSI("8CAEAD14-CE47-4B9A-A9B0-2ED5CFA188AE");
+		//step2:安装新版本
+		InstallMSI(updateExeFile.toLocal8Bit().constData());
+		//step3:删除文件
+		configFile.remove();
+		exeFile.remove();
+	}
+	
 	std::string uniqueId = "";
 	if (!ReadRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Main\\Win10\\Features\\uuid", "UUID", uniqueId)) {
 		char *uuid = os_generate_uuid();
@@ -2841,5 +2907,19 @@ int main(int argc, char *argv[])
 		QProcess::startDetached(executable, arguments);
 	}
 
+	std::filesystem::path exePath2 = std::filesystem::absolute(std::filesystem::current_path());
+	std::string exePathStr = exePath2.string();
+	QString qExePath = QString::fromLocal8Bit(exePathStr);
+	QString qExePathFile = qExePath + "\\update.lock";
+	QFile file(qExePathFile);
+	if (file.exists()) {
+		std::string exePath = GetExePath();
+
+		QString exeFile = QString::fromLocal8Bit(exePath);
+
+		QProcess::startDetached(exeFile, arguments);
+		file.remove();
+
+	}
 	return ret;
 }

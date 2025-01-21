@@ -126,7 +126,11 @@ private slots:
             file.close();
         }
         reply->deleteLater();
+	emit sigDownloadFinished();
     }
+
+signals:
+    void sigDownloadFinished();
 
 private:
     QNetworkAccessManager *manager;

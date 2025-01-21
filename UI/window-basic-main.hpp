@@ -1450,7 +1450,11 @@ public:
 	void StartGBSStreaming(std::string server, std::string key);
 	void StopGBSStreaming();
 
-	void checkGBSForUpdate();
+	void checkGBSForUpdate(bool manualUpdate = false);
+public slots :
+	void showNewFeaturesDialog(QList<QString> features);
+	void showNewReleaseDialog();
+
 private:
 	QScopedPointer<QThread> updateGBSCheckThread;
 

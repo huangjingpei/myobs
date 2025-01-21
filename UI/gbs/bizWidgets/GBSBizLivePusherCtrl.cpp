@@ -521,7 +521,6 @@ void GBSBizLivePusherCtrl::onFail() {
 		QMetaObject::invokeMethod(
 			this,
 			[this]() {
-				mWebSocketClient->UnRegisterHandler(this);
 				mWebSocketClient->Stop();
 				GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 				int userId = account.getUserId();
@@ -535,7 +534,7 @@ void GBSBizLivePusherCtrl::onFail() {
 				}
 				mWebSocketClient->RegisterHandler(this);
 			},
-			Qt::DirectConnection);
+			Qt::QueuedConnection);
 	}
 
 }
@@ -646,6 +645,7 @@ void GBSBizLivePusherCtrl::onStartRtmpPush(bool checked) {
 	if (button) {
 		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 		if (startLive) {
+			QTimer::singleShot(8000, this, &GBSBizLivePusherCtrl::streamCheck);
 			button->pressed("关播", "直播中", true);
 			QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
 			GBSHttpClient::getInstance()->createSrsStreamV2(1);
@@ -658,6 +658,36 @@ void GBSBizLivePusherCtrl::onStartRtmpPush(bool checked) {
 		}
 	}
 
+}
+
+void GBSBizLivePusherCtrl::streamCheck(){
+	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
+	obs_service_t* service = main->GetService();
+	if (service) {
+		
+		OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
+		obs_media_state state = obs_source_media_get_state(source);
+		if (state == OBS_MEDIA_STATE_ENDED) {
+			ui->btnStartLive->click();
+			QWidget *widget = new QWidget;
+			QVBoxLayout *layout = new QVBoxLayout(widget);
+			QLabel *label = new QLabel(QString::fromStdString("媒体服务器异常"));
+			label->setWordWrap(true);
+			label->setStyleSheet("QLabel {"
+					     "  font-size: 24px;"
+					     "}");
+			QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+			layout->addSpacerItem(spacer0);
+			layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
+			layout->addWidget(label);
+			QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+			layout->addSpacerItem(spacer);
+			GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
+			dialog->exec();
+		}
+
+
+	}
 }
 
 
@@ -1146,13 +1176,13 @@ void GBSBizLivePusherCtrl::processDanmaItem(const nlohmann::json jsonObject)
 	std::string platform = jsonObject["platform"].get<std::string>();
 	std::string liveId = jsonObject["liveId"].get<std::string>();             //类似于D01，K01之类
 	std::string liveDeviceId = jsonObject["liveDeviceId"].get<std::string>(); 
+	std::string deviceName = jsonObject["deviceName"].get<std::string>(); 
 
-	std::string uniqueName = liveId;
 	
-	if (uniqueName.empty()) {
+	if (deviceName.empty()) {
 		return;
 	}
-	QString qUniqueName = QString::fromStdString(uniqueName);
+	QString qUniqueName = QString::fromStdString(deviceName);
 	if (danmaPlatIconString.isEmpty()) {
 
 		if (platform == "DY") {
@@ -1238,7 +1268,7 @@ void GBSBizLivePusherCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		danma->content = jsonObject["content"].get<std::string>();
 		danma->count = jsonObject["count"].get<std::string>();
 		danma->msgType = 6;
-		QString danmaText = QString::fromStdString(uniqueName) + ":" + QString::fromStdString(danma->content);
+		QString danmaText = QString::fromStdString(deviceName) + ":" + QString::fromStdString(danma->content);
 		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type));
 
 

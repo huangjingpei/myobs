@@ -9,6 +9,7 @@
 #include <qt-wrappers.hpp>
 #include <QMessageBox>
 
+
 #include <string>
 #include <mutex>
 
@@ -25,6 +26,12 @@
 
 #include "gbs/updater/GBSXMLParser.h"
 #include "gbs/updater/GBSFileDownloader.h"
+#include "gbs/updater/winhttp/TLBufferVector.h"
+#include "gbs/updater/winhttp/TLDownloadTask.h"
+#include "gbs/updater/winhttp/TLWebDef.h"
+#include "gbs/updater/winhttp/TLWinHttpDownloader.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/common/QBizLogger.h"
 
 using namespace std;
 using namespace updater;
@@ -183,6 +190,7 @@ int GBSAutoUpdateThread::queryUpdate(bool localManualUpdate, const char *text_ut
 	return ret;
 }
 
+
 bool GBSAutoUpdateThread::queryRepairSlot()
 {
 	QMessageBox::StandardButton res =
@@ -192,6 +200,17 @@ bool GBSAutoUpdateThread::queryRepairSlot()
 	return res == QMessageBox::Yes;
 }
 
+void GBSAutoUpdateThread::onDownloadPercentage(int32_t percentage) {
+	if (percentage % 10 == 0) {
+		QLogE("update: percentage %d\n", percentage);
+	}
+	qDebug() << "update percent :" << percentage;
+}
+
+void GBSAutoUpdateThread::onDownloadBytes(uint32_t downloadBytes, uint32_t allBytes) {
+	
+}
+
 bool GBSAutoUpdateThread::queryRepair()
 {
 	bool ret = false;
@@ -199,88 +218,74 @@ bool GBSAutoUpdateThread::queryRepair()
 	return ret;
 }
 
-void GBSAutoUpdateThread::run()
-try {
-	string text;
-	string branch = WIN_DEFAULT_BRANCH;
-	string manifestUrl = WIN_MANIFEST_URL;
-	vector<string> extraHeaders;
-	bool updatesAvailable = false;
+void GBSAutoUpdateThread::run() {
+	try {
+		string text;
+		string branch = WIN_DEFAULT_BRANCH;
+		string manifestUrl = WIN_MANIFEST_URL;
+		vector<string> extraHeaders;
+		bool updatesAvailable = false;
 
-	struct FinishedTrigger {
-		inline ~FinishedTrigger() { QMetaObject::invokeMethod(App()->GetMainWindow(), "updateCheckFinished"); }
-	} finishedTrigger;
+		struct FinishedTrigger {
+			inline ~FinishedTrigger()
+			{
+				QMetaObject::invokeMethod(App()->GetMainWindow(), "updateCheckFinished");
+			}
+		} finishedTrigger;
 
-	QString newFile = QCoreApplication::applicationDirPath() + "/appcast.xml";
-	FileDownloader downloader;
-	downloader.downloadFileSync(QString("https://renew.guobo.shop/exe/gbpc/appcast.xml"), newFile, false);
-	GBSXMLParser parser;
-	parser.parseXml(newFile);
+		QString newFile = QCoreApplication::applicationDirPath() + "/appcast.xml";
+		TLDownloadTask task;
+		task.m_strUrl = "https://renew.guobo.shop/exe/gbpc/appcast.xml";
+		task.m_strAgent = "userClient";
+		task.m_uReadBytes = 0;
+		TLWinHttpDownloader down;
+		down.setEventHandler(this);
+		down.DownloadToFile(task, newFile.toStdString().c_str());
 
-	wchar_t cwd[MAX_PATH];
-	GetModuleFileNameW(nullptr, cwd, _countof(cwd) - 1);
-	wchar_t *p = wcsrchr(cwd, '\\');
-	if (p)
-		*p = 0;
+		GBSXMLParser xmlParser;
+		xmlParser.parseXml(newFile);
+		QList<Enclosure> enclosures = xmlParser.getEnclosures();
+		QString updateUrl = "";
+		QString version = "";
+		for (auto enclosure : enclosures) {
+			updateUrl = enclosure.url;
+			version = enclosure.version;
+			break;
+		}
+		QList<QString> features = xmlParser.getFeatures();
+		features.prepend("更新说明:" );
+		features.prepend("版本号:" + version);
 
-	/* ----------------------------------- *
-	 * execute updater                     */
 
-	BPtr<char> updateFilePath = GetAppConfigPathPtr("obs-studio\\updates\\updater.exe");
-	BPtr<wchar_t> wUpdateFilePath;
+		std::string curVersion = GBSMainCollector::getInstance()->getSoftWareVersion();
+		QString qCurVersion = QString::fromStdString(curVersion);
 
-	size_t size = os_utf8_to_wcs_ptr(updateFilePath, 0, &wUpdateFilePath);
-	if (!size)
-		throw string("Could not convert updateFilePath to wide");
+		if (qCurVersion.compare(version) >= 0) {
+			return;
+		}
+		if (manualUpdate) {
+			emit sigHasNewerVersion(features);
+			return;
+		}
+		QLogE("update: current version: %s new version:%s\n", qCurVersion.toStdString().c_str(),
+		      version.toStdString().c_str());
+		QStringList parts = updateUrl.split("/");
+		QString fileNmae = parts.last();
+		QString exeName = QCoreApplication::applicationDirPath() + "/" + fileNmae;
 
-	/* note, can't use CreateProcess to launch as admin. */
-	SHELLEXECUTEINFO execInfo = {};
-
-	execInfo.cbSize = sizeof(execInfo);
-	execInfo.lpFile = wUpdateFilePath;
-
-	string parameters;
-	if (branch != WIN_DEFAULT_BRANCH)
-		parameters += "--branch=" + branch;
-
-	obs_cmdline_args obs_args = obs_get_cmdline_args();
-	for (int idx = 1; idx < obs_args.argc; idx++) {
-		if (!parameters.empty())
-			parameters += " ";
-
-		parameters += obs_args.argv[idx];
+		{
+			TLDownloadTask task;
+			task.m_strUrl = updateUrl.toStdString().c_str();
+			task.m_strAgent = "userClient";
+			task.m_uReadBytes = 0;
+			TLWinHttpDownloader down;
+			down.setEventHandler(this);
+			down.DownloadToFile(task, exeName.toStdString().c_str());
+		}
+		emit sigDownloadFinished();
+		return;
+	} catch (string &text) {
+		blog(LOG_WARNING, "%s: %s", __FUNCTION__, text.c_str());
 	}
-
-	/* Portable mode can be enabled via sentinel files, so copying the
-	 * command line doesn't guarantee the flag to be there. */
-	if (App()->IsPortableMode() && parameters.find("--portable") == string::npos) {
-		if (!parameters.empty())
-			parameters += " ";
-		parameters += "--portable";
-	}
-
-	BPtr<wchar_t> lpParameters;
-	size = os_utf8_to_wcs_ptr(parameters.c_str(), 0, &lpParameters);
-	if (!size && !parameters.empty())
-		throw string("Could not convert parameters to wide");
-
-	execInfo.lpParameters = lpParameters;
-	execInfo.lpDirectory = cwd;
-	execInfo.nShow = SW_SHOWNORMAL;
-
-	if (!ShellExecuteEx(&execInfo)) {
-		QString msg = QTStr("Updater.FailedToLaunch");
-		info(msg, msg);
-		throw strprintf("Can't launch updater '%s': %d", updateFilePath.Get(), GetLastError());
-	}
-
-	/* force OBS to perform another update check immediately after updating
-	 * in case of issues with the new version */
-	config_set_int(App()->GetAppConfig(), "General", "LastUpdateCheck", 0);
-	config_set_string(App()->GetAppConfig(), "General", "SkipUpdateVersion", "0");
-
-	QMetaObject::invokeMethod(App()->GetMainWindow(), "close");
-
-} catch (string &text) {
-	blog(LOG_WARNING, "%s: %s", __FUNCTION__, text.c_str());
 }
+

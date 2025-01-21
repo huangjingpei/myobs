@@ -60,6 +60,14 @@ target_sources(
     gbs/updater/GBSFileDownloader.h
     gbs/updater/GBSFileDownloader.cpp
 
+    gbs/updater/winhttp/TLBufferVector.h
+    gbs/updater/winhttp/TLBufferVector.cpp
+    gbs/updater/winhttp/TLWebDef.h
+    gbs/updater/winhttp/TLDownloadTask.h
+    gbs/updater/winhttp/TLDownloadTask.cpp
+    gbs/updater/winhttp/TLWinHttpDownloader.h
+    gbs/updater/winhttp/TLWinHttpDownloader.cpp
+
 
     gbs/GBSMainBizWindow.cpp
     gbs/GBSMainBizWindow.h
@@ -141,6 +149,8 @@ target_sources(
     gbs/bizWidgets/GBSBizEShopData.h
     gbs/bizWidgets/GBSAddBroker.cpp
     gbs/bizWidgets/GBSAddBroker.h
+	gbs/bizWidgets/GBSModifyDevice.cpp
+    gbs/bizWidgets/GBSModifyDevice.h
     gbs/bizWidgets/GBSActivateDevice.cpp
     gbs/bizWidgets/GBSActivateDevice.h
     gbs/bizWidgets/GBSRemoveBroker.cpp

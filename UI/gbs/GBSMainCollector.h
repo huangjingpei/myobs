@@ -52,6 +52,7 @@ public:
 	void setSystemUniqueNo(std::string uniqueNo);
 	std::string &getSystemUniqueNo();
 
+
 private:
 	void setSrsLiveId(int srsLiveId);
 	void setLiveDeviceId(std::string liveDeviceId);
@@ -116,6 +117,7 @@ private:
 	std::string mUniqueNo{""};
 	std::string danmakuId{""};//主要有srsliveId 和 弹幕被抓平台id构成
 	std::string buildInfo{""};
+	
 
 	 //std::string baseUrl = {"http://36be34f5.r27.cpolar.top"};
 	 //std::string baseUrlV2 = {"http://36be34f5.r27.cpolar.top"};

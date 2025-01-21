@@ -2,8 +2,9 @@
 
 #include <QThread>
 #include <QString>
+#include "gbs/updater/winhttp/TLWinHttpDownloader.h"
 
-class GBSAutoUpdateThread : public QThread {
+class GBSAutoUpdateThread : public QThread, public TLWinHttpDownLoaderEventHandler {
 	Q_OBJECT
 
 	bool manualUpdate;
@@ -16,6 +17,11 @@ class GBSAutoUpdateThread : public QThread {
 	int queryUpdate(bool manualUpdate, const char *text_utf8);
 	bool queryRepair();
 
+
+signals:
+	void sigDownloadFinished();
+	void sigHasNewerVersion(QList<QString> features);
+
 private slots:
 	void infoMsg(const QString &title, const QString &text);
 	int queryUpdateSlot(bool manualUpdate, const QString &text);
@@ -27,4 +33,12 @@ public:
 		  repairMode(repairMode_)
 	{
 	}
+
+private:
+	bool updateConofigure{false};
+	bool updateExe{false};
+
+	// 通过 TLWinHttpDownLoaderEventHandler 继承
+	void onDownloadPercentage(int32_t percentage) override;
+	void onDownloadBytes(uint32_t downloadBytes, uint32_t allBytes) override;
 };

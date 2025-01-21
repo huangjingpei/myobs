@@ -795,12 +795,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_10B1C43F2FE64E3F98B0C3ED3AF2377C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_10B2AC6CACDA4E649CB10F93CB0FEAF9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2019,12 +2013,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2C2801A0B5AC4432BBBA07ECEE4DF614"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_2C32FCF993204BEAA8AF2469B528C99C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2949,12 +2937,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3C7710156C244C90A2D60A7333098779"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3CEEFFC07F814D47A75B068B9B2F65E3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3628,12 +3610,6 @@
         "Entry"
         {
         "MsmKey" = "8:_4A89A1E1E1CB4B13A07A306D85FBAC39"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4A8B731F23B5402D911165DD1A5F8A25"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -4419,12 +4395,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5C6AB904A17F405FBD160B73A81C1E40"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_5C6CA38BC5444A29B385150877DE743E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -5050,12 +5020,6 @@
         "Entry"
         {
         "MsmKey" = "8:_68417A4B87FA49A69E133621B81252E3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6850A25380D7471B929B59FAEE5B7F4A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -6513,12 +6477,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8556AEC66D5041EEAFFF4195432C13C8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_856A1D470B4549EF8D97FE4AB1080BF3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -6939,12 +6897,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8E5593AAC9CD4E8B8A4605A9B8CA1831"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_8E5999CB1A924B3997E480FAD832A1F2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -7216,12 +7168,6 @@
         "Entry"
         {
         "MsmKey" = "8:_93F093080C634A478F6B3DA4749DBED3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9422D808F91944BDB0D7B2B11D4F4A20"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -9004,18 +8950,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B94B1D1D1C7147FAB7AFB48EE12357B6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B94B6E5E633A4890B96ACFBD5A601C80"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B97E53F58A2B49A78B0F0B32B1ECFB58"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -10809,12 +10743,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DE9EE95CF6E6426A8C1632C24FB92BD8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_DF05E0387FD74C549D22E474C4A715A9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -11547,12 +11475,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EDE27E093B7F46F8B0EEC8A07D11910B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_EDF3C55AD0B248358FDA9E59D83796FC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -11974,12 +11896,6 @@
         "Entry"
         {
         "MsmKey" = "8:_F651EF7F6D62417296F749AD3A0192AA"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F68245C9D97A462CAE4A8B2FB1F9D76E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -15093,26 +15009,6 @@
             "TargetName" = "8:an-ES.ini"
             "Tag" = "8:"
             "Folder" = "8:_31CF7C1762CA4E7BB3A7A849C4283B8F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_10B1C43F2FE64E3F98B0C3ED3AF2377C"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-scripting.pdb"
-            "TargetName" = "8:obs-scripting.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -19187,26 +19083,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C2801A0B5AC4432BBBA07ECEE4DF614"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\libobs-winrt.pdb"
-            "TargetName" = "8:libobs-winrt.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C32FCF993204BEAA8AF2469B528C99C"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\win-capture\\locale\\hr-HR.ini"
@@ -22287,26 +22163,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3C7710156C244C90A2D60A7333098779"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs.pdb"
-            "TargetName" = "8:obs.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CEEFFC07F814D47A75B068B9B2F65E3"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\win-wasapi\\locale\\ur-PK.ini"
@@ -24553,26 +24409,6 @@
             "TargetName" = "8:Yami_Classic.ovt"
             "Tag" = "8:"
             "Folder" = "8:_24A3A8765ED149FD9B014F119DEDFAF7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4A8B731F23B5402D911165DD1A5F8A25"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs64.pdb"
-            "TargetName" = "8:obs64.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -27187,26 +27023,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C6AB904A17F405FBD160B73A81C1E40"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-qsv-test.exe"
-            "TargetName" = "8:obs-qsv-test.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C6CA38BC5444A29B385150877DE743E"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\obs-outputs\\locale\\tr-TR.ini"
@@ -29293,26 +29109,6 @@
             "TargetName" = "8:obs-browser.dll"
             "Tag" = "8:"
             "Folder" = "8:_E90A5016B02A415796ECE46D4E4EC990"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6850A25380D7471B929B59FAEE5B7F4A"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\w32-pthreads.pdb"
-            "TargetName" = "8:w32-pthreads.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -34167,26 +33963,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8556AEC66D5041EEAFFF4195432C13C8"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\libobs-opengl.pdb"
-            "TargetName" = "8:libobs-opengl.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_856A1D470B4549EF8D97FE4AB1080BF3"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\obs-plugins\\64bit\\obs-browser.pdb"
@@ -35587,26 +35363,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E5593AAC9CD4E8B8A4605A9B8CA1831"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-frontend-api.pdb"
-            "TargetName" = "8:obs-frontend-api.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E5999CB1A924B3997E480FAD832A1F2"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\win-dshow\\locale\\mn-MN.ini"
@@ -36513,26 +36269,6 @@
             "TargetName" = "8:ar-SA.ini"
             "Tag" = "8:"
             "Folder" = "8:_35927D8D26AA474ABB5DF4CC0B55020E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9422D808F91944BDB0D7B2B11D4F4A20"
-            {
-            "SourcePath" = "8:..\\UI\\forms\\images\\gbs\\favicon\\favicon-64.ico"
-            "TargetName" = "8:favicon-64.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -42473,46 +42209,6 @@
             "TargetName" = "8:pt-PT.ini"
             "Tag" = "8:"
             "Folder" = "8:_35927D8D26AA474ABB5DF4CC0B55020E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B94B6E5E633A4890B96ACFBD5A601C80"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-ffmpeg-mux.pdb"
-            "TargetName" = "8:obs-ffmpeg-mux.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B97E53F58A2B49A78B0F0B32B1ECFB58"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-qsv-test.pdb"
-            "TargetName" = "8:obs-qsv-test.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -48487,26 +48183,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DE9EE95CF6E6426A8C1632C24FB92BD8"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-amf-test.pdb"
-            "TargetName" = "8:obs-amf-test.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF05E0387FD74C549D22E474C4A715A9"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\aja-output-ui\\locale\\ca-ES.ini"
@@ -50947,26 +50623,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EDE27E093B7F46F8B0EEC8A07D11910B"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\libobs-d3d11.pdb"
-            "TargetName" = "8:libobs-d3d11.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EDF3C55AD0B248358FDA9E59D83796FC"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-studio\\themes\\Acri\\checkbox_unchecked_focus.png"
@@ -52373,26 +52029,6 @@
             "TargetName" = "8:hy-AM.ini"
             "Tag" = "8:"
             "Folder" = "8:_24A48EA374474787B7B581A85E572A4B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F68245C9D97A462CAE4A8B2FB1F9D76E"
-            {
-            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\obs-nvenc-test.pdb"
-            "TargetName" = "8:obs-nvenc-test.pdb"
-            "Tag" = "8:"
-            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -53969,6 +53605,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_B46ECE4DCA0745E0AEDF7AF788A1B510"
+                                    {
+                                    "Name" = "8:logs"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_F766F61A5CC1437E83E86ED6C5DECDB4"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_C2DFC38801384E6DA04939D2BE5CD4F4"
                                     {
                                     "Name" = "8:iconengines"
@@ -54905,7 +54552,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:国播出国"
         "ProductCode" = "8:{8CAEAD14-CE47-4B9A-A9B0-2ED5CFA188AE}"
-        "PackageCode" = "8:{1CD164CA-42C5-4C6F-850B-CC1239E2C3B3}"
+        "PackageCode" = "8:{23BD9A1A-C6EE-49D8-8D07-A52EABB15128}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
