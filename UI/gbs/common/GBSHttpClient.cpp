@@ -1706,22 +1706,11 @@ void GBSHttpClient::createSrsStreamTaskV2(int streamSource) {
 			if (response.compare("Error")) {
 				auto r = json::parse(response);
 				if (!r.is_null() && r["result"].is_object()) {
-					int id = r["result"]["id"].is_null() ? 0 : r["result"]["id"].get<int>();
-					int liveAccountId = r["result"]["liveAccountId"].is_null()
-							     ? 0
-							     : r["result"]["liveAccountId"].get<int>();
-					int liveServerId = r["result"]["liveServerId"].is_null()
-								   ? 0
-											   : r["result"]["liveServerId"].get<int>();
-					std::string pushStreamUrl =
-						r["result"]["pushStreamUrl"].is_null()
-							? ""
-							: r["result"]["pushStreamUrl"].get<std::string>();
-					int streamSource = r["result"]["streamSource"].is_null()
-								   ? 0
-											   : r["result"]["streamSource"].get<int>();
-					int userId = r["result"]["userId"].is_null() ? 0
-										     : r["result"]["userId"].get<int>();
+					GBSPushStreamInfo result = GBSPushStreamInfo::fromJson(r["result"].dump());
+
+					int id = result.getId();
+					std::string pushStreamUrl = result.getPushStreamUrl();
+	
 					if (pushStreamUrl.empty()) {
 						QLogE("cannot get push stream url from server.");
 						return;
@@ -1729,6 +1718,10 @@ void GBSHttpClient::createSrsStreamTaskV2(int streamSource) {
 					std::lock_guard<std::mutex> guard(cs);
 					for (auto it = handlers.begin(); it != handlers.end(); it++) {
 						(*it)->onRtmpPushUrl(pushStreamUrl, id);
+					}
+					
+					for (auto it = handlers.begin(); it != handlers.end(); it++) {
+						(*it)->onPushStreamInfo(result);
 					}
 					return;
 				} else if (!r.is_null()) {
@@ -2169,6 +2162,341 @@ void GBSHttpClient::modifyZlmLiveDeviceTaskV2(std::string deviceName, int id, st
 		     {"toDeskAccount", toDeskAccount},
 		{"toDeskPassword", toDeskPassword}};
 	std::string url = baseUrlV2 + "/preferred/matrixLive/modifyZlmLiveDevice";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::queryZlmLiveDevicesV2(int liveAccountId) {
+	executor->addTask(std::bind(&GBSHttpClient::queryZlmLiveDevicesTaskV2, this, liveAccountId));
+
+    }
+void GBSHttpClient::queryZlmLiveDevicesTaskV2(int liveAccountId) {
+	
+	std::string url = baseUrlV2 + "/preferred/matrixLive/queryZlmLiveDevices/" + std::to_string(liveAccountId) + "?token=" + token;
+
+	//std::string url = "http://39.98.176.148:8083/preferred/matrixLive/queryZlmLiveDevices/1";	
+
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string token) -> std::string {
+			cpr::SslOptions sslOpts = cpr::Ssl(cpr::ssl::VerifyHost{false}, cpr::ssl::VerifyPeer{false});
+			cpr::Url cprUrl{url};
+			cpr::Header headers{{"token", token}};
+			auto r = cpr::GetAsync(cprUrl, headers, sslOpts).get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			auto r = json::parse(response);
+			if ((!r["result"].is_null()) && (r["result"].is_array())) {
+				std::list<GBSLiveDevices> devices =
+					GBSLiveDevices::fromJsonArray(r["result"].dump());
+				std::lock_guard<std::mutex> guard(cs);
+				for (auto it = handlers.begin(); it != handlers.end(); it++) {
+					(*it)->onListDevices(devices, -1);
+				}
+			} else {
+				GBSLiveDevices device = GBSLiveDevices::fromJson(r["result"].dump());
+				std::list<GBSLiveDevices> devices;
+				devices.push_back(device);
+				std::lock_guard<std::mutex> guard(cs);
+				for (auto it = handlers.begin(); it != handlers.end(); it++) {
+					(*it)->onListDevices(devices, -1);
+				}
+			}
+			
+		},
+		url, token);
+	task->run();
+}
+
+void GBSHttpClient::startLiveTranscribeV2(int duration, int streamLogId) {
+	executor->addTask(std::bind(&GBSHttpClient::startLiveTranscribeTaskV2, this, duration, streamLogId));
+}
+
+void GBSHttpClient::startLiveTranscribeTaskV2(int duration, int streamLogId) {
+	json body = {{"duration", duration}, {"streamLogId", streamLogId}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/startLiveTranscribe";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::endLiveTranscribeV2(int streamLogId) {
+	executor->addTask(std::bind(&GBSHttpClient::endLiveTranscribeTaskV2, this, streamLogId));
+
+    }
+void GBSHttpClient::endLiveTranscribeTaskV2(int streamLogId) {
+	json body = {{"streamLogId", streamLogId}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/endLiveTranscribe";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::getLiveTranscribeStatusV2(int streamLogId) {
+	executor->addTask(std::bind(&GBSHttpClient::getLiveTranscribeStatusTaskV2, this, streamLogId));
+
+    }
+void GBSHttpClient::getLiveTranscribeStatusTaskV2(int streamLogId) {
+	json body = {{"streamLogId", streamLogId}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/getLiveTranscribeStatus";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::queryLiveTranscribeByStreamLogIdV2(int streamLogId) {
+	executor->addTask(std::bind(&GBSHttpClient::queryLiveTranscribeByStreamLogIdTaskV2, this, streamLogId));
+
+}
+void GBSHttpClient::queryLiveTranscribeByStreamLogIdTaskV2(int streamLogId) {
+	std::string url = baseUrlV2 + "/preferred/matrixLive/queryLiveTranscribeByStreamLogId/" + std::to_string(streamLogId);
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string token) -> std::string {
+			cpr::SslOptions sslOpts = cpr::Ssl(cpr::ssl::VerifyHost{false}, cpr::ssl::VerifyPeer{false});
+			cpr::Header headers = {{"token", token}};
+			cpr::Url cprUrl{url};
+			auto r = cpr::GetAsync(cprUrl, headers, sslOpts).get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, token);
+	task->run();
+}
+
+void GBSHttpClient::sendTranscribeLiveHeartBeatV2(int id) {
+	executor->addTask(std::bind(&GBSHttpClient::sendTranscribeLiveHeartBeatTaskV2, this, id));
+}
+void GBSHttpClient::sendTranscribeLiveHeartBeatTaskV2(int id) {
+	json body = {{"id", id}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/sendTranscribeLiveHeartBeat";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::startTranscribeLiveV2(int liveAccountId, std::list<std::string> liveDevices, int streamLogId) {
+	executor->addTask(
+		std::bind(&GBSHttpClient::startTranscribeLiveTaskV2, this, liveAccountId, liveDevices, streamLogId));
+}
+void GBSHttpClient::startTranscribeLiveTaskV2(int liveAccountId, std::list<std::string> liveDevices, int streamLogId) {
+	std::string liveDevicesString = "";
+	for (auto liveDevice : liveDevices) {
+		liveDevicesString += liveDevice;
+		liveDevicesString += ",";
+	}
+
+	json body = {{"liveAccountId", liveAccountId},
+		     {"liveDevices", liveDevicesString},
+		     {"streamLogId", streamLogId}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/startTranscribeLive";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+
+	task->run();
+}
+
+
+void GBSHttpClient::endTranscribeLiveV2(int id) {
+	executor->addTask(
+		std::bind(&GBSHttpClient::endTranscribeLiveTaskV2, this, id));
+}
+void GBSHttpClient::endTranscribeLiveTaskV2(int id) {
+	json body = {{"id", id}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/endTranscribeLive";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+
+void GBSHttpClient::pageZlmStreamLogV2(int streamLogId, int liveServerId, int pageNum, int pageSize)
+{
+	executor->addTask(
+		std::bind(&GBSHttpClient::pageZlmStreamLogTaskV2, this, streamLogId, liveServerId, pageNum, pageSize));
+}
+void GBSHttpClient::pageZlmStreamLogTaskV2(int streamLogId, int liveServerId, int pageNum, int pageSize)
+{
+	json body = {{"liveAccountId", streamLogId},
+		     {"liveServerId", liveServerId},
+		     {"pageNum", pageNum},
+		     {"pageSize", pageSize}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/pageZlmStreamLog";
 	auto task = new HttpRequestTask(
 		[this](std::string url, std::string body, std::string token) -> std::string {
 			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},

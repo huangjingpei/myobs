@@ -236,6 +236,15 @@ void GBSMainCollector::setDeviceName(std::string deviceName) {
 	const std::lock_guard<std::mutex> lock(mMutex);
 	mDeviceName = deviceName;
 }
+void GBSMainCollector::setPushStreamInfo(GBSPushStreamInfo info) {
+	const std::lock_guard<std::mutex> lock(mMutex);
+	mPushStreamInfo = info;
+}
+
+GBSPushStreamInfo& GBSMainCollector::getPushStreamInfo() {
+	const std::lock_guard<std::mutex> lock(mMutex);
+	return mPushStreamInfo;
+}
 
 std::string &GBSMainCollector::getBuildInfo()
 {

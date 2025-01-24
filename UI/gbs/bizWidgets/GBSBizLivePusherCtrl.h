@@ -43,7 +43,8 @@ public slots:
 	// 添加新 widget 的槽函数
 	//void addNewWidget();
 	void onComboBoxIndexChanged(int index);
-	void onStartRtmpPush(bool checked);
+	
+	void onStartWork(bool checked);
 	void StartStreaming(std::string server, std::string key);
 	void StopStreaming();
 	void StartReplayBuffer();
@@ -73,7 +74,9 @@ private slots:
 	void updateStyle(bool checked);
 	void onTimeout();
 	void onTabChanged(int index);
+	void onTabChanged2(int index);
 	void onWssKeepAlive();
+
 
 private:
 	OBSService service;
@@ -107,6 +110,8 @@ private:
 
 	void processDanmaItem(const nlohmann::json jsonObject);
 
+	void startPushStream(std::string url, int liveAccountId);
+
 private:
 	QString qPushUrl;
 	QString qUserId;
@@ -129,7 +134,9 @@ private:
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status) override;
 	void onRtmpPushUrl(std::string url, int liveAccountId) override;
+	void onPushStreamInfo(GBSPushStreamInfo result) override;
 	void onRtmpPushError(std::string errMsg) override;
+	void onListDevices(std::list<GBSLiveDevices> devices, int pageNum) override;
 	QList<DanmaItem> whoIsDanmukus;
 	QList<DanmaItem> allDanmakus;
 	QList<DanmaItem> giftDanmakus;
@@ -155,6 +162,7 @@ private:
 	int mDanmakuType{DANITEM_TYPE_ALL};
 
 	std::atomic<bool> onFailedProcessing{false};
+	std::atomic<bool> startWorking{false};
 };
 
 #endif // GBSBIZLIVEPUSHERCTRL_H

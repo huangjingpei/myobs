@@ -197,6 +197,22 @@ static bool load_libvlc_module(void)
 	return libvlc_module != NULL;
 }
 
+static bool load_libvlc_module_from_bindir(void) {
+	wchar_t path[1024];
+	char *path_utf8 = NULL;
+	memset(path, 0, 1024 * sizeof(wchar_t));
+
+	// 获取当前模块（即可执行文件）的完整路径
+	if (GetModuleFileNameW(NULL, path, MAX_PATH) > 0) {
+		wcscat(path, L"\\..\\vlcruntime\\libvlc.dll");
+		os_wcs_to_utf8_ptr(path, 0, &path_utf8);
+		libvlc_module = os_dlopen(path_utf8);
+		bfree(path_utf8);
+	}
+	
+	return libvlc_module != NULL;
+}
+
 extern struct obs_source_info vlc_source_info;
 
 bool load_libvlc(void)
@@ -216,7 +232,7 @@ bool load_libvlc(void)
 
 bool obs_module_load(void)
 {
-	if (!load_libvlc_module()) {
+	if (!(load_libvlc_module() || load_libvlc_module_from_bindir())) {
 		blog(LOG_INFO, "[vlc-video]: Couldn't find VLC installation, "
 			       "VLC video source disabled");
 		return true;

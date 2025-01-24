@@ -18,6 +18,8 @@
 #include "gbs/common/QToast.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 #include "gbs/common/SystemUtils.h"
+#include "gbs/dto/GBSPushStreamInfo.h"
+#include "gbs/bizWidgets/GBSStreamSelector.h"
 
 
 /**
@@ -176,7 +178,32 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 					       "    margin-left: 100px;" // 调整第一个tab项的左外边距
 					       "}");
 
+	ui->tabWidget_2->setStyleSheet("QTabWidget::pane {"
+				     "    border: none;" // 移除tab pane的边框
+				     "}");               // 清空 QTabWidget 的样式表
+
+	ui->tabWidget_2->tabBar()->setStyleSheet("QTabBar::tab {"
+					       "    color: #78828A; "     // 默认字体颜色
+					       "    background: none; "   // 默认背景颜色
+					       "    padding: 40px; "      // 内边距
+					       "    padding: 4px; "       // 内边距
+					       "    border-radius: 5px; " // 圆角
+					       "    font-size: 16px;"     // 设置字体大小为16像素
+
+					       "}"
+					       "QTabBar::tab:selected {"
+					       "    color: #00C566; "   // 选中字体颜色
+					       "    background: none; " // 选中背景颜色
+					       "    padding: 4px; "     // 内边距
+					       "}"
+					       "QTabBar::tab:first {"
+					       "    margin-left: 1px;" // 调整第一个tab项的左外边距
+					       "}");
+
+
 	connect(ui->tabWidget, &QTabWidget::currentChanged, this, &GBSBizLivePusherCtrl::onTabChanged);
+	connect(ui->tabWidget_2, &QTabWidget::currentChanged, this, &GBSBizLivePusherCtrl::onTabChanged2);
+
 
 	QWidget *currentWidget = ui->tabWidget->currentWidget();
 
@@ -314,7 +341,7 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 
 	ui->wgtPreview->Init();
 	connect(ui->wgtPreview, &OBSQTDisplay::DisplayCreated, addDisplay);
-	connect(ui->btnStartLive, &QPushButton::clicked, this, &GBSBizLivePusherCtrl::onStartRtmpPush);
+	connect(ui->btnStartLive, &QPushButton::clicked, this, &GBSBizLivePusherCtrl::onStartWork);
 	ui->btnStartLive->pressed("开播", "已关播", false);
 
 
@@ -472,6 +499,8 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	//});
 	//writerThread.detach();
 
+	
+
 	mWssTimer = new QTimer(this);
 	connect(mWssTimer, &QTimer::timeout, this, &GBSBizLivePusherCtrl::onWssKeepAlive);
 	if (!mWssTimer->isActive()) {
@@ -488,6 +517,43 @@ void GBSBizLivePusherCtrl::onWssKeepAlive() {
 }
 void GBSBizLivePusherCtrl::onTabChanged(int index) {
 
+
+
+}
+
+void GBSBizLivePusherCtrl::onTabChanged2(int index) {
+
+	if (index == 2) {
+		if (startWorking) {
+			ui->btnStartLive->pressed("关录", "录播中", true);
+		} else {
+			ui->btnStartLive->pressed("开录", "已关录", false);
+		}
+	} else {
+		if (startWorking) {
+			ui->btnStartLive->pressed("关播", "直播中", true);
+		} else {
+			ui->btnStartLive->pressed("开播", "已关播", false);
+		}
+	}
+	
+	//if (index == 0) {
+	//	if (startWorking) {
+
+	//	}
+	//} else if (index == 1) { //素材开播,现在一个版本
+	//	GBSPushStreamInfo info = GBSMainCollector::getInstance()->getPushStreamInfo();
+	//	GBSHttpClient::getInstance()->queryZlmLiveDevicesV2(info.getLiveAccountId());
+	//	//GBSHttpClient::getInstance()->startTranscribeLiveV2(info.getLiveAccountId(), "", info.getId());
+	//	GBSStreamSelector *selector = new GBSStreamSelector(this);
+	//	selector->show();
+	//} else if (index == 2) { //素材录制
+	//	QString value = ui->cbxDuration->currentText();
+	//	GBSPushStreamInfo info = GBSMainCollector::getInstance()->getPushStreamInfo();
+	//	GBSHttpClient::getInstance()->startLiveTranscribeV2(value.toInt(), info.getId());
+	//}
+
+	
 
 
 }
@@ -634,30 +700,43 @@ bool GBSBizLivePusherCtrl::FindCameraSource(void *param, obs_source_t *source)
 
 	return true;
 }
+void GBSBizLivePusherCtrl::onStartWork(bool checked) {
+	int index = ui->tabWidget_2->currentIndex();
+	startWorking = !startWorking;
 
+	//Step 1: 和后端服务交互创建流信息
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	if (startWorking) {
+		ui->tabWidget_2->tabBar()->setEnabled(false);
+		
+		QTimer::singleShot(8000, this, &GBSBizLivePusherCtrl::streamCheck);
+		ui->btnStartLive->pressed("关播", "直播中", true);
+		QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
+		GBSHttpClient::getInstance()->createSrsStreamV2(1);
+		GBSMainCollector::getInstance()->setLiving(true);
+	} else {
+		ui->tabWidget_2->tabBar()->setEnabled(true);
+		ui->btnStartLive->pressed("开播", "已关播", false);
+		QLogE("GBSBizLivePusherCtrl 关播 %d", mLiveAccountId);
+		GBSHttpClient::getInstance()->closeSrsStreamLogV2(mLiveAccountId);
+		GBSMainCollector::getInstance()->setLiving(false);
+	}
 
+	if ((index == 0) || (index == 1)) {//直播和素材开播，这里都要先开播
 
-void GBSBizLivePusherCtrl::onStartRtmpPush(bool checked) {
-	
-	DoubleTextButton *button = qobject_cast<DoubleTextButton *>(sender());
-	startLive = !startLive;
+	} else if (index == 2) {
+		if (startWorking) {
+			ui->btnStartLive->pressed("关录", "录播中", true);
 
-	if (button) {
-		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-		if (startLive) {
-			QTimer::singleShot(8000, this, &GBSBizLivePusherCtrl::streamCheck);
-			button->pressed("关播", "直播中", true);
-			QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
-			GBSHttpClient::getInstance()->createSrsStreamV2(1);
-			GBSMainCollector::getInstance()->setLiving(true);
 		} else {
-			button->pressed("开播", "已关播", false);
-			QLogE("GBSBizLivePusherCtrl 关播 %d", mLiveAccountId);
-			GBSHttpClient::getInstance()->closeSrsStreamLogV2(mLiveAccountId);
-			GBSMainCollector::getInstance()->setLiving(false);
+			ui->btnStartLive->pressed("开录", "已关录", false);
 		}
 	}
 
+
+
+
+	
 }
 
 void GBSBizLivePusherCtrl::streamCheck(){
@@ -906,8 +985,41 @@ void GBSBizLivePusherCtrl::onLoginResult(int result) {
 
 }
 
-void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url, int liveAccountId) {
-	
+void GBSBizLivePusherCtrl::onPushStreamInfo(GBSPushStreamInfo result) {
+	GBSMainCollector::getInstance()->setPushStreamInfo(result);
+	QMetaObject::invokeMethod(this, [this]() {
+		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+		int index = ui->tabWidget_2->currentIndex();
+		if (index == 0) {
+			startPushStream(result.getPushStreamUrl(), result.getLiveAccountId());
+		} else if (index == 1) {//素材开播
+			GBSHttpClient::getInstance()->queryZlmLiveDevicesV2(result.getLiveAccountId());			
+		} else if (index == 2) {//录制素材
+			startPushStream(result.getPushStreamUrl(), result.getLiveAccountId());
+			int duration = ui->cbxDuration->currentText().toInt();
+			GBSHttpClient::getInstance()->startLiveTranscribeV2(duration, result.getId());
+		}
+		});
+}
+
+void GBSBizLivePusherCtrl::onListDevices(std::list<GBSLiveDevices> devices, int pageNum) {
+	if (pageNum == -1) { //pageNum -1 代表没有分页
+		QMetaObject::invokeMethod(this, [devices, this]() {
+			GBSStreamSelector *selector = new GBSStreamSelector(this);
+			for (auto device = devices.begin(); device != devices.end(); device++) {
+				CompositeButton *button = new CompositeButton(QString::fromLocal8Bit(device->getDeviceName()), false);
+				selector->addStreamButton(button);
+				std::string uuid = device->getDeviceNo() + device->getProductNo();
+				button->setConstraint(device->getId(), uuid);
+			}
+			
+			selector->show();
+		});
+	}
+}
+
+void GBSBizLivePusherCtrl::startPushStream(std::string url, int liveAccountId)
+{
 	qDebug() << "GBSBizLivePusherCtrl URL: " << url;
 	QLogD("Rtmp url %s", url.c_str());
 	if (url.empty()) {
@@ -938,6 +1050,11 @@ void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url, int liveAccountId) {
 		iniFile->setValue("livePusher", "running", true);
 	}
 	mLiveAccountId = liveAccountId;
+}
+
+void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url, int liveAccountId) {
+	
+
 }
 
 
