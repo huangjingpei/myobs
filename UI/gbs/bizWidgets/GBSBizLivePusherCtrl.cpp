@@ -499,8 +499,6 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	//});
 	//writerThread.detach();
 
-	
-
 	mWssTimer = new QTimer(this);
 	connect(mWssTimer, &QTimer::timeout, this, &GBSBizLivePusherCtrl::onWssKeepAlive);
 	if (!mWssTimer->isActive()) {
@@ -521,21 +519,35 @@ void GBSBizLivePusherCtrl::onTabChanged(int index) {
 
 }
 
-void GBSBizLivePusherCtrl::onTabChanged2(int index) {
+void GBSBizLivePusherCtrl::GetLiveTranscribeStatus() {
+	GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+	GBSHttpClient::getInstance()->getLiveTranscribeStatusV2(result.getId());
+}
 
-	if (index == 2) {
-		if (startWorking) {
-			ui->btnStartLive->pressed("关录", "录播中", true);
-		} else {
-			ui->btnStartLive->pressed("开录", "已关录", false);
-		}
-	} else {
-		if (startWorking) {
-			ui->btnStartLive->pressed("关播", "直播中", true);
-		} else {
-			ui->btnStartLive->pressed("开播", "已关播", false);
+void GBSBizLivePusherCtrl::onTabChanged2(int index) {
+	if (index == 1) {//这个是测试代码，后面会删除
+		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+
+		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+		GBSHttpClient::getInstance()->queryZlmLiveDevicesV2(result.getLiveAccountId());
+		GBSHttpClient::getInstance()->pageZlmStreamLogV2(account.getId(), account.getLiveServerId(),
+								 1, 128);
+		GBSHttpClient::getInstance()->queryLiveTranscribeByStreamLogIdTaskV2(result.getId());
+	}
+	if (startWorking) {
+		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+		if (index == 1) { //素材开播,这里让用户勾选设备
+			GBSHttpClient::getInstance()->queryZlmLiveDevicesV2(result.getLiveAccountId());
+			GBSHttpClient::getInstance()->pageZlmStreamLogV2(result.getId(), result.getLiveServerId(), 128,
+									 1);
+			GBSHttpClient::getInstance()->queryLiveTranscribeByStreamLogIdTaskV2(result.getId());
+		} else if (index == 2) { //素材录制
+		
+			int duration = ui->cbxDuration->currentText().toInt();
+			GBSHttpClient::getInstance()->startLiveTranscribeV2(duration, result.getId());
 		}
 	}
+	
 	
 	//if (index == 0) {
 	//	if (startWorking) {
@@ -709,7 +721,7 @@ void GBSBizLivePusherCtrl::onStartWork(bool checked) {
 	if (startWorking) {
 		ui->tabWidget_2->tabBar()->setEnabled(false);
 		
-		QTimer::singleShot(8000, this, &GBSBizLivePusherCtrl::streamCheck);
+		QTimer::singleShot(16000, this, &GBSBizLivePusherCtrl::streamCheck);
 		ui->btnStartLive->pressed("关播", "直播中", true);
 		QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
 		GBSHttpClient::getInstance()->createSrsStreamV2(1);
@@ -721,17 +733,29 @@ void GBSBizLivePusherCtrl::onStartWork(bool checked) {
 		GBSHttpClient::getInstance()->closeSrsStreamLogV2(mLiveAccountId);
 		GBSMainCollector::getInstance()->setLiving(false);
 	}
-
-	if ((index == 0) || (index == 1)) {//直播和素材开播，这里都要先开播
-
-	} else if (index == 2) {
-		if (startWorking) {
-			ui->btnStartLive->pressed("关录", "录播中", true);
-
-		} else {
-			ui->btnStartLive->pressed("开录", "已关录", false);
+	if (startWorking) {
+		ui->btnStartLive->pressed("关播", "直播中", true);
+	} else {
+		ui->btnStartLive->pressed("开播", "已关播", false);
+	}
+	if (!startWorking) {
+		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+		if (index == 1) { //素材开播，这里是关闭素材开播
+			GBSHttpClient::getInstance()->endTranscribeLiveV2(result.getId());
+		} else if (index == 2) { //素材录制,这里是关闭素材录制
+			GBSHttpClient::getInstance()->endLiveTranscribeV2(result.getId());
 		}
 	}
+	//if ((index == 0) || (index == 1)) {//直播和素材开播，这里都要先开播
+
+	//} else if (index == 2) {
+	//	if (startWorking) {
+	//		ui->btnStartLive->pressed("关录", "录播中", true);
+
+	//	} else {
+	//		ui->btnStartLive->pressed("开录", "已关录", false);
+	//	}
+	//}
 
 
 
@@ -747,6 +771,7 @@ void GBSBizLivePusherCtrl::streamCheck(){
 		OBSSourceAutoRelease source = obs_get_source_by_name("RTMP 矩阵地址");
 		obs_media_state state = obs_source_media_get_state(source);
 		if (state == OBS_MEDIA_STATE_ENDED) {
+			ui->tabWidget_2->tabBar()->setEnabled(false);
 			ui->btnStartLive->click();
 			QWidget *widget = new QWidget;
 			QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -763,6 +788,8 @@ void GBSBizLivePusherCtrl::streamCheck(){
 			layout->addSpacerItem(spacer);
 			GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
 			dialog->exec();
+		} else {
+			ui->tabWidget_2->tabBar()->setEnabled(true);
 		}
 
 
@@ -988,6 +1015,7 @@ void GBSBizLivePusherCtrl::onLoginResult(int result) {
 void GBSBizLivePusherCtrl::onPushStreamInfo(GBSPushStreamInfo result) {
 	GBSMainCollector::getInstance()->setPushStreamInfo(result);
 	QMetaObject::invokeMethod(this, [this]() {
+		ui->tabWidget_2->tabBar()->setEnabled(true);
 		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
 		int index = ui->tabWidget_2->currentIndex();
 		if (index == 0) {
@@ -996,10 +1024,18 @@ void GBSBizLivePusherCtrl::onPushStreamInfo(GBSPushStreamInfo result) {
 			GBSHttpClient::getInstance()->queryZlmLiveDevicesV2(result.getLiveAccountId());			
 		} else if (index == 2) {//录制素材
 			startPushStream(result.getPushStreamUrl(), result.getLiveAccountId());
-			int duration = ui->cbxDuration->currentText().toInt();
-			GBSHttpClient::getInstance()->startLiveTranscribeV2(duration, result.getId());
+
 		}
 		});
+}
+
+void GBSBizLivePusherCtrl::slotStartLiveTranscribe() {
+	int index = ui->tabWidget_2->currentIndex();
+	if (index == 2) { //录制素材
+		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+		int duration = ui->cbxDuration->currentText().toInt();
+		GBSHttpClient::getInstance()->startLiveTranscribeV2(duration, result.getId());
+	}
 }
 
 void GBSBizLivePusherCtrl::onListDevices(std::list<GBSLiveDevices> devices, int pageNum) {

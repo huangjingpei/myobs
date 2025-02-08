@@ -69,6 +69,8 @@ signals:
 public slots:
 	void addNewWidget(const QString &text, const QString &imagePath, const QString &text2, const QString &type);
 
+	void slotStartLiveTranscribe();
+
 
 private slots:
 	void updateStyle(bool checked);
@@ -111,6 +113,8 @@ private:
 	void processDanmaItem(const nlohmann::json jsonObject);
 
 	void startPushStream(std::string url, int liveAccountId);
+
+	void GetLiveTranscribeStatus();
 
 private:
 	QString qPushUrl;
