@@ -124,8 +124,10 @@ private:
 	 std::string baseUrl = {"https://preferred-api.guobo.shop"};
 	 std::string baseUrlV2 = {"https://preferred-api.guobo.shop"};
 	 std::string baseWssV2 = {"wss://guobowss.guobo.shop"};
+
+	 //版本构成说明
 	 
-	 std::string mSoftWareVersion{"1.0.25"};
+	 std::string mSoftWareVersion{"1.0.27"};
 	
 	
 };

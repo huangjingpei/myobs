@@ -122,6 +122,8 @@ void OBSBasic::OBSInit2() {
 	mRtcEngine = ZegoRTCEngine::Create();
 	mRtcEngine->CreateEngine();
 
+	GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
+
 	//gHttpServer = GBSAsioHttpServer::Create();
 	//gHttpServer->start();
 
@@ -274,7 +276,6 @@ void OBSBasic::endPullTask() {
 	//	pullStreamTimer = nullptr;
 	//}
 }
-void OBSBasic::onLoginResult(const int result) {}
 
 void OBSBasic::onPullRtmpUrl(const std::string url) {
 	qDebug() << "onPullRtmpUrl " << url;
@@ -497,7 +498,6 @@ void OBSBasic::onUserInfo(const GBSUserInfo *info) {
 void OBSBasic::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 
 void OBSBasic::onRoomInfo(GBSRoomInfo *info) {}
-void OBSBasic::onQRcodeInfo(std::string no, std::string url, int status){}
 void OBSBasic::onAccountInfo(GBSLiveAccountInfo result){
 	std::string roomId = result.getNickname();
 
@@ -1352,7 +1352,7 @@ void OBSBasic::showNewFeaturesDialog(QList<QString> features) {
 	    }
 	)";
 
-	QWidget *widget = new QWidget(this);
+	QWidget *widget = new QWidget();
 	QVBoxLayout *layout = new QVBoxLayout(widget);
 	layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
 

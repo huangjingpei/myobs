@@ -23,26 +23,45 @@ TLWinHttpDownloader::~TLWinHttpDownloader()
 	
 
 }
-
+#include "util/base.h"
 
 DWORD TLWinHttpDownloader::DownloadToFile(TLDownloadTask &task, CString strOutputFile)
 {
 	//写进buffer
 	TLByteBufferVector vec;
 	DWORD dwRet=this->DownloadToBuffer(task, vec);
+	blog(LOG_WARNING, "%s: %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+
 	if (THE_SUCCEED != dwRet)
 	{
 		return dwRet;
 	}
+	blog(LOG_WARNING, "%s: %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+	CStringA printString = CStringA(strOutputFile);
+
+	blog(LOG_WARNING, "%s: %s %d file %s\n", __FILE__, __FUNCTION__, __LINE__, printString);
 	//写进文件
-	HANDLE hFile = ::CreateFile(strOutputFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	// 使用宽字符路径
+	CStringW strOutputFileW = strOutputFile;
+	HANDLE hFile = ::CreateFileW(strOutputFileW, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//HANDLE hFile = ::CreateFile(strOutputFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
+		DWORD dwError = GetLastError();
+		blog(LOG_WARNING, "CreateFile failed with error code %lu\n", dwError);
+		blog(LOG_WARNING, "%s: %s %d\n", __FILE__, __FUNCTION__, __LINE__);
 		return 0;
 	}
+	blog(LOG_WARNING, "%s: %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+
 	BYTE *pBuffer = vec.Ptr(0, task.m_uReadBytes);
 	DWORD dwBytesWritten = 0;
+	blog(LOG_WARNING, "%s: %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+
 	::WriteFile(hFile, pBuffer, task.m_uReadBytes, &dwBytesWritten, NULL);
+	blog(LOG_WARNING, "%s: %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+
+
 	::CloseHandle(hFile);
 	return (dwBytesWritten == task.m_uReadBytes) ? THE_SUCCEED : THE_WRITE_FILE;
 }

@@ -171,6 +171,9 @@ void OBSBasic::AddDropSource(const char *data, DropType image)
 	std::string sourceName = GenerateSourceName(QT_TO_UTF8(name));
 	OBSSourceAutoRelease source = obs_source_create(type, sourceName.c_str(), settings, nullptr);
 	if (source) {
+		if (strcmp(type, "ffmpeg_source") == 0) {
+			obs_source_set_monitoring_type(source, OBS_MONITORING_TYPE_MONITOR_AND_OUTPUT);
+		}
 		OBSDataAutoRelease wrapper = obs_save_source(source);
 
 		OBSScene scene = main->GetCurrentScene();

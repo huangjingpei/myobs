@@ -58,7 +58,7 @@ public slots:
         void onLinkActivated(const QString &link);
         void onLoginTypeChanged(int type);
 
-
+	bool quitLater();
     private:
     Ui::GBSMainForm *ui;
     QMainWindow *mainWindow;

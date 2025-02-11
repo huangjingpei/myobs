@@ -231,7 +231,7 @@ void GBSHttpClient::loginWithCheckVersionTask(
 						for (auto it = handlers.begin();
 						     it != handlers.end();
 						     it++) {
-							(*it)->onLoginResult(0);
+							(*it)->onLoginResult(0, this->token);
 						}
 						QLogD("Login success.");
 
@@ -550,13 +550,8 @@ void GBSHttpClient::getUserInfo() {
 }
 void GBSHttpClient::getUserInfoTask()
 {
-	std::string deviceNo = getDeviceNo();
-	if (deviceNo.empty()) {
-		std::cerr << "Cannot obtain device id. please check."
-			  << std::endl;
-		return;
-	}
-	json body = {{"equipmentNo", deviceNo}};
+
+	json body = {};
 
 	std::string url = baseUrl + "/preferred/user/userInfo";
 	auto task = new HttpRequestTask(
@@ -605,6 +600,13 @@ void GBSHttpClient::getUserInfoTask()
 						    return;
 					}
 					
+				} else if (r["result"].is_null() && !r["code"].is_null()) {
+					int code = r["code"];
+					std::lock_guard<std::mutex> guard(cs);
+					for (auto it = handlers.begin(); it != handlers.end(); it++) {
+						(*it)->onLoginResult(-5);
+					}
+					return;
 				}
 			} else {
 				std::cerr
@@ -1358,7 +1360,7 @@ void GBSHttpClient::srsAccountLoginTaskV2(std::string account, std::string passw
 					this->token = token;
 					std::lock_guard<std::mutex> guard(cs);
 					for (auto it = handlers.begin(); it != handlers.end(); it++) {
-						(*it)->onLoginResult(0);
+						(*it)->onLoginResult(0, this->token);
 					}
 					QLogD("Login success.");
 					return;
@@ -1418,7 +1420,7 @@ void GBSHttpClient::scanLoginQrCodeInfoTaskV2(std::string qrCodeNo) {
 					if (!qrCodeUrl.empty()) {
 						std::lock_guard<std::mutex> guard(cs);
 						for (auto it = handlers.begin(); it != handlers.end(); it++) {
-							(*it)->onQRcodeInfo(qrCodeNo, qrCodeUrl, status);
+							(*it)->onQRcodeInfo(qrCodeNo, qrCodeUrl, status, this->token);
 						}
 					}
 				}

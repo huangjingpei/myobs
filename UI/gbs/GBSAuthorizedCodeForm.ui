@@ -119,7 +119,7 @@ text-align: center;</string>
      </rect>
     </property>
     <property name="text">
-     <string>设备ID</string>
+     <string>邮箱</string>
     </property>
    </widget>
    <widget class="QLabel" name="lblPassword">
@@ -132,10 +132,10 @@ text-align: center;</string>
      </rect>
     </property>
     <property name="text">
-     <string>产品ID</string>
+     <string>验证码</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="leDeviceID">
+   <widget class="QLineEdit" name="leEmail">
     <property name="geometry">
      <rect>
       <x>1</x>
@@ -156,7 +156,7 @@ font-size: 14px;</string>
      <string>你的邮箱</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="leProductID">
+   <widget class="QLineEdit" name="leSmsCode">
     <property name="geometry">
      <rect>
       <x>1</x>
@@ -177,7 +177,7 @@ lineedit-password-character: 42;
 </string>
     </property>
     <property name="placeholderText">
-     <string>你的验证码</string>
+     <string>你的验证码，一般来自邮件通知</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnLoginGBS">

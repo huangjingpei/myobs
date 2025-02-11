@@ -37,13 +37,12 @@ private:
 
 
 // 通过 OBSHttpEventHandler 继承
-	void onLoginResult(const int result) override;
+	void onLoginResult(const int result, const std::string token = "") override;
 	void onPullRtmpUrl(const std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
-	void onQRcodeInfo(std::string no, std::string url, int status) override;
 	void onAgreementInfo(std::string richText, int type) override;
 
 	// 通过 OBSMainWindow 继承
@@ -52,6 +51,8 @@ private:
 	int GetProfilePath(char *path, size_t size, const char *file) const override;
 
 	std::unique_ptr<XORPasswordProtecter> passwordProtecter;
+
+	
 };
 
 #endif // GBSNORMALLOGINFORM_H

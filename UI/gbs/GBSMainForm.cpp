@@ -15,6 +15,7 @@
 
 #include "PixmapOverlay.h"
 #include <QPixmap>
+#include "gbs/common/QIniFile.h"
 
 #include "GBSHttpsServer.h"
 
@@ -24,9 +25,7 @@ GBSMainForm::GBSMainForm(QWidget *parent)
     ui(new Ui::GBSMainForm)
 {
 	ui->setupUi(this);
-	//initLoginPanel(LoginPanelType::PASSWORD_LOGIN);
-	//connect(this, &GBSMainForm::signalDestroyLoginWindow, this, &GBSMainForm::slotDestroyLoginWindow);
-	
+
 
 
 	setSizePolicy(
@@ -137,13 +136,6 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 
 
 
-	normalLoginForm = new GBSNormalLoginForm(this);
-	scanQRcodeForm = nullptr;
-	authorizedCodeForm = nullptr;
-	registerForm = nullptr;
-	currentFrom = normalLoginForm;
-	currentLoginType = NORMAL_LOGIN;
-	loginBizLayout->addWidget(normalLoginForm);
 
 	// 添加弹簧，确保按钮布局在窗口右上角
 	rightLayout->addLayout(loginBizLayout);
@@ -168,21 +160,66 @@ GBSMainForm::GBSMainForm(QWidget *parent)
 	//		showMaximized(); // 最大化窗口
 	//	}
 	//});
-	
+
+	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+	QString loginType = iniFile->value("User", "login.Type", "unknown").toString();
+	if (loginType == "qrcode") {
+		scanQRcodeForm = new GBSQRCodeLoginForm(this);
+		normalLoginForm = nullptr;
+		authorizedCodeForm = nullptr;
+		registerForm = nullptr;
+		currentFrom = scanQRcodeForm;
+		currentLoginType = QRCODE_LOGIN;
+		loginBizLayout->addWidget(scanQRcodeForm);
+		connect(scanQRcodeForm, &GBSQRCodeLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
+		connect(scanQRcodeForm, &GBSQRCodeLoginForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
+		connect(scanQRcodeForm, &GBSQRCodeLoginForm::closeLoginWindow, this, &GBSMainForm::close);
+		connect(scanQRcodeForm, &GBSQRCodeLoginForm::notifyLoginSuccess, this, &GBSMainForm::quitLater);
+	} else if (loginType == "smscode") {
+		scanQRcodeForm = nullptr;
+		normalLoginForm = nullptr;
+		authorizedCodeForm = new GBSAuthorizedCodeForm(this);
+		registerForm = nullptr;
+		currentFrom = authorizedCodeForm;
+		currentLoginType = AUTHORIZED_LOGIN;
+		loginBizLayout->addWidget(authorizedCodeForm);
+		connect(authorizedCodeForm, &GBSAuthorizedCodeForm::linkActivated, this, &GBSMainForm::onLinkActivated);
+		connect(authorizedCodeForm, &GBSAuthorizedCodeForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
+		connect(authorizedCodeForm, &GBSAuthorizedCodeForm::closeLoginWindow, this, &GBSMainForm::close);
+		connect(authorizedCodeForm, &GBSAuthorizedCodeForm::notifyLoginSuccess, this, &GBSMainForm::quitLater);
+	} else {
+
+		normalLoginForm = new GBSNormalLoginForm(this);
+		scanQRcodeForm = nullptr;
+		authorizedCodeForm = nullptr;
+		registerForm = nullptr;
+		currentFrom = normalLoginForm;
+		currentLoginType = NORMAL_LOGIN;
+		loginBizLayout->addWidget(normalLoginForm);
+
+		connect(normalLoginForm, &GBSNormalLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
+		connect(normalLoginForm, &GBSNormalLoginForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
+		connect(normalLoginForm, &GBSNormalLoginForm::closeLoginWindow, this, &GBSMainForm::close);
+		connect(normalLoginForm, &GBSNormalLoginForm::notifyLoginSuccess, this, &GBSMainForm::quitLater);
+	}
+
 	connect(minimizeButton, &QPushButton::clicked, this, &GBSMainForm::showMinimized);
 	connect(closeButton, &QPushButton::clicked, this, &GBSMainForm::close);
-	connect(normalLoginForm, &GBSNormalLoginForm::linkActivated, this, &GBSMainForm::onLinkActivated);
-	connect(normalLoginForm, &GBSNormalLoginForm::loginTypeChanged, this, &GBSMainForm::onLoginTypeChanged);
-	connect(normalLoginForm, &GBSNormalLoginForm::closeLoginWindow, this, &GBSMainForm::close);
-	
-	connect(normalLoginForm, &GBSNormalLoginForm::notifyLoginSuccess, this, &GBSMainForm::close);
+
 
 
 }
 
+bool GBSMainForm::quitLater()
+{
+	deleteLater();
+	return true;
+}
+
+
 GBSMainForm::~GBSMainForm()
 {
-    timer.start();
+    timer.stop();
     qPixmapLists.clear();
     delete ui;
 }

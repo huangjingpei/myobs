@@ -1370,12 +1370,12 @@ bool OBSApp::OBSInit()
 		Qt::AlignCenter,
 		loginWindow->size(),
 		QGuiApplication::primaryScreen()->availableGeometry()));
-	
+	loginWindow->OBSInit();
 	mainWindow->setAttribute(Qt::WA_DeleteOnClose, true);
 	connect(mainWindow, &OBSBasic::destroyed, this, &OBSApp::quit);
 	mainWindow->OBSInit();
 	qobject_cast<OBSBasic *>(mainWindow)->OBSInit2();
-	loginWindow->OBSInit();
+	
 
 	httpsServerHandle = (GBSHttpsHandle*)GBSHttpsInit("http://localhost:7979", "https://localhost:7980");
 	GBSHttpsRun(httpsServerHandle);

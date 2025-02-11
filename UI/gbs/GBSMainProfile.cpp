@@ -12,6 +12,8 @@
 #include "gbs/GBSMainCollector.h"
 #include "gbs/dto/GBSLiveAccountInfo.h"
 #include <QDialog>
+#include "gbs/GBSMainForm.h"
+
 
 
 GBSMainProfile::GBSMainProfile(QWidget *parent)
@@ -273,11 +275,14 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
     
 	QMetaObject::invokeMethod(App()->GetMainWindow(), "close");
-	
-    QTimer::singleShot(2000, [this]() {
-	    GBSNormalLoginForm *loginForm = new GBSNormalLoginForm(this);
-	    loginForm->show();
-    });
+
+	GBSMainForm *loginWindow = new GBSMainForm();
+	loginWindow->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, loginWindow->size(),
+							QGuiApplication::primaryScreen()->availableGeometry()));
+	loginWindow->OBSInit();
+	    
+
+
 
 }
 

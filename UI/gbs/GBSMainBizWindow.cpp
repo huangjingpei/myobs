@@ -291,13 +291,11 @@ void GBSMainBizWindow::markHoriButton(HoriNaviButton* button) {
     }
 }
 
-void GBSMainBizWindow::onLoginResult(const int result) {}
 void GBSMainBizWindow::onPullRtmpUrl(const std::string url) {}
 void GBSMainBizWindow::onUserInfo(const GBSUserInfo *info) {}
 void GBSMainBizWindow::onUserFileDownLoad(const std::string &path, int type) {}
 void GBSMainBizWindow::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 void GBSMainBizWindow::onRoomInfo(GBSRoomInfo *info) {}
-void GBSMainBizWindow::onQRcodeInfo(std::string no, std::string url, int status) {}
 void GBSMainBizWindow::onAccountInfo(GBSLiveAccountInfo result) {};
 
 

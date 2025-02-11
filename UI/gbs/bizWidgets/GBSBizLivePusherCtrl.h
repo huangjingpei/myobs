@@ -120,14 +120,12 @@ private:
 
 
 // 通过 OBSHttpEventHandler 继承
-	void onLoginResult(int result) override;
 	void onPullRtmpUrl(std::string url) override;
 	void onPushRtmpClosed() override;
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
-	void onQRcodeInfo(std::string no, std::string url, int status) override;
 	void onRtmpPushUrl(std::string url, int liveAccountId) override;
 	void onRtmpPushError(std::string errMsg) override;
 	QList<DanmaItem> whoIsDanmukus;

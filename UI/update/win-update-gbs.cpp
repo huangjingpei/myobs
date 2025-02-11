@@ -234,8 +234,9 @@ void GBSAutoUpdateThread::run() {
 		} finishedTrigger;
 
 		QString newFile = QCoreApplication::applicationDirPath() + "/appcast.xml";
+		QLogE("QCoreApplication::applicationDirPath() %s", newFile.toStdString().c_str());
 		TLDownloadTask task;
-		task.m_strUrl = "https://renew.guobo.shop/exe/gbpc/appcast.xml";
+		task.m_strUrl = "http://renew.guobo.shop/exe/gbpc/appcast.xml";
 		task.m_strAgent = "userClient";
 		task.m_uReadBytes = 0;
 		TLWinHttpDownloader down;
@@ -261,6 +262,8 @@ void GBSAutoUpdateThread::run() {
 		QString qCurVersion = QString::fromStdString(curVersion);
 
 		if (qCurVersion.compare(version) >= 0) {
+			QLogE("update: current version: %s new version:%s\n", qCurVersion.toStdString().c_str(),
+			      version.toStdString().c_str());
 			return;
 		}
 		if (manualUpdate) {

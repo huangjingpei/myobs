@@ -20,7 +20,7 @@ class OBSHttpEventHandler {
 public:
 	OBSHttpEventHandler() = default;
 	virtual ~OBSHttpEventHandler(){}
-	virtual void onLoginResult(const int result){};
+	virtual void onLoginResult(const int result, const std::string token = ""){};
 	virtual void onRtmpPushUrl(const std::string url, int liveAccountId) {};
 	virtual void onRtmpPushError(std::string errMsg) {};
 	virtual void onPullRtmpUrl(const std::string url){};
@@ -29,7 +29,7 @@ public:
 	virtual void onUserFileDownLoad(const std::string &path, int type){};
 	virtual void onRoomInfos(std::list<GBSRoomInfo> &info){};
 	virtual void onRoomInfo(GBSRoomInfo *info){};
-	virtual void onQRcodeInfo(std::string no, std::string url, int status){};
+	virtual void onQRcodeInfo(std::string no, std::string url, int status, const std::string token = ""){};
 	virtual void onMemberInfo(GBSMemberInfo info){};
 	virtual void onAgreementInfo(std::string richText, int type){};
 	virtual void onAccountInfo(GBSLiveAccountInfo result){};
@@ -62,6 +62,8 @@ public:
         static std::shared_ptr<GBSHttpClient> instance(new GBSHttpClient());
         return instance;
     }
+
+    void setRecordedToken(std::string externalToken) { token = externalToken; };
 
     void registerHandler(OBSHttpEventHandler *handler);
     void unRegisterHandler(OBSHttpEventHandler *handler);

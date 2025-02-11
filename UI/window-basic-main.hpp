@@ -1410,12 +1410,10 @@ public:
 
 private:
 	// 通过 OBSHttpEventHandler 继承
-	void onLoginResult(const int result) override;
 	void onPullRtmpUrl(const std::string url) override;
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
-	void onQRcodeInfo(std::string no, std::string url, int status) override;
 	void onAccountInfo(GBSLiveAccountInfo result) override;
 	// 通过 WssEventListener 继承
 	void onMessage(std::string msg) override;

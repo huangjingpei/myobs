@@ -5,6 +5,8 @@
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/GBSMainBizWindow.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/common/QIniFile.h"
+
 
 GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	: QWidget(parent),
@@ -141,10 +143,20 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	connect(ui->btnAuthorizeCodeLogin, &QPushButton::clicked, this, &GBSQRCodeLoginForm::onAuthorizedLogin);
 	connect(ui->btnLoginGBS,&QPushButton::clicked, this, &GBSQRCodeLoginForm::onLoginGBS);
 	OBSBasic *main = OBSBasic::Get();
+	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+	QString autoLoginEnable = iniFile->value("User", "login.Type", "unknown").toString();
+	QString loginToken = iniFile->value("User", "login.Token", "unknown").toString();
+
 
 	connect(this, &GBSQRCodeLoginForm::onUseIconUpdate, this, &GBSQRCodeLoginForm::onMyIconDownloaded);
 	GBSHttpClient::getInstance()->registerHandler(this);
-	GBSHttpClient::getInstance()->srsScanLoginV2("多多客");
+	if (loginToken != "unknown") {
+		GBSHttpClient::getInstance()->setRecordedToken(loginToken.toStdString());
+		GBSHttpClient::getInstance()->getUserInfo();
+	} else {
+		GBSHttpClient::getInstance()->srsScanLoginV2("多多客");
+	}
+	
 
 }
 
@@ -177,11 +189,34 @@ void GBSQRCodeLoginForm::onLoginGBS() {
 
 }
 
-void GBSQRCodeLoginForm::onLoginResult(const int result) {}
+void GBSQRCodeLoginForm::onLoginResult(const int result, const std::string token)
+{
+	if (result == 0) {
+
+	} else if (result == -5) {
+		QLogE("Login token is expired or invalid");
+		GBSHttpClient::getInstance()->srsScanLoginV2("多多客");
+
+	}
+}
 
 void GBSQRCodeLoginForm::onPullRtmpUrl(const std::string url) {}
 
-void GBSQRCodeLoginForm::onUserInfo(const GBSUserInfo *info) {}
+void GBSQRCodeLoginForm::onUserInfo(const GBSUserInfo *info) {
+	QMetaObject::invokeMethod(
+		this,
+		[this]() {
+			QLogD("Start to switch Login to MainBiz in QRCode Login");
+			GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();
+			gbsMainBizWindow->setGeometry(
+				QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, gbsMainBizWindow->size(),
+						    QGuiApplication::primaryScreen()->availableGeometry()));
+			gbsMainBizWindow->show();
+			emit notifyLoginSuccess();
+			QLogD("notifyLoginSuccess +++++");
+		},
+		Qt::QueuedConnection);
+}
 
 void GBSQRCodeLoginForm::onUserFileDownLoad(const std::string &path, int type) {
 	QLogE("GBSQRCodeLoginForm onUserFileDownLoad %s", path.c_str());
@@ -196,8 +231,11 @@ void GBSQRCodeLoginForm::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 void GBSQRCodeLoginForm::onRoomInfo(GBSRoomInfo *info) {}
 
 //状态 0待扫码 1已扫码待确认 2已确认
-void GBSQRCodeLoginForm::onQRcodeInfo(std::string no, std::string url, int status) {
+void GBSQRCodeLoginForm::onQRcodeInfo(std::string no, std::string url, int status, const std::string token) {
 	if (status == 2) {
+		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+		iniFile->setValue("User", "login.Type", "qrcode");
+		iniFile->setValue("User", "login.Token", QString::fromStdString(token));
 		qDebug() << "onQRcodeInfo 2.";
 		QMetaObject::invokeMethod(QCoreApplication::instance()->thread(), [](){
 			GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();

@@ -15,6 +15,7 @@
 #include "gbs/common/QBizLogger.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 #include "gbs/common/QIniFile.h"
+#include "gbs/GBSMainForm.h"
 
 GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 	  ui(new Ui::GBSNormalLoginForm)
@@ -27,14 +28,15 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 	ui->lePassword->setEchoMode(QLineEdit::Password);
 
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
-	QString autoLoginEnable = iniFile->value("User", "login.Type", "unknown").toString();
 	QString emailValue;
 	QString passwordValue;
-	
+	QString loginToken;
 	emailValue = iniFile->value("User", "login.Username", "unknown").toString();
 	passwordValue = iniFile->value("User", "login.Password", "unknown").toString();
-	
+	loginToken = iniFile->value("User", "login.Token", "unknown").toString();
 
+
+	
 	if ((emailValue != "unknown") && (passwordValue != "unknown")) {
 		QString decPassword = passwordProtecter->decrypt(passwordValue.toUtf8()); 
 		ui->leEmal->setText(emailValue);
@@ -168,6 +170,10 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 	connect(ui->btnLoginGBS,&QPushButton::clicked, this, &GBSNormalLoginForm::onLoginGBS);
 
 	GBSHttpClient::getInstance()->registerHandler(this);
+	if (loginToken != "unknown") {
+		GBSHttpClient::getInstance()->setRecordedToken(loginToken.toStdString());
+		GBSHttpClient::getInstance()->getUserInfo();
+	}
 }
 
 void GBSNormalLoginForm::onLinkActivated(const QString &link) {
@@ -241,22 +247,21 @@ void GBSNormalLoginForm::onLoginGBS() {
 		"多多客" ,5
 		);
 
-	
+	//
 	//GBSHttpClient::getInstance()->loginWithCheckVersion(email.toUtf8().constData(), password.toUtf8().constData(),
 	//						    5, "多多客");
 
 	//onLoginResult(0);
 }
-void GBSNormalLoginForm::onLoginResult(const int result)
+void GBSNormalLoginForm::onLoginResult(const int result, const std::string token)
 {
 	
 	if (result == 0) {
 		QMetaObject::invokeMethod(
 			this,
-			[this]() {
+			[this, token]() {
 
 				std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
-				QString autoLoginEnable = iniFile->value("User", "login.Type", "unknown").toString();
 				QString emailValue;
 				QString passwordValue;
 				
@@ -321,8 +326,8 @@ void GBSNormalLoginForm::onLoginResult(const int result)
 					layout->addLayout(layout1);
 					layout->addSpacing(40);
 					layout->addLayout(layout2);
-					GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
-					connect(confirm, &QPushButton::clicked, dialog, [dialog, this]() {
+					//GBSMsgDialog *dialog = new GBSMsgDialog("提示", layout, this);
+					//connect(confirm, &QPushButton::clicked, dialog, [dialog, token, this]() {
 						
 						QByteArray decPassword = passwordProtecter->encrypt(
 							this->ui->lePassword->text().toUtf8());
@@ -330,11 +335,12 @@ void GBSNormalLoginForm::onLoginResult(const int result)
 						iniFile->setValue("User", "login.Type", "normal");
 						iniFile->setValue("User", "login.Username", this->ui->leEmal->text());
 						iniFile->setValue("User", "login.Password", QString(decPassword));
-						dialog->accept();
-						});
-					connect(cancel, &QPushButton::clicked, dialog, &QDialog::reject);
+						iniFile->setValue("User", "login.Token", QString::fromStdString(token));
+					//	dialog->accept();
+					//	});
+					//connect(cancel, &QPushButton::clicked, dialog, &QDialog::reject);
 
-					dialog->exec();
+					//dialog->exec();
 				}
 
 				QLogD("Start to switch Login to MainBiz");
@@ -429,18 +435,36 @@ void GBSNormalLoginForm::onLoginResult(const int result)
 			ui->btnLoginGBS->setDisabled(false);
 
 		});
+	} else if (result == -5) {
+		QLogE("Login token is expired or invalid");
 	}
 
 }
 
 void GBSNormalLoginForm::onPullRtmpUrl(const std::string url) {}
-void GBSNormalLoginForm::onUserInfo(const GBSUserInfo *info) {}
+void GBSNormalLoginForm::onUserInfo(const GBSUserInfo *info) {
+	QMetaObject::invokeMethod(
+		this,
+		[this]() {
+			QLogD("Start to switch Login to MainBiz in Nomral Login");
+			GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();
+			gbsMainBizWindow->setGeometry(
+				QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, gbsMainBizWindow->size(),
+						    QGuiApplication::primaryScreen()->availableGeometry()));
+			gbsMainBizWindow->show();
+			emit notifyLoginSuccess();
+			QLogD("notifyLoginSuccess +++++");
+
+		},
+		Qt::QueuedConnection);
+
+
+}
 void GBSNormalLoginForm::onUserFileDownLoad(const std::string &path, int type) {}
 void GBSNormalLoginForm::onRoomInfos(std::list<GBSRoomInfo> &info) {
 
 }
 void GBSNormalLoginForm::onRoomInfo(GBSRoomInfo *info) {}
-void GBSNormalLoginForm::onQRcodeInfo(std::string no, std::string url, int status) {}
 void GBSNormalLoginForm::onAgreementInfo(std::string richText, int type){
 	QMetaObject::invokeMethod(this, [richText, type, this]() {
 		QTextBrowser *browser = new QTextBrowser;

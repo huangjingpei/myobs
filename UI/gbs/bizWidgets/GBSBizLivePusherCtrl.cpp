@@ -902,10 +902,6 @@ void GBSBizLivePusherCtrl::addNewWidget(const QString &atext,
 	
 }
 
-void GBSBizLivePusherCtrl::onLoginResult(int result) {
-
-}
-
 void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url, int liveAccountId) {
 	
 	qDebug() << "GBSBizLivePusherCtrl URL: " << url;
@@ -997,7 +993,6 @@ void GBSBizLivePusherCtrl::onRoomInfo(GBSRoomInfo *info)
 	qUserId = QString("%1").arg(userId);
 	qDebug() << "GBSBizLivePusherCtrl onRoomInfo: " << qUserId;
 }
-void GBSBizLivePusherCtrl::onQRcodeInfo(std::string no, std::string url, int status) {}
 
 GBSBizLivePusherCtrl::~GBSBizLivePusherCtrl()
 {
