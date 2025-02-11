@@ -4,6 +4,7 @@
 #include <QList>
 #include <QString>
 #include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/dto/GBSPushStreamInfo.h"
 
 class GBSMainCollector {
 public:
@@ -85,6 +86,10 @@ public:
 
 	std::string &getSoftWareVersion();
 	std::string &getBuildInfo();
+
+	//Push Stream info currently.
+	void setPushStreamInfo(GBSPushStreamInfo info);
+	GBSPushStreamInfo& getPushStreamInfo();
 	
 
 private:
@@ -104,6 +109,8 @@ private:
 	mutable std::mutex mMutex;
 
 	GBSLiveAccountInfo mAccountInfo;
+
+	GBSPushStreamInfo mPushStreamInfo;
 
 	QList<QString> livePlats;
 	QList<QString> liveAbbreviations;

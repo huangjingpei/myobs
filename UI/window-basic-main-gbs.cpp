@@ -329,19 +329,7 @@ void OBSBasic::stopPullStream()
 	#if 0
 	obs_source_t *source = obs_get_source_by_name("RTMP 矩阵地址");
 	if (source) {
-		// 获取所有场景
-		obs_scene_t *scene = obs_scene_from_source(obs_frontend_get_current_scene());
-		if (scene) {
-			
-			obs_sceneitem_t *item = obs_scene_find_source(scene, "RTMP 矩阵地址");
-			if (item) {
-				obs_sceneitem_remove(item); // 删除场景项
-			}
-		}
-
-		// 删除源
-		obs_source_remove(source);
-		obs_source_release(source);
++
 	}
 	#else
 	obs_source_t *source = obs_get_source_by_name("RTMP 矩阵地址");
@@ -358,6 +346,7 @@ void OBSBasic::dumpFFmegSourceLog () {
 	//const char *type;
 	//OBSSource newSource;
 	//while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+	
 	//	const char *name = obs_source_get_display_name(type);
 	//	uint32_t caps = obs_get_source_output_flags(type);
 

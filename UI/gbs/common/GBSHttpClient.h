@@ -13,6 +13,7 @@
 #include "gbs/dto/GBSMemberInfo.h"
 #include "gbs/dto/GBSLiveAccountInfo.h"
 #include "gbs/dto/GBSLiveDevices.h"
+#include "gbs/dto/GBSPushStreamInfo.h"
 
 
 
@@ -37,6 +38,7 @@ public:
 	virtual void onHeartBeat(int result){};
 	virtual void onEnterGuardCtrl(int result){};
 	virtual void onListDevices(std::list<GBSLiveDevices> devices,int pageNum){};
+	virtual void onPushStreamInfo(GBSPushStreamInfo info){};
 };
 
 class GBSHttpClient {
@@ -190,6 +192,38 @@ public:
 
     void sendWebsocketMsgV2(std::string msg);
     void sendWebsocketMsgTaskV2(std::string msg);
+
+
+    // 录播接口
+    void queryZlmLiveDevicesV2(int liveAccountId);
+    void queryZlmLiveDevicesTaskV2(int liveAccountId);
+
+    void startLiveTranscribeV2(int duration, int streamLogId);
+    void startLiveTranscribeTaskV2(int duration, int streamLogId);
+
+    void endLiveTranscribeV2(int streamLogId);
+    void endLiveTranscribeTaskV2(int streamLogId);
+
+    void getLiveTranscribeStatusV2(int streamLogId);
+    void getLiveTranscribeStatusTaskV2(int streamLogId);
+
+
+    void queryLiveTranscribeByStreamLogIdV2(int streamLogId);
+    void queryLiveTranscribeByStreamLogIdTaskV2(int streamLogId);
+
+    void sendTranscribeLiveHeartBeatV2(int id);
+    void sendTranscribeLiveHeartBeatTaskV2(int id);
+
+    void startTranscribeLiveV2(int liveAccountId, std::list<std::string> liveDevices, int streamLogId);
+    void startTranscribeLiveTaskV2(int liveAccountId, std::list<std::string> liveDevices, int streamLogId);
+
+    void endTranscribeLiveV2(int id);
+    void endTranscribeLiveTaskV2(int id);
+
+    void pageZlmStreamLogV2(int streamLogId, int liveServerId, int pageNum, int pageSize);
+    void pageZlmStreamLogTaskV2(int streamLogId, int liveServerId, int pageNum, int pageSize);
+
+
 
     private:
 	std::string getDeviceNo();

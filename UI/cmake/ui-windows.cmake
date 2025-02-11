@@ -38,6 +38,7 @@ target_sources(
     gbs/common/SelectedIDSDialog.h
     gbs/common/EllipticalSlider.h
     gbs/common/EllipticalSliderExt.h
+    gbs/common/CountdownDialog.h
 
     gbs/common/SystemUtils.h
     gbs/common/QIniFile.h
@@ -149,12 +150,14 @@ target_sources(
     gbs/bizWidgets/GBSBizEShopData.h
     gbs/bizWidgets/GBSAddBroker.cpp
     gbs/bizWidgets/GBSAddBroker.h
-	gbs/bizWidgets/GBSModifyDevice.cpp
+	  gbs/bizWidgets/GBSModifyDevice.cpp
     gbs/bizWidgets/GBSModifyDevice.h
     gbs/bizWidgets/GBSActivateDevice.cpp
     gbs/bizWidgets/GBSActivateDevice.h
     gbs/bizWidgets/GBSRemoveBroker.cpp
     gbs/bizWidgets/GBSRemoveBroker.h
+    gbs/bizWidgets/GBSStreamSelector.cpp
+    gbs/bizWidgets/GBSStreamSelector.h
 
     gbs/dto/GBSUserInfo.h
     gbs/dto/GBSUserInfo.cpp
@@ -170,7 +173,10 @@ target_sources(
     gbs/dto/GBSLiveDevices.cpp
     gbs/dto/GBSBundleData.h
     gbs/dto/GBSBundleData.cpp
-    
+    gbs/dto/GBSPushStreamInfo.h
+    gbs/dto/GBSPushStreamInfo.cpp
+    gbs/dto/GBSLiveTranscribe.h
+    gbs/dto/GBSLiveTranscribe.cpp
 
     gbs/codec/GBSOpusEncoder.h
     gbs/codec/GBSOpusEncoder.cpp
