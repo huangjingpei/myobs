@@ -6,6 +6,14 @@
 
 #include <windows.h>
 #include <tlhelp32.h>
+#include <iostream>
+#include <string>
+#include <Windows.h>
+#include <ShlObj.h> // For SHGetFolderPathW
+
+#include <filesystem> // 需要 C++17 或更高版本
+
+namespace fs = std::filesystem;
 
 static bool killDanmakuProcess(const QString &processName)
 {
@@ -46,6 +54,82 @@ static bool killDanmakuProcess(const QString &processName)
 	CloseHandle(snapshot);
 	return killed;
 }
+
+namespace fs = std::filesystem;
+
+static std::wstring getChromePath()
+{
+	// 1. 尝试从注册表中获取 Chrome 可执行文件的路径
+	HKEY hKey;
+	if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", 0,
+			  KEY_READ, &hKey) == ERROR_SUCCESS) {
+		wchar_t path[MAX_PATH];
+		DWORD path_size = sizeof(path);
+		if (RegQueryValueExW(hKey, nullptr, nullptr, nullptr, (LPBYTE)path, &path_size) == ERROR_SUCCESS) {
+			RegCloseKey(hKey);
+			return path;
+		}
+		RegCloseKey(hKey);
+	}
+
+	if (RegOpenKeyExW(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", 0,
+			  KEY_READ, &hKey) == ERROR_SUCCESS) {
+		wchar_t path[MAX_PATH];
+		DWORD path_size = sizeof(path);
+		if (RegQueryValueExW(hKey, nullptr, nullptr, nullptr, (LPBYTE)path, &path_size) == ERROR_SUCCESS) {
+			RegCloseKey(hKey);
+			return path;
+		}
+		RegCloseKey(hKey);
+	}
+
+	// 2. 尝试默认安装位置 (64-bit)
+	wchar_t programFilesPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROGRAM_FILES, NULL, 0, programFilesPath))) {
+		std::wstring defaultPath =
+			std::wstring(programFilesPath) + L"\\Google\\Chrome\\Application\\chrome.exe";
+		if (fs::exists(defaultPath)) {
+			return defaultPath;
+		}
+	}
+
+	// 3. 尝试默认安装位置 (32-bit)
+	wchar_t programFilesX86Path[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROGRAM_FILESX86, NULL, 0, programFilesX86Path))) {
+		std::wstring defaultPath =
+			std::wstring(programFilesX86Path) + L"\\Google\\Chrome\\Application\\chrome.exe";
+		if (fs::exists(defaultPath)) {
+			return defaultPath;
+		}
+	}
+
+	// 4. 尝试从环境变量中查找 (不太可靠，但可以作为最后的尝试)
+	wchar_t chromePathEnv[MAX_PATH];
+	DWORD result = GetEnvironmentVariableW(L"CHROME_PATH", chromePathEnv, MAX_PATH);
+	if (result > 0 && result < MAX_PATH) {
+		if (fs::exists(chromePathEnv)) {
+			return chromePathEnv;
+		}
+	}
+
+	// 5. 尝试从配置文件中读取
+	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("danmu/setting/setting.ini");
+	QString chromePathFromIni = iniFile->value("setting", "google", "").toString(); 
+
+	if (!chromePathFromIni.isEmpty()) {
+		std::wstring chromePathW = chromePathFromIni.toStdWString();
+		if (fs::exists(chromePathW)) { // 配置文件里的路径存在
+			return chromePathW;
+		} else {
+			qDebug() << "Chrome path from ini file does not exist:" << chromePathFromIni;
+		}
+	}
+	
+
+	// 如果所有方法都失败，返回一个空字符串
+	return L"";
+}
+
 
 
 GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
@@ -127,19 +211,23 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 
 				"}"
     );
+
+        std::wstring chromePathW = getChromePath();
+	QString chromePath = QString::fromStdWString(chromePathW);
+
 	iniFile = new IniSettings("danmu/setting/setting.ini");
-	QString text = ui->leChromePath->text();
-	if (text.isEmpty()) {
-		QString qstr = iniFile->value("setting", "google", "").toString();
-		ui->leChromePath->setText(qstr);
+	if (!chromePath.isEmpty()) {
+		ui->leChromePath->setText(chromePath);
+		iniFile->setValue("setting", "google", chromePath);
+	} else {
+		QLogE("cannot find chrome path.");
 	}
 	connect(ui->leChromePath, &QLineEdit::textChanged, this,
 		[this](const QString & text) {
 			iniFile->setValue("setting", "google", text);
 		});
 
-
-	text = ui->leServer->text();
+	QString text = ui->leServer->text();
 	if (text.isEmpty()) {
 		QString qstr =
 			iniFile->value("host", "server", "127.0.0.1").toString();

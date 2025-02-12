@@ -270,3 +270,31 @@ void GBSQRCodeLoginForm::onMyIconDownloaded(QString path)
 	QPixmap pixmap(path);
 	ui->lblQRCode->setPixmap(pixmap.scaled(245, 245, Qt::KeepAspectRatio));
 }
+
+
+void GBSQRCodeLoginForm::onAgreementInfo(std::string richText, int type)
+{
+	QMetaObject::invokeMethod(this, [richText, type, this]() {
+		QTextBrowser *browser = new QTextBrowser;
+		QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+		browser->setFixedSize(1440, 880);
+		browser->setHtml(QString::fromStdString(richText));
+		QDialog *dialog = new QDialog;
+		if (type == 1) {
+			dialog->setWindowTitle("用户协议");
+		} else if (type == 2) {
+			dialog->setWindowTitle("隐私政策");
+		}
+
+		QVBoxLayout *layout = new QVBoxLayout();
+		dialog->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+
+		layout->addWidget(browser);
+		layout->addWidget(buttonBox);
+		dialog->setLayout(layout);
+		connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept); // 确认按钮
+		connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject); // 取消按钮
+		dialog->exec();
+	});
+}

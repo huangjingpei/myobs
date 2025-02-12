@@ -470,7 +470,7 @@ void GBSNormalLoginForm::onAgreementInfo(std::string richText, int type){
 		QTextBrowser *browser = new QTextBrowser;
 		QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-		browser->setFixedSize(1440, 990);
+		browser->setFixedSize(1440, 880);
 		browser->setHtml(QString::fromStdString(richText));
 		QDialog *dialog = new QDialog;
 		if (type == 1) {

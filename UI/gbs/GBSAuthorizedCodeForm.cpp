@@ -7,6 +7,8 @@
 #include "gbs/common/QBizLogger.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 #include "gbs/common/QIniFile.h"
+#include <QTextBrowser>
+#include <QDialogButtonBox>
 
 #include <QStyle>
 
@@ -397,4 +399,31 @@ void GBSAuthorizedCodeForm::onLoginResult(const int result, const std::string to
 	} else if (result == -5) {
 		QLogE("Login token is expired or invalid");
 	}
+}
+
+void GBSAuthorizedCodeForm::onAgreementInfo(std::string richText, int type)
+{
+	QMetaObject::invokeMethod(this, [richText, type, this]() {
+		QTextBrowser *browser = new QTextBrowser;
+		QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+		browser->setFixedSize(1440, 880);
+		browser->setHtml(QString::fromStdString(richText));
+		QDialog *dialog = new QDialog;
+		if (type == 1) {
+			dialog->setWindowTitle("用户协议");
+		} else if (type == 2) {
+			dialog->setWindowTitle("隐私政策");
+		}
+
+		QVBoxLayout *layout = new QVBoxLayout();
+		dialog->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+
+		layout->addWidget(browser);
+		layout->addWidget(buttonBox);
+		dialog->setLayout(layout);
+		connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept); // 确认按钮
+		connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject); // 取消按钮
+		dialog->exec();
+	});
 }

@@ -715,29 +715,6 @@ bool GBSBizLivePusherCtrl::FindCameraSource(void *param, obs_source_t *source)
 void GBSBizLivePusherCtrl::onStartWork(bool checked) {
 	int index = ui->tabWidget_2->currentIndex();
 	startWorking = !startWorking;
-
-	//Step 1: 和后端服务交互创建流信息
-	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-	if (startWorking) {
-		ui->tabWidget_2->tabBar()->setEnabled(false);
-		
-		QTimer::singleShot(16000, this, &GBSBizLivePusherCtrl::streamCheck);
-		ui->btnStartLive->pressed("关播", "直播中", true);
-		QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
-		GBSHttpClient::getInstance()->createSrsStreamV2(1);
-		GBSMainCollector::getInstance()->setLiving(true);
-	} else {
-		ui->tabWidget_2->tabBar()->setEnabled(true);
-		ui->btnStartLive->pressed("开播", "已关播", false);
-		QLogE("GBSBizLivePusherCtrl 关播 %d", mLiveAccountId);
-		GBSHttpClient::getInstance()->closeSrsStreamLogV2(mLiveAccountId);
-		GBSMainCollector::getInstance()->setLiving(false);
-	}
-	if (startWorking) {
-		ui->btnStartLive->pressed("关播", "直播中", true);
-	} else {
-		ui->btnStartLive->pressed("开播", "已关播", false);
-	}
 	if (!startWorking) {
 		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
 		if (index == 1) { //素材开播，这里是关闭素材开播
@@ -746,6 +723,30 @@ void GBSBizLivePusherCtrl::onStartWork(bool checked) {
 			GBSHttpClient::getInstance()->endLiveTranscribeV2(result.getId());
 		}
 	}
+	//Step 1: 和后端服务交互创建流信息
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	if (startWorking) {
+		ui->tabWidget_2->tabBar()->setEnabled(false);
+		
+		//QTimer::singleShot(60000, this, &GBSBizLivePusherCtrl::streamCheck);
+		ui->btnStartLive->pressed("关播", "直播中", true);
+		QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
+		GBSHttpClient::getInstance()->createSrsStreamV2(1);
+		GBSMainCollector::getInstance()->setLiving(true);
+	} else {
+		ui->tabWidget_2->tabBar()->setEnabled(true);
+		ui->btnStartLive->pressed("开播", "已关播", false);
+		QLogE("GBSBizLivePusherCtrl 关播 %d", mLiveAccountId);
+		GBSPushStreamInfo result = GBSMainCollector::getInstance()->getPushStreamInfo();
+		GBSHttpClient::getInstance()->closeSrsStreamLogV2(result.getId());
+		GBSMainCollector::getInstance()->setLiving(false);
+	}
+	if (startWorking) {
+		ui->btnStartLive->pressed("关播", "直播中", true);
+	} else {
+		ui->btnStartLive->pressed("开播", "已关播", false);
+	}
+
 	//if ((index == 0) || (index == 1)) {//直播和素材开播，这里都要先开播
 
 	//} else if (index == 2) {

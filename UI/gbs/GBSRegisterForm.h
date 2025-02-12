@@ -2,12 +2,13 @@
 #define GBSREGISTERFORM_H
 
 #include <QWidget>
+#include "gbs/common/GBSHttpClient.h"
 
 namespace Ui {
 class GBSRegisterForm;
 }
 
-class GBSRegisterForm : public QWidget {
+class GBSRegisterForm : public QWidget, public OBSHttpEventHandler {
 	Q_OBJECT
 
 public:
@@ -22,6 +23,10 @@ private slots:
 	void onLoginTypeChanged(int type);
 	void onQRcodeLogin();
 	void onAuthorizedLogin();
+
+private:
+
+	void onAgreementInfo(std::string richText, int type) override;
 
 private:
 	Ui::GBSRegisterForm *ui;

@@ -42,6 +42,7 @@ private:
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onQRcodeInfo(std::string no, std::string url, int status, const std::string token = "") override;
+	void onAgreementInfo(std::string richText, int type) override;
 };
 
 #endif // GBSQRCODELOGINFORM_H

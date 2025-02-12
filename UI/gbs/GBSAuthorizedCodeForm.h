@@ -31,8 +31,9 @@ private slots:
 	void onLoginGBS();
 
 private:
-	void onUserInfo(const GBSUserInfo *info);
-	void onLoginResult(const int result, const std::string token);
+	void onUserInfo(const GBSUserInfo *info) override;
+	void onLoginResult(const int result, const std::string token) override;
+	void onAgreementInfo(std::string richText, int type) override;
 
 	std::unique_ptr<XORPasswordProtecter> passwordProtecter;
 
