@@ -43,7 +43,8 @@ public slots:
 	// 添加新 widget 的槽函数
 	//void addNewWidget();
 	void onComboBoxIndexChanged(int index);
-	void onStartRtmpPush(bool checked);
+	
+	void onStartWork(bool checked);
 	void StartStreaming(std::string server, std::string key);
 	void StopStreaming();
 	void StartReplayBuffer();
@@ -68,12 +69,16 @@ signals:
 public slots:
 	void addNewWidget(const QString &text, const QString &imagePath, const QString &text2, const QString &type);
 
+	void slotStartLiveTranscribe();
+
 
 private slots:
 	void updateStyle(bool checked);
 	void onTimeout();
 	void onTabChanged(int index);
+	void onTabChanged2(int index);
 	void onWssKeepAlive();
+
 
 private:
 	OBSService service;
@@ -107,6 +112,10 @@ private:
 
 	void processDanmaItem(const nlohmann::json jsonObject);
 
+	void startPushStream(std::string url, int liveAccountId);
+
+	void GetLiveTranscribeStatus();
+
 private:
 	QString qPushUrl;
 	QString qUserId;
@@ -122,12 +131,16 @@ private:
 // 通过 OBSHttpEventHandler 继承
 	void onPullRtmpUrl(std::string url) override;
 	void onPushRtmpClosed() override;
+	void onSliceCount(int id, int sliceCount);
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onUserFileDownLoad(const std::string &path, int type) override;
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onRtmpPushUrl(std::string url, int liveAccountId) override;
+	void onPushStreamInfo(GBSPushStreamInfo result) override;
 	void onRtmpPushError(std::string errMsg) override;
+	void onListDevices(std::list<GBSLiveDevices> devices, int pageNum) override;
+	
 	QList<DanmaItem> whoIsDanmukus;
 	QList<DanmaItem> allDanmakus;
 	QList<DanmaItem> giftDanmakus;
@@ -153,6 +166,7 @@ private:
 	int mDanmakuType{DANITEM_TYPE_ALL};
 
 	std::atomic<bool> onFailedProcessing{false};
+	std::atomic<bool> startWorking{false};
 };
 
 #endif // GBSBIZLIVEPUSHERCTRL_H

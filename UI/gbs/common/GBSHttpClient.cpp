@@ -432,8 +432,11 @@ void GBSHttpClient::sendWebsocketMsg(std::string msg)
 	executor->addTask([msg, this]() { this->sendWebsocketMsgTask(msg); });
 }
 void GBSHttpClient::sendWebsocketMsgTask(std::string msg) {
-	json body = {{"info", msg}};
-	std::string url = baseUrl + "/preferred/distribute/sendAdminDistributeGoodsWebSocketInfo";
+	
+	GBSLiveAccountInfo accountInfo = GBSMainCollector::getInstance()->getAccountInfo();
+	int liveAccountId = accountInfo.getId();
+	json body = {{"info", msg}, {"liveAccountId", liveAccountId}};
+	std::string url = baseUrl + "/preferred/matrixLive/barragePush";
 	auto task = new HttpRequestTask(
 		[this](std::string url, std::string body,
 		       std::string token) -> std::string {
@@ -1748,14 +1751,15 @@ void GBSHttpClient::createSrsStreamTaskV2(int streamSource) {
 
 }
 
-void GBSHttpClient::enterControlV2(std::string password, int liveAccountId) {
-	executor->addTask(std::bind(&GBSHttpClient::enterControlTaskV2, this, password, liveAccountId));
+void GBSHttpClient::enterControlV2(std::string password, int liveAccountId, int liveDeviceId)
+{
+	executor->addTask(std::bind(&GBSHttpClient::enterControlTaskV2, this, password, liveAccountId, liveDeviceId));
 
 
 }
-void GBSHttpClient::enterControlTaskV2(std::string password, int liveAccountId) {
-	json body = {
-		{"controlPassword", password}, {"liveAccountId", liveAccountId}
+void GBSHttpClient::enterControlTaskV2(std::string password, int liveAccountId, int liveDeviceId)
+{
+	json body = {{"controlPassword", password}, {"liveAccountId", liveAccountId}, {"liveDeviceId", liveDeviceId}
 
 	};
 
@@ -2036,9 +2040,18 @@ void GBSHttpClient::closeSrsStreamLogTaskV2(int id) {
 		},
 		[this](const std::string &response) {
 			if (response.compare("Error")) {
+				auto r = json::parse(response);
+				int id = -1;
+				int sliceCount = 0;
+				if ((!r["result"].is_null()) && (r["result"].is_object())) {
+					id = r["result"]["id"].get<int>();
+					sliceCount = r["result"]["sliceCount"].get<int>();
+
+				}
 				std::lock_guard<std::mutex> guard(cs);
 				for (auto it = handlers.begin(); it != handlers.end(); it++) {
 					(*it)->onPushRtmpClosed();
+					(*it)->onSliceCount(id, sliceCount);					
 				}
 				return;
 			
@@ -2113,8 +2126,11 @@ void GBSHttpClient::sendWebsocketMsgV2(std::string msg)
 }
 void GBSHttpClient::sendWebsocketMsgTaskV2(std::string msg)
 {
-	json body = {{"info", msg}};
-	std::string url = baseUrlV2 + "/preferred/distribute/sendAdminDistributeGoodsWebSocketInfo";
+
+	GBSLiveAccountInfo accountInfo = GBSMainCollector::getInstance()->getAccountInfo();
+	int liveAccountId = accountInfo.getId();
+	json body = {{"info", msg}, {"liveAccountId", liveAccountId}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/barragePush";
 	auto task = new HttpRequestTask(
 		[this](std::string url, std::string body, std::string token) -> std::string {
 			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
@@ -2499,6 +2515,39 @@ void GBSHttpClient::pageZlmStreamLogTaskV2(int streamLogId, int liveServerId, in
 		     {"pageNum", pageNum},
 		     {"pageSize", pageSize}};
 	std::string url = baseUrlV2 + "/preferred/matrixLive/pageZlmStreamLog";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::modifyLiveRemarkV2(int id, std::string liveRemark) {
+	executor->addTask(std::bind(&GBSHttpClient::modifyLiveRemarkTaskV2, this, id, liveRemark));
+}
+void GBSHttpClient::modifyLiveRemarkTaskV2(int id, std::string liveRemark) {
+	json body = {{"id", id}, {"liveRemark", liveRemark}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/modifyLiveRemark";
 	auto task = new HttpRequestTask(
 		[this](std::string url, std::string body, std::string token) -> std::string {
 			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},

@@ -13,6 +13,7 @@
 #include "gbs/dto/GBSLiveAccountInfo.h"
 #include <QDialog>
 #include "gbs/GBSMainForm.h"
+#include "gbs/common/QIniFile.h"
 
 
 
@@ -273,14 +274,21 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 }
 
 void GBSMainProfile::exitSystemAndGoLogin(bool cheked) {
-    
+	//TODO 退出登录，响应点击之后，无法回到登录页面，下个版本使用QStackWidget进行优化。
+	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+	iniFile->remove("User", "login.Password");
+	iniFile->remove("User", "login.Smscode");
+	iniFile->remove("User", "login.Token");
+
 	QMetaObject::invokeMethod(App()->GetMainWindow(), "close");
 
-	GBSMainForm *loginWindow = new GBSMainForm();
-	loginWindow->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, loginWindow->size(),
-							QGuiApplication::primaryScreen()->availableGeometry()));
-	loginWindow->OBSInit();
-	    
+
+
+	//GBSMainForm *loginWindow = new GBSMainForm();
+	//loginWindow->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, loginWindow->size(),
+	//						QGuiApplication::primaryScreen()->availableGeometry()));
+	//loginWindow->OBSInit();
+	//    
 
 
 

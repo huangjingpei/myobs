@@ -1019,6 +1019,9 @@ OBSApp::OBSApp(int &argc, char **argv, profiler_name_store_t *store)
 {
 	QString procceessName = "obs64.exe";
 	killPreviousInstances(procceessName);
+
+	QString procceessName2 = "guobolive.exe";
+	killPreviousInstances(procceessName2);
 	/* fix float handling */
 #if defined(Q_OS_UNIX)
 	if (!setlocale(LC_NUMERIC, "C"))

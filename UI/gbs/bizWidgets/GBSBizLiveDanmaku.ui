@@ -43,7 +43,7 @@ font-size:16px;
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>110</x>
        <y>100</y>
        <width>95</width>
        <height>22</height>
@@ -57,7 +57,7 @@ font-size:16px;
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>380</y>
+       <y>340</y>
        <width>95</width>
        <height>22</height>
       </rect>
@@ -66,31 +66,11 @@ font-size:16px;
       <string>平台直播间地址</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>150</y>
-       <width>135</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color:#00C566;
-border: 1px solid white;
-border-radius:5px;
-color:#FFFFFF;
-font-size:16px;</string>
-     </property>
-     <property name="text">
-      <string>谷歌EXE路径</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pushButton_3">
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>200</y>
+       <y>140</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -109,7 +89,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>250</y>
+       <y>190</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -128,7 +108,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>300</y>
+       <y>240</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -147,7 +127,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>430</y>
+       <y>390</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -166,7 +146,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>480</y>
+       <y>440</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -185,7 +165,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>530</y>
+       <y>490</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -204,7 +184,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>580</y>
+       <y>540</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -223,7 +203,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>630</y>
+       <y>590</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -242,7 +222,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>680</y>
+       <y>640</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -257,34 +237,11 @@ color:#FFFFFF</string>
       <string>美团地址</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="leChromePath">
-     <property name="geometry">
-      <rect>
-       <x>340</x>
-       <y>150</y>
-       <width>581</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"> background-color: #F9F9F9;
- border: none;
-border-radius: 1px;
-font-size: 16px	
-</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="leServer">
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>200</y>
+       <y>140</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -307,7 +264,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>250</y>
+       <y>190</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -330,7 +287,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>300</y>
+       <y>240</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -353,7 +310,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>430</y>
+       <y>390</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -376,7 +333,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>480</y>
+       <y>440</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -399,7 +356,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>530</y>
+       <y>490</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -422,7 +379,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>580</y>
+       <y>540</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -445,7 +402,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>630</y>
+       <y>590</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -468,7 +425,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>680</y>
+       <y>640</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -491,7 +448,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>780</y>
+       <y>740</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -514,7 +471,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>780</y>
+       <y>740</y>
        <width>135</width>
        <height>40</height>
       </rect>
@@ -533,7 +490,7 @@ color:#FFFFFF</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>730</y>
+       <y>690</y>
        <width>581</width>
        <height>40</height>
       </rect>
@@ -556,7 +513,7 @@ font-size: 16px
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>730</y>
+       <y>690</y>
        <width>135</width>
        <height>40</height>
       </rect>

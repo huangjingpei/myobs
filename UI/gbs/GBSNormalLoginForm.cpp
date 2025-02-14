@@ -44,6 +44,13 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 		ui->radioButton->setChecked(true);
 	}
 
+	//这个是用来响应用户的退出登录的操作
+	if ((emailValue != "unknown") && (passwordValue == "unknown")) {
+		ui->radioButton->setChecked(false);
+		ui->leEmal->setText(emailValue);
+	}
+
+
         QString welcomeMessage = R"(
             <p style="font-size: 32px; text-align: center;">
                 <span style="color: red;">Hi！</span>
@@ -270,9 +277,9 @@ void GBSNormalLoginForm::onLoginResult(const int result, const std::string token
 				
 				QString email = ui->leEmal->text();
 				QString password = ui->lePassword->text();
-				if (((emailValue == "unknown") || (passwordValue == "unknown")) ||
-				    ((email != emailValue) && (password != passwordValue))
-					) {
+				//if (((emailValue == "unknown") || (passwordValue == "unknown")) ||
+				//    ((email != emailValue) && (password != passwordValue))
+				//	) {
 					QWidget *widget = new QWidget;
 					QVBoxLayout *layout = new QVBoxLayout(widget);
 					QHBoxLayout *layout1 = new QHBoxLayout(widget);
@@ -331,7 +338,6 @@ void GBSNormalLoginForm::onLoginResult(const int result, const std::string token
 						
 						QByteArray decPassword = passwordProtecter->encrypt(
 							this->ui->lePassword->text().toUtf8());
-						std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 						iniFile->setValue("User", "login.Type", "normal");
 						iniFile->setValue("User", "login.Username", this->ui->leEmal->text());
 						iniFile->setValue("User", "login.Password", QString(decPassword));
@@ -341,7 +347,7 @@ void GBSNormalLoginForm::onLoginResult(const int result, const std::string token
 					//connect(cancel, &QPushButton::clicked, dialog, &QDialog::reject);
 
 					//dialog->exec();
-				}
+				//}
 
 				QLogD("Start to switch Login to MainBiz");
 				GBSMainBizWindow *gbsMainBizWindow = new GBSMainBizWindow();

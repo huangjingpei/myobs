@@ -826,7 +826,8 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 	GBSHttpClient::getInstance()->pageSrsLiveDeviceV2(account.getId(), 0);
 
-	mWssKeepaliveId = std::to_string(account.getId()) + "_" + GetMachineIdFromRegistry() + GetWindowsProductIDFromRegistery();
+	mWssKeepaliveId = std::to_string(account.getId()) + "_" + GetMachineIdFromRegistry() +
+			  GetWindowsProductIDFromRegistery() + GBSMainCollector::getInstance()->getSystemUniqueNo();
 
 	int userId = account.getUserId();
 	mWebSocketClient = WebSocketClient::Create();
@@ -834,7 +835,8 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 	if (!mWebSocketClient->IsRunnig()) {
 		QLogD("Start Weboscket userid %d", userId);
 		std::string url = GBSMainCollector::getInstance()->getBaseWebSocketV2();
-		std::string wssUrl = url + "/adminDistributeGoods/" + std::to_string(userId);
+		std::string danmuReceiveId = std::to_string(userId) + "_" + GetMachineIdFromRegistry() + GetWindowsProductIDFromRegistery() + GBSMainCollector::getInstance()->getSystemUniqueNo();
+		std::string wssUrl = url + "/sendBarrageToAdmin/" + danmuReceiveId;
 		mWebSocketClient->Start(wssUrl);
 	}
 	mWebSocketClient->RegisterHandler(this);
@@ -1128,7 +1130,8 @@ void GBSBizLiveGuarderCtrl::onFail()
 		if (!mWebSocketClient->IsRunnig()) {
 			QLogD("Start Weboscket userid %d", userId);
 			std::string url = GBSMainCollector::getInstance()->getBaseWebSocketV2();
-			std::string wssUrl = url + "/adminDistributeGoods/" + std::to_string(userId);
+			std::string danmuReceiveId = std::to_string(userId) + "_" + GetMachineIdFromRegistry() + GetWindowsProductIDFromRegistery() + GBSMainCollector::getInstance()->getSystemUniqueNo();
+			std::string wssUrl = url + "/sendBarrageToAdmin/" + danmuReceiveId;
 			mWebSocketClient->Start(wssUrl);
 		}
 		mWebSocketClient->RegisterHandler(this);
@@ -1145,10 +1148,11 @@ void GBSBizLiveGuarderCtrl::onClose()
 void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 {
 	std::string jsonString = jsonObject.dump();
-	std::string platform = jsonObject["platform"].get<std::string>();
-	std::string liveId = jsonObject["liveId"].get<std::string>();//类似于D01，K01之类
-	std::string liveDeviceId = jsonObject["liveDeviceId"].get<std::string>(); //类似于D01，K01之类
-	std::string deviceName = jsonObject["deviceName"].get<std::string>(); 
+	std::string platform = jsonObject["platform"].is_null() ? "" : jsonObject["platform"].get<std::string>();
+	std::string liveId = jsonObject["liveId"].is_null() ? "" : jsonObject["liveId"].get<std::string>();
+	std::string liveDeviceId = jsonObject["liveDeviceId"].is_null() ? "" : jsonObject["liveDeviceId"].get<std::string>();
+	std::string deviceName = jsonObject["deviceName"].is_null() ? "" : jsonObject["deviceName"].get<std::string>();
+	std::string platformAcct = jsonObject["platformAcct"].is_null() ? "" : jsonObject["platformAcct"].get<std::string>();
 
 	
 	if (mDanmakuType != DANITEM_TYPE_ALL) {
@@ -1161,7 +1165,10 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		return;
 	}
 	QString qUniqueName = QString::fromStdString(uniqueName);
-
+	qUniqueName += " [";
+	if (platformAcct == "") platformAcct = "null";
+	qUniqueName += platformAcct;
+	qUniqueName += "]";
 	if (!platform.empty()) {
 		if (platform == "DY") {
 			danmaPlatIconString = ":gbs/images/gbs/biz/gbs-logo-douyin.png";

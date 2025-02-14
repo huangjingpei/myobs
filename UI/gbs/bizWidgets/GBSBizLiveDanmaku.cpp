@@ -214,18 +214,9 @@ GBSBizLiveDanmaku::GBSBizLiveDanmaku(QWidget *parent)
 
         std::wstring chromePathW = getChromePath();
 	QString chromePath = QString::fromStdWString(chromePathW);
-
+	QLogE("Chrome path is %s", chromePath.toStdString().c_str());
 	iniFile = new IniSettings("danmu/setting/setting.ini");
-	if (!chromePath.isEmpty()) {
-		ui->leChromePath->setText(chromePath);
-		iniFile->setValue("setting", "google", chromePath);
-	} else {
-		QLogE("cannot find chrome path.");
-	}
-	connect(ui->leChromePath, &QLineEdit::textChanged, this,
-		[this](const QString & text) {
-			iniFile->setValue("setting", "google", text);
-		});
+
 
 	QString text = ui->leServer->text();
 	if (text.isEmpty()) {

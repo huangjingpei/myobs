@@ -44,6 +44,13 @@ GBSAuthorizedCodeForm::GBSAuthorizedCodeForm(QWidget *parent)
 		ui->radioButton->setChecked(true);
 	}
 
+		//这个是用来响应用户的退出登录的操作
+	if ((emailValue != "unknown") && (passwordValue == "unknown")) {
+		ui->radioButton->setChecked(false);
+		ui->leEmail->setText(emailValue);
+	}
+
+
 	ui->lblWelcome->setText(welcomeMessage);
 	ui->lblWelcome->setAlignment(Qt::AlignCenter); // 水平和垂直居中
 	//ui->lblWelcome->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); // 允许 QLabel 扩展

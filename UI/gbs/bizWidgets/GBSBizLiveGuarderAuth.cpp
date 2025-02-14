@@ -8,18 +8,64 @@
 #include <QList>
 #include<QLineEdit>
 #define AUTH_CODE_NUM 6
+
+static QLineEdit *currentLineEdit = nullptr; // 保存当前鼠标悬停的QLineEdit
+
+class MyEventFilter : public QObject {
+	
+public:
+	MyEventFilter(QObject *parent = nullptr) : QObject(parent) {}
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override
+	{
+		if (event->type() == QEvent::FocusIn) {
+			qDebug() << obj->objectName() << "获得了焦点 (事件过滤器)";
+			//  可以在这里修改 obj （例如，QPushButton）的外观
+			QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
+			if (lineEdit) {
+				//button->setStyleSheet("background-color: lightblue;");
+				lineEdit->setText("");
+				currentLineEdit = lineEdit;
+
+			}
+			return false; // 让事件继续传递
+		} else if (event->type() == QEvent::FocusOut) {
+			qDebug() << obj->objectName() << "失去了焦点 (事件过滤器)";
+			QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
+			if (lineEdit) {
+				//lineEdit->setStyleSheet(""); // 移除样式
+				currentLineEdit = nullptr; // 鼠标移出该QLineEdit
+
+			}
+			return false; // 让事件继续传递
+		}
+		//  标准的事件处理
+		return QObject::eventFilter(obj, event);
+	}
+
+};
+
 GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
 	: QWidget(parent),
       ui(new Ui::GBSBizLiveGuarderAuth)
 {
 	ui->setupUi(this);
 
+    MyEventFilter *filter = new MyEventFilter(this);
     qlists.push_back(ui->lePassword0);
     qlists.push_back(ui->lePassword1);
     qlists.push_back(ui->lePassword2);
     qlists.push_back(ui->lePassword3);
     qlists.push_back(ui->lePassword4);
     qlists.push_back(ui->lePassword5);
+
+	ui->lePassword0->installEventFilter(filter);
+	ui->lePassword1->installEventFilter(filter);
+	ui->lePassword2->installEventFilter(filter);
+	ui->lePassword3->installEventFilter(filter);
+	ui->lePassword4->installEventFilter(filter);
+	ui->lePassword5->installEventFilter(filter);
 
     for (int i = 0; i < AUTH_CODE_NUM; i++) {
         qlists[i]->setMaxLength(1);
@@ -43,7 +89,7 @@ GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
 
         // 连接 textChanged 信号，每次输入后自动跳转到下一个框
         connect(qlists[i], &QLineEdit::textChanged, this, [=]() {
-            if (qlists[i]->text().length() == 1) {
+            if ((qlists[i]->text().length() == 1) && (i < 5)){
                 focusNextInput(i);
             }
         });
@@ -69,7 +115,7 @@ GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
 
 void GBSBizLiveGuarderAuth::sendEnterCtrl() {
 	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-	GBSHttpClient::getInstance()->enterControlV2(getInputPassword().toUtf8().constData(), account.getId());
+	GBSHttpClient::getInstance()->enterControlV2(getInputPassword().toUtf8().constData(), account.getId(), account.getLiveDeviceId());
 }
 
 GBSBizLiveGuarderAuth::~GBSBizLiveGuarderAuth()
@@ -96,6 +142,17 @@ void GBSBizLiveGuarderAuth::keyPressEvent(QKeyEvent *event) {
 		}
 		if (valid) {
 			sendEnterCtrl();
+		}
+	} else if (event->key() == Qt::Key_Delete) {
+		int i = 0;
+		for (auto le : qlists) {
+			if (currentLineEdit == le) {
+				currentLineEdit->setText("");
+				if (i > 0) {
+					qlists[i - 1]->setFocus();
+				}
+			}
+			++i;
 		}
 	}
     QWidget::keyPressEvent(event); // 调用父类的默认行为

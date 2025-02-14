@@ -39,6 +39,7 @@ public:
 	virtual void onEnterGuardCtrl(int result){};
 	virtual void onListDevices(std::list<GBSLiveDevices> devices,int pageNum){};
 	virtual void onPushStreamInfo(GBSPushStreamInfo info){};
+	virtual void onSliceCount(int id, int sliceCount) {};
 };
 
 class GBSHttpClient {
@@ -146,8 +147,8 @@ public:
     void createSrsStreamV2(int streamSource);
     void createSrsStreamTaskV2(int streamSource);
 
-    void enterControlV2(std::string password, int liveAccountId);
-    void enterControlTaskV2(std::string password, int liveAccountId);
+    void enterControlV2(std::string password, int liveAccountId, int liveDeviceId);
+    void enterControlTaskV2(std::string password, int liveAccountId, int liveDeviceId);
 
     void pageSrsLiveDeviceV2(int liveAccountId, int pageNum, int pagesize = 30);
     void pageSrsLiveDeviceTaskV2(int liveAccountId, int pageNum, int pagesize = 30);
@@ -223,7 +224,8 @@ public:
     void pageZlmStreamLogV2(int streamLogId, int liveServerId, int pageNum, int pageSize);
     void pageZlmStreamLogTaskV2(int streamLogId, int liveServerId, int pageNum, int pageSize);
 
-
+    void modifyLiveRemarkV2(int id, std::string liveRemark);
+    void modifyLiveRemarkTaskV2(int id, std::string liveRemark);
 
     private:
 	std::string getDeviceNo();

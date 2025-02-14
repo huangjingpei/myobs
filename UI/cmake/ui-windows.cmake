@@ -158,6 +158,8 @@ target_sources(
     gbs/bizWidgets/GBSRemoveBroker.h
     gbs/bizWidgets/GBSStreamSelector.cpp
     gbs/bizWidgets/GBSStreamSelector.h
+    gbs/bizWidgets/GBSRemakeSlices.cpp
+    gbs/bizWidgets/GBSRemakeSlices.h
 
     gbs/dto/GBSUserInfo.h
     gbs/dto/GBSUserInfo.cpp

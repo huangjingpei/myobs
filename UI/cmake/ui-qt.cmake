@@ -95,6 +95,7 @@ set(
   gbs/bizWidgets/GBSBizLivePusherAuth.ui
   gbs/bizWidgets/GBSBizLivePusherCtrl.ui
   gbs/bizWidgets/GBSStreamSelector.ui
+  gbs/bizWidgets/GBSRemakeSlices.ui
 
 
   gbs/bizWidgets/GBSAddBroker.ui

@@ -177,7 +177,12 @@ void OBSBasic::beginTalk(int id)
 {
 	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
 	if (mRtcEngine) {
-		mRtcEngine->BeginTalk(std::to_string(id), nullptr);
+		GBSLiveAccountInfo accountInfo = GBSMainCollector::getInstance()->getAccountInfo();
+		std::string roomId = std::to_string(accountInfo.getUserId()) + "_" + std::to_string(id);
+		//mRtcEngine->LoginAndStartPush(roomId, std::to_string(id), std::to_string(id));
+		
+		mRtcEngine->LoginRoom(roomId, std::to_string(accountInfo.getLiveDeviceId()));
+		mRtcEngine->BeginTalk(std::to_string(accountInfo.getLiveDeviceId()), nullptr);
 	}
 }
 
@@ -185,7 +190,9 @@ void OBSBasic::endTalk(int id)
 {
 	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
 	if (mRtcEngine) {
+		//mRtcEngine->LogoutAndStopPush();
 		mRtcEngine->EndTalk();
+		//mRtcEngine->LogoutRoom();
 	}
 }
 
@@ -488,13 +495,13 @@ void OBSBasic::onRoomInfos(std::list<GBSRoomInfo> &info) {}
 
 void OBSBasic::onRoomInfo(GBSRoomInfo *info) {}
 void OBSBasic::onAccountInfo(GBSLiveAccountInfo result){
-	std::string roomId = result.getNickname();
 
 	GBSMainCollector::getInstance()->setAccountInfo(result);
 	const std::lock_guard<std::mutex> lock(mRtcEngineMutex);
 	if (mRtcEngine && !mRtcEngine->IsLogin()) {
 		std::string userId = GBSMainCollector::getInstance()->getLiveDeviceId();
 		mRtcEngine->setScenario(true, false, userId, nullptr);
+		std::string roomId = std::to_string(result.getUserId()) + "_" + std::to_string(result.getLiveDeviceId());
 		mRtcEngine->LoginRoom(roomId, userId);
 		
 	}
