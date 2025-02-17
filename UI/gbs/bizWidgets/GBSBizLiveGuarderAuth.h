@@ -30,8 +30,13 @@ public:
 
     private:
     void focusNextInput(int currentIndex);
-    void keyPressEvent(QKeyEvent *event) override;
-private:
+    //void keyPressEvent(QKeyEvent *event) override;
+private slots:
+    void EnterKeyPressed();
+    void DelKeyPressed();
+    void ClearLineEditText(QLineEdit* editText);
+
+    private:
     Ui::GBSBizLiveGuarderAuth *ui;
 
     QList<QLineEdit*> qlists;

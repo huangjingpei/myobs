@@ -20,6 +20,9 @@
 #include "gbs/common/SystemUtils.h"
 #include "gbs/common/QIniFile.h"
 #include "window-basic-main.hpp"
+#include <QDesktopServices>
+#include <QUrl>
+
 
 
 #include "qt-wrappers.hpp"
@@ -395,6 +398,9 @@ public:
 			      "    selection-background-color: #007BFF;" // 选中行背景色
 			      "    selection-color: #FFFFFF;"            // 选中行文字颜色
 			      "}"
+			      "QTableWidget::pane { border: 0; }"
+			      "QTableWidget::tab { border: 0; }"
+			      "QTableWidget::tab-bar { border: 0; }"
 			      );
 		setColumnCount(12);
 		setHorizontalHeaderLabels({"序号", "激活编号", "备注编号", "客户号", "开播时间", "剩余时长", "直播账号",
@@ -719,6 +725,24 @@ public:
 			table->removeRow(currentRow);
 		});
 
+		connect(shareButton, &QPushButton::clicked, this, [this]() {
+			QList<QTableWidgetItem *> selectedRows = table->selectedItems();
+			if (!selectedRows.isEmpty()) {
+				// 获取第一行的索引
+				int row = selectedRows.first()->row();
+				table->removeRow(row);
+
+			} else {
+				QHBoxLayout *layout = new QHBoxLayout;
+				QLabel *label = new QLabel("请选中行后才能进行删除.");
+
+				layout->addWidget(label);
+				GBSMsgDialog *dialog = new GBSMsgDialog("错误提示", layout, this);
+				dialog->exec();
+			}
+			qDebug() << "sharedButton click row.";
+			});
+
 	}
 
 private:
@@ -772,7 +796,7 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 				 "    border: none;" // 移除tab pane的边框
 				 "}"); // 清空 QTabWidget 的样式表
 
-    ui->tabWidget->tabBar()->setStyleSheet("QTabBar::tab {"
+    ui->tabWidget->setStyleSheet("QTabBar::tab {"
 				"    color: #78828A; "              // 默认字体颜色
 				"    background: none; "       // 默认背景颜色
 				 "    padding: 40px; "      // 内边距
@@ -789,6 +813,9 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 				"QTabBar::tab:first {"
 				"    margin-left: 100px;" // 调整第一个tab项的左外边距
 				"}"
+				"QTabWidget::pane { border: 0; }"
+				"QTabBar::tab { border: none; }"
+				"QTabWidget::tab-bar { border: none; }"
     );
     connect(gridButtons, &GridButtons::notifyDanmukuChanged, this, &GBSBizLiveGuarderCtrl::onDanmukuChanged);
 

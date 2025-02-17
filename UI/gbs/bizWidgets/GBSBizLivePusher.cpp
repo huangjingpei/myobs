@@ -22,7 +22,8 @@ GBSBizLivePusher::GBSBizLivePusher(QWidget *parent)
 
 void GBSBizLivePusher::enterGuarderCtrl() {
 
-    reinterpret_cast<GBSBizLivePusherAuth *>(sender())->deleteLater();
+	delete reinterpret_cast<GBSBizLivePusherAuth *>(sender());
+    //reinterpret_cast<GBSBizLivePusherAuth *>(sender())->deleteLater();
     GBSBizLivePusherCtrl *ctrl = new GBSBizLivePusherCtrl(this);
     ui->horizontalLayout->addWidget(ctrl);
 }

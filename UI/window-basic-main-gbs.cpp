@@ -874,12 +874,12 @@ void OBSBasic::activeClose()
 
 void OBSBasic::addGuarderCtrlScene()
 {
-	std::string name = "场控对讲";
+	std::string name = "场控实时对讲";
 	OBSSceneAutoRelease scene = obs_scene_create(name.c_str());	
 	obs_source_t *scene_source = obs_scene_get_source(scene);
 	SetCurrentScene(scene_source);
 	addMicrophoneSource();
-	addSpeakerSource();
+	//addSpeakerSource();
 }
 
 void OBSBasic::removeGuarderCtrlScene()
@@ -898,7 +898,7 @@ void OBSBasic::cleanGuarderCtrlScene()
 			if ((name != nullptr) && (scene != nullptr)) {
 				qDebug() << "name " << name;
 				std::string sceneName = name;
-				std::string dstName = "场控对讲";
+				std::string dstName = "场控实时对讲";
 
 				if (sceneName.compare(0, dstName.size(), dstName.c_str()) == 0) {
 					basic->SetCurrentScene(scene);

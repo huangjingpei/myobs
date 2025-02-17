@@ -77,6 +77,13 @@ public:
 	virtual ~DanmaRoomMessage() override = default;
 	std::string count;
 };
+
+//7. 系统消息
+class DanmaSystemMessage : public DammaMSG {
+public:
+	virtual ~DanmaSystemMessage() override = default;
+};
+
 class IDanmakuDispatcher {
 public:
 	IDanmakuDispatcher() = default;

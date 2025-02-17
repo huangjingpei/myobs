@@ -147,6 +147,26 @@ void push_pcm_data(void *data, const uint8_t *pcm_data, size_t size)
     pthread_mutex_unlock(&context->mutex);
 }
 
+static inline bool pcm_audio_render(obs_source_t *transition, uint64_t *ts_out,
+				    struct obs_source_audio_mix *audio_output, uint32_t mixers, size_t channels,
+				    size_t sample_rate)
+{
+
+	return true;
+}
+static void pcm_activate(void *data)
+{
+	struct pcm_source *context = data;
+
+}
+
+static void pcm_deactivate(void *data)
+{
+	struct pcm_source *context = data;
+}
+
+
+
 OBS_DECLARE_MODULE()
 MODULE_EXPORT const char *obs_module_description(void)
 {
@@ -161,6 +181,9 @@ struct obs_source_info pcm_source = {
     .get_name = pcm_source_get_name,
     .create = pcm_source_create,
     .destroy = pcm_source_destroy,
+    .activate = pcm_activate,
+    .deactivate = pcm_deactivate,
+    .audio_render = pcm_audio_render,
     .get_properties = pcm_source_properties,
     .get_defaults = pcm_source_defaults,
     .update = pcm_source_update,

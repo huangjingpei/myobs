@@ -158,7 +158,7 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 			"    border: none;" // 移除tab pane的边框
 			"}");               // 清空 QTabWidget 的样式表
 
-	ui->tabWidget->tabBar()->setStyleSheet("QTabBar::tab {"
+	ui->tabWidget->setStyleSheet("QTabBar::tab {"
 					       "    color: #78828A; "     // 默认字体颜色
 					       "    background: none; "   // 默认背景颜色
 					       "    padding: 40px; "      // 内边距
@@ -174,7 +174,12 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 					       "}"
 					       "QTabBar::tab:first {"
 					       "    margin-left: 100px;" // 调整第一个tab项的左外边距
-					       "}");
+					       "}"
+					       "QTabWidget::pane { border: 0; }"
+					       "QTabBar::tab { border: none; }"
+					       "QTabWidget::tab-bar { border: none; }"
+	);
+
 
 	connect(ui->tabWidget, &QTabWidget::currentChanged, this, &GBSBizLivePusherCtrl::onTabChanged);
 
@@ -645,7 +650,7 @@ void GBSBizLivePusherCtrl::onStartRtmpPush(bool checked) {
 	if (button) {
 		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 		if (startLive) {
-			QTimer::singleShot(8000, this, &GBSBizLivePusherCtrl::streamCheck);
+			//QTimer::singleShot(8000, this, &GBSBizLivePusherCtrl::streamCheck);
 			button->pressed("关播", "直播中", true);
 			QLogE("GBSBizLivePusherCtrl 开播 %d", mLiveAccountId);
 			GBSHttpClient::getInstance()->createSrsStreamV2(1);

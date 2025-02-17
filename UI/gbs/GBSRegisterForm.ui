@@ -177,7 +177,7 @@ lineedit-password-character: 42;
      </rect>
     </property>
     <property name="text">
-     <string>设置登陆密码</string>
+     <string>设置登录密码</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnRegisterGBS">

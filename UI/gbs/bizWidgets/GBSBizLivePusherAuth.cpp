@@ -1,9 +1,76 @@
 #include "GBSBizLivePusherAuth.h"
 #include "ui_GBSBizLivePusherAuth.h"
 #include "GBSBizLivePusher.h"
+#include "gbs/GBSMainCollector.h"
+#include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/common/GBSHttpClient.h"
+#include "gbs/common/QBizLogger.h"
+
+
 #include <QList>
 #include<QLineEdit>
 #define AUTH_CODE_NUM 6
+
+
+static QLineEdit *currentLineEdit = nullptr; // 保存当前鼠标悬停的QLineEdit
+class MyEventFilter2 : public QObject {
+	Q_OBJECT
+
+public:
+	MyEventFilter2(QObject *parent = nullptr) : QObject(parent) {}
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override
+	{
+		if (event->type() == QEvent::FocusIn) {
+			qDebug() << obj->objectName() << "获得了焦点 (事件过滤器)";
+			//  可以在这里修改 obj （例如，QPushButton）的外观
+			QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
+			if (lineEdit) {
+				//button->setStyleSheet("background-color: lightblue;");
+				lineEdit->setText("");
+				currentLineEdit = lineEdit;
+				emit ClearLineEditText(lineEdit);
+			}
+			return false; // 让事件继续传递
+		} else if (event->type() == QEvent::FocusOut) {
+			qDebug() << obj->objectName() << "失去了焦点 (事件过滤器)";
+			QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
+			if (lineEdit) {
+				//lineEdit->setStyleSheet(""); // 移除样式
+
+				currentLineEdit = nullptr; // 鼠标移出该QLineEdit
+			}
+			return false; // 让事件继续传递
+		} else if (event->type() == QEvent::KeyPress) {
+			QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
+			QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+			if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
+				emit EnterKeyPressed();
+			} else if ((keyEvent->key() == Qt::Key_Backspace) || (keyEvent->key() == Qt::Key_Delete)) {
+				emit DelKeyPressed();
+			} else {
+				QString text = keyEvent->text();
+				QChar ch = text[0];
+				if (ch.isPrint()) {
+					lineEdit->setText("*");
+					lineEdit->setProperty("value", ch);
+				}
+			}
+		}
+		//  标准的事件处理
+		return QObject::eventFilter(obj, event);
+	}
+
+public:
+public:
+signals:
+	void EnterKeyPressed();
+	void DelKeyPressed();
+	void ClearLineEditText(QLineEdit *editText);
+};
+
+
 GBSBizLivePusherAuth::GBSBizLivePusherAuth(QWidget *parent)
 	: QWidget(parent),
       ui(new Ui::GBSBizLivePusherAuth)
@@ -16,6 +83,18 @@ GBSBizLivePusherAuth::GBSBizLivePusherAuth(QWidget *parent)
     qlists.push_back(ui->lePassword3);
     qlists.push_back(ui->lePassword4);
     qlists.push_back(ui->lePassword5);
+    MyEventFilter2 *filter = new MyEventFilter2(this);
+
+    ui->lePassword0->installEventFilter(filter);
+    ui->lePassword1->installEventFilter(filter);
+    ui->lePassword2->installEventFilter(filter);
+    ui->lePassword3->installEventFilter(filter);
+    ui->lePassword4->installEventFilter(filter);
+    ui->lePassword5->installEventFilter(filter);
+
+    connect(filter, &MyEventFilter2::EnterKeyPressed, this, &GBSBizLivePusherAuth::EnterKeyPressed);
+    connect(filter, &MyEventFilter2::DelKeyPressed, this, &GBSBizLivePusherAuth::DelKeyPressed);
+    connect(filter, &MyEventFilter2::ClearLineEditText, this, &GBSBizLivePusherAuth::ClearLineEditText);
 
     for (int i = 0; i < AUTH_CODE_NUM; i++) {
         qlists[i]->setMaxLength(1);
@@ -60,17 +139,14 @@ GBSBizLivePusherAuth::GBSBizLivePusherAuth(QWidget *parent)
     connect(this, &GBSBizLivePusherAuth::enterGuarderCtrl, reinterpret_cast<GBSBizLivePusher *>(parent),
 	    &GBSBizLivePusher::enterGuarderCtrl);
 
-    connect(ui->pushButton, &QPushButton::clicked, this, [this](){
-        //if (inputPassword == presetPassword) {
-            emit enterGuarderCtrl();
-        //}
-    });
-
+    connect(ui->pushButton, &QPushButton::clicked, this, &GBSBizLivePusherAuth::sendEnterCtrl);
+	GBSHttpClient::getInstance()->registerHandler(this);
 }
 
 GBSBizLivePusherAuth::~GBSBizLivePusherAuth()
 {
-    qlists.clear();
+	GBSHttpClient::getInstance()->unRegisterHandler(this);
+	qlists.clear();
 	delete ui;
 }
 
@@ -84,17 +160,45 @@ void GBSBizLivePusherAuth::focusNextInput(int currentIndex) {
     }
 }
 
-void GBSBizLivePusherAuth::keyPressEvent(QKeyEvent *event) {
-    // if (event->key() == Qt::Key_Tab) {
-    //     QWidget *focusedWidget = focusWidget();
-    //     for (int i = 0; i < 5; ++i) {
-    //         if (qlists[i] == focusedWidget && i < 4) {
-    //             qlists[i + 1]->setFocus();
-    //             return;
-    //         }
-    //     }
-    // }
-    QWidget::keyPressEvent(event); // 调用父类的默认行为
+void GBSBizLivePusherAuth::sendEnterCtrl()
+{
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	GBSHttpClient::getInstance()->enterControlV2(getInputPassword().toUtf8().constData(), account.getId(),
+						     account.getLiveDeviceId());
+}
+
+
+void GBSBizLivePusherAuth::EnterKeyPressed()
+{
+	bool valid = true;
+	for (auto le : qlists) {
+		if (le->text().isEmpty()) {
+			valid = false;
+			break;
+		}
+	}
+	if (valid) {
+		sendEnterCtrl();
+	}
+}
+void GBSBizLivePusherAuth::DelKeyPressed()
+{
+	int i = 0;
+	for (auto le : qlists) {
+		if (currentLineEdit == le) {
+			currentLineEdit->setText("");
+			if (i > 0) {
+				qlists[i - 1]->setFocus();
+			}
+		}
+		++i;
+	}
+}
+
+void GBSBizLivePusherAuth::ClearLineEditText(QLineEdit *editText)
+{
+	editText->setText("");
+	editText->setProperty("value", "");
 }
 
 
@@ -104,7 +208,7 @@ QString GBSBizLivePusherAuth::getPresetPassword() {
 QString GBSBizLivePusherAuth::getInputPassword() {
 	inputPassword.clear();
 	for (int i = 0; i < qlists.count(); i++) {
-		inputPassword += qlists.at(i)->text();
+		inputPassword += qlists.at(i)->property("value").toChar();
 	}
 	qDebug() << "inputPassword " << inputPassword;
 
@@ -113,3 +217,13 @@ QString GBSBizLivePusherAuth::getInputPassword() {
 void GBSBizLivePusherAuth::setPresetPassword(QString password) {
     presetPassword = password;
 }
+
+void GBSBizLivePusherAuth::onEnterGuardCtrl(int result)
+{
+	if (result == 1) {
+		emit enterGuarderCtrl();
+	} else {
+		QLogE("Enter guard ctrl error. input password: %s", getInputPassword().toUtf8().constData());
+	}
+}
+#include "GBSBizLivePusherAuth.moc"

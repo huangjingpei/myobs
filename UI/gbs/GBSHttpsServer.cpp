@@ -139,7 +139,16 @@ QWeH+tVM2g0vee09bFoB
 	 
 
 // }
-
+#include <QHBoxLayout>
+#include <QSpacerItem>
+#include <QLabel>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QTimer>
+#include <QApplication>
+#include <QWidget>
+#include <QMetaObject>
+#include "gbs/bizWidgets/GBSMsgDialog.h"
 
 void processDanmaItem(nlohmann::json &jsonObject) {
 	std::string liveId = GBSMainCollector::getInstance()->getDanmaKuName();
@@ -152,6 +161,56 @@ void processDanmaItem(nlohmann::json &jsonObject) {
 	jsonObject["deviceName"] = deviceName;
 	jsonObject["platform"] = platform;
 	jsonObject["platformAcct"] = platformAccount;
+	//
+	//if (!jsonObject["content"].is_null() && !jsonObject["content"].get<std::string>().empty()) {
+	//	std::string content = jsonObject["content"].get<std::string>();
+	//	std::string closeChrome = "请关闭google再启动";
+	//	std::string instalChrome = "请安装google";
+	//	if (!closeChrome.compare(content)) {
+	//		qDebug() << "error:" << QString::fromStdString(content);
+	//		//QTimer::singleShot(1, []() {
+	//			QHBoxLayout *layout = new QHBoxLayout();
+	//			// Spacer
+	//			QSpacerItem *spacer =
+	//				new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	//			layout->addSpacerItem(spacer);
+
+	//			QLabel *label = new QLabel();
+	//			label->setText("系统检测到你的Chrome还在工作，请先关闭");
+	//			layout->addWidget(label);
+
+	//			// 创建对话框
+	//			GBSMsgDialog *dialog = new GBSMsgDialog("弹幕错误提示", layout);
+	//			dialog->exec();
+	//			//});
+
+	//	} else if (!instalChrome.compare(content)) {
+	//		QTimer::singleShot(0, []() {
+	//			QHBoxLayout *layout = new QHBoxLayout();
+	//			// Spacer
+	//			QSpacerItem *spacer =
+	//				new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+	//			layout->addSpacerItem(spacer);
+
+	//			QLabel *label = new QLabel();
+	//			label->setText(
+	//				"<a href=\"https://www.google.cn/intl/zh-CN/chrome/\">点击这里下载 Google Chrome 并</a>");
+	//			label->setOpenExternalLinks(false); // 禁用自动打开链接，以便我们自己处理
+	//			layout->addWidget(label);
+
+	//			QObject::connect(label, &QLabel::linkActivated, [](const QString &link) {
+	//				// 使用QDesktopServices打开链接
+	//				QDesktopServices::openUrl(QUrl(link));
+	//			});
+
+	//			// 创建对话框
+	//			GBSMsgDialog *dialog = new GBSMsgDialog("弹幕错误提示", layout);
+	//			dialog->exec();
+	//			});
+	//		
+	//	}
+	//}
+
 }
 void processRecvMessage(const char* mesage) {
 	
