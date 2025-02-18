@@ -134,7 +134,7 @@ private:
 
 	 //版本构成说明
 	 
-	 std::string mSoftWareVersion{"1.0.27"};
+	 std::string mSoftWareVersion{"1.0.28"};
 	
 	
 };
