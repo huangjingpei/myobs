@@ -30,6 +30,11 @@ private slots:
 	void onAuthorizedLogin();
 	void onLoginGBS();
 
+	
+private:
+	void keyPressEvent(QKeyEvent *event) override;
+
+
 private:
 	void onUserInfo(const GBSUserInfo *info) override;
 	void onLoginResult(const int result, const std::string token) override;

@@ -246,6 +246,13 @@ GBSPushStreamInfo& GBSMainCollector::getPushStreamInfo() {
 	return mPushStreamInfo;
 }
 
+void GBSMainCollector::setLogined(bool logined) {
+	mbLogined = logined;
+}
+bool GBSMainCollector::isLogined() {
+	return mbLogined;
+}
+
 std::string &GBSMainCollector::getBuildInfo()
 {
 	buildInfo = "";

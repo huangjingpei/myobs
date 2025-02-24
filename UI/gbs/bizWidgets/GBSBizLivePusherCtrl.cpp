@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QGraphicsDropShadowEffect>
 #include <QMessageBox>
+#include <QFontDialog>
+
 #include "qt-wrappers.hpp"
 
 #include "../common/DanmakuWidget.h"
@@ -18,7 +20,6 @@
 #include "gbs/common/QToast.h"
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 #include "gbs/common/SystemUtils.h"
-
 
 /**
 QFrame边框的样式
@@ -161,8 +162,8 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	ui->tabWidget->setStyleSheet("QTabBar::tab {"
 					       "    color: #78828A; "     // 默认字体颜色
 					       "    background: none; "   // 默认背景颜色
-					       "    padding: 40px; "      // 内边距
-					       "    padding: 4px; "       // 内边距
+					       "    padding: 4px; "      // 内边距
+						"padding-left: 40px;"
 					       "    border-radius: 5px; " // 圆角
 					       "    font-size: 16px;"     // 设置字体大小为16像素
 
@@ -171,6 +172,7 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 					       "    color: #00C566; "   // 选中字体颜色
 					       "    background: none; " // 选中背景颜色
 					       "    padding: 4px; "     // 内边距
+					       "    padding-left: 40px;"
 					       "}"
 					       "QTabBar::tab:first {"
 					       "    margin-left: 100px;" // 调整第一个tab项的左外边距
@@ -178,6 +180,10 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 					       "QTabWidget::pane { border: 0; }"
 					       "QTabBar::tab { border: none; }"
 					       "QTabWidget::tab-bar { border: none; }"
+						"QTabBar {"
+						"    qproperty-alignment: AlignCenter;" // 设置tab项居中对齐
+						"    qproperty-drawBase: 0; /* 重要：移除底部基线 */"
+						"}"
 	);
 
 
@@ -205,7 +211,7 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	ui->verticalLayout->addWidget(danmakuscrollArea);
 	//ui->verticalLayout->addLayout(outerLayout);
 
-	ui->btnAgainstRule->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-widget-docking.png)");
+	//ui->btnAgainstRule->setStyleSheet("border-image:url(:gbs/images/gbs/biz/gbs-widget-docking.png)");
 
 	
 
@@ -476,7 +482,51 @@ GBSBizLivePusherCtrl::GBSBizLivePusherCtrl(QWidget *parent) : QWidget(parent), u
 	//	//}
 	//});
 	//writerThread.detach();
+	teleprompter = new GBSTeleprompter();
+	std::shared_ptr<IniSettings> iniFile = std::make_shared<IniSettings>("teleprompter.ini");
+	QString teleprompterText = iniFile->value("teleprompter", "text", "").toString();
+	if (!teleprompterText.isEmpty()) {
+		QString family = iniFile->value("FontSettings", "fontFamily", "Arial").toString(); // 默认是 "Arial"
+		int size = iniFile->value("FontSettings", "fontSize", 12).toInt();                 // 默认是 12
+		int weight = iniFile->value("FontSettings","fontWeight", QFont::Normal).toInt(); // 默认是正常字体
+		bool italic = iniFile->value("FontSettings", "fontItalic", false).toBool();        // 默认是非斜体
+		QFont font(family, size, weight, italic);
+		teleprompter->setFont(font);
+		teleprompter->setText(teleprompterText);
+	}
 
+	ui->horizontalSlider_2->setRealSize(181,24);
+	ui->verticalLayout_5->addWidget(teleprompter);
+	connect(ui->btnSetFont, &QPushButton::clicked, this, [iniFile, this]() {
+		bool ok;
+		QFont font = QFontDialog::getFont(&ok, this->font(), this, "设置字体字号", QFontDialog::DontUseNativeDialog);
+		if (ok) {
+			teleprompter->setFont(font);
+			iniFile->setValue("FontSettings", "fontFamily", font.family());
+			iniFile->setValue("FontSettings", "fontSize", font.pointSize());
+			iniFile->setValue("FontSettings", "fontWeight", font.weight());
+			iniFile->setValue("FontSettings", "fontItalic", font.italic());
+		}
+		});
+	connect(ui->btnTeleprompter, &QPushButton::clicked, this, [iniFile, this]() {
+		if (mbTeleprompter) {
+			ui->btnTeleprompter->setText("开始");
+			teleprompter->startScrolling();
+			iniFile->setValue("teleprompter", "text", teleprompter->text());
+		} else {
+			ui->btnTeleprompter->setText("停止");
+			teleprompter->stopScrolling();
+
+		}
+		mbTeleprompter = !mbTeleprompter;
+
+		});
+	ui->horizontalSlider_2->setRealRange(400, 2000);
+	connect(ui->horizontalSlider_2, &EllipticalSliderExt::valueChanged, this,
+		[this](int value) { 
+			teleprompter->updateTimerInterval(value);
+			ui->label_20->setText(QString::number(value));
+		});
 	mWssTimer = new QTimer(this);
 	connect(mWssTimer, &QTimer::timeout, this, &GBSBizLivePusherCtrl::onWssKeepAlive);
 	if (!mWssTimer->isActive()) {
@@ -493,7 +543,11 @@ void GBSBizLivePusherCtrl::onWssKeepAlive() {
 }
 void GBSBizLivePusherCtrl::onTabChanged(int index) {
 
+	if (index == 0) {
 
+	} else if (index == 1) {
+		
+	}
 
 }
 void GBSBizLivePusherCtrl::onMessage(std::string msg){

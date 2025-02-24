@@ -52,9 +52,9 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 
 
         QString welcomeMessage = R"(
-            <p style="font-size: 32px; text-align: center;">
+            <p style="font-size: 28px; text-align: center;">
                 <span style="color: red;">Hi！</span>
-                <span style="color: black;">欢迎来到算力分发平台</span>
+                <span style="color: black;">欢迎来到国内外直播矩阵ERP系统</span>
             </p>
         )";
 
@@ -74,6 +74,11 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
         ui->lblNoAccount->setTextFormat(Qt::RichText);
         ui->lblNoAccount->setTextInteractionFlags(Qt::TextBrowserInteraction);
         ui->lblNoAccount->setOpenExternalLinks(false);
+	ui->lblNoAccount->setDisabled(true);
+	ui->lblNoAccount->setVisible(false);
+
+	ui->leLoginMethod->setDisabled(true);
+	
 
         connect(ui->lblNoAccount, &QLabel::linkActivated, this, &GBSNormalLoginForm::onLinkActivated);
 
@@ -170,6 +175,7 @@ GBSNormalLoginForm::GBSNormalLoginForm(QWidget *parent) : OBSMainWindow(parent),
 		"   padding-top: 1px;    /* 向上移动 3px */"
 		"}"
 		);
+	ui->btnForgetPassword->setVisible(false);
 
 	connect(ui->btnScanQRodeLogin, &QPushButton::clicked, this, &GBSNormalLoginForm::onQRcodeLogin);
 	connect(ui->btnAuthorizeCodeLogin, &QPushButton::clicked, this, &GBSNormalLoginForm::onAuthorizedLogin);
@@ -260,6 +266,16 @@ void GBSNormalLoginForm::onLoginGBS() {
 
 	//onLoginResult(0);
 }
+
+
+void GBSNormalLoginForm::keyPressEvent(QKeyEvent *event) 
+{
+	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+		onLoginGBS();
+		return;
+	}
+}
+
 void GBSNormalLoginForm::onLoginResult(const int result, const std::string token)
 {
 	

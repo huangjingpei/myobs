@@ -19,9 +19,9 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 
 
         QString welcomeMessage = R"(
-            <p style="font-size: 32px; text-align: center;">
+            <p style="font-size: 28px; text-align: center;">
                 <span style="color: red;">Hi！</span>
-                <span style="color: black;">欢迎来到算力分发平台</span>
+                <span style="color: black;">欢迎来到国内外直播矩阵ERP系统</span>
             </p>
         )";
 
@@ -73,6 +73,10 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	ui->lblOpenApp->setTextInteractionFlags(Qt::TextBrowserInteraction);
 	ui->lblOpenApp->setOpenExternalLinks(false);
 
+	ui->lblNoAccount->setDisabled(true);
+	ui->lblNoAccount->setVisible(false);
+
+	ui->leLoginMethod->setDisabled(true);
 
 	// 连接 QLabel 的 linkActivated 信号到 lambda 表达式
 	// connect(ui->lblConstraintAndPrivacy, &QLabel::linkActivated, this, [this](const QString &link) {
@@ -90,7 +94,7 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 	// 设置样式表，添加背景图片
 	ui->btnScanQRodeLogin->setStyleSheet(
 		"QPushButton {"
-		"   background-image: url(:/gbs/images/gbs/login/scan-qrcode-login.png);"
+		"   background-image: url(:/gbs/images/gbs/login/account-password-login.png);"
 		"   background-repeat: no-repeat;"
 		"   background-position: center;"
 		"   color: white;"
@@ -115,7 +119,7 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 
 	ui->btnAuthorizeCodeLogin->setStyleSheet(
 		"QPushButton {"
-		"   background-image: url(:/gbs/images/gbs/login/authorized-code-login.png);"
+		"   background-image: url(:/gbs/images/gbs/login/account-password-login.png);"
 		"   background-repeat: no-repeat;"
 		"   background-position: center;"
 		"   color: white;"
@@ -139,7 +143,7 @@ GBSQRCodeLoginForm::GBSQRCodeLoginForm(QWidget *parent)
 
 	ui->btnLoginGBS->setEnabled(false);
 
-	connect(ui->btnScanQRodeLogin, &QPushButton::clicked, this, &GBSQRCodeLoginForm::onQRcodeLogin);
+	connect(ui->btnScanQRodeLogin, &QPushButton::clicked, this, &GBSQRCodeLoginForm::onNormalLogin);
 	connect(ui->btnAuthorizeCodeLogin, &QPushButton::clicked, this, &GBSQRCodeLoginForm::onAuthorizedLogin);
 	connect(ui->btnLoginGBS,&QPushButton::clicked, this, &GBSQRCodeLoginForm::onLoginGBS);
 	OBSBasic *main = OBSBasic::Get();
@@ -167,9 +171,10 @@ GBSQRCodeLoginForm::~GBSQRCodeLoginForm()
 }
 
 
-void GBSQRCodeLoginForm::onQRcodeLogin() {
+void GBSQRCodeLoginForm::onNormalLogin()
+{
 	qDebug() << "onQRcodeLogin click ";
-	emit loginTypeChanged(2);
+	emit loginTypeChanged(0);
 }
 
 void GBSQRCodeLoginForm::onAuthorizedLogin() {

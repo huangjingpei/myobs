@@ -117,7 +117,7 @@
    <widget class="HoriNaviButton" name="btnTranslate">
     <property name="geometry">
      <rect>
-      <x>586</x>
+      <x>580</x>
       <y>12</y>
       <width>90</width>
       <height>55</height>
@@ -130,20 +130,7 @@
    <widget class="HoriNaviButton" name="btnData">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>12</y>
-      <width>90</width>
-      <height>55</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="HoriNaviButton" name="btnProduct">
-    <property name="geometry">
-     <rect>
-      <x>402</x>
+      <x>300</x>
       <y>12</y>
       <width>90</width>
       <height>55</height>
@@ -156,7 +143,7 @@
    <widget class="HoriNaviButton" name="btnLive">
     <property name="geometry">
      <rect>
-      <x>494</x>
+      <x>440</x>
       <y>12</y>
       <width>90</width>
       <height>55</height>
@@ -169,20 +156,7 @@
    <widget class="HoriNaviButton" name="btnSetting">
     <property name="geometry">
      <rect>
-      <x>678</x>
-      <y>12</y>
-      <width>90</width>
-      <height>55</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="HoriNaviButton" name="btnAI">
-    <property name="geometry">
-     <rect>
-      <x>770</x>
+      <x>720</x>
       <y>12</y>
       <width>90</width>
       <height>55</height>

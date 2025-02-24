@@ -105,7 +105,8 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GBSBizDeviceInfo),
 	  timer(this),
-	  recTimeLeft(this)
+	  recTimeLeft(this),
+	  cpu_info(os_cpu_usage_info_start())
 {
 	ui->setupUi(this);
     // ui->wdgLocalInfo->setStyleSheet(
@@ -229,7 +230,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	QObject::connect(&recTimeLeft, &QTimer::timeout, this, &GBSBizDeviceInfo::RecordingTimeLeft);
 	recTimeLeft.setInterval(REC_TIME_LEFT_INTERVAL);
 
-	QStringList mangedItems = GBSMainCollector::getInstance()->getLiveAbbreviations();
+	QStringList mangedItems = GBSMainCollector::getInstance()->getLivePlats();
 	ui->comboBox->addItems(mangedItems);
 	
 
@@ -404,8 +405,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//});
 
 	QList<QPushButton*> qButtons;
-	qButtons << ui->btnDevInfo01 << ui->btnDevInfo02 << ui->btnDevInfo03 << ui->btnDevInfo04 << ui->btnDevInfo05
-		 << ui->btnRmoteSwitch << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
+	qButtons << ui->btnDevInfo01 << ui->btnDevInfo02 << ui->btnDevInfo03 << ui->btnDevInfo04 << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
 	for (auto button : qButtons) {
 		button->setStyleSheet("QPushButton {"
 				      "   color: #00C566;"
@@ -427,8 +427,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	}
 
 	QList<QPushButton *> qModifyButtons;
-	qModifyButtons << ui->btnDevInfo04 << ui->btnRmoteSwitch << ui->btnRmoteAccount << ui->btnRemotePassword
-		       << ui->btnLiveAccountId;
+	qModifyButtons << ui->btnDevInfo04  << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
 
 	//	QList<QLineEdit *> qLineEdits;
 	//qLineEdits << ui->leLiveDeviceID << ui->leDeviceName << ui->lePlatformAccount << ui->leRemoteAccount
@@ -454,11 +453,9 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 			split(remark, delim, &vec);
 			bool remoteSwitch = account.getRemoteSwitch();
 			dialog->setLiveDeviceId(liveDeviceId);
-			if (btn == ui->btnDevInfo05) {
-				dialog->setLiveDeviceName(liveDeviceName, true);
-			} else {
-				dialog->setLiveDeviceName(liveDeviceName, false);
-			}
+			
+			dialog->setLiveDeviceName(liveDeviceName, false);
+			
 
 			if (btn == ui->btnLiveAccountId) {
 				dialog->setLiveAccountId(liveAccountId, true);
@@ -483,21 +480,11 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 				dialog->setRemarks(vec[0], vec[1], false);
 			}
 
-			if (btn == ui->btnLivePlat) {
-				dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
-						    ui->comboBox->currentIndex(), true);
-
-			} else {
-				dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
+		
+			dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
 						    ui->comboBox->currentIndex(), false);
-			}
-			if (slider) {
-				dialog->setRemoteSwitch(remoteSwitch, true);
-			} else {
-				dialog->setRemoteSwitch(remoteSwitch, false);
-			}
-
-
+			
+			dialog->setRemoteSwitch(remoteSwitch, false);
 			
 			dialog->show();
 			GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
@@ -520,7 +507,10 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	connect(ui->horizontalSlider, &QSlider::valueChanged, this, [this](int value) {
 		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 		iniFile->setValue("DeviceData", "Remote.enable", bool(value));
-		});
+		}
+
+
+	);
 
 
 
@@ -601,8 +591,6 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
 
 	//Disable widgets .will be open later.
-
-	ui->horizontalSlider->setDisabled(true);
 	
 
 	connect(ui->btnDevInfo03, &QPushButton::clicked, this,
@@ -993,15 +981,35 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
             "}"
 
             );
+
     }
+
+    GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+    int liveDeviceId = account.getLiveDeviceId();
+
+    std::string liveDeviceName = account.getDeviceName();
+    std::string liveAccountId = account.getLiveAccount();
+    std::string remoteAccount = account.getToDeskAccount();
+    std::string remotePassword = account.getToDeskPassword();
+    std::string livePlatform = ui->comboBox->currentText().toUtf8().constData();
+    std::string remark = account.getNotes();
+
+    std::vector<std::string> vec;
+    std::string delim = "/";
+    split(remark, delim, &vec);
+
+    //GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceName, liveDeviceId, livePlatform, vec[0] + "/" + vec[1],
+				//		      liveAccountId, value, remotePassword, remotePassword);
 }
 
 void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 {
 	GBSMainCollector::getInstance()->setAccountInfo(result);
 	GBSMainCollector::getInstance()->setDeviceName(result.getDeviceName());
-	ui->lblDevInfo05->setText(QString::fromStdString(result.getDeviceName()));
+	ui->lblDevInfo05->setText(QString::fromStdString(result.getDeviceCode()));
+	
 	QMetaObject::invokeMethod(this, [result, this]() {
+		GBSMainCollector::getInstance()->setLogined(true);
 		copyToClipboard(QString::fromStdString(result.getDeviceCode()));
 		
 		GBSHttpClient::getInstance()->downFile(result.getHead(), "avator.png", 0);
@@ -1011,7 +1019,8 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 		QString obfuscateString = ObfuscateString(deviceNoBraces);
 		ui->lblDevInfo02->setText(obfuscateString);
 
-		ui->lblDevInfo03->setText(QString::fromStdString(result.getDeviceCode()));
+		//QString status = (std::stoi(result.getActivationCode()) ==  0) ? "未激活" : "已激活";
+		//ui->lblDevInfo03->setText(status);
 
 		ui->lblDevInfo04->setText(QString::fromStdString(result.getNotes()));
 
@@ -1105,4 +1114,5 @@ GBSBizDeviceInfo::~GBSBizDeviceInfo()
 	timer.stop();
 	GBSHttpClient::getInstance()->unRegisterHandler(this);
 	delete ui;
+	os_cpu_usage_info_destroy(cpu_info);
 }

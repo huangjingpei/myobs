@@ -236,146 +236,125 @@
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="spacing">
+              <number>6</number>
+             </property>
              <item>
-              <widget class="QWidget" name="widget" native="true">
-               <widget class="QFrame" name="frmConsole">
-                <property name="geometry">
-                 <rect>
-                  <x>20</x>
-                  <y>0</y>
-                  <width>621</width>
-                  <height>591</height>
-                 </rect>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>621</width>
-                  <height>591</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>621</width>
-                  <height>591</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color:#F9F9F9;
-border: 1px solid  #FFFFFF;
-border-radius: 16px;
-</string>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
-                </property>
-                <widget class="QLabel" name="lblLiveSource_2">
-                 <property name="geometry">
-                  <rect>
-                   <x>70</x>
-                   <y>20</y>
-                   <width>80</width>
-                   <height>25</height>
-                  </rect>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">background-color:#F9F9F9;
+              <widget class="QFrame" name="frame">
+               <property name="styleSheet">
+                <string notr="true">background-color:#F9F9F9;
 border: 1px solid  #FFFFFF;
 border-radius: 16px;
 font-size: 24px;
 </string>
-                 </property>
-                 <property name="text">
-                  <string>控制台</string>
-                 </property>
-                </widget>
-                <widget class="FatButton" name="pushButton">
-                 <property name="geometry">
-                  <rect>
-                   <x>150</x>
-                   <y>80</y>
-                   <width>150</width>
-                   <height>80</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="FatButton" name="pushButton_2">
-                 <property name="geometry">
-                  <rect>
-                   <x>320</x>
-                   <y>80</y>
-                   <width>150</width>
-                   <height>80</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="FatButton" name="pushButton_3">
-                 <property name="geometry">
-                  <rect>
-                   <x>150</x>
-                   <y>180</y>
-                   <width>150</width>
-                   <height>80</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="FatButton" name="pushButton_4">
-                 <property name="geometry">
-                  <rect>
-                   <x>320</x>
-                   <y>180</y>
-                   <width>150</width>
-                   <height>80</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="FatButton" name="pushButton_5">
-                 <property name="geometry">
-                  <rect>
-                   <x>150</x>
-                   <y>280</y>
-                   <width>150</width>
-                   <height>80</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-                <widget class="FatButton" name="pushButton_6">
-                 <property name="geometry">
-                  <rect>
-                   <x>320</x>
-                   <y>280</y>
-                   <width>150</width>
-                   <height>80</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </widget>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QWidget" name="widget" native="true">
+                  <property name="styleSheet">
+                   <string notr="true">background-color:#F9F9F9;
+border: 1px solid  #FFFFFF;
+border-radius: 16px;
+font-size: 24px;
+</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,11">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+                   </property>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <item>
+                      <widget class="QLabel" name="lblLiveSource_2">
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>60</height>
+                        </size>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true"/>
+                       </property>
+                       <property name="text">
+                        <string>         控制台</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,2,2,1">
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_19"/>
+                     </item>
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_15">
+                       <item>
+                        <widget class="FatButton" name="pushButton">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="FatButton" name="pushButton_3">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="FatButton" name="pushButton_5">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_16">
+                       <item>
+                        <widget class="FatButton" name="pushButton_2">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="FatButton" name="pushButton_4">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="FatButton" name="pushButton_6">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_18"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
@@ -974,7 +953,7 @@ font-size: 24px;
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>343</width>
+              <width>386</width>
               <height>16</height>
              </rect>
             </property>

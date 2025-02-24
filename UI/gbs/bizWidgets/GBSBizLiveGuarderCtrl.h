@@ -36,6 +36,8 @@ signals:
 
 public slots:
 	void onTabChanged(int index);
+	void onTabChanged2(int index);
+
 	void addNewWidget(const QString &atext, const QString &aimagePath, const QString &atext2, const QString &atype,
 			  const QString &liveId);
 	void onWssKeepAlive();
@@ -74,7 +76,7 @@ private:
 	GridButtons *gridButtons;
 	LiveManageWidget *liveManageWidget;
 	std::list<GBSLiveDevices> currentliveDevices;
-	int currentPageNum;
+	int currentPageNum{0};
 	QString danmaPlatIconString;
 	QPointer<QTimer> mWssTimer;
 	std::atomic_bool mWssRunning{false};

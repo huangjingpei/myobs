@@ -22,7 +22,9 @@
 #include "window-basic-main.hpp"
 #include <QDesktopServices>
 #include <QUrl>
-
+#include <QCompleter>
+#include <QStringList>
+#include "gbs/remoteCtrl/localqueryinfo.h"
 
 
 #include "qt-wrappers.hpp"
@@ -30,6 +32,29 @@
 
 #include "window-basic-main.hpp"
 #include "display-helpers.hpp"
+
+
+static int calculateDaysUntilExpiration(const QString &startTimeStr)
+{
+	// 1. 解析起始时间字符串 (格式: "YYYY-MM-DD HH:MM:SS")
+	QDateTime startDateTime = QDateTime::fromString(startTimeStr, "yyyy-MM-dd HH:mm:ss");
+	if (!startDateTime.isValid()) {
+		qDebug() << "Invalid start time format. Expected format: yyyy-MM-dd HH:mm:ss";
+		return -1; // 返回 -1 表示解析失败
+	}
+
+	// 2. 给起始时间增加 365 天
+	QDateTime expirationDateTime = startDateTime.addDays(365);
+
+	// 3. 获取当前时间
+	QDateTime currentDateTime = QDateTime::currentDateTime();
+
+	// 4. 计算当前时间与到期时间之间的差值（以天为单位）
+	qint64 daysDifference = currentDateTime.daysTo(expirationDateTime);
+
+	return daysDifference;
+}
+
 #include <QMovie>
 class GridButtons : public QWidget {
 
@@ -376,95 +401,131 @@ private:
         }
     }
 
+    public:
+	    // 清除所有按钮
+	    void clearButtons()
+	    {
+		    // 遍历所有页面，删除所有按钮
+		    for (int i = 0; i < stackedWidget->count(); ++i) {
+			    QWidget *pageWidget = stackedWidget->widget(i);
+			    if (pageWidget) {
+				    QLayout *layout = pageWidget->layout();
+				    if (layout) {
+					    // 遍历布局中的所有项
+					    QLayoutItem *child;
+					    while ((child = layout->takeAt(0)) != nullptr) {
+						    QWidget *widget = child->widget();
+						    if (widget) {
+							    widget->deleteLater(); // 删除控件
+						    }
+						    delete child; // 删除布局项
+					    }
+				    }
+			    }
+		    }
+
+		    // 清空 stackedWidget 并重置状态
+		    while (stackedWidget->count() > 0) {
+			    stackedWidget->removeWidget(stackedWidget->widget(0));
+		    }
+
+		    buttonCount = 0;
+		    pageCount = 0;
+		    currentPage = 0;
+		    lblPage->setText(QString("%1/%2 页").arg(0).arg(0)); // 应该显示 0/0
+	    }
+
 };
 
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QResizeEvent>
-
-class MyTableWidget : public QTableWidget {
-	Q_OBJECT
-public:
-	explicit MyTableWidget(QWidget *parent = nullptr) : QTableWidget(parent)
-	{
-		setStyleSheet("QTableWidget {"
-			      "    border: 1px solid #1B2846;"           // 表格外边框
-			      "    border-radius: 4px;"                  // 边框圆角
-			      "    background: #C9DCFF;"                 // 表格背景色
-			      "    gridline-color: #1B2846;"             // 网格线颜色
-			      "    color: #FFFFFF;"                      // 字体颜色
-			      "    font-size: 14px;"                     // 字体大小
-			      "    selection-background-color: #007BFF;" // 选中行背景色
-			      "    selection-color: #FFFFFF;"            // 选中行文字颜色
-			      "}"
-			      "QTableWidget::pane { border: 0; }"
-			      "QTableWidget::tab { border: 0; }"
-			      "QTableWidget::tab-bar { border: 0; }"
-			      );
-		setColumnCount(12);
-		setHorizontalHeaderLabels({"序号", "激活编号", "备注编号", "客户号", "开播时间", "剩余时长", "直播账号",
-				"直播数量（总）", "直播时长", "ToDesk账号",
-				"ToDesk密码","操作"});
-
-		horizontalHeader()->setStretchLastSection(true);                // 最后一列填满
-		horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 列宽均匀分布
-		//setEditTriggers(QAbstractItemView::NoEditTriggers);             // 禁止编辑
-		setSelectionMode(QAbstractItemView::SingleSelection);           // 单选
-		setSelectionBehavior(QAbstractItemView::SelectRows);            // 按行选择
-
-		setShowGrid(true); // 显示网格线
-		connect(this, &QTableWidget::cellPressed, this, &MyTableWidget::onCellClicked);
-
-	}
-	void addRow(const QStringList &rowData)
-	{
-		++index;
-		if (rowData.size() != columnCount()) {
-			qWarning("Row data does not match column count.");
-			return;
-		}
-
-		int row = rowCount();
-		insertRow(row);
-		
-
-		for (int col = 0; col < rowData.size() - 1; ++col) {
-			QTableWidgetItem *item = new QTableWidgetItem(rowData[col]);
-			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-			setItem(row, col, item);
-		}
-	}
-	void removeRow(int row)
-	{
-		if (row >= 0 && row < rowCount()) {
-			QTableWidget::removeRow(row);
-		} else {
-			qWarning("Invalid row index.");
-		}
-	}
-
-signals:
-	void onRowClick(int row, int column);
-
-
-public slots:
-	void onCellClicked(int row, int column) {
-		selRow = row;
-		selCol = column;
-		qDebug() << "setCurrentCell " << row << " col " << column;
-		//setCurrentCell(row, column);
-		
-	}
-
-
-private:
-	int index = 0;
-	int selRow = 0;
-	int selCol = 0;
-};
+#include "gbs/bizWidgets/tables/liveMngr/LiveMngrWidget.h"
+//
+//class MyTableWidget : public QTableWidget {
+//	Q_OBJECT
+//public:
+//	explicit MyTableWidget(QWidget *parent = nullptr) : QTableWidget(parent)
+//	{
+//		setStyleSheet("QTableWidget {"
+//			      "    border: 1px solid #1B2846;"           // 表格外边框
+//			      "    border-radius: 4px;"                  // 边框圆角
+//			      "    background: #C9DCFF;"                 // 表格背景色
+//			      "    gridline-color: #1B2846;"             // 网格线颜色
+//			      "    color: #FFFFFF;"                      // 字体颜色
+//			      "    font-size: 14px;"                     // 字体大小
+//			      "    selection-background-color: #007BFF;" // 选中行背景色
+//			      "    selection-color: #FFFFFF;"            // 选中行文字颜色
+//			      "}"
+//			      "QTableWidget::pane { border: 0; }"
+//			      "QTableWidget::tab { border: 0; }"
+//			      "QTableWidget::tab-bar { border: 0; }"
+//			      );
+//		setColumnCount(12);
+//		setHorizontalHeaderLabels({"序号", "激活编号", "备注编号", "客户号", "开播时间", "剩余时长", "直播账号",
+//				"直播数量（总）", "直播时长", "ToDesk账号",
+//				"ToDesk密码","操作"});
+//
+//		horizontalHeader()->setStretchLastSection(true);                // 最后一列填满
+//		horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 列宽均匀分布
+//		//setEditTriggers(QAbstractItemView::NoEditTriggers);             // 禁止编辑
+//		setSelectionMode(QAbstractItemView::SingleSelection);           // 单选
+//		setSelectionBehavior(QAbstractItemView::SelectRows);            // 按行选择
+//
+//		setShowGrid(false); // 显示网格线
+//		connect(this, &QTableWidget::cellPressed, this, &MyTableWidget::onCellClicked);
+//
+//	}
+//	void addRow(const QStringList &rowData)
+//	{
+//		++index;
+//		if (rowData.size() != columnCount()) {
+//			qWarning("Row data does not match column count.");
+//			return;
+//		}
+//
+//		int row = rowCount();
+//		insertRow(row);
+//		
+//
+//		for (int col = 0; col < rowData.size() - 1; ++col) {
+//			QTableWidgetItem *item = new QTableWidgetItem(rowData[col]);
+//			item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+//			setItem(row, col, item);
+//		}
+//	}
+//	void removeRow(int row)
+//	{
+//		if (row >= 0 && row < rowCount()) {
+//			QTableWidget::removeRow(row);
+//		} else {
+//			qWarning("Invalid row index.");
+//		}
+//	}
+//
+//signals:
+//	void onRowClick(int row, int column);
+//
+//
+//public slots:
+//	void onCellClicked(int row, int column) {
+//		selRow = row;
+//		selCol = column;
+//		qDebug() << "setCurrentCell " << row << " col " << column;
+//		//setCurrentCell(row, column);
+//		
+//	}
+//
+//
+//private:
+//	int index = 0;
+//	int selRow = 0;
+//	int selCol = 0;
+//};
 
 class CustomSearchLineEdit : public QLineEdit {
+	Q_OBJECT
 public:
 	CustomSearchLineEdit(QWidget *parent = nullptr) : QLineEdit(parent)
 	{
@@ -472,58 +533,54 @@ public:
 		setFixedSize(192, 27);
 		// 创建并设置放大镜图标
 		iconLabel = new QLabel(this);
-		iconLabel->setPixmap(QPixmap(":gbs/images/gbs/biz/gbs-search-24px.png")); // 放大镜图标路径
+		QPixmap searchPixmap(":gbs/images/gbs/biz/gbs-search-24px.png"); // 相对路径
+		iconLabel->setPixmap(searchPixmap);                              // 放大镜图标路径
 		iconLabel->setFixedSize(24, 24);
 		iconLabel->move(10, (height() - iconLabel->height()) / 2); // 图标左边距10
 		iconLabel->setVisible(true);
 
-		// 创建并设置 QComboBox
-		QPushButton *button = new QPushButton(this);
-		button->setStyleSheet("QPushButton {"
-				      "   background-image: url(:/Resources/gbs-arrow-down-24px.png);"
-				      "   background-repeat: no-repeat;"
-				      "   background-position: center;"
-				      "   color: white;"
-				      "   border: none;"       // 无边框
-				      "   border-radius: 5px;" // 圆角
-				      "   font-size: 16px;"
-				      "   padding: 0;" // 不添加内边距
-				      "}");
-		button->setFixedSize(24, 24);
-		button->move(width() - button->width(), (height() - button->height()) / 2); // 右边距10
+		QHBoxLayout *searchLayout = new QHBoxLayout(this);
+		searchLayout->setContentsMargins(5, 0, 5, 0); // 设置左右边距
+		searchLayout->setSpacing(0);                  // 移除组件之间的间距
 
-		// // 样式表：圆角边框、填充、内边距
-		// setStyleSheet("QLineEdit {"
-		//               "border: 1px solid #ccc;"
-		//               "border-radius: 15px;"
-		//               "padding-left: 40px;"  // 给左边图标留空间
-		//               "padding-right: 70px;" // 给右边下拉框留空间
-		//               "}");
+		    // 添加组件到布局
+		searchLayout->addWidget(iconLabel);
+		searchLayout->addStretch(); // 将图标推到左侧
+					    // 设置文本框的文本边距，为图标和下拉框留出空间
+		setTextMargins(30, 0, 85, 0); // 左边距25px，右边距85px
+
+		QStringList words;
+		words << "apple" << "banana" << "orange" << "grape" << "watermelon";
+		QCompleter *completer = new QCompleter(words, this);
+		completer->setCaseSensitivity(Qt::CaseInsensitive);
+		setCompleter(completer);
+
+		setStyleSheet("QLineEdit {"
+					"    width: 193px;"
+					"    height: 27px;"
+					"    background-color: rgba(143, 146, 161, 5%);"
+					"    border-radius: 5px;"
+					"    border: 1px solid #D8D8D8;"
+					"}");
 		connect(this, &QLineEdit::textChanged, this, [this](const QString &text) {
 			qDebug() << "text changed "
 				 << "text" << text;
-			if (!text.isEmpty()) {
-				setText(text);
-				iconLabel->setVisible(false);
-			} else {
-				iconLabel->setVisible(true);
-			}
+			setText(text);
 		});
 	}
 
+signals:
+	void returnPressed(QString text);
+
 protected:
-	void resizeEvent(QResizeEvent *event) override
+	// 重写 keyPressEvent 方法
+	void keyPressEvent(QKeyEvent *event) override
 	{
-		QLineEdit::resizeEvent(event);
-
-		// 确保图标和 button 在 QLineEdit 中的正确位置
-		QWidget *iconLabel = findChild<QLabel *>();
-		if (iconLabel)
-			iconLabel->move(10, (height() - iconLabel->height()) / 2);
-
-		QPushButton *button = findChild<QPushButton *>();
-		if (button)
-			button->move(width() - button->width() - 10, (height() - button->height()) / 2);
+		if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+			emit returnPressed(text()); 
+			return;               
+		}
+		QLineEdit::keyPressEvent(event);
 	}
 
 private:
@@ -531,6 +588,7 @@ private:
 };
 
 class LiveManageWidget : public QWidget {
+	Q_OBJECT;
 
 public:
 	explicit LiveManageWidget(QWidget *parent = nullptr) : QWidget(parent)
@@ -555,198 +613,49 @@ public:
 				      "   padding: 0;" // 不添加内边距
 				      "}");
 		CustomSearchLineEdit *lineEdit = new CustomSearchLineEdit;
+		
 		naviLayout->addWidget(label);
 		naviLayout->addWidget(lineEdit);
 		naviLayout->addWidget(btnAdd);
-		mainLayout->addLayout(naviLayout);
-		table = new MyTableWidget();
-		mainLayout->addWidget(table);
 
-		
 		QObject::connect(btnAdd, &QPushButton::clicked, this, [this]() {
 			GBSAddBroker *broker = new GBSAddBroker(this);
 			broker->show();
-#if 0
-			QPushButton *delButton = new QPushButton();
-			delButton->setStyleSheet("QPushButton {"
-						 "   background-image: url(:gbs/images/gbs/biz/gbs-trash-20px.png);"
-						 "   background-repeat: no-repeat;"
-						 "   background-position: center;"
-						 "   color: white;"
-						 "   border: none;"       // 无边框
-						 "   border-radius: 5px;" // 圆角
-						 "   font-size: 16px;"
-						 "   padding: 0;" // 不添加内边距
-						 "}");
-			QPushButton *disableVideoButton = new QPushButton();
-			disableVideoButton->setStyleSheet("QPushButton {"
-							  "   background-image: url(:gbs/images/gbs/biz/gbs-disable-video.png);"
-							  "   background-repeat: no-repeat;"
-							  "   background-position: center;"
-							  "   color: white;"
-							  "   border: none;"       // 无边框
-							  "   border-radius: 5px;" // 圆角
-							  "   font-size: 16px;"
-							  "   padding: 0;" // 不添加内边距
-							  "}");
-			QPushButton *shareButton = new QPushButton();
-			shareButton->setStyleSheet("QPushButton {"
-						   "   background-image: url(:gbs/images/gbs/biz/gbs-remote-share.png);"
-						   "   background-repeat: no-repeat;"
-						   "   background-position: center;"
-						   "   color: white;"
-						   "   border: none;"       // 无边框
-						   "   border-radius: 5px;" // 圆角
-						   "   font-size: 16px;"
-						   "   padding: 0;" // 不添加内边距
-						   "}");
-
-			QStringList rowData = {QString("%1").arg(index++),
-					       "54564568556",
-					       "KS/CZQ/0101",
-					       "王涛（广东省珠海市）",
-					       "2022-12-12 16:15:00",
-					       "2022-12-12 16:15:00",
-					       "456555533",
-					       "23台",
-					       "50天 17:45:59",
-					       ""};
-			QWidget *operationWidget = new QWidget;
-			operationWidget->setStyleSheet("QWidget { alignment: center; }");
-			QHBoxLayout *operation = new QHBoxLayout(operationWidget); // 在添加控件之前创建布局
-
-			delButton->setFixedSize(20, 20);
-			disableVideoButton->setFixedSize(20, 20);
-			shareButton->setFixedSize(20, 20);
-
-			operation->setSpacing(20); // 只设置一次间距
-			operation->addWidget(delButton);
-			operation->addWidget(disableVideoButton);
-			operation->addWidget(shareButton);
-
-			operationWidget->setLayout(operation); // 将布局设置给控件
-			connect(delButton, &QPushButton::clicked, this, [table, this]() {
-				int currentRow = table->currentRow();
-				qDebug() << "currentRow " << currentRow;
-				table->removeRow(currentRow);
-			});
-
-			// 设置边距为0
-			operation->setContentsMargins(QMargins(0, 0, 0, 0));
-			operation->setAlignment(Qt::AlignCenter); // 设置对齐方式为居中
-
-			table->addRow(rowData);
-			table->setCellWidget(table->rowCount() - 1, rowData.size() - 1, operationWidget);
-#endif
 		});
-		setLayout(mainLayout);
+		mainLayout->addLayout(naviLayout);
+		table = new LiveMngrWidget();
+		connect(table, &LiveMngrWidget::deleteLiveClient, this, [](QString id) {
 
+			});
+		connect(table, &LiveMngrWidget::disconnectLiveClient, this, [](QString id) {
+
+			});
+		connect(table, &LiveMngrWidget::connectRemoteMachine, this, [](QString username, QString password) {
+			QTimer::singleShot(0, [username, password]() {
+				connect_remote_machine(username, password);
+			});
+			});
+		mainLayout->addWidget(table);
+		setLayout(mainLayout);
+		connect(lineEdit, &CustomSearchLineEdit::returnPressed, this, [this](QString text) {
+			emit fuzzyMatching(text);
+			});
 	}
 
 public:
-	void addRow(QStringList list) { table->addRow(list);
-		QPushButton *delButton = new QPushButton();
-		delButton->setStyleSheet("QPushButton {"
-					 "   background-image: url(:gbs/images/gbs/biz/gbs-trash-20px.png);"
-					 "   background-repeat: no-repeat;"
-					 "   background-position: center;"
-					 "   color: white;"
-					 "   border: none;"       // 无边框
-					 "   border-radius: 5px;" // 圆角
-					 "   font-size: 16px;"
-					 "   padding: 0;" // 不添加内边距
-					 "}");
-		QPushButton *disableVideoButton = new QPushButton();
-		disableVideoButton->setStyleSheet("QPushButton {"
-						  "   background-image: url(:gbs/images/gbs/biz/gbs-disable-video.png);"
-						  "   background-repeat: no-repeat;"
-						  "   background-position: center;"
-						  "   color: white;"
-						  "   border: none;"       // 无边框
-						  "   border-radius: 5px;" // 圆角
-						  "   font-size: 16px;"
-						  "   padding: 0;" // 不添加内边距
-						  "}");
-		QPushButton *shareButton = new QPushButton();
-		shareButton->setStyleSheet("QPushButton {"
-					   "   background-image: url(:gbs/images/gbs/biz/gbs-remote-share.png);"
-					   "   background-repeat: no-repeat;"
-					   "   background-position: center;"
-					   "   color: white;"
-					   "   border: none;"       // 无边框
-					   "   border-radius: 5px;" // 圆角
-					   "   font-size: 16px;"
-					   "   padding: 0;" // 不添加内边距
-					   "}");
 
-		QWidget *operationWidget = new QWidget;
-		operationWidget->setStyleSheet("QWidget { alignment: center; }");
-
-		QHBoxLayout *operation = new QHBoxLayout(operationWidget); // 在添加控件之前创建布局
-
-		delButton->setFixedSize(20, 20);
-		disableVideoButton->setFixedSize(20, 20);
-		shareButton->setFixedSize(20, 20);
-
-		operation->setSpacing(20); // 只设置一次间距
-		operation->addWidget(delButton);
-		operation->addWidget(disableVideoButton);
-		operation->addWidget(shareButton);
-
-		operationWidget->setLayout(operation); // 将布局设置���控件
-
-		// 设置边距为0
-		operation->setContentsMargins(QMargins(0, 0, 0, 0));
-		operation->setAlignment(Qt::AlignCenter); // 设置对齐方式为居中
-
-		//table->addRow(rowData);
-		qDebug() << "list.at(0).toInt() "
-			 << list.at(0).toInt();
-		table->setCellWidget(list.at(0).toInt()-1, list.size() - 1, operationWidget);
-
-		connect(delButton, &QPushButton::clicked, this, [this]() {
-			QList<QTableWidgetItem *> selectedRows = table->selectedItems();
-			if (!selectedRows.isEmpty()) {
-				// 获取第一行的索引
-				int row = selectedRows.first()->row();
-				table->removeRow(row);
-
-			} else {
-				QHBoxLayout *layout = new QHBoxLayout;
-				QLabel *label = new QLabel("请选中行后才能进行删除.");
-
-				layout->addWidget(label);
-				GBSMsgDialog *dialog = new GBSMsgDialog("错误提示", layout, this);
-				dialog->exec();
-			}
-
-			int currentRow = table->currentRow();
-			qDebug() << "currentRow " << currentRow;
-			table->removeRow(currentRow);
-		});
-
-		connect(shareButton, &QPushButton::clicked, this, [this]() {
-			QList<QTableWidgetItem *> selectedRows = table->selectedItems();
-			if (!selectedRows.isEmpty()) {
-				// 获取第一行的索引
-				int row = selectedRows.first()->row();
-				table->removeRow(row);
-
-			} else {
-				QHBoxLayout *layout = new QHBoxLayout;
-				QLabel *label = new QLabel("请选中行后才能进行删除.");
-
-				layout->addWidget(label);
-				GBSMsgDialog *dialog = new GBSMsgDialog("错误提示", layout, this);
-				dialog->exec();
-			}
-			qDebug() << "sharedButton click row.";
-			});
+	void addRow(QStringList data) { table->addRow(data);
 
 	}
 
+	// 添加一个清除表格的函数
+	void clearTable() { table->clearRows();
+	}
+signals:
+	void fuzzyMatching(QString text);
+
 private:
-	MyTableWidget *table;
+	LiveMngrWidget *table;
 	
 	int index = 0;
 	
@@ -759,10 +668,7 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 {
     ui->setupUi(this);
 
-    gridButtons = new GridButtons(this);
-    ui->horizontalLayout->addWidget(gridButtons);
-    validWidget = gridButtons;
-
+  
     //ui->tabWidget->setStyleSheet("QTabWidget::pane {"
 				// "    border: none;" // 移除tab pane的边框
 				// "}"
@@ -817,7 +723,6 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 				"QTabBar::tab { border: none; }"
 				"QTabWidget::tab-bar { border: none; }"
     );
-    connect(gridButtons, &GridButtons::notifyDanmukuChanged, this, &GBSBizLiveGuarderCtrl::onDanmukuChanged);
 
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 	 QString pullRtmpUrl = iniFile->value("LiveBroker", "url", "unknown").toString();
@@ -897,12 +802,52 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 	QVBoxLayout *mainLayout = new QVBoxLayout(currentWidget);
 	mainLayout->addWidget(danmakuscrollArea);
 
+	//设置直播间管理，开播管理
+
 	mWssTimer = new QTimer(this);
 	connect(mWssTimer, &QTimer::timeout, this, &GBSBizLiveGuarderCtrl::onWssKeepAlive);
 	if (!mWssTimer->isActive()) {
 		mWssTimer->start();
 		mWssTimer->setInterval(10000);
 	}
+
+	ui->tabWidget_2->setStyleSheet("QTabWidget::pane {"
+				     "    border: none;" // 移除tab pane的边框
+				     "}");               // 清空 QTabWidget 的样式表
+
+	ui->tabWidget_2->setStyleSheet("QTabBar::tab {"
+				     "    color: #78828A; "     // 默认字体颜色
+				     "    background: none; "   // 默认背景颜色
+				     "    padding: 40px; "      // 内边距
+				     "    padding: 4px; "       // 内边距
+				     "    border-radius: 5px; " // 圆角
+				     "    font-size: 14px;"     // 设置字体大小为16像素
+
+				     "}"
+				     "QTabBar::tab:selected {"
+				     "    color: #00C566; "   // 选中字体颜色
+				     "    background: none; " // 选中背景颜色
+				     "    padding: 4px; "     // 内边距
+				     "}"
+				     "QTabBar::tab:first {"
+				     "    margin-left: 40px;" // 调整第一个tab项的左外边距
+				     "}"
+				     "QTabWidget::pane { border: 0; }"
+				     "QTabBar::tab { border: none; }"
+				     "QTabWidget::tab-bar { border: none; }");
+	connect(ui->tabWidget_2, &QTabWidget::currentChanged, this, &GBSBizLiveGuarderCtrl::onTabChanged2);
+
+	mDanmakuType = DANITEM_TYPE_ALL;
+	gridButtons = new GridButtons(this);
+	ui->tabWidget_2->addTab(gridButtons, "直播间");
+	connect(gridButtons, &GridButtons::notifyDanmukuChanged, this, &GBSBizLiveGuarderCtrl::onDanmukuChanged);
+
+
+	liveManageWidget = new LiveManageWidget(this);
+	connect(liveManageWidget, &LiveManageWidget::fuzzyMatching, this, [this](QString text) {
+			//模糊匹配. //TODO
+		});
+	ui->tabWidget_2->addTab(liveManageWidget, "	开播管理");
 
 	GBSHttpClient::getInstance()->getPullStreamUrlV2();
 
@@ -941,8 +886,8 @@ void GBSBizLiveGuarderCtrl::onWssKeepAlive() {
 	}
 }
 
-void GBSBizLiveGuarderCtrl::onTabChanged(int index) {
-
+void GBSBizLiveGuarderCtrl::onTabChanged(int index)
+{
 
 	if (validWidget != nullptr) {
 
@@ -952,49 +897,16 @@ void GBSBizLiveGuarderCtrl::onTabChanged(int index) {
 		validWidget = nullptr;
 		update();
 	}
-	
-	if (index == 0 && index <=3) {
-		mDanmakuType = DANITEM_TYPE_ALL; 
-		gridButtons = new GridButtons(this);
-		ui->horizontalLayout->addWidget(gridButtons);
-		validWidget = gridButtons;
-		for (std::list<GBSLiveDevices>::iterator it = currentliveDevices.begin();
-		     it != currentliveDevices.end(); ++it) {
-			gridButtons->addButton(QString::fromStdString((*it).getDeviceName()), (*it).getId());
-		}
-		
 
-	} else if (index == 4) {
-		liveManageWidget = new LiveManageWidget(this);
-		ui->horizontalLayout->addWidget(liveManageWidget);
-		validWidget = liveManageWidget;
-		int count = (int)currentliveDevices.size();
-		if (count > 0) {
-			int i = 0;
-			for (std::list<GBSLiveDevices>::iterator it = currentliveDevices.begin();
-			     it != currentliveDevices.end(); ++it) {
-				QStringList rawData;
-				QString No = QString("%1").arg(i+1, 3, 10, QChar('0'));
-				QString activateCode = QString::fromStdString((*it).getActivationCode());
-				QString notes = QString::fromStdString((*it).getNotes());
-				QString deviceName = QString::fromStdString((*it).getDeviceName()); 
-				QString createTime = QString::fromStdString((*it).getCreatedTime());
-				QString leftTime = "00:00:00";
-				QString liveAccountId = QString::number((*it).getLiveAccountId());
-				QString liveDeviceCount = QString("1%1台/(2%2台)").arg(5).arg(10);
-				QString liveTimeLength = QString("50天 17:45:59 ");
-				QString toDeskAccount = QString::fromStdString((*it).getToDeskAccount());
-				QString toDeskPassword = QString::fromStdString((*it).getToDeskPassword());
+	if (index == 0 && index <= 3) {
 
-				rawData << No << activateCode << notes << deviceName << createTime << leftTime
-					<< liveAccountId << liveDeviceCount << liveTimeLength << toDeskAccount
-					<< toDeskPassword << "";
-				liveManageWidget->addRow(rawData);
-				i++;
-			}
-		}
 	}
-} 
+}
+
+void GBSBizLiveGuarderCtrl::onTabChanged2(int index) {
+	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	GBSHttpClient::getInstance()->pageSrsLiveDeviceV2(account.getId(), 0);
+}
 
 GBSBizLiveGuarderCtrl::~GBSBizLiveGuarderCtrl()
 {
@@ -1012,16 +924,54 @@ GBSBizLiveGuarderCtrl::~GBSBizLiveGuarderCtrl()
 void GBSBizLiveGuarderCtrl::onListDevices(std::list<GBSLiveDevices> devices, int pageNum)
 {
 	currentPageNum = pageNum;
-	currentliveDevices = std::move(devices);
-	QMetaObject::invokeMethod(this, [this]() {
-		if (gridButtons == validWidget) {
+	//currentliveDevices = std::move(devices);
+	QMetaObject::invokeMethod(this, [devices,this]() {
+		currentliveDevices = std::move(devices);
+		liveManageWidget->clearTable();
+		gridButtons->clearButtons();
+		int index = ui->tabWidget_2->currentIndex();
+		if (index == 0) {
 			for (std::list<GBSLiveDevices>::iterator it = currentliveDevices.begin();
 			     it != currentliveDevices.end(); ++it) {
-				gridButtons->addButton(QString::fromStdString((*it).getDeviceName()),(*it).getId());
+				gridButtons->addButton(QString::fromStdString((*it).getDeviceName()), (*it).getId());
+			}
+
+		} else if (index == 1) {
+
+			int count = (int)currentliveDevices.size();
+			if (count > 0) {
+				int i = 0;
+				for (std::list<GBSLiveDevices>::iterator it = currentliveDevices.begin();
+				     it != currentliveDevices.end(); ++it) {
+					QStringList rawData;
+					QString No = QString("%1").arg(i + 1, 3, 10, QChar('0'));
+					QString activateCode = QString::fromStdString((*it).getActivationCode());
+					QStringList parts = activateCode.split("-");
+					if (!parts.isEmpty() && parts.size() > 1) {
+						activateCode = parts.at(1);
+					}
+					QString notes = QString::fromStdString((*it).getNotes());
+					QString deviceName = QString::fromStdString((*it).getDeviceName());
+					QString createTime = QString::fromStdString((*it).getCreatedTime());
+					int leftDays = calculateDaysUntilExpiration(createTime);
+					QString liveAccountId = QString::number((*it).getId());
+					QString liveDeviceCount = QString("1%1台/(2%2台)").arg(5).arg(10);
+					QString liveTimeLength = QString("50天 17:45:59 ");
+					QString toDeskAccount = QString::fromStdString((*it).getToDeskAccount());
+					QString toDeskPassword = QString::fromStdString((*it).getToDeskPassword());
+
+					rawData << No << deviceName << activateCode << notes << createTime
+						<< QString("%1 (天)").arg(leftDays)
+						<< liveAccountId << liveDeviceCount  << toDeskAccount + "/" +toDeskPassword
+						<< "";
+					liveManageWidget->addRow(rawData);
+					i++;
+				}
 			}
 		}
-		
-	});
+
+	},
+	Qt::QueuedConnection);
 
 	
 }

@@ -1397,16 +1397,27 @@ public:
 	void activeIntercom(bool active);
 	void cleanGuarderCtrlScene();
 
-	OBSSource addSlideShowSource(QStringList files);
-	void removeSlideShowSource();
+	OBSSource addSlideShowSource(QStringList files, std::string sourceName);
+	void removeSlideShowSource(std::string sourceName);
+
+	OBSSource addImageSource(std::string file, std::string sourceName);
+	void removeImageSource(std::string sourceName);
 
 	OBSSource addTimeClockSource(QString file);
 	void removeTimeClockSource();
 
+	OBSSource addHyperlinkSource(QString hyperLink);
+	void removeHyperlinkSource();
+
+	
+
 	OBSScene querySceneBySceneName(std::string sceneName);
 	void changeTransform(int factor);
-	void changeOpacity(int opacity);
+	void changeOpacity(std::string sourceName, int opacity);
 	void dumpFFmegSourceLog();
+
+	void videoGlobalRmDuplication();
+	void closeGlobalRmDuplication();
 
 private:
 	// 通过 OBSHttpEventHandler 继承

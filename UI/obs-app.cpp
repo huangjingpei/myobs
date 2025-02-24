@@ -89,9 +89,11 @@
 #include "gbs/common/EllipticalSlider.h"
 #include "gbs/common/HoriNaviButton.h"
 #include "gbs/common/EllipticalSliderExt.h"
+#include "gbs/common/CustomTabWidget.h"
 #include "gbs/common/QBizLogger.h"
 #include "gbs/common/SystemUtils.h"
 #include "gbs/GBSMainCollector.h"
+#include "gbs/remoteCtrl/localqueryinfo.h"
 
 
 static GBSHttpsHandle *httpsServerHandle = nullptr;
@@ -779,8 +781,8 @@ bool OBSApp::MigrateGlobalSettings()
 	const std::filesystem::path userConfigFile = std::filesystem::u8path(configFileString);
 
 	if (std::filesystem::exists(userConfigFile)) {
-		OBSErrorBox(nullptr,
-			    "Unable to migrate global configuration - user configuration file already exists.");
+		// OBSErrorBox(nullptr,
+		// 	    "Unable to migrate global configuration - user configuration file already exists.");
 		return false;
 	}
 
@@ -1304,6 +1306,10 @@ static void ui_task_handler(obs_task_t task, void *param, bool wait)
 
 bool OBSApp::OBSInit()
 {
+	//检查和启动远程桌面
+	//heartbeat_timer_init();
+	//after_app_run_check();
+
 	ProfileScope("OBSApp::OBSInit");
 
 	qRegisterMetaType<VoidFunc>("VoidFunc");
@@ -2701,6 +2707,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 #endif
+
 	//检查时候有可升级文件
 	std::string exePath = GetExeDirectory();
 	
@@ -2730,6 +2737,7 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<EllipticalSlider>("EllipticalSlider");
 	qRegisterMetaType<HoriNaviButton>("HoriNaviButton");
 	qRegisterMetaType<EllipticalSlider>("EllipticalSliderExt");
+	qRegisterMetaType<CustomTabWidget>("CustomTabWidget");
 #ifdef _WIN32
 	// Abort as early as possible if MSVC runtime is outdated
 	if (vc_runtime_outdated())
@@ -2884,6 +2892,8 @@ int main(int argc, char *argv[])
 #endif
 
 	//check_safe_mode_sentinel();
+
+
 
 	fstream logFile;
 

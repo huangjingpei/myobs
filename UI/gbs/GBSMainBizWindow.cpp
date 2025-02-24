@@ -161,11 +161,11 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 
 
 	horiButtons.append(ui->btnData);
-	horiButtons.append(ui->btnProduct);
+	//horiButtons.append(ui->btnProduct);
 	horiButtons.append(ui->btnLive);
 	horiButtons.append(ui->btnTranslate);
 	horiButtons.append(ui->btnSetting);
-	horiButtons.append(ui->btnAI);
+	//horiButtons.append(ui->btnAI);
 
 	ui->btnData->changeStyle(true);
 
@@ -212,11 +212,11 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 
 	//横向导航菜单按钮处理事件
 	connect(ui->btnData, &QPushButton::clicked, this, &GBSMainBizWindow::onDataClick);
-	connect(ui->btnProduct, &QPushButton::clicked, this, &GBSMainBizWindow::onProductClick);
+	//connect(ui->btnProduct, &QPushButton::clicked, this, &GBSMainBizWindow::onProductClick);
 	connect(ui->btnLive, &QPushButton::clicked, this, &GBSMainBizWindow::onLiveClick);
 	connect(ui->btnTranslate, &QPushButton::clicked, this, &GBSMainBizWindow::onTranslateClick);
 	connect(ui->btnSetting, &QPushButton::clicked, this, &GBSMainBizWindow::onSettingClick);
-	connect(ui->btnAI, &QPushButton::clicked, this, &GBSMainBizWindow::onAIClick);
+	//connect(ui->btnAI, &QPushButton::clicked, this, &GBSMainBizWindow::onAIClick);
 	GBSHttpClient::getInstance()->registerHandler(this);
 	
 	//std::this_thread::sleep_for(std::chrono::microseconds(2000));
@@ -229,11 +229,11 @@ GBSMainBizWindow::GBSMainBizWindow(QWidget *parent)
 
 	
     ui->btnData->setRealText("数据信息");
-    ui->btnProduct->setRealText("全球货源");
+    //ui->btnProduct->setRealText("全球货源");
     ui->btnLive->setRealText("远程代播");
     ui->btnTranslate->setRealText("实时翻译");
     ui->btnSetting->setRealText("直播设置");
-    ui->btnAI->setRealText("大模型");
+    //ui->btnAI->setRealText("大模型");
 
 }
 
@@ -372,7 +372,7 @@ void GBSMainBizWindow::onLiveClick(bool checked) {
 
 }
 void GBSMainBizWindow::onTranslateClick(bool checked) {
-	return seeYouNext("实时翻译");
+	//return seeYouNext("实时翻译");
 	HoriNaviButton *button = qobject_cast<HoriNaviButton *>(sender());
 	markHoriButton(button);
 	clearWidgetsFromLayout(naviLayout);

@@ -24,7 +24,7 @@ signals:
 private slots:
 	void onLinkActivated(const QString &link);
 	void onLoginTypeChanged(int type);
-	void onQRcodeLogin();
+	void onNormalLogin();
 	void onAuthorizedLogin();
 	void onLoginGBS();
 

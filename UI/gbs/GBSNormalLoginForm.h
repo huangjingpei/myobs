@@ -31,6 +31,9 @@ private slots:
 	void onPasswordForgot();
 	void onLoginGBS();
 
+private:
+	void keyPressEvent(QKeyEvent *event) override;
+
 
 private:
 	Ui::GBSNormalLoginForm *ui;

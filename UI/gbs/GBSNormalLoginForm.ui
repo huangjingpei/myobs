@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>133</y>
+      <y>92</y>
       <width>130</width>
       <height>24</height>
      </rect>
@@ -78,7 +78,7 @@
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>133</y>
+      <y>92</y>
       <width>130</width>
       <height>24</height>
      </rect>
@@ -113,7 +113,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>登陆密码</string>
+     <string>登录密码</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="leEmal">
@@ -209,6 +209,85 @@ padding-bottom: 3px;
      <string>登录</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="leLoginMethod">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>80</y>
+      <width>501</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid #E9EBED;
+border-radius: 24px;
+padding: 5px;
+background: #F9F9F9;
+padding-left: 24px;
+font-size: 14px;
+color: #9CA4AB;</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="placeholderText">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>193</width>
+      <height>2</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #78828A;
+border: 1px solid #E9EBED;
+color:#E9EBED;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>150</y>
+      <width>200</width>
+      <height>2</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #78828A;
+border: 1px solid #E9EBED;
+color:#E9EBED;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+   </widget>
+   <zorder>lblWelcome</zorder>
+   <zorder>lblEmail</zorder>
+   <zorder>lblPassword</zorder>
+   <zorder>leEmal</zorder>
+   <zorder>lePassword</zorder>
+   <zorder>btnForgetPassword</zorder>
+   <zorder>btnLoginGBS</zorder>
+   <zorder>leLoginMethod</zorder>
+   <zorder>frame</zorder>
+   <zorder>frame_2</zorder>
+   <zorder>btnScanQRodeLogin</zorder>
+   <zorder>btnAuthorizeCodeLogin</zorder>
   </widget>
   <widget class="QLabel" name="lblNoAccount">
    <property name="geometry">

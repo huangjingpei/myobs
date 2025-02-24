@@ -56,6 +56,12 @@ target_sources(
     
     gbs/common/XORPasswordProtecter.h
 
+    gbs/common/CustomTabWidget.h
+    gbs/common/CustomTabWidget.cpp
+    gbs/common/CustomTabBar.h
+    gbs/common/CustomTabBar.cpp
+    gbs/common/GBSTeleprompter.h
+
     gbs/updater/GBSXMLParser.h
     gbs/updater/GBSXMLParser.cpp
     gbs/updater/GBSFileDownloader.h
@@ -207,6 +213,25 @@ target_sources(
     
     gbs/GBSMainCollector.h
     gbs/GBSMainCollector.cpp
+
+    gbs/bizWidgets/tables/liveMngr/LiveMngrModel.h
+    gbs/bizWidgets/tables/liveMngr/LiveMngrModel.cpp
+    gbs/bizWidgets/tables/liveMngr/LiveMngrOperationDelegate.h
+    gbs/bizWidgets/tables/liveMngr/LiveMngrOperationDelegate.cpp
+    gbs/bizWidgets/tables/liveMngr/LiveMngrRemoteAuthDelegate.h
+    gbs/bizWidgets/tables/liveMngr/LiveMngrRemoteAuthDelegate.cpp
+    gbs/bizWidgets/tables/liveMngr/LiveMngrView.h
+    gbs/bizWidgets/tables/liveMngr/LiveMngrView.cpp
+    gbs/bizWidgets/tables/liveMngr/LiveMngrWidget.h
+    gbs/bizWidgets/tables/liveMngr/LiveMngrWidget.cpp
+    gbs/bizWidgets/tables/liveMngr/ComboBoxDelegate.h
+    gbs/bizWidgets/tables/liveMngr/ComboBoxDelegate.cpp
+    gbs/bizWidgets/tables/liveMngr/SliderDelegate.h
+    gbs/bizWidgets/tables/liveMngr/SliderDelegate.cpp
+    
+    
+    gbs/remoteCtrl/localqueryinfo.h
+    gbs/remoteCtrl/localqueryinfo.cpp
 
 
     window-basic-preview.cpp

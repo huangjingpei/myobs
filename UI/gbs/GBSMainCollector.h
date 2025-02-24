@@ -46,6 +46,10 @@ public:
 	void setLiving(bool living);
 	bool isLiving();
 
+	void setLogined(bool logined);
+	bool isLogined();
+
+
 	std::string& getDeviceName();
 	void setDeviceName(std::string plat);
 
@@ -121,6 +125,7 @@ private:
 	std::string mPlatLiveAcct{""};
 	std::string mDeviceName{""}; //弹幕标签上显示的内容用于区分不同的矩阵
 	std::atomic<bool> mbLiving{false};
+	std::atomic<bool> mbLogined{false};
 	std::string mUniqueNo{""};
 	std::string danmakuId{""};//主要有srsliveId 和 弹幕被抓平台id构成
 	std::string buildInfo{""};

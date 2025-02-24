@@ -1130,7 +1130,7 @@ void OBSBasic::Load(const char *file, bool remigrate)
 	migrationBaseResolution.reset();
 
 	obs_data_t *data = obs_data_create_from_json_file_safe(file, "bak");
-	if (!data) {
+	if (true) {
 		disableSaving--;
 		const auto path = filesystem::u8path(file);
 		const string name = path.stem().u8string();
@@ -1157,7 +1157,7 @@ void OBSBasic::Load(const char *file, bool remigrate)
 
 		bool hasFirstRun = config_get_bool(App()->GetUserConfig(), "General", "FirstRun");
 
-		CreateDefaultScene(!hasFirstRun);
+		CreateDefaultScene(true);
 		SaveProject();
 		return;
 	}
@@ -8824,7 +8824,7 @@ void OBSBasic::on_resetDocks_triggered(bool force)
 	//QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock, ui->mixerDock, ui->transitionsDock, controlsDock};
 	QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock, ui->mixerDock};
 	//QList<int> sizes{cx22_5, cx22_5, mixerSize, cx5, cx21};
-	QList<int> sizes{cx*291/1107, cx*360/1107, cx*456/1107};
+	QList<int> sizes{cx*188/1107, cx*36/1107, cx*556/1107};
 
 	ui->scenesDock->setVisible(true);
 	ui->sourcesDock->setVisible(true);

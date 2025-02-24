@@ -81,35 +81,7 @@ GBSModifyDevice::GBSModifyDevice(QWidget *parent)
 			     "}"
     );
 
-	ui->comboBox->setStyleSheet("QComboBox {"
-				"    padding-left: 10px;" // 为左侧箭头和文本之间留出足够的空间
-				"    border: 1px solid transparent;" // 去除边框
-				"    background: transparent;"       // 背景透明
-
-				"}"
-				"QComboBox::drop-down {"
-				"    width: 20px;" // 设置下拉箭头的宽度
-				"    subcontrol-origin: padding;"
-				"    subcontrol-position: left center;" // 将下拉按钮移到左侧
-				"    margin-left: 5px;"                 // 控制箭头与左边框的距离
-				"}"
-				"QComboBox::down-arrow {"
-				"    image: url(:gbs/images/gbs/biz/gbs-right-combox-arrow.png);" // 替换为你的箭头图标
-				"    width: 16px;"                                                // 箭头的宽度
-				"    height: 16px;"                                               // 箭头的高度
-				"    border: none;"
-				"    background: transparent;" // 透明背景
-				"}"
-				"QComboBox QAbstractItemView {"
-				"border: 1px solid #cccccc;"
-				"   selection-background-color: #f0f0f0;"
-				"   selection-color: black;"
-				"border-radius: 0px;" /* 移除下拉列表的圆角 */
-
-				"}");
-
-	QList<QString> plats = GBSMainCollector::getInstance()->getLivePlats();
-    ui->comboBox->addItems(plats);
+  
     ui->btnOK->setObjectName("myButton");
     ui->btnCancel->setObjectName("myButton");
 
@@ -261,10 +233,7 @@ std::string GBSModifyDevice::getRemarks() {
 
 void GBSModifyDevice::setRemoteSwitch(bool enable, bool select) {
 	remoteSwitch = enable;
-	if (!select) {
-		ui->horizontalSlider->setValue(remoteSwitch == true ? 1 : 0);
-		ui->horizontalSlider->setDisabled(true);
-	}
+
 	
 }
 bool GBSModifyDevice::getRemoteSwitch() {
@@ -273,12 +242,8 @@ bool GBSModifyDevice::getRemoteSwitch() {
 
 void GBSModifyDevice::setLivePlat(std::string plat, int index, bool select)
 {
-	if (!select) {
-		ui->comboBox->setDisabled(true);
-		QStringList mangedItems = GBSMainCollector::getInstance()->getLiveAbbreviations();
-		ui->comboBox->addItems(mangedItems);
-
-	} 
+	livePlat = plat;
+	
 }
 std::string GBSModifyDevice::getLivePlat() {
 	return livePlat;

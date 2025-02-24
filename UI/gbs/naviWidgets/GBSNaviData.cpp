@@ -72,25 +72,26 @@ GBSNaviData::GBSNaviData(QWidget *parent)
 	
 
 	VertNaviButton* btnDeviceInfo = new VertNaviButton("数据信息", ":gbs/images/gbs/biz/gbs-data-device-info.png", this);
-	VertNaviButton* btnEShopData = new VertNaviButton("电商数据", ":gbs/images/gbs/biz/gbs-data-running-data.png", this);
-	VertNaviButton* btnAIData = new VertNaviButton("智能数据", ":gbs/images/gbs/biz/gbs-data-matrix-screen.png", this);
-	vertNaviButtons << btnDeviceInfo << btnEShopData << btnAIData;
+	//VertNaviButton* btnEShopData = new VertNaviButton("电商数据", ":gbs/images/gbs/biz/gbs-data-running-data.png", this);
+	//VertNaviButton* btnAIData = new VertNaviButton("智能数据", ":gbs/images/gbs/biz/gbs-data-matrix-screen.png", this);
+	//vertNaviButtons << btnDeviceInfo << btnEShopData << btnAIData;
+	vertNaviButtons << btnDeviceInfo;
 	btnDeviceInfo->changeStyle(true);
 
 	btnDeviceInfo->setFixedSize(205, 40);
-	btnEShopData->setFixedSize(205, 40);
-	btnAIData->setFixedSize(205, 40);
+	//btnEShopData->setFixedSize(205, 40);
+	//btnAIData->setFixedSize(205, 40);
 	ui->verticalLayout->addWidget(btnDeviceInfo);
-	ui->verticalLayout->addWidget(btnEShopData);
-	ui->verticalLayout->addWidget(btnAIData);
+	//ui->verticalLayout->addWidget(btnEShopData);
+	//ui->verticalLayout->addWidget(btnAIData);
 	QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 	ui->verticalLayout->addSpacerItem(verticalSpacer);
 
 	connect(btnDeviceInfo, &VertNaviButton::clicked, this, &GBSNaviData::onDeviceInfoClicked);
-	connect(btnEShopData, &VertNaviButton::clicked, this,
-		&GBSNaviData::onEShopDataClicked);
-	connect(btnAIData, &VertNaviButton::clicked, this,
-		&GBSNaviData::onAIDataClicked);
+	// connect(btnEShopData, &VertNaviButton::clicked, this,
+	// 	&GBSNaviData::onEShopDataClicked);
+	// connect(btnAIData, &VertNaviButton::clicked, this,
+	// 	&GBSNaviData::onAIDataClicked);
 
 
 	OBSBasic *main = OBSBasic::Get();	

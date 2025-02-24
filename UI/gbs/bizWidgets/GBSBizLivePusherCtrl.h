@@ -19,6 +19,8 @@
 #include "gbs/GBSDanmaType.h"
 #include "gbs/common/WebSocketClient.h"
 #include "gbs/media/GBSAudioWriter.h"
+#include "gbs/common/GBSTeleprompter.h"
+
 
 
 namespace Ui {
@@ -151,8 +153,9 @@ private:
 	std::shared_ptr<GBSAudioWriter> audioWriter;
 	std::mutex mDanmakuListMtx;
 	int mDanmakuType{DANITEM_TYPE_ALL};
-
+	GBSTeleprompter *teleprompter{nullptr};
 	std::atomic<bool> onFailedProcessing{false};
+	std::atomic<bool> mbTeleprompter{false};
 };
 
 #endif // GBSBIZLIVEPUSHERCTRL_H

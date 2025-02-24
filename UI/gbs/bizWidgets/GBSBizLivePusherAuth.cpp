@@ -51,11 +51,14 @@ protected:
 				emit DelKeyPressed();
 			} else {
 				QString text = keyEvent->text();
-				QChar ch = text[0];
-				if (ch.isPrint()) {
-					lineEdit->setText("*");
-					lineEdit->setProperty("value", ch);
+				if (!text.isEmpty()) {
+					QChar ch = text[0];
+					if (ch.isPrint()) {
+						lineEdit->setText("*");
+						lineEdit->setProperty("value", ch);
+					}
 				}
+				
 			}
 		}
 		//  标准的事件处理

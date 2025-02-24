@@ -66,6 +66,7 @@ GBSLiveAccountInfo& GBSLiveAccountInfo::operator=(const GBSLiveAccountInfo& othe
         notes = other.notes;
         platformAccount = other.platformAccount;
         productNo = other.productNo;
+	remoteSwitch = other.remoteSwitch;
         toDeskAccount = other.toDeskAccount;
         toDeskPassword = other.toDeskPassword;
         userId = other.userId;

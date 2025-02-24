@@ -507,6 +507,7 @@ public:
 	void onCofirm();
 	void onCancel();
 	void onApply();
+	void setFPSIntRandom(int min, int max);
 
 public:
 	OBSBasicSettings(QWidget *parent);

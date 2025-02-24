@@ -45,7 +45,7 @@ font-size:16px;
      <enum>QTabWidget::TabShape::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <property name="elideMode">
      <enum>Qt::TextElideMode::ElideLeft</enum>
@@ -70,11 +70,6 @@ font-size:16px;
       <string>平台类型</string>
      </attribute>
     </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>开播管理</string>
-     </attribute>
-    </widget>
    </widget>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
@@ -86,7 +81,15 @@ font-size:16px;
      <height>401</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout"/>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget_2">
+      <property name="currentIndex">
+       <number>-1</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="OBSBasicPreview" name="wgtPreview" native="true">
    <property name="geometry">

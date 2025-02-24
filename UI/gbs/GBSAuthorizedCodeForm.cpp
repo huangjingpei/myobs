@@ -24,9 +24,9 @@ GBSAuthorizedCodeForm::GBSAuthorizedCodeForm(QWidget *parent)
 	ui->btnAuthorizeCodeLogin->setStyleSheet("border-image:url(:/gbs/images/gbs/login/account-password-login.png)");
 
         QString welcomeMessage = R"(
-            <p style="font-size: 32px; text-align: center;">
+            <p style="font-size: 28px; text-align: center;">
                 <span style="color: red;">Hi！</span>
-                <span style="color: black;">欢迎来到算力分发平台</span>
+                <span style="color: black;">欢迎来到国内外直播矩阵ERP系统</span>
             </p>
         )";
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
@@ -66,6 +66,11 @@ GBSAuthorizedCodeForm::GBSAuthorizedCodeForm(QWidget *parent)
         ui->lblNoAccount->setTextFormat(Qt::RichText);
         ui->lblNoAccount->setTextInteractionFlags(Qt::TextBrowserInteraction);
         ui->lblNoAccount->setOpenExternalLinks(false);
+
+	ui->lblNoAccount->setDisabled(true);
+	ui->lblNoAccount->setVisible(false);
+
+	ui->leLoginMethod->setDisabled(true);
 
         connect(ui->lblNoAccount, &QLabel::linkActivated, this, &GBSAuthorizedCodeForm::onLinkActivated);
 
@@ -433,4 +438,12 @@ void GBSAuthorizedCodeForm::onAgreementInfo(std::string richText, int type)
 		connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject); // 取消按钮
 		dialog->exec();
 	});
+}
+
+void GBSAuthorizedCodeForm::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+		onLoginGBS();
+		return;
+	}
 }

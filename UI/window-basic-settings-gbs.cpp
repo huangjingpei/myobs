@@ -36,6 +36,8 @@
 #include <QStandardItemModel>
 #include <QSpacerItem>
 #include <qt-wrappers.hpp>
+#include <QRandomGenerator>
+
 
 #include "audio-encoders.hpp"
 #include "hotkey-edit.hpp"
@@ -140,7 +142,14 @@ void OBSBasicSettings::onApply() {
 	videoChanged = true;
 	advancedChanged = true;
     SaveSettings();
+}
 
-
-
+void OBSBasicSettings::setFPSIntRandom(int min, int max)
+{
+	QRandomGenerator *rng = QRandomGenerator::global();
+	int randomInt = rng->bounded(min, max);
+	config_set_uint(main->Config(), "Video", "FPSType", 1);
+	config_set_uint(main->Config(), "Video", "FPSInt", randomInt);
+		videoChanged = true;
+	SaveSettings();
 }
