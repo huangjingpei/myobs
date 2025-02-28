@@ -253,6 +253,31 @@ bool GBSMainCollector::isLogined() {
 	return mbLogined;
 }
 
+void GBSMainCollector::setGuarderCtrlPassword(QString password) {
+	guarderCtrlPassword = password;
+}
+QString GBSMainCollector::getGuarderCtrlPassword()
+{
+	return guarderCtrlPassword;
+}
+
+void GBSMainCollector::setRemoteAuth(QString username, QString password)
+{
+	const std::lock_guard<std::mutex> lock(mMutex);
+	mRemoteUsernmae = username;
+	mRemotePassword = password;
+}
+QString GBSMainCollector::getRemoteUsername()
+{
+	const std::lock_guard<std::mutex> lock(mMutex);
+	return mRemoteUsernmae;
+}
+QString GBSMainCollector::getRemotePassword()
+{
+	const std::lock_guard<std::mutex> lock(mMutex);
+	return mRemotePassword;
+}
+
 std::string &GBSMainCollector::getBuildInfo()
 {
 	buildInfo = "";

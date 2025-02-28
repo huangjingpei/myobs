@@ -19,11 +19,14 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
+    void setOperationMask(int mask);
+
 signals:
     void buttonClicked(int row, int buttonIndex);
 
 private:
     QRect buttonRect(const QRect &cellRect, int buttonIndex) const;
+	std::atomic<int> m_operationMask{7};
 };
 
 #endif // LiveMngrOperationDelegate_H

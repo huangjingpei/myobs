@@ -40,6 +40,10 @@ public:
 	virtual void onListDevices(std::list<GBSLiveDevices> devices,int pageNum){};
 	virtual void onPushStreamInfo(GBSPushStreamInfo info){};
 	virtual void onSliceCount(int id, int sliceCount) {};
+	virtual void onDeviceCount(int onLineCount, int totalCount) {};
+	virtual void onActivateCode(int code) {};
+	virtual void onDeletedMatrix(int code) {};
+	virtual void onModifyDevice(int result) {};
 };
 
 class GBSHttpClient {
@@ -226,6 +230,10 @@ public:
 
     void modifyLiveRemarkV2(int id, std::string liveRemark);
     void modifyLiveRemarkTaskV2(int id, std::string liveRemark);
+
+
+    void countZlmLiveDeviceInfo(int id);
+    void countZlmLiveDeviceInfoTaskV2(int id);
 
     private:
 	std::string getDeviceNo();

@@ -1,28 +1,43 @@
-#ifndef GBSADDBROKER_H
-#define GBSADDBROKER_H
+#ifndef GBSDeleteMatrix_H
+#define GBSDeleteMatrix_H
 #include <QMouseEvent>
 #include <QDialog>
 #include <QPoint>
+#include <QMap>
+
+#include "gbs/common/GBSHttpClient.h"
+#include "gbs/bizWidgets/tables/liveMngr/LiveMngrWidget.h"
 
 namespace Ui {
-class GBSAddBroker;
+class GBSDeleteMatrix;
 }
 
-class GBSAddBroker : public QDialog
+class GBSDeleteMatrix : public QDialog, public OBSHttpEventHandler
 {
     Q_OBJECT
 
 public:
-    explicit GBSAddBroker(QWidget *parent = nullptr);
-    ~GBSAddBroker();
+    explicit GBSDeleteMatrix(QWidget *parent = nullptr);
+    ~GBSDeleteMatrix();
 
-private:
+    void setLiveId(int id) { liveId = id; };
+    void setLiveWidget(QWidget *widget) { liveWidget = reinterpret_cast<LiveMngrWidget *> (widget); };
+    void setRow(int row) { currentRow = row; }
+
+    void onDeletedMatrix(int code) override;
+
+    private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
-    Ui::GBSAddBroker *ui;
+    Ui::GBSDeleteMatrix *ui;
 	QPoint dragPosition;
+
+	int liveId{-1};
+	int currentRow{-1};
+	LiveMngrWidget *liveWidget{nullptr};
+
 };
 
-#endif // GBSADDBROKER_H
+#endif // GBSDeleteMatrix_H

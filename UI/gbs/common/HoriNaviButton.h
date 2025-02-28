@@ -72,10 +72,12 @@ protected:
         QPushButton::focusOutEvent(event); // 继续处理事件
     }
 public:
+
+
     void changeStyle(bool checked) {
         imageLabel->setVisible(checked); // 根据按钮状态显示或隐藏图片
         if (checked) {
-            textLabel->setStyleSheet("background-color: #EB3F5E; font-size: 16px; border-radius: 16px;"); // 选中时背景色
+            textLabel->setStyleSheet("background: rgba(235,63,94,0.2); font-size: 16px; border-radius: 16px;"); // 选中时背景色
         } else {
             textLabel->setStyleSheet("background-color: transparent; font-size: 16px; border-radius: 16px;"); // 未选中时背景色
         }

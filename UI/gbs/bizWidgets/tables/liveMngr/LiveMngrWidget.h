@@ -27,7 +27,10 @@ public:
 
 public:
     void addRow(const QStringList &rowData);
+    void removeRow(int row);
     void clearRows();
+
+    void setOperationMask(int mask);
 
 private slots:
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
@@ -38,7 +41,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 signals:
-	void deleteLiveClient(QString id);
+	void deleteLiveClient(int row, QString id);
 	void disconnectLiveClient(QString id);
 	void connectRemoteMachine(QString username, QString password);
 
@@ -53,7 +56,6 @@ private:
     LiveMngrOperationDelegate *m_operation2Delegate;
 
     QPushButton *m_addRowButton;
-
 
 };
 

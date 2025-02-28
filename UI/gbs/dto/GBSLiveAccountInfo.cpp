@@ -5,6 +5,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     int activationStatus,
     std::string customerNo,
     std::string deviceCode,
+    std::string deviceCreateTime,
     std::string deviceName,
     std::string deviceNo,
     std::string head,
@@ -27,6 +28,7 @@ GBSLiveAccountInfo::GBSLiveAccountInfo(
     activationStatus(activationStatus),
     customerNo(std::move(customerNo)),
     deviceCode(std::move(deviceCode)),
+    deviceCreateTime(std::move(deviceCreateTime)),
     deviceName(std::move(deviceName)),
     deviceNo(std::move(deviceNo)),
     head(std::move(head)),
@@ -53,6 +55,7 @@ GBSLiveAccountInfo& GBSLiveAccountInfo::operator=(const GBSLiveAccountInfo& othe
         activationStatus = other.activationStatus;
         customerNo = other.customerNo;
 	deviceCode = other.deviceCode;
+	deviceCreateTime = other.deviceCreateTime;
     deviceName = other.deviceName;
         deviceNo = other.deviceNo;
         head = other.head;
@@ -83,6 +86,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
     int activationStatus = j["activationStatus"].is_null() ? 0 : j["activationStatus"].get<int>();
     std::string customerNo = j["customerNo"].is_null() ? "" : j["customerNo"].get<std::string>();
     std::string deviceCode = j["deviceCode"].is_null() ? "" : j["deviceCode"].get<std::string>();
+    std::string deviceCreateTime = j["deviceCreateTime"].is_null() ? "" : j["deviceCreateTime"].get<std::string>();
     std::string deviceName = j["deviceName"].is_null() ? "" : j["deviceName"].get<std::string>();
     std::string deviceNo = j["deviceNo"].is_null() ? "" : j["deviceNo"].get<std::string>();
     std::string head = j["head"].is_null() ? "" : j["head"].get<std::string>();
@@ -108,6 +112,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
         activationStatus,
         customerNo,
 	deviceCode,
+	    deviceCreateTime,
     deviceName,
         deviceNo,
         head,

@@ -1007,7 +1007,7 @@ font-size: 24px;
               <x>0</x>
               <y>0</y>
               <width>16</width>
-              <height>30</height>
+              <height>28</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -1303,7 +1303,7 @@ font-size: 24px;
   <action name="actionAddScene">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/plus.svg</normaloff>:/res/images/plus.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-add.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-add.png</iconset>
    </property>
    <property name="text">
     <string>Add</string>
@@ -1333,7 +1333,7 @@ font-size: 24px;
   <action name="actionRemoveScene">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/minus.svg</normaloff>:/res/images/minus.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-trash-20px.png</normaloff>:/gbs/images/gbs/biz/gbs-trash-20px.png</iconset>
    </property>
    <property name="text">
     <string>Remove</string>
@@ -1399,7 +1399,7 @@ font-size: 24px;
   <action name="actionSceneUp">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/up.svg</normaloff>:/res/images/up.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-up.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-up.png</iconset>
    </property>
    <property name="text">
     <string>MoveUp</string>
@@ -1432,7 +1432,7 @@ font-size: 24px;
   <action name="actionSceneDown">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/down.svg</normaloff>:/res/images/down.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-down.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-down.png</iconset>
    </property>
    <property name="text">
     <string>MoveDown</string>
@@ -1987,7 +1987,7 @@ font-size: 24px;
   <action name="actionSceneFilters">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/filter.svg</normaloff>:/res/images/filter.svg</iconset>
+     <normaloff>:/gbs/images/gbs/biz/gbs-live-layer-setting.png</normaloff>:/gbs/images/gbs/biz/gbs-live-layer-setting.png</iconset>
    </property>
    <property name="text">
     <string>SceneFilters</string>

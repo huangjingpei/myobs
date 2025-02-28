@@ -151,13 +151,29 @@ QWeH+tVM2g0vee09bFoB
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 
 void processDanmaItem(nlohmann::json &jsonObject) {
+	GBSLiveAccountInfo acctInfo = GBSMainCollector::getInstance()->getAccountInfo();
+	std::string notes = acctInfo.getNotes();
+	std::string remark = "unknown";
+	size_t pos = notes.find('/');
+	if (pos != std::string::npos) {
+		remark = notes.substr(0, pos);
+		if (remark.size() <= 0) {
+			remark = "unknown";
+		}
+	} else {
+		if (!notes.empty()) {
+			remark = notes;
+		}
+	}
+
 	std::string liveId = GBSMainCollector::getInstance()->getDanmaKuName();
 	std::string liveDeviceId = GBSMainCollector::getInstance()->getLiveDeviceId();
-	std::string deviceName = GBSMainCollector::getInstance()->getDeviceName();
+	std::string deviceName = remark;
 	std::string platform = GBSMainCollector::getInstance()->getDanmakuPlat();
 	std::string platformAccount = GBSMainCollector::getInstance()->getLivePlatAcct();
 	jsonObject["liveId"] = liveId;
 	jsonObject["liveDeviceId"] = liveDeviceId;
+	//Magic !!! 这里并不是客户号，我们开始设计的deviceName和remark有点重复，所以决定不用deviceName，用remark替代
 	jsonObject["deviceName"] = deviceName;
 	jsonObject["platform"] = platform;
 	jsonObject["platformAcct"] = platformAccount;
@@ -213,7 +229,9 @@ void processDanmaItem(nlohmann::json &jsonObject) {
 
 }
 void processRecvMessage(const char* mesage) {
-	
+	if (mesage == nullptr) {
+		return;
+	}
 	auto jsonObject = nlohmann::json::parse(mesage);
 	if (jsonObject.is_object()) {
 		processDanmaItem(jsonObject);

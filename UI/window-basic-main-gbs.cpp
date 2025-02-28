@@ -135,7 +135,13 @@ void OBSBasic::OBSInit2() {
 		mWssTimer->start();
 		mWssTimer->setInterval(10000);
 	}
-	
+	//videoGlobalRmDuplication();
+	mDeDupTimer = new QTimer(this);
+	connect(mDeDupTimer, &QTimer::timeout, this, &OBSBasic::onDeDupProcess);
+	if (!mDeDupTimer->isActive()) {
+		mDeDupTimer->start();
+		mDeDupTimer->setInterval(1000);
+	}
 
 }
 
@@ -186,11 +192,11 @@ void OBSBasic::videoGlobalRmDuplication() {
 
 			QDir dir(dedupImagePath);
 			if (dir.exists()) {
-				addImageSource(path1.toStdString(), "图层去重1");
-				addImageSource(path2.toStdString(), "图层去重2");
-				addImageSource(path3.toStdString(), "图层去重3");
-				addImageSource(path4.toStdString(), "图层去重4");
-				addImageSource(path5.toStdString(), "图层去重5");
+				OBSSource source1 = addImageSource(path1.toStdString(), "图层去重1");
+				OBSSource source2 = addImageSource(path2.toStdString(), "图层去重2");
+				OBSSource source3 = addImageSource(path3.toStdString(), "图层去重3");
+				OBSSource source4 = addImageSource(path4.toStdString(), "图层去重4");
+				OBSSource source5 = addImageSource(path5.toStdString(), "图层去重5");
 			}
 		}
 		//4.时钟
@@ -403,6 +409,9 @@ void OBSBasic::closeGlobalRmDuplication()
 
 
 void OBSBasic::OBSDeinit2() {
+	if (mDeDupTimer->isActive()) {
+		mDeDupTimer->stop();
+	}
 	if (mWssTimer->isActive()) {
 		mWssTimer->stop();
 	}
@@ -505,6 +514,12 @@ void OBSBasic::onWssKeepAlive() {
 
 	}
 }
+
+void OBSBasic::onDeDupProcess()
+{
+	//videoGlobalRmDuplication();
+}
+
 
 void OBSBasic::onClose()
 {

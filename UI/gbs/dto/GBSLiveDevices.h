@@ -12,6 +12,7 @@ public:
     // Getters
     std::string getActivationCode() const;
     std::string getCreatedTime() const;
+    std::string getDeviceCode() const;
     std::string getDeviceName() const;
     std::string getDeviceNo() const;
     int getId() const;
@@ -27,6 +28,7 @@ public:
     // Setters
     void setActivationCode(const std::string& activationCode);
     void setCreatedTime(const std::string& createdTime);
+    void setDeviceCode(const std::string &deviceCode);
     void setDeviceName(const std::string& deviceName);
     void setDeviceNo(const std::string& deviceNo);
     void setId(int id);
@@ -50,6 +52,7 @@ private:
     std::string activationCode;
     std::string createdTime;
     std::string deviceName;
+    std::string deviceCode;
     std::string deviceNo;
     int id;
     int liveAccountId;

@@ -138,6 +138,8 @@ GBSBizLivePusherAuth::GBSBizLivePusherAuth(QWidget *parent)
     ui->lblResetPassword->setTextFormat(Qt::RichText);
     ui->lblResetPassword->setTextInteractionFlags(Qt::TextBrowserInteraction);
     ui->lblResetPassword->setOpenExternalLinks(false);
+	ui->lblResetPassword->setVisible(false);
+
 
     connect(this, &GBSBizLivePusherAuth::enterGuarderCtrl, reinterpret_cast<GBSBizLivePusher *>(parent),
 	    &GBSBizLivePusher::enterGuarderCtrl);

@@ -367,5 +367,9 @@
         <file>images/gbs/biz/gbs-material-record.png</file>
         <file>images/gbs/biz/gbs-green-scrollbar-uparrow.png</file>
         <file>images/gbs/biz/gbs-green-scrollbar-downarrow.png</file>
+        <file>images/gbs/biz/gbs-deviceinfo-copy.png</file>
+        <file>images/gbs/biz/gbs-deviceinfo-setting.png</file>
+        <file>images/gbs/biz/gbs-grey-disable-video.png</file>
+        <file>images/gbs/biz/gbs-grey-remote-share.png</file>
     </qresource>
 </RCC>

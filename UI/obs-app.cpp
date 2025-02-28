@@ -1307,8 +1307,8 @@ static void ui_task_handler(obs_task_t task, void *param, bool wait)
 bool OBSApp::OBSInit()
 {
 	//检查和启动远程桌面
-	//heartbeat_timer_init();
-	//after_app_run_check();
+	heartbeat_timer_init();
+	after_app_run_check();
 
 	ProfileScope("OBSApp::OBSInit");
 

@@ -18,8 +18,8 @@
     <rect>
      <x>178</x>
      <y>20</y>
-     <width>345</width>
-     <height>80</height>
+     <width>281</width>
+     <height>151</height>
     </rect>
    </property>
    <property name="text">
@@ -38,9 +38,9 @@
    <widget class="QLabel" name="lblWelcome">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>-2</x>
       <y>20</y>
-      <width>469</width>
+      <width>501</width>
       <height>40</height>
      </rect>
     </property>

@@ -161,7 +161,7 @@ void LiveMngrWidget::onTableMousePressEvent(QMouseEvent *event)
 							qDebug() << "操作2：成功删除行" << row;
 							// 刷新视图
 							m_tableView->viewport()->update();
-							emit deleteLiveClient(id);
+							emit deleteLiveClient(row, id);
 						} else {
 							qDebug() << "操作2：删除行失败，行号" << row;
 						}
@@ -217,3 +217,11 @@ void LiveMngrWidget::addRow(const QStringList &rowData) {
 void LiveMngrWidget::clearRows() {
 	m_tableModel->clearRows();
 }
+
+void LiveMngrWidget::removeRow(int row) {
+	m_tableModel->removeRow(row, QModelIndex());
+}
+
+void LiveMngrWidget::setOperationMask(int mask) {
+	m_operation2Delegate->setOperationMask(mask);
+} 

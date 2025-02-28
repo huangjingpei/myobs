@@ -1,28 +1,34 @@
-#ifndef GBSADDBROKER_H
-#define GBSADDBROKER_H
+#ifndef GBSAddMatrix_H
+#define GBSAddMatrix_H
 #include <QMouseEvent>
 #include <QDialog>
 #include <QPoint>
+#include "gbs/common/GBSHttpClient.h"
 
 namespace Ui {
-class GBSAddBroker;
+class GBSAddMatrix;
 }
 
-class GBSAddBroker : public QDialog
+class GBSAddMatrix : public QDialog, public OBSHttpEventHandler
 {
     Q_OBJECT
 
 public:
-    explicit GBSAddBroker(QWidget *parent = nullptr);
-    ~GBSAddBroker();
+    explicit GBSAddMatrix(QWidget *parent = nullptr);
+    ~GBSAddMatrix();
 
-private:
+private slots:
+    void activateDevice();
+
+    void onActivateCode(int code) override;
+
+ private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
-    Ui::GBSAddBroker *ui;
+    Ui::GBSAddMatrix *ui;
 	QPoint dragPosition;
 };
 
-#endif // GBSADDBROKER_H
+#endif // GBSAddMatrix_H

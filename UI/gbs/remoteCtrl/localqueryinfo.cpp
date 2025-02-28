@@ -24,6 +24,7 @@
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/GBSMainCollector.h"
 #include "gbs/dto/GBSLiveAccountInfo.h"
+#include "gbs/common/QBizLogger.h"
 std::atomic<bool> done(false);
 
 static QString remoteUsername{};
@@ -186,15 +187,18 @@ void send_message_to_rust(){
                 Sleep(6000);
             } else  {
                 Sleep(6000);
+		    QLogE("RemoteCtrl:连接不上 -----  没回复");
                 qDebug() << "连接不上 -----  没回复:" ;
 
             }
         } else {
+		QLogE("RemoteCtrl:连接不上 -----  Rust:");
             qDebug() << "连接不上 -----  Rust:" ;
             Sleep(6000);
 
         }
     } while (!done);
+    QLogE("RemoteCtrl:退出结束");
 }
 
 void remove_rust_config ()
@@ -256,6 +260,8 @@ void install_rust_application() {
     delete [] wstr_ptr;
     STARTUPINFO si = { sizeof(si) };
     PROCESS_INFORMATION pi;
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
 
     BOOL OK = CreateProcessW(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
     if (OK)// check if Process is created
@@ -348,6 +354,9 @@ void restart_rust_service(QString &path) {
 
     STARTUPINFO si = { sizeof(si) };
     PROCESS_INFORMATION pi;
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+
 
     BOOL OK = CreateProcessW(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
     if (OK)// check if Process is created
@@ -418,6 +427,7 @@ void send_auth_info_to_gb_backend(QJsonObject &jsonObject) {
 	if (!jsonObject["username"].isNull() && !jsonObject["password"].isNull()) {
 		QString username = jsonObject["username"].toString();
 		QString password = jsonObject["password"].toString();
+		GBSMainCollector::getInstance()->setRemoteAuth(username, password);
 		if ((remoteUsername != username) || (remotePpassword != password)) {
 			if (GBSMainCollector::getInstance()->isLogined()) {
 				remoteUsername = username;

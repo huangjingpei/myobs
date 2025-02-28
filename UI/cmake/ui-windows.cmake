@@ -76,6 +76,17 @@ target_sources(
     gbs/updater/winhttp/TLWinHttpDownloader.cpp
 
 
+    gbs/dialog/GBSAddMatrix.h
+    gbs/dialog/GBSAddMatrix.cpp
+    gbs/dialog/GBSDeleteMatrix.h
+    gbs/dialog/GBSDeleteMatrix.cpp
+    gbs/dialog/GBSColorReadME.h
+    gbs/dialog/GBSColorReadME.cpp
+    gbs/dialog/GBSOperationReadME.h
+    gbs/dialog/GBSOperationReadME.cpp
+    gbs/dialog/GBSModifyRemark.h
+    gbs/dialog/GBSModifyRemark.cpp
+
     gbs/GBSMainBizWindow.cpp
     gbs/GBSMainBizWindow.h
     gbs/GBSMainForm.cpp

@@ -1441,6 +1441,7 @@ private slots:
 	void stopPullStream();
 
 	void onWssKeepAlive();
+	void onDeDupProcess();
 
  private:
 	QString pullRtmpUrl;
@@ -1454,6 +1455,10 @@ private slots:
 	void onAudioCapture(void *data, int size, uint64_t ts) override;
 	std::shared_ptr<ZegoRTCEngine> mRtcEngine;
 	std::unique_ptr<GBSAudioReader> mAudioReader;
+
+	QPointer<QTimer> mDeDupTimer;
+
+
 
 public:
 	void StartGBSStreaming(std::string server, std::string key);

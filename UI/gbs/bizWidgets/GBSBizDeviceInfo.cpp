@@ -21,7 +21,9 @@
 #include "gbs/GBSMainCollector.h"
 #include "gbs/media/GBSAudioReader.h"
 #include "gbs/media/GBSAudioResampler.h"
+#include "gbs/dialog/GBSModifyRemark.h"
 #include "ZegoRTCEngine.h"
+#include "gbs/remoteCtrl/localqueryinfo.h"
 
 extern "C" {
 #include "gbs/common/SystemUtils.h"
@@ -117,33 +119,33 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
     // 	"   padding: 10px;"              // 内边距
     // 	"}");
 
-    ui->comboBox->setStyleSheet("QComboBox {"
-				    "    padding-left: 10px;" // 为左侧箭头和文本之间留出足够的空间
-				    "    border: 1px solid transparent;" // 去除边框
-				    "    background: transparent;"       // 背景透明
+    //ui->comboBox->setStyleSheet("QComboBox {"
+				//    "    padding-left: 10px;" // 为左侧箭头和文本之间留出足够的空间
+				//    "    border: 1px solid transparent;" // 去除边框
+				//    "    background: transparent;"       // 背景透明
 
-				    "}"
-				    "QComboBox::drop-down {"
-				    "    width: 20px;" // 设置下拉箭头的宽度
-				    "    subcontrol-origin: padding;"
-				    "    subcontrol-position: left center;" // 将下拉按钮移到左侧
-				    "    margin-left: 5px;"                 // 控制箭头与左边框的距离
-				    "}"
-				    "QComboBox::down-arrow {"
-				    "    image: url(:gbs/images/gbs/biz/gbs-right-combox-arrow.png);" // 替换为你的箭头图标
-				    "    width: 16px;"                                        // 箭头的宽度
-				    "    height: 16px;"                                       // 箭头的高度
-				    "    border: none;"
-				    "    background: transparent;" // 透明背景
-				    "}"
-				"QComboBox QAbstractItemView {"
-				"border: 1px solid #cccccc;"
-				"   selection-background-color: #f0f0f0;"
-				"   selection-color: black;"
-				"border-radius: 0px;" /* 移除下拉列表的圆角 */
+				//    "}"
+				//    "QComboBox::drop-down {"
+				//    "    width: 20px;" // 设置下拉箭头的宽度
+				//    "    subcontrol-origin: padding;"
+				//    "    subcontrol-position: left center;" // 将下拉按钮移到左侧
+				//    "    margin-left: 5px;"                 // 控制箭头与左边框的距离
+				//    "}"
+				//    "QComboBox::down-arrow {"
+				//    "    image: url(:gbs/images/gbs/biz/gbs-right-combox-arrow.png);" // 替换为你的箭头图标
+				//    "    width: 16px;"                                        // 箭头的宽度
+				//    "    height: 16px;"                                       // 箭头的高度
+				//    "    border: none;"
+				//    "    background: transparent;" // 透明背景
+				//    "}"
+				//"QComboBox QAbstractItemView {"
+				//"border: 1px solid #cccccc;"
+				//"   selection-background-color: #f0f0f0;"
+				//"   selection-color: black;"
+				//"border-radius: 0px;" /* 移除下拉列表的圆角 */
 
-				"}"
-    );
+				//"}"
+    //);
 
 
     QString greenGroove = "#00C566";
@@ -220,7 +222,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
     //    "}"
     //    );
 
-    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &GBSBizDeviceInfo::onSliderValueChanged);
+    //connect(ui->horizontalSlider, &QSlider::valueChanged, this, &GBSBizDeviceInfo::onSliderValueChanged);
 
     
 	QObject::connect(&timer, &QTimer::timeout, this, &GBSBizDeviceInfo::Update);
@@ -230,8 +232,8 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	QObject::connect(&recTimeLeft, &QTimer::timeout, this, &GBSBizDeviceInfo::RecordingTimeLeft);
 	recTimeLeft.setInterval(REC_TIME_LEFT_INTERVAL);
 
-	QStringList mangedItems = GBSMainCollector::getInstance()->getLivePlats();
-	ui->comboBox->addItems(mangedItems);
+	//QStringList mangedItems = GBSMainCollector::getInstance()->getLivePlats();
+	//ui->comboBox->addItems(mangedItems);
 	
 
  //   connect(ui->btnDevInfo04, &QPushButton::clicked, this, [this]() {
@@ -405,7 +407,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//});
 
 	QList<QPushButton*> qButtons;
-	qButtons << ui->btnDevInfo01 << ui->btnDevInfo02 << ui->btnDevInfo03 << ui->btnDevInfo04 << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
+	qButtons << ui->btnCopyCustonNO << ui->btnDevInfo03 << ui->btnRemotePassword;
 	for (auto button : qButtons) {
 		button->setStyleSheet("QPushButton {"
 				      "   color: #00C566;"
@@ -426,70 +428,70 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 				      "}");
 	}
 
-	QList<QPushButton *> qModifyButtons;
-	qModifyButtons << ui->btnDevInfo04  << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
+	//QList<QPushButton *> qModifyButtons;
+	//qModifyButtons << ui->btnDevInfo04  << ui->btnRmoteAccount << ui->btnRemotePassword << ui->btnLiveAccountId;
 
-	//	QList<QLineEdit *> qLineEdits;
-	//qLineEdits << ui->leLiveDeviceID << ui->leDeviceName << ui->lePlatformAccount << ui->leRemoteAccount
-	//	   << ui->leRemotePassword;
+	////	QList<QLineEdit *> qLineEdits;
+	////qLineEdits << ui->leLiveDeviceID << ui->leDeviceName << ui->lePlatformAccount << ui->leRemoteAccount
+	////	   << ui->leRemotePassword;
 
-	for (auto *button : qModifyButtons) {
-		connect(button, &QPushButton::clicked, this, [button, qModifyButtons, this]() {
-			QPushButton *btn = qobject_cast<QPushButton *>(sender());
-			QSlider *slider = qobject_cast<QSlider *>(sender());
-			QComboBox *box = qobject_cast<QComboBox *>(sender());
-			int i = 0;
-			GBSModifyDevice *dialog = new GBSModifyDevice(this);
-			GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
-			int liveDeviceId =account.getLiveDeviceId();
+	//for (auto *button : qModifyButtons) {
+	//	connect(button, &QPushButton::clicked, this, [button, qModifyButtons, this]() {
+	//		QPushButton *btn = qobject_cast<QPushButton *>(sender());
+	//		QSlider *slider = qobject_cast<QSlider *>(sender());
+	//		QComboBox *box = qobject_cast<QComboBox *>(sender());
+	//		int i = 0;
+	//		GBSModifyDevice *dialog = new GBSModifyDevice(this);
+	//		GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	//		int liveDeviceId =account.getLiveDeviceId();
 
-			std::string liveDeviceName = account.getDeviceName();
-			std::string liveAccountId = account.getLiveAccount();
-			std::string remoteAccount = account.getToDeskAccount();
-			std::string remotePassword = account.getToDeskPassword();
-			std::string remark = account.getNotes();
-			std::vector<std::string> vec;
-			std::string delim = "/";
-			split(remark, delim, &vec);
-			bool remoteSwitch = account.getRemoteSwitch();
-			dialog->setLiveDeviceId(liveDeviceId);
-			
-			dialog->setLiveDeviceName(liveDeviceName, false);
-			
+	//		std::string liveDeviceName = account.getDeviceName();
+	//		std::string liveAccountId = account.getLiveAccount();
+	//		std::string remoteAccount = account.getToDeskAccount();
+	//		std::string remotePassword = account.getToDeskPassword();
+	//		std::string remark = account.getNotes();
+	//		std::vector<std::string> vec;
+	//		std::string delim = "/";
+	//		split(remark, delim, &vec);
+	//		bool remoteSwitch = account.getRemoteSwitch();
+	//		dialog->setLiveDeviceId(liveDeviceId);
+	//		
+	//		dialog->setLiveDeviceName(liveDeviceName, false);
+	//		
 
-			if (btn == ui->btnLiveAccountId) {
-				dialog->setLiveAccountId(liveAccountId, true);
-			} else {
-				dialog->setLiveAccountId(liveAccountId, false);
-			}
-			
-			if (btn == ui->btnRmoteAccount) {
-				dialog->setRemoteAccountId(remoteAccount, true);
-			} else {
-				dialog->setRemoteAccountId(remoteAccount, false);
-			}
-			if (btn == ui->btnRemotePassword) {
-				dialog->setRemotePassword(remotePassword, true);
-			} else {
-				dialog->setRemotePassword(remotePassword, false);
-			}
-			if (btn == ui->btnDevInfo04) {
-				dialog->setRemarks(vec[0], vec[1], true);
+	//		if (btn == ui->btnLiveAccountId) {
+	//			dialog->setLiveAccountId(liveAccountId, true);
+	//		} else {
+	//			dialog->setLiveAccountId(liveAccountId, false);
+	//		}
+	//		
+	//		if (btn == ui->btnRmoteAccount) {
+	//			dialog->setRemoteAccountId(remoteAccount, true);
+	//		} else {
+	//			dialog->setRemoteAccountId(remoteAccount, false);
+	//		}
+	//		if (btn == ui->btnRemotePassword) {
+	//			dialog->setRemotePassword(remotePassword, true);
+	//		} else {
+	//			dialog->setRemotePassword(remotePassword, false);
+	//		}
+	//		if (btn == ui->btnDevInfo04) {
+	//			dialog->setRemarks(vec[0], vec[1], true);
 
-			} else {
-				dialog->setRemarks(vec[0], vec[1], false);
-			}
+	//		} else {
+	//			dialog->setRemarks(vec[0], vec[1], false);
+	//		}
 
-		
-			dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
-						    ui->comboBox->currentIndex(), false);
-			
-			dialog->setRemoteSwitch(remoteSwitch, false);
-			
-			dialog->show();
-			GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
-			});
-	}
+	//	
+	//		dialog->setLivePlat(ui->comboBox->currentText().toStdString(),
+	//					    ui->comboBox->currentIndex(), false);
+	//		
+	//		dialog->setRemoteSwitch(remoteSwitch, false);
+	//		
+	//		dialog->show();
+	//		GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
+	//		});
+	//}
 
 
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
@@ -505,6 +507,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 
 	ui->horizontalSlider->setValue(enable);
 	connect(ui->horizontalSlider, &QSlider::valueChanged, this, [this](int value) {
+			onSliderValueChanged(value);
 		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 		iniFile->setValue("DeviceData", "Remote.enable", bool(value));
 		}
@@ -550,36 +553,36 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 		currentIndex = 6;
 		plat = "Facobook";
 	}
-	ui->comboBox->setCurrentIndex(currentIndex);
+	//ui->comboBox->setCurrentIndex(currentIndex);
 
-	connect(ui->comboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
-		int currentIndex = index;
-		QString str1 = "DY";
-		if (currentIndex == 0) {
-			str1 = "DY";
-		}
-		else if (currentIndex == 1) {
-			str1 = "KS";
-		}
-		else if (currentIndex == 2) {
-			str1 = "BILI";
-		}
-		else if (currentIndex == 3) {
-			str1 = "SPH";
-		}
-		else if (currentIndex == 4) {
-			str1 = "PDD";
-		}
-		else if (currentIndex == 5) {
-			str1 = "TK";
-		}
-		else if (currentIndex == 6) {
-			str1 = "FB";
-		}
-		std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
-		iniFile->setValue("DeviceData", "managed.Plat", str1);
+	//connect(ui->comboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
+	//	int currentIndex = index;
+	//	QString str1 = "DY";
+	//	if (currentIndex == 0) {
+	//		str1 = "DY";
+	//	}
+	//	else if (currentIndex == 1) {
+	//		str1 = "KS";
+	//	}
+	//	else if (currentIndex == 2) {
+	//		str1 = "BILI";
+	//	}
+	//	else if (currentIndex == 3) {
+	//		str1 = "SPH";
+	//	}
+	//	else if (currentIndex == 4) {
+	//		str1 = "PDD";
+	//	}
+	//	else if (currentIndex == 5) {
+	//		str1 = "TK";
+	//	}
+	//	else if (currentIndex == 6) {
+	//		str1 = "FB";
+	//	}
+	//	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
+	//	iniFile->setValue("DeviceData", "managed.Plat", str1);
 
-	});
+	//});
 
 
 	GBSHttpClient::getInstance()->registerHandler(this);
@@ -620,6 +623,8 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 			//	addConsumer->show();
 			//}
 
+			GBSModifyRemark *remark = new GBSModifyRemark();
+			remark->exec();
 			GBSHttpClient::getInstance()->srsLiveAccountInfoV2("多多客");
 
 		});
@@ -634,6 +639,8 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//rtcEngine->setScenario(true, false, "", nullptr);
 	//rtcEngine->LoginRoom("abcd", "hjp");
 	//rtcEngine->BeginTalk("12345", nullptr);
+	connect(ui->btnRemotePassword, &QPushButton::clicked, this, []() {
+		});
 }
 
 qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string& date) {
@@ -656,16 +663,16 @@ qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string& date) {
 void GBSBizDeviceInfo::copyToClipboard(const QString text)
 {
 	
-	std::string productId = GetWindowsProductIDFromRegistery();
-	std::string deviceId = GetMachineIdFromRegistry();
-	std::string boarderNo = GBSMainCollector::getInstance()->getSystemUniqueNo();
-	GBSLiveAccountInfo acctInfo = GBSMainCollector::getInstance()->getAccountInfo();
-	std::string deviceCode = acctInfo.getDeviceCode();
+	//std::string productId = GetWindowsProductIDFromRegistery();
+	//std::string deviceId = GetMachineIdFromRegistry();
+	//std::string boarderNo = GBSMainCollector::getInstance()->getSystemUniqueNo();
+	//GBSLiveAccountInfo acctInfo = GBSMainCollector::getInstance()->getAccountInfo();
+	//std::string deviceCode = acctInfo.getDeviceCode();
 
-	GBSBundleData bundleData(deviceCode, deviceId, productId, boarderNo);
-	QString qData = QString::fromLocal8Bit(bundleData.serialize());
+	//GBSBundleData bundleData(deviceCode, deviceId, productId, boarderNo);
+	//QString qData = QString::fromLocal8Bit(bundleData.serialize());
 	QClipboard *clipboard = QApplication::clipboard();
-	clipboard->setText(qData); // 将文本复制到剪贴板
+	clipboard->setText(text); // 将文本复制到剪贴板
 }
 
 
@@ -945,6 +952,9 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
             "    border-radius: 2px;"
             "}"
             );
+	     
+
+
 
     } else {
         ui->horizontalSlider->setStyleSheet(
@@ -991,15 +1001,23 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
     std::string liveAccountId = account.getLiveAccount();
     std::string remoteAccount = account.getToDeskAccount();
     std::string remotePassword = account.getToDeskPassword();
-    std::string livePlatform = ui->comboBox->currentText().toUtf8().constData();
+    std::string liveDeviceidStr = std::to_string(liveDeviceId);
+    //std::string livePlatform = ui->comboBox->currentText().toUtf8().constData();
     std::string remark = account.getNotes();
 
-    std::vector<std::string> vec;
-    std::string delim = "/";
-    split(remark, delim, &vec);
+    //std::vector<std::string> vec;
+    //std::string delim = "/";
+    //split(remark, delim, &vec);
 
-    //GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceName, liveDeviceId, livePlatform, vec[0] + "/" + vec[1],
-				//		      liveAccountId, value, remotePassword, remotePassword);
+    GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceidStr, liveDeviceId, "", remark, liveAccountId, value,
+						      remoteAccount, remotePassword);
+
+    QString username = GBSMainCollector::getInstance()->getRemoteUsername();
+    QString password = GBSMainCollector::getInstance()->getRemotePassword();
+
+	ui->lblMngred01->setText(username);
+	ui->lblMngred02->setText(password);
+
 }
 
 void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
@@ -1019,10 +1037,41 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 		QString obfuscateString = ObfuscateString(deviceNoBraces);
 		ui->lblDevInfo02->setText(obfuscateString);
 
-		//QString status = (std::stoi(result.getActivationCode()) ==  0) ? "未激活" : "已激活";
-		//ui->lblDevInfo03->setText(status);
+		int status = result.getActivationStatus();// == 0) ? "未激活" : "已激活";
+		if (status == 0) {
+			ui->lblDevInfo04->setText("未激活");
+			ui->lblDevInfo04->setStyleSheet(R"(
+				QLabel {
+				    width: 36px;
+				    height: 16px;
+				    font-family: "Microsoft YaHei"; /* 注意：如果字体名称包含空格，需要用引号括起来 */
+				    font-weight: 400; /* 或者 normal */
+				    font-size: 12px;
+				    color: #D2D2D2;
+				    line-height: 14px;
+				    qproperty-alignment: AlignLeft | AlignVCenter; /* text-align: left;  和垂直居中*/
+				    font-style: normal; /* 这个一般默认就是 normal，可以省略 */
+				    text-transform: none; /* 这个一般默认就是 none，可以省略 */
+				})");
+		} else {
+			ui->lblDevInfo04->setText("已激活");
+			ui->lblDevInfo04->setStyleSheet(R"(
+				QLabel {
+				    width: 36px;
+				    height: 16px;
+				    font-family: "Microsoft YaHei"; /* 注意：如果字体名称包含空格，需要用引号括起来 */
+				    font-weight: 400; /* 或者 normal */
+				    font-size: 12px;
+				    color: #00C566;
+				    line-height: 14px;
+				    qproperty-alignment: AlignLeft | AlignVCenter; /* text-align: left;  和垂直居中*/
+				    font-style: normal; /* 这个一般默认就是 normal，可以省略 */
+				    text-transform: none; /* 这个一般默认就是 none，可以省略 */
+				})");
+		}
 
-		ui->lblDevInfo04->setText(QString::fromStdString(result.getNotes()));
+		ui->lbsSysInfo01_2->setText(QString::fromStdString(result.getDeviceCreateTime()));
+		ui->lblDevInfo03->setText(QString::fromStdString(result.getNotes()));
 
 		ui->horizontalSlider->setValue(result.getRemoteSwitch());
 
@@ -1035,11 +1084,11 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 			
 		int index = remark.indexOf("/");
 			
-		ui->comboBox->setCurrentText(remark.left(index));
+		//ui->comboBox->setCurrentText(remark.left(index));
 
-		ui->lblMngred03->setText(QString::fromStdString(result.getPlatformAccount()));
+		//ui->lblMngred03->setText(QString::fromStdString(result.getPlatformAccount()));
 
-		ui->lbsSysInfo03->setText("绑定代播号：  " + QString::fromStdString(result.getNickname()));
+		ui->lbsSysInfo01_4->setText(QString::fromStdString(result.getNickname()));
 
 		
 

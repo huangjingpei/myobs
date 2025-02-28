@@ -37,7 +37,7 @@ size:14px
 </string>
     </property>
     <property name="text">
-     <string>牢记验证码，请谨慎告知任何人。</string>
+     <string>牢记授权码，请谨慎告知任何人。</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lePassword2">
@@ -131,7 +131,7 @@ font-size:32px
 </string>
     </property>
     <property name="text">
-     <string>主播直播验证码</string>
+     <string>主播直播授权码</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lePassword0">

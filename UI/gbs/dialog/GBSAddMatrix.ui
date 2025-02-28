@@ -77,278 +77,43 @@ text-transform: none;</string>
   <widget class="QWidget" name="widget_2" native="true">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>0</x>
      <y>50</y>
-     <width>151</width>
+     <width>821</width>
      <height>411</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLabel" name="label_2">
-      <property name="styleSheet">
-       <string notr="true">width: 126px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>添加系统账号</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="styleSheet">
-       <string notr="true">width: 126px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>客户号</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_4">
-      <property name="styleSheet">
-       <string notr="true">width: 126px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>激活密钥</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_5">
-      <property name="styleSheet">
-       <string notr="true">width: 95px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>设备ID</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_6">
-      <property name="styleSheet">
-       <string notr="true">width: 126px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>产品ID</string>
-      </property>
-     </widget>
-    </item>
-    <item alignment="Qt::AlignmentFlag::AlignVCenter">
-     <widget class="QLabel" name="label_7">
-      <property name="styleSheet">
-       <string notr="true">width: 126px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>设备唯一ID</string>
-      </property>
-     </widget>
-    </item>
-    <item alignment="Qt::AlignmentFlag::AlignVCenter">
-     <widget class="QLabel" name="label_8">
-      <property name="styleSheet">
-       <string notr="true">width: 126px;
-height: 20px;
-font-family: Song Myung, Song Myung;
-font-weight: 400;
-font-size: 16px;
-color: #000000;
-line-height: 19px;
-text-align: left;
-font-style: normal;
-text-transform: none;</string>
-      </property>
-      <property name="text">
-       <string>备注</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="widget_3" native="true">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>50</y>
-     <width>320</width>
-     <height>411</height>
-    </rect>
-   </property>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>25</y>
-      <width>302</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>133</y>
-      <width>302</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_7">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>358</y>
-      <width>131</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-    <property name="text">
-     <string>备注编号1（可不填）</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_6">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>295</y>
-      <width>302</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>79</y>
-      <width>302</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_5">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>241</y>
-      <width>302</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_4">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>187</y>
-      <width>302</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">width: 300px;
-height: 30px;
-border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_8">
+   <widget class="QLabel" name="label_21">
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>359</y>
-      <width>131</width>
+      <y>140</y>
+      <width>64</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">width: 126px;
+height: 20px;
+font-family: Song Myung, Song Myung;
+font-weight: 400;
+font-size: 16px;
+color: #000000;
+line-height: 19px;
+text-align: left;
+font-style: normal;
+text-transform: none;</string>
+    </property>
+    <property name="text">
+     <string>激活密钥</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leActivationNo">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>90</y>
+      <width>302</width>
       <height>32</height>
      </rect>
     </property>
@@ -356,24 +121,51 @@ border: 1px solid #D2D2D2;</string>
      <string notr="true">width: 300px;
 height: 30px;
 border-radius: 3px 3px 3px 3px;
-border: 1px solid #D2D2D2;</string>
-    </property>
-    <property name="text">
-     <string>备注编号2（可不填）</string>
+border: 1px solid #D2D2D2;
+padding-left:4px;</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>125</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">width: 80px;
+   <widget class="QLineEdit" name="leActivationCode">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>140</y>
+      <width>302</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">width: 300px;
+height: 30px;
+border-radius: 3px 3px 3px 3px;
+border: 1px solid #D2D2D2;
+padding-left:4px;</string>
+    </property>
+   </widget>
+   <widget class="QSplitter" name="splitter_3">
+    <property name="geometry">
+     <rect>
+      <x>-30</x>
+      <y>-50</y>
+      <width>0</width>
+      <height>0</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>260</y>
+      <width>80</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">width: 80px;
 height: 40px;
 background: #00C566;
 border-radius: 10px 10px 10px 10px;
@@ -386,66 +178,191 @@ border-radius: 10px 10px 10px 10px;
 border: 1px solid #FFFFFF;
 font-size: 20px;
 color: #FFFFFF;</string>
-   </property>
-   <property name="text">
-    <string>验证</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>180</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">width: 80px;
-height: 40px;
-background: #00C566;
-border-radius: 10px 10px 10px 10px;
-border: 1px solid #FFFFFF;
-font-size: 20px;
-color: #FFFFFF;width: 80px;
-height: 40px;
-background: #00C566;
-border-radius: 10px 10px 10px 10px;
-border: 1px solid #FFFFFF;
-font-size: 20px;
-color: #FFFFFF;</string>
-   </property>
-   <property name="text">
-    <string>激活</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_3">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>405</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">width: 80px;
-height: 40px;
-background: #00C566;
-border-radius: 10px 10px 10px 10px;
-border: 1px solid #FFFFFF;
-font-size: 20px;
-color: #FFFFFF;width: 80px;
-height: 40px;
-background: #00C566;
-border-radius: 10px 10px 10px 10px;
-border: 1px solid #FFFFFF;
-font-size: 20px;
-color: #FFFFFF;</string>
-   </property>
-   <property name="text">
-    <string>确定</string>
-   </property>
+    </property>
+    <property name="text">
+     <string>激活</string>
+    </property>
+   </widget>
+   <widget class="QSplitter" name="splitter">
+    <property name="geometry">
+     <rect>
+      <x>-30</x>
+      <y>-50</y>
+      <width>0</width>
+      <height>0</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_19">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>192</y>
+      <width>81</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">width: 126px;
+height: 20px;
+font-family: Song Myung, Song Myung;
+font-weight: 400;
+font-size: 16px;
+color: #000000;
+line-height: 19px;
+text-align: left;
+font-style: normal;
+text-transform: none;</string>
+    </property>
+    <property name="text">
+     <string>备注</string>
+    </property>
+   </widget>
+   <widget class="QSplitter" name="splitter_2">
+    <property name="geometry">
+     <rect>
+      <x>-30</x>
+      <y>-50</y>
+      <width>0</width>
+      <height>0</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_20">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>90</y>
+      <width>48</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">width: 126px;
+height: 20px;
+font-family: Song Myung, Song Myung;
+font-weight: 400;
+font-size: 16px;
+color: #000000;
+line-height: 19px;
+text-align: left;
+font-style: normal;
+text-transform: none;</string>
+    </property>
+    <property name="text">
+     <string>客户号</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>190</y>
+      <width>302</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="sizeConstraint">
+        <enum>QLayout::SizeConstraint::SetFixedSize</enum>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="leRemark1">
+         <property name="styleSheet">
+          <string notr="true">width: 300px;
+height: 30px;
+border-radius: 3px 3px 3px 3px;
+border: 1px solid #D2D2D2;
+padding-left:4px;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>设备信息（必填）</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="leRemark2">
+         <property name="styleSheet">
+          <string notr="true">width: 300px;
+height: 30px;
+border-radius: 3px 3px 3px 3px;
+border: 1px solid #D2D2D2;
+padding-left:4px;
+</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>客户信息（可不填）</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="leActivationResult">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>30</y>
+      <width>561</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources>

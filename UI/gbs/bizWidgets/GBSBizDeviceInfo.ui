@@ -105,11 +105,14 @@ font-size: 14px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: #78828A;
-font-size: 14px;</string>
+     <string notr="true">
+border-radius: 20px 20px 20px 20px;
+border: 1px solid #F5F5F5;
+font-size:14px;
+color: #D2D2D2;</string>
     </property>
     <property name="text">
-     <string>KS/CZQ/0101</string>
+     <string>未激活</string>
     </property>
    </widget>
    <widget class="QLabel" name="lblDevInfo05">
@@ -129,80 +132,11 @@ font-size: 14px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnDevInfo01">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>72</y>
-      <width>24</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: none;
-color: #00C566;
-pressed {
-   padding-left: 3px;
-   padding-top: 3px;
-   background-repeat: no-repeat;
-   background-position: center;
-}</string>
-    </property>
-    <property name="text">
-     <string>复制</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnDevInfo02">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>121</y>
-      <width>24</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: none;
-color: #00C566;
-pressed {
-   padding-left: 3px;
-   padding-top: 3px;
-   background-repeat: no-repeat;
-   background-position: center;
-}</string>
-    </property>
-    <property name="text">
-     <string>复制</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnDevInfo03">
     <property name="geometry">
      <rect>
       <x>290</x>
       <y>280</y>
-      <width>24</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: none;
-color: #00C566;
-pressed {
-   padding-left: 3px;
-   padding-top: 3px;
-   background-repeat: no-repeat;
-   background-position: center;
-}</string>
-    </property>
-    <property name="text">
-     <string>复制</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnDevInfo04">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>222</y>
       <width>24</width>
       <height>17</height>
      </rect>
@@ -269,7 +203,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>激活状态：</string>
+     <string>备注：</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_56">
@@ -286,7 +220,7 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>备注编号：</string>
+     <string>激活状态：</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_57">
@@ -303,7 +237,64 @@ font-size: 14px;</string>
 font-size: 14px;</string>
     </property>
     <property name="text">
-     <string>激活编号：</string>
+     <string>客户号：</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnCopyCustonNO">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>170</y>
+      <width>24</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;
+color: #00C566;
+pressed {
+   padding-left: 3px;
+   padding-top: 3px;
+   background-repeat: no-repeat;
+   background-position: center;
+}</string>
+    </property>
+    <property name="text">
+     <string>复制</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>170</y>
+      <width>17</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>:/gbs/images/gbs/biz/gbs-deviceinfo-copy.png</normaloff>:/gbs/images/gbs/biz/gbs-deviceinfo-copy.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>280</y>
+      <width>17</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>:/gbs/images/gbs/biz/gbs-deviceinfo-setting.png</normaloff>:/gbs/images/gbs/biz/gbs-deviceinfo-setting.png</iconset>
     </property>
    </widget>
   </widget>
@@ -402,40 +393,6 @@ font-size: 14px;</string>
      <string>4545*****6565</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lblMngred03">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>269</y>
-      <width>141</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: #78828A;
-font-size: 14px;</string>
-    </property>
-    <property name="text">
-     <string>yerw565erd54jgd2</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnLiveAccountId">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>270</y>
-      <width>24</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: none;
-color: #00C566;</string>
-    </property>
-    <property name="text">
-     <string>设置</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnRemotePassword">
     <property name="geometry">
      <rect>
@@ -451,33 +408,6 @@ color: #00C566;</string>
     </property>
     <property name="text">
      <string>设置</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_51">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>220</y>
-      <width>66</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: #78828A;
-font-size: 14px;</string>
-    </property>
-    <property name="text">
-     <string>直播平台：</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>220</y>
-      <width>131</width>
-      <height>22</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label_48">
@@ -514,38 +444,21 @@ font-size: 14px;</string>
      <string>远程密码：</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_50">
+   <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>270</y>
-      <width>66</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: #78828A;
-font-size: 14px;</string>
-    </property>
-    <property name="text">
-     <string>平台账号：</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnRmoteAccount">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>120</y>
-      <width>24</width>
+      <x>260</x>
+      <y>170</y>
+      <width>17</width>
       <height>17</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">border: none;
-color: #00C566;</string>
-    </property>
     <property name="text">
-     <string>设置</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>:/gbs/images/gbs/biz/gbs-deviceinfo-setting.png</normaloff>:/gbs/images/gbs/biz/gbs-deviceinfo-setting.png</iconset>
     </property>
    </widget>
   </widget>
@@ -583,9 +496,9 @@ font-size: 14px;</string>
    <widget class="QLabel" name="lbsSysInfo01">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>50</x>
       <y>70</y>
-      <width>240</width>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
@@ -600,9 +513,9 @@ font-size: 14px;</string>
    <widget class="QLabel" name="lbsSysInfo02">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>130</y>
-      <width>240</width>
+      <x>50</x>
+      <y>120</y>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
@@ -617,9 +530,9 @@ font-size: 14px;</string>
    <widget class="QLabel" name="lbsSysInfo03">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>200</y>
-      <width>240</width>
+      <x>50</x>
+      <y>180</y>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
@@ -634,9 +547,9 @@ font-size: 14px;</string>
    <widget class="QLabel" name="lbsSysInfo04">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>270</y>
-      <width>240</width>
+      <x>50</x>
+      <y>240</y>
+      <width>101</width>
       <height>20</height>
      </rect>
     </property>
@@ -646,6 +559,108 @@ font-size: 14px;</string>
     </property>
     <property name="text">
      <string>设备直播时长：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbsSysInfo04_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>300</y>
+      <width>101</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string>累计直播时长：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbsSysInfo01_2">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>70</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbsSysInfo01_3">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>120</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbsSysInfo01_4">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>180</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbsSysInfo01_5">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>240</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbsSysInfo01_6">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>300</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: #78828A;
+font-size: 14px;</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

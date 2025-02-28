@@ -12,6 +12,8 @@ GBSLiveDevices::~GBSLiveDevices() {
 // Getters
 std::string GBSLiveDevices::getActivationCode() const { return activationCode; }
 std::string GBSLiveDevices::getCreatedTime() const { return createdTime; }
+std::string GBSLiveDevices::getDeviceCode() const{return deviceCode;}
+
 std::string GBSLiveDevices::getDeviceName() const { return deviceName; }
 std::string GBSLiveDevices::getDeviceNo() const { return deviceNo; }
 int GBSLiveDevices::getId() const { return id; }
@@ -27,6 +29,11 @@ std::string GBSLiveDevices::getToDeskPassword() const { return toDeskPassword; }
 // Setters
 void GBSLiveDevices::setActivationCode(const std::string& activationCode) { this->activationCode = activationCode; }
 void GBSLiveDevices::setCreatedTime(const std::string& createdTime) { this->createdTime = createdTime; }
+void GBSLiveDevices::setDeviceCode(const std::string &deviceCode)
+{
+	this->deviceCode = deviceCode;
+}
+
 void GBSLiveDevices::setDeviceName(const std::string& deviceName) { this->deviceName = deviceName; }
 void GBSLiveDevices::setDeviceNo(const std::string& deviceNo) { this->deviceNo = deviceNo; }
 void GBSLiveDevices::setId(int id) { this->id = id; }
@@ -45,6 +52,7 @@ GBSLiveDevices GBSLiveDevices::fromJson(const std::string& jsonStr) {
     
     device.setActivationCode(json["activationCode"].is_null() ? "" : json["activationCode"].get<std::string>());
     device.setCreatedTime(json["createdTime"].is_null() ? "" : json["createdTime"].get<std::string>());
+    device.setDeviceCode(json["deviceCode"].is_null() ? "" : json["deviceCode"].get<std::string>());
     device.setDeviceName(json["deviceName"].is_null() ? "" : json["deviceName"].get<std::string>());
     device.setDeviceNo(json["deviceNo"].is_null() ? "" : json["deviceNo"].get<std::string>());
     device.setId(json["id"].is_null() ? 0 : json["id"].get<int>());
@@ -65,6 +73,7 @@ nlohmann::json GBSLiveDevices::toJson() const {
     
     json["activationCode"] = activationCode;
     json["createdTime"] = createdTime;
+    json["deviceCode"] = deviceCode;
     json["deviceName"] = deviceName;
     json["deviceNo"] = deviceNo;
     json["id"] = id;
@@ -83,6 +92,7 @@ nlohmann::json GBSLiveDevices::toJson() const {
 bool GBSLiveDevices::operator==(const GBSLiveDevices &other) const noexcept {
     return activationCode == other.activationCode &&
            createdTime == other.createdTime &&
+	   deviceCode == other.deviceCode &&
            deviceName == other.deviceName &&
            deviceNo == other.deviceNo &&
            id == other.id &&
@@ -108,6 +118,7 @@ std::list<GBSLiveDevices> GBSLiveDevices::fromJsonArray(const std::string& json)
             GBSLiveDevices device;
             device.setActivationCode(item["activationCode"].is_null() ? "" : item["activationCode"].get<std::string>());
             device.setCreatedTime(item["createdTime"].is_null() ? "" : item["createdTime"].get<std::string>());
+	    device.setDeviceCode(item["deviceCode"].is_null() ? "" : item["deviceCode"].get<std::string>());
             device.setDeviceName(item["deviceName"].is_null() ? "" : item["deviceName"].get<std::string>());
             device.setDeviceNo(item["deviceNo"].is_null() ? "" : item["deviceNo"].get<std::string>());
             device.setId(item["id"].is_null() ? 0 : item["id"].get<int>());

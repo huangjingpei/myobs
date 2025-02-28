@@ -6,7 +6,7 @@ LiveMngrModel::LiveMngrModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
     // 初始化数据 (可以根据实际情况修改)
-	m_headers << "序号" << "激活编号" << "激活秘钥" << "备注" << "开通时间" << "剩余时长" << "直播账号"
+	m_headers << "序号" << "客户号" << "激活秘钥" << "备注" << "开通时间" << "剩余时长" << "直播账号"
 		  << "直播数量" << "远程信息" << "操作";
 
     //QVector<QVariant> row1;

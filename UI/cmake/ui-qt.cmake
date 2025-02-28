@@ -113,6 +113,12 @@ set(
   gbs/GBSRegisterForm.ui
   gbs/GBSMainProfile.ui
 
+  gbs/dialog/GBSAddMatrix.ui
+  gbs/dialog/GBSColorReadME.ui
+  gbs/dialog/GBSDeleteMatrix.ui
+  gbs/dialog/GBSModifyRemark.ui
+  gbs/dialog/GBSOperationReadME.ui
+
 )
 
 

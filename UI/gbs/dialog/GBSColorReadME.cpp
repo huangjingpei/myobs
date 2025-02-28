@@ -1,13 +1,12 @@
 #include <QClipboard>
-#include "GBSDeleteMatrix.h"
-#include "ui_GBSDeleteMatrix.h"
+#include "GBSColorReadME.h"
+#include "ui_GBSColorReadME.h"
 #include "gbs/GBSMainCollector.h"
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/dto/GBSBundleData.h"
-#include "gbs/GBSMainCollector.h"
-GBSDeleteMatrix::GBSDeleteMatrix(QWidget *parent)
+GBSColorReadME::GBSColorReadME(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::GBSDeleteMatrix)
+    , ui(new Ui::GBSColorReadME)
 {
     ui->setupUi(this);
      setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
@@ -56,49 +55,18 @@ GBSDeleteMatrix::GBSDeleteMatrix(QWidget *parent)
 			    "   background-repeat: no-repeat;"
 			    "   background-position: center;"
 			    "}");
+    connect(ui->btnClose, &QPushButton::clicked, this, [this]() { close(); });
 
-	connect(ui->btnClose, &QPushButton::clicked, this, [this]() { close(); });
 
-	connect(ui->pushButton, &QPushButton::clicked, this, [this]() {
-
-		QString text = ui->lineEdit->text();
-		QString password =GBSMainCollector::getInstance()->getGuarderCtrlPassword();
-		if (!text.isEmpty() && (text.compare(password) == 0)) {
-			GBSMainCollector::getInstance()->getAccountInfo();
-			GBSHttpClient::getInstance()->deletedSrsLiveDeviceV2(liveId);
-			
-		} else {
-			ui->label_3->setText("密码错误");
-		}
-		});
-	connect(ui->pushButton_2, &QPushButton::clicked, this, [this]() { close(); });
-
-	GBSHttpClient::getInstance()->registerHandler(this);
 }
 
-GBSDeleteMatrix::~GBSDeleteMatrix()
+GBSColorReadME::~GBSColorReadME()
 {
-	GBSHttpClient::getInstance()->unRegisterHandler(this);
-	delete ui;
+    delete ui;
 }
 
 
-void GBSDeleteMatrix::onDeletedMatrix(int code) {
-	QMetaObject::invokeMethod(this, [code, this]() {
-		if (code == 0) {
-			if (liveWidget != nullptr) {
-				liveWidget->removeRow(currentRow);
-			}
-			ui->label_3->setText("删除成功");
-		} else {
-			ui->label_3->setText("删除失败");
-		}
-		});
-
-}
-
-
-void GBSDeleteMatrix::mousePressEvent(QMouseEvent *event)
+void GBSColorReadME::mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {
 		dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
@@ -107,7 +75,7 @@ void GBSDeleteMatrix::mousePressEvent(QMouseEvent *event)
 	QDialog::mousePressEvent(event);
 }
 
-void GBSDeleteMatrix::mouseMoveEvent(QMouseEvent *event)
+void GBSColorReadME::mouseMoveEvent(QMouseEvent *event)
 {
 	if (event->buttons() & Qt::LeftButton) {
 		move(event->globalPosition().toPoint() - dragPosition);

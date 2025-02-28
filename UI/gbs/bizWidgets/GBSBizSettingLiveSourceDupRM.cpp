@@ -441,10 +441,14 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     //)";
 
     ui->hsJittterSlider->setRealSize(521, 20);
+    ui->hsJittterSlider->setSliderHeight(40);
     ui->hsJittterSlider->setRealRange(0, 100);
     ui->hsExtractFrameSlider->setRealSize(521, 20);
+	ui->hsExtractFrameSlider->setSliderHeight(40);
+
     ui->hsExtractFrameSlider->setRealRange(0, 100);
     ui->hsTransparentSlider->setRealSize(521, 20);
+	ui->hsTransparentSlider->setSliderHeight(40);
     ui->hsTransparentSlider->setRealRange(0, 100);
 
     //ui->hsJittterSlider->setStyleSheet(sliderStyleSheet);

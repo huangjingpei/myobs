@@ -36,26 +36,13 @@
    <property name="title">
     <string/>
    </property>
-   <widget class="QLabel" name="imgLogo">
-    <property name="geometry">
-     <rect>
-      <x>21</x>
-      <y>27</y>
-      <width>36</width>
-      <height>36</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QLabel" name="imgBanner">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>30</y>
-      <width>121</width>
-      <height>34</height>
+      <x>30</x>
+      <y>1</y>
+      <width>133</width>
+      <height>69</height>
      </rect>
     </property>
     <property name="text">

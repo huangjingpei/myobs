@@ -52,10 +52,10 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	ui->lblNickName->setText(nickName);
 
 	VertNaviButton *btnBasic = new VertNaviButton("  基础设置", ":gbs/images/gbs/biz/gbs-setting-basic.png", this);
-	VertNaviButton *btnProductDupRM =
-		new VertNaviButton("商品素材去重", ":gbs/images/gbs/biz/gbs-setting-product-material.png", this);
-	VertNaviButton *btnTimbreSquare =
-		new VertNaviButton("直播音色广场", ":gbs/images/gbs/biz/gbs-setting-timbre-square.png", this);
+	// VertNaviButton *btnProductDupRM =
+	// 	new VertNaviButton("商品素材去重", ":gbs/images/gbs/biz/gbs-setting-product-material.png", this);
+	// VertNaviButton *btnTimbreSquare =
+	// 	new VertNaviButton("直播音色广场", ":gbs/images/gbs/biz/gbs-setting-timbre-square.png", this);
 	VertNaviButton *btnBridgerMgr =
 		new VertNaviButton("代播号管理", ":gbs/images/gbs/biz/gbs-setting-bridger-mgr.png", this);
 	VertNaviButton *btnLiveEditor =
@@ -63,19 +63,19 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 	VertNaviButton *btnLiveSourcDupRM =
 		new VertNaviButton("源直播去重", ":gbs/images/gbs/biz/gbs-setting-source-dumrm.png", this);
 
-	vertNaviButtons << btnBasic << btnProductDupRM << btnTimbreSquare << btnBridgerMgr << btnLiveEditor
+	vertNaviButtons << btnBasic /*<< btnProductDupRM << btnTimbreSquare */<< btnBridgerMgr << btnLiveEditor
 			<< btnLiveSourcDupRM;
 
 	btnBasic->setFixedSize(205, 40);
-	btnProductDupRM->setFixedSize(205, 40);
-	btnTimbreSquare->setFixedSize(205, 40);
+	//btnProductDupRM->setFixedSize(205, 40);
+	//btnTimbreSquare->setFixedSize(205, 40);
 	btnBridgerMgr->setFixedSize(205, 40);
 	btnLiveEditor->setFixedSize(205, 40);
 	btnLiveSourcDupRM->setFixedSize(205, 40);
 
 	ui->verticalLayout->addWidget(btnBasic);
-	ui->verticalLayout->addWidget(btnProductDupRM);
-	ui->verticalLayout->addWidget(btnTimbreSquare);
+	//ui->verticalLayout->addWidget(btnProductDupRM);
+	//ui->verticalLayout->addWidget(btnTimbreSquare);
 	ui->verticalLayout->addWidget(btnBridgerMgr);
 	ui->verticalLayout->addWidget(btnLiveEditor);
 	ui->verticalLayout->addWidget(btnLiveSourcDupRM);
@@ -85,8 +85,8 @@ GBSNaviSetting::GBSNaviSetting(QWidget *parent)
 
 
 	connect(btnBasic, &QPushButton::clicked, this, &GBSNaviSetting::onBaiscClick);
-	connect(btnProductDupRM, &QPushButton::clicked, this, &GBSNaviSetting::onProductDupRMClick);
-	connect(btnTimbreSquare, &QPushButton::clicked, this, &GBSNaviSetting::onTimbreSquareClick);
+	//connect(btnProductDupRM, &QPushButton::clicked, this, &GBSNaviSetting::onProductDupRMClick);
+	//connect(btnTimbreSquare, &QPushButton::clicked, this, &GBSNaviSetting::onTimbreSquareClick);
 	connect(btnBridgerMgr, &QPushButton::clicked, this, &GBSNaviSetting::onBridgerMgrClick);
 	connect(btnLiveEditor, &QPushButton::clicked, this, &GBSNaviSetting::onLiveEditorClick);
 	connect(btnLiveSourcDupRM, &QPushButton::clicked, this, &GBSNaviSetting::onLiveSourcDupRMClick);

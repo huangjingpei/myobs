@@ -714,7 +714,7 @@ font-size:16px;</string>
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>755</y>
+      <y>743</y>
       <width>521</width>
       <height>16</height>
      </rect>
@@ -761,7 +761,7 @@ color: #78828A;
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>158</y>
+      <y>146</y>
       <width>521</width>
       <height>16</height>
      </rect>
@@ -913,7 +913,7 @@ border: 1px solid #E9E9E9;</string>
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>43</y>
+      <y>33</y>
       <width>521</width>
       <height>16</height>
      </rect>

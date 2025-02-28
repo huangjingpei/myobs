@@ -135,6 +135,7 @@ GBSBizLiveGuarderAuth::GBSBizLiveGuarderAuth(QWidget *parent)
     ui->lblResetPassword->setTextFormat(Qt::RichText);
     ui->lblResetPassword->setTextInteractionFlags(Qt::TextBrowserInteraction);
     ui->lblResetPassword->setOpenExternalLinks(false);
+	ui->lblResetPassword->setVisible(false);
 
     connect(this, &GBSBizLiveGuarderAuth::enterGuarderCtrl, reinterpret_cast<GBSBizLiveGuarder *>(parent), &GBSBizLiveGuarder::enterGuarderCtrl);
 
@@ -210,6 +211,7 @@ void GBSBizLiveGuarderAuth::setPresetPassword(QString password) {
 
 void GBSBizLiveGuarderAuth::onEnterGuardCtrl(int result) {
 	if (result == 1) {
+		GBSMainCollector::getInstance()->setGuarderCtrlPassword(getInputPassword());
 		emit enterGuarderCtrl();
 	} else {
 		QLogE("Enter guard ctrl error. input password: %s", getInputPassword().toUtf8().constData());

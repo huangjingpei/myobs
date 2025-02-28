@@ -1924,9 +1924,16 @@ void GBSHttpClient::addSrsLiveDeviceTaskV2(std::string activationCode,
 			}
 		},
 		[this](const std::string &response) {
-			if (response.compare("Error")) {
-
-			}
+				auto r = json::parse(response);
+				if (!r["code"].is_null()) {
+					int result = (r["code"].get<int>() == 200)? 0 : -1;
+					std::lock_guard<std::mutex> guard(cs);
+					for (auto it = handlers.begin(); it != handlers.end(); it++) {
+						(*it)->onActivateCode(result);
+					}
+					return;
+				}
+			
 		},
 		url, body.dump(), token);
 
@@ -2098,12 +2105,12 @@ void GBSHttpClient::deletedSrsLiveDeviceTaskV2(int id) {
 		[this](const std::string &response) {
 			if (response.compare("Error")) {
 				auto r = json::parse(response);
-				if ((!r["result"].is_null()) && (r["result"].is_string())) {
+				if ((!r["result"].is_null()) && (r["result"].is_string()) && (!r["code"].is_null())) {
 					{
-						std::string rtmpUrl = r["result"].get<std::string>();
+						int result = r["code"].get<int>();
 						std::lock_guard<std::mutex> guard(cs);
 						for (auto it = handlers.begin(); it != handlers.end(); it++) {
-							//(*it)->onPullRtmpUrl(rtmpUrl);
+							(*it)->onDeletedMatrix(result);
 						}
 						return;
 					}
@@ -2201,6 +2208,17 @@ void GBSHttpClient::modifyZlmLiveDeviceTaskV2(std::string deviceName, int id, st
 		},
 		[this](const std::string &response) {
 			if (response.compare("Error")) {
+				auto r = json::parse(response);
+				if (!r["code"].is_null()) {
+					{
+						int result = r["code"].get<int>();
+						std::lock_guard<std::mutex> guard(cs);
+						for (auto it = handlers.begin(); it != handlers.end(); it++) {
+							(*it)->onModifyDevice(result);
+						}
+						return;
+					}
+				}
 			}
 		},
 		url, body.dump(), token);
@@ -2569,6 +2587,52 @@ void GBSHttpClient::modifyLiveRemarkTaskV2(int id, std::string liveRemark) {
 		},
 		[this](const std::string &response) {
 			if (response.compare("Error")) {
+			}
+		},
+		url, body.dump(), token);
+	task->run();
+}
+
+void GBSHttpClient::countZlmLiveDeviceInfo(int id) {
+	executor->addTask(std::bind(&GBSHttpClient::countZlmLiveDeviceInfoTaskV2, this, id));
+
+}
+void GBSHttpClient::countZlmLiveDeviceInfoTaskV2(int id) {
+	json body = {{"id", id}};
+	std::string url = baseUrlV2 + "/preferred/matrixLive/countZlmLiveDeviceInfo";
+	auto task = new HttpRequestTask(
+		[this](std::string url, std::string body, std::string token) -> std::string {
+			auto r = cpr::PostAsync(cpr::Url{url}, cpr::Body{body},
+						cpr::Header{{"Content-Type", "application/json"},
+							    {"host", httpHostV2},
+							    {"token", token}},
+						cpr::VerifySsl{false})
+					 .get();
+			if (r.status_code == 200) {
+				return r.text;
+			} else {
+				std::cerr << "[ERROR] send websocket"
+					  << " [status code:" << r.status_code << ", body:\"" << r.text << "\"]"
+					  << std::endl;
+				QLogE("SendWebsocket: status code:%d body %s", r.status_code, r.text);
+
+				return "Error";
+			}
+		},
+		[this](const std::string &response) {
+			if (response.compare("Error")) {
+				auto r = json::parse(response);
+				if ((!r["result"].is_null()) && (r["result"].is_object())) {
+					int onlineCount =
+						r["result"]["onlineCount"].is_null() ? 0 :r["result"]["onlineCount"].get<int>();
+					int totalCount = r["result"]["totalCount"]
+								 .is_null() ? 0: r["result"]["totalCount"]
+								 .get<int>();
+					std::lock_guard<std::mutex> guard(cs);
+					for (auto it = handlers.begin(); it != handlers.end(); it++) {
+						(*it)->onDeviceCount(onlineCount, totalCount);
+					}
+				}
 			}
 		},
 		url, body.dump(), token);

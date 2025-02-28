@@ -6927,6 +6927,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_72B194CD3D3846B69EE85518F5CFF546"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_72EFEBA027184FF88DFFFA057B947EEE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -38691,6 +38697,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_72B194CD3D3846B69EE85518F5CFF546"
+            {
+            "SourcePath" = "8:..\\build_x64\\rundir\\Release\\bin\\64bit\\kje.ico"
+            "TargetName" = "8:kje.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_72EFEBA027184FF88DFFFA057B947EEE"
             {
             "SourcePath" = "8:..\\build_x64\\rundir\\Release\\data\\obs-plugins\\aja\\locale\\de-DE.ini"
@@ -69099,17 +69125,17 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:guobolive"
-        "ProductCode" = "8:{6C8E27BF-E532-46DE-9798-A5E4E8A3B57F}"
-        "PackageCode" = "8:{0A04D66E-28DA-49E1-B503-773123BB8EB0}"
+        "ProductName" = "8:kje"
+        "ProductCode" = "8:{8AA7DDD6-7D55-46EF-90C4-70B27239C428}"
+        "PackageCode" = "8:{A5EBFA6B-06D7-4FB0-A61B-BEDB3FEB5DE3}"
         "UpgradeCode" = "8:{DD45AAD2-A189-4D72-A87F-97E853B36378}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.28"
-        "Manufacturer" = "8:guobotech"
+        "ProductVersion" = "8:1.0.30"
+        "Manufacturer" = "8:KJE"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:GbyxSetup"
@@ -69223,7 +69249,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DC27C5019697458A8B735221BC706193"
             {
-            "Name" = "8:国播出国"
+            "Name" = "8:跨境鹅"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -69232,7 +69258,7 @@
             "Target" = "8:_7174DBBDDA9B412EB26F2C56C20B3D83"
             "Folder" = "8:_9F77630FAAE64D68ACD6E153FEC731FA"
             "WorkingFolder" = "8:_109437F1BF7A43868035D4FDF11E38E2"
-            "Icon" = "8:_62A5B226B8B448FCBA5927C3AD668AB5"
+            "Icon" = "8:_72B194CD3D3846B69EE85518F5CFF546"
             "Feature" = "8:"
             }
         }

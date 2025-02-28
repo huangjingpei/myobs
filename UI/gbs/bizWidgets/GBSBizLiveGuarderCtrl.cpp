@@ -1,7 +1,7 @@
 #include "GBSBizLiveGuarderCtrl.h"
 #include "ui_GBSBizLiveGuarderCtrl.h"
 #include "GBSMsgDialog.h"
-#include "gbs/bizWidgets/GBSAddBroker.h"
+#include "gbs/dialog/GBSAddMatrix.h"
 #include "gbs/bizWidgets/GBSRemoveBroker.h"
 #include "gbs/GBSMainCollector.h"
 #include "gbs/dto/GBSLiveDevices.h"
@@ -25,6 +25,9 @@
 #include <QCompleter>
 #include <QStringList>
 #include "gbs/remoteCtrl/localqueryinfo.h"
+#include "gbs/dialog/GBSOperationReadME.h"
+#include "gbs/dialog/GBSColorReadME.h"
+#include "gbs/dialog/GBSDeleteMatrix.h"
 
 
 #include "qt-wrappers.hpp"
@@ -70,6 +73,9 @@ public:
         QPushButton* btnHelp = new QPushButton(this);
         QPushButton *btnUp = new QPushButton(this);
         QPushButton *btnDown = new QPushButton(this);
+	btnHelp->setFixedSize(24, 24);
+	btnUp->setFixedSize(24, 24);
+	btnDown->setFixedSize(24, 24);
         connect(btnUp, &QPushButton::clicked, this, &GridButtons::scrollUp);
         connect(btnDown, &QPushButton::clicked, this, &GridButtons::scrollDown);
         connect(btnHelp, &QPushButton::clicked, this, &GridButtons::showHelp);
@@ -155,26 +161,29 @@ public:
         vertLayout->addWidget(btnDown);
         vertLayout->addWidget(lblPage);
         mainLayout->addLayout(vertLayout);  // 右边放翻页按钮
-		mainLayout->setStretch(0, 19);
-		mainLayout->setStretch(0, 1);
+	mainLayout->setStretch(0, 19);
+	mainLayout->setStretch(0, 1);
 
         connect(btnHelp, &QPushButton::clicked, this, [this]() {
-		QWidget* widget = new QWidget;
-		QVBoxLayout *layout = new QVBoxLayout(widget);
+		//QWidget* widget = new QWidget;
+		//QVBoxLayout *layout = new QVBoxLayout(widget);
 
-		layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
-		QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
-		layout->addSpacerItem(spacer0);
+		//layout->setAlignment(Qt::AlignHCenter); // 整体内容居中
+		//QSpacerItem *spacer0 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+		//layout->addSpacerItem(spacer0);
 
-		layout->addLayout(createButtonLabelLayout("", "#C9DCFF", "浅色代表未开播未连接"));
-		layout->addLayout(createButtonLabelLayout("", "#00C566", "绿色代表正常分发"));
-		layout->addLayout(createButtonLabelLayout("", "#FFCD19", "黄色代表在线人数居多"));
-		layout->addLayout(createButtonLabelLayout("", "#EB3F5E", "红色代表直播间异常"));
-		layout->addLayout(createButtonLabelLayout("", "#2667FE", "蓝色语音输入按钮"));
-		QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-		layout->addSpacerItem(spacer);
-		GBSMsgDialog *dialog = new GBSMsgDialog("颜色含义解释", layout, this);
-		dialog->exec();
+		//layout->addLayout(createButtonLabelLayout("", "#C9DCFF", "浅色代表未开播未连接"));
+		//layout->addLayout(createButtonLabelLayout("", "#00C566", "绿色代表正常分发"));
+		//layout->addLayout(createButtonLabelLayout("", "#FFCD19", "黄色代表在线人数居多"));
+		//layout->addLayout(createButtonLabelLayout("", "#EB3F5E", "红色代表直播间异常"));
+		//layout->addLayout(createButtonLabelLayout("", "#2667FE", "蓝色语音输入按钮"));
+		//QSpacerItem *spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		//layout->addSpacerItem(spacer);
+		//GBSMsgDialog *dialog = new GBSMsgDialog("颜色含义解释", layout, this);
+		//dialog->exec();
+		GBSColorReadME *readME = new GBSColorReadME();
+		readME->exec();
+	
         });
 
     }
@@ -268,7 +277,13 @@ private:
 
         if (currentPage) {
             // 添加新的按钮到当前页面
-            QPushButton* button = new QPushButton(text, this);
+		QStringList parts = text.split("/");
+		QString buttonName = "unknown";
+		if (!parts.isEmpty() && parts.size() > 0) {
+		    buttonName = parts.at(0);
+		}
+		QPushButton *button = new QPushButton(buttonName, this);
+	    
 	    QLabel *iconLabel = new QLabel(button);
 
             int row = (buttonCount % buttonsPerPage) / buttonsPerRow;
@@ -595,11 +610,31 @@ public:
 	{
 
 		QVBoxLayout *mainLayout = new QVBoxLayout;
+		
 		QHBoxLayout *naviLayout = new QHBoxLayout;
-		QLabel *label = new QLabel("开播管理");
+		QLabel *label = new QLabel("  矩阵直播终端信息列表");
 		label->setStyleSheet("QLabel {"
 				     "   font-size: 16px;"
 				     "}");
+		QPushButton *btnHelp = new QPushButton(this);
+		btnHelp->setFixedSize(24, 24);
+		btnHelp->setStyleSheet("QPushButton {"
+				       "   background-image: url(:gbs/images/gbs/biz/gbs-tooltip.png);"
+				       "   background-repeat: no-repeat;"
+				       "   background-position: center;"
+				       "   color: white;"
+				       "   border: none;"       // 无边框
+				       "   border-radius: 5px;" // 圆角
+				       "   font-size: 16px;"
+				       "   padding: 0;" // 不添加内边距
+				       "}"
+				       "QPushButton:pressed {"
+				       "   background-color: #D1D8DD;" // 按下时背景颜色
+				       "   padding-left: 3px;"         // 向左移动 3px
+				       "   padding-top: 3px;"          // 向上移动 3px
+				       "   background-repeat: no-repeat;"
+				       "   background-position: center;"
+				       "}");
 		QPushButton *btnAdd = new QPushButton();
 		btnAdd->setFixedSize(24, 24);
 		btnAdd->setStyleSheet("QPushButton {"
@@ -611,21 +646,36 @@ public:
 				      "   border-radius: 5px;" // 圆角
 				      "   font-size: 16px;"
 				      "   padding: 0;" // 不添加内边距
-				      "}");
+				      "}"
+				      "QPushButton:pressed {"
+				      "   background-color: #D1D8DD;" // 按下时背景颜色
+				      "   padding-left: 3px;"         // 向左移动 3px
+				      "   padding-top: 3px;"          // 向上移动 3px
+				      "   background-repeat: no-repeat;"
+				      "   background-position: center;"
+				      "}"
+		);
 		CustomSearchLineEdit *lineEdit = new CustomSearchLineEdit;
 		
 		naviLayout->addWidget(label);
 		naviLayout->addWidget(lineEdit);
 		naviLayout->addWidget(btnAdd);
+		naviLayout->addWidget(btnHelp);
 
 		QObject::connect(btnAdd, &QPushButton::clicked, this, [this]() {
-			GBSAddBroker *broker = new GBSAddBroker(this);
-			broker->show();
+			GBSAddMatrix *matrix = new GBSAddMatrix(this);
+			matrix->show();
 		});
 		mainLayout->addLayout(naviLayout);
 		table = new LiveMngrWidget();
-		connect(table, &LiveMngrWidget::deleteLiveClient, this, [](QString id) {
-
+		connect(table, &LiveMngrWidget::deleteLiveClient, this,
+			[this](int row, QString id) {
+				//LiveMngrWidget *sender = qobject_cast<LiveMngrWidget *>(sender());
+				GBSDeleteMatrix *delMatrix = new GBSDeleteMatrix();
+				delMatrix->setLiveId(id.toInt());
+				delMatrix->setLiveWidget(table);
+				delMatrix->setRow(row);
+				delMatrix->exec();
 			});
 		connect(table, &LiveMngrWidget::disconnectLiveClient, this, [](QString id) {
 
@@ -640,6 +690,13 @@ public:
 		connect(lineEdit, &CustomSearchLineEdit::returnPressed, this, [this](QString text) {
 			emit fuzzyMatching(text);
 			});
+
+		connect(btnHelp, &QPushButton::clicked, this,
+			[]() { GBSOperationReadME *readME = new GBSOperationReadME();
+			readME->exec();
+			});
+
+
 	}
 
 public:
@@ -651,12 +708,12 @@ public:
 	// 添加一个清除表格的函数
 	void clearTable() { table->clearRows();
 	}
+
 signals:
 	void fuzzyMatching(QString text);
 
 private:
 	LiveMngrWidget *table;
-	
 	int index = 0;
 	
 };
@@ -698,37 +755,42 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 				// "    color: #0000FF; "
 				// "}"
     //);
-    ui->tabWidget->setStyleSheet("QTabWidget::pane {"
-				 "    border: none;" // 移除tab pane的边框
-				 "}"); // 清空 QTabWidget 的样式表
+    //ui->tabWidget->setStyleSheet("QTabWidget::pane {"
+				// "    border: none;" // 移除tab pane的边框
+				// "}"); // 清空 QTabWidget 的样式表
 
-    ui->tabWidget->setStyleSheet("QTabBar::tab {"
-				"    color: #78828A; "              // 默认字体颜色
-				"    background: none; "       // 默认背景颜色
-				 "    padding: 40px; "      // 内边距
-				"    padding: 4px; "             // 内边距
-				"    border-radius: 5px; "        // 圆角
-				"    font-size: 14px;"         // 设置字体大小为16像素
+    //ui->tabWidget->setStyleSheet("QTabBar::tab {"
+				//"    color: #78828A; "              // 默认字体颜色
+				//"    background: none; "       // 默认背景颜色
+				// "    padding: 40px; "      // 内边距
+				//"    padding: 4px; "             // 内边距
+				//"    border-radius: 5px; "        // 圆角
+				//"    font-size: 14px;"         // 设置字体大小为16像素
 
-				"}"
-				"QTabBar::tab:selected {"
-				"    color: #00C566; "              // 选中字体颜色
-				"    background: none; "       // 选中背景颜色
-				"    padding: 4px; "              // 内边距
-				"}"
-				"QTabBar::tab:first {"
-				"    margin-left: 100px;" // 调整第一个tab项的左外边距
-				"}"
-				"QTabWidget::pane { border: 0; }"
-				"QTabBar::tab { border: none; }"
-				"QTabWidget::tab-bar { border: none; }"
-    );
+				//"}"
+				//"QTabBar::tab:selected {"
+				//"    color: #00C566; "              // 选中字体颜色
+				//"    background: none; "       // 选中背景颜色
+				//"    padding: 4px; "              // 内边距
+				//"}"
+				//"QTabBar::tab:first {"
+				//"    margin-left: 40px;" // 调整第一个tab项的左外边距
+				//"}"
+				// "QTabBar {"
+				// "    qproperty-alignment: AlignCenter;" // 设置tab项居中对齐
+				// "    qproperty-drawBase: 0; /* 重要：移除底部基线 */"
+				// "}"
+	
+				//"QTabWidget::pane { border: 0; }"
+				//"QTabBar::tab { border: none; }"
+				//"QTabWidget::tab-bar { border: none; }"
+    //);
 
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 	 QString pullRtmpUrl = iniFile->value("LiveBroker", "url", "unknown").toString();
     
 
-	 connect(ui->tabWidget, &QTabWidget::currentChanged, this, &GBSBizLiveGuarderCtrl::onTabChanged);
+	 //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &GBSBizLiveGuarderCtrl::onTabChanged);
     
 
 	auto displayResize = [this]() {
@@ -755,7 +817,9 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 
 	main->addGuarderCtrlScene();
 	GBSHttpClient::getInstance()->registerHandler(this);
+	
 	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
+	GBSHttpClient::getInstance()->countZlmLiveDeviceInfo(account.getId());
 	GBSHttpClient::getInstance()->pageSrsLiveDeviceV2(account.getId(), 0);
 
 	mWssKeepaliveId = std::to_string(account.getId()) + "_" + GetMachineIdFromRegistry() +
@@ -772,11 +836,12 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 		mWebSocketClient->Start(wssUrl);
 	}
 	mWebSocketClient->RegisterHandler(this);
-	connect(this, &GBSBizLiveGuarderCtrl::signalDanmakuReceived, this, &GBSBizLiveGuarderCtrl::addNewWidget);
+	connect(this, &GBSBizLiveGuarderCtrl::signalDanmakuReceived, this, &GBSBizLiveGuarderCtrl::addNewWidget, Qt::QueuedConnection);
 
-	QWidget *currentWidget = ui->tabWidget->currentWidget();
-	
-	
+	//QWidget *currentWidget = ui->tabWidget->currentWidget();
+	//
+	//
+	//
 	danmaKuAreaLayout = new QVBoxLayout();
 	danmaKuAreaLayout->setSpacing(6);                 // 设置widget之间的固定间距为6像素
 	danmaKuAreaLayout->setAlignment(Qt::AlignBottom); // 保证最新widget在最底部
@@ -798,9 +863,16 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 	    "QScrollBar::handle:vertical { background: #CCCCCC; }" // 滚动条手柄颜色
 	);
 
-	// Set the scroll area as the layout for the current widget
-	QVBoxLayout *mainLayout = new QVBoxLayout(currentWidget);
-	mainLayout->addWidget(danmakuscrollArea);
+		// 限制ScrollArea尺寸，防止几何超出问题
+	danmakuscrollArea->setMinimumSize(525, 468);
+	danmakuscrollArea->setMaximumHeight(3000);
+
+	//// Set the scroll area as the layout for the current widget
+	//QVBoxLayout *mainLayout = new QVBoxLayout(currentWidget);
+	//mainLayout->addWidget(danmakuscrollArea);
+
+	ui->verticalLayout_2->addWidget(danmakuscrollArea);
+
 
 	//设置直播间管理，开播管理
 
@@ -840,10 +912,22 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 	mDanmakuType = DANITEM_TYPE_ALL;
 	gridButtons = new GridButtons(this);
 	ui->tabWidget_2->addTab(gridButtons, "直播间");
+	ui->lineEdit_2->setAlignment(Qt::AlignCenter);
+	ui->lineEdit_3->setAlignment(Qt::AlignCenter);
+	ui->lineEdit->setAlignment(Qt::AlignCenter);
 	connect(gridButtons, &GridButtons::notifyDanmukuChanged, this, &GBSBizLiveGuarderCtrl::onDanmukuChanged);
 
 
+	connect(ui->pushButton, &QPushButton::clicked, this, [this](){ userDanmakuType = DANITEM_TYPE_ALL;
+		});
+	connect(ui->pushButton_2, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_ALL;
+		});
+	connect(ui->pushButton_3, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_WHOIS; });
+	connect(ui->pushButton_4, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_GIFT; });
+	connect(ui->pushButton_5, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_CHAT; });
+
 	liveManageWidget = new LiveManageWidget(this);
+	
 	connect(liveManageWidget, &LiveManageWidget::fuzzyMatching, this, [this](QString text) {
 			//模糊匹配. //TODO
 		});
@@ -898,12 +982,15 @@ void GBSBizLiveGuarderCtrl::onTabChanged(int index)
 		update();
 	}
 
-	if (index == 0 && index <= 3) {
-
-	}
 }
 
 void GBSBizLiveGuarderCtrl::onTabChanged2(int index) {
+	//if (index == 0) {
+	//	ui->verticalLayout->removeItem(ui->horizontalLayout_2);
+	//} else {
+	//	ui->verticalLayout->addItem(ui->horizontalLayout_2);
+	//}
+
 	GBSLiveAccountInfo account = GBSMainCollector::getInstance()->getAccountInfo();
 	GBSHttpClient::getInstance()->pageSrsLiveDeviceV2(account.getId(), 0);
 }
@@ -933,7 +1020,8 @@ void GBSBizLiveGuarderCtrl::onListDevices(std::list<GBSLiveDevices> devices, int
 		if (index == 0) {
 			for (std::list<GBSLiveDevices>::iterator it = currentliveDevices.begin();
 			     it != currentliveDevices.end(); ++it) {
-				gridButtons->addButton(QString::fromStdString((*it).getDeviceName()), (*it).getId());
+				gridButtons->addButton(QString::fromStdString
+				((*it).getNotes()), (*it).getId());
 			}
 
 		} else if (index == 1) {
@@ -951,16 +1039,19 @@ void GBSBizLiveGuarderCtrl::onListDevices(std::list<GBSLiveDevices> devices, int
 						activateCode = parts.at(1);
 					}
 					QString notes = QString::fromStdString((*it).getNotes());
-					QString deviceName = QString::fromStdString((*it).getDeviceName());
+					QString deviceCode = QString::fromStdString((*it).getDeviceCode());//客户号
 					QString createTime = QString::fromStdString((*it).getCreatedTime());
 					int leftDays = calculateDaysUntilExpiration(createTime);
 					QString liveAccountId = QString::number((*it).getId());
-					QString liveDeviceCount = QString("1%1台/(2%2台)").arg(5).arg(10);
+					QString liveDeviceCount =
+						QString("%1台/(%2台)").arg(count).arg(deviceTotalCount);
 					QString liveTimeLength = QString("50天 17:45:59 ");
+					ui->lineEdit->setText(QString("%1 台").arg(count));
+					ui->lineEdit_3->setText(QString("%1 台").arg(deviceTotalCount));
 					QString toDeskAccount = QString::fromStdString((*it).getToDeskAccount());
 					QString toDeskPassword = QString::fromStdString((*it).getToDeskPassword());
 
-					rawData << No << deviceName << activateCode << notes << createTime
+					rawData << No << deviceCode << activateCode << notes << createTime
 						<< QString("%1 (天)").arg(leftDays)
 						<< liveAccountId << liveDeviceCount  << toDeskAccount + "/" +toDeskPassword
 						<< "";
@@ -974,6 +1065,11 @@ void GBSBizLiveGuarderCtrl::onListDevices(std::list<GBSLiveDevices> devices, int
 	Qt::QueuedConnection);
 
 	
+}
+
+void GBSBizLiveGuarderCtrl::onDeviceCount(int onLineCount, int totalCount) {
+	deviceOnLineCount = onLineCount;
+	deviceTotalCount = totalCount;
 }
 
 void GBSBizLiveGuarderCtrl::ResizePreview(uint32_t cx, uint32_t cy)
@@ -1132,11 +1228,11 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 	std::string platformAcct = jsonObject["platformAcct"].is_null() ? "" : jsonObject["platformAcct"].get<std::string>();
 
 	
-	if (mDanmakuType != DANITEM_TYPE_ALL) {
-		if (std::stoi(liveDeviceId) != mDanmakuValue) {
-			return;
-		}
-	}
+	//if (mDanmakuType != DANITEM_TYPE_ALL) {
+	//	if (std::stoi(liveDeviceId) != mDanmakuValue) {
+	//		return;
+	//	}
+	//}
 	std::string uniqueName = deviceName;
 	if (uniqueName.empty()) {
 		return;
@@ -1217,27 +1313,29 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		danma->msgType = 4;
 		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
 		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
-					   QString::fromStdString(liveDeviceId));
-	} else if (type == "LikeMessage") {
-		auto danma = std::make_shared<DanmaLikeMessage>();
-		danma->type = "LikeMessage";
-		danma->name = jsonObject["name"].get<std::string>();
-		danma->head_image = jsonObject["head_image"].get<std::string>();
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->count = jsonObject["count"].get<std::string>();
-		danma->msgType = 5;
-		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
-		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
-					   QString::fromStdString(liveDeviceId));
-	} else if (type == "RoomMessage") {
+			QString::fromStdString(liveDeviceId));
+	}
+ else if (type == "LikeMessage") {
+	 auto danma = std::make_shared<DanmaLikeMessage>();
+	 danma->type = "LikeMessage";
+	 danma->name = jsonObject["name"].get<std::string>();
+	 danma->head_image = jsonObject["head_image"].get<std::string>();
+	 danma->content = jsonObject["content"].get<std::string>();
+	 danma->count = jsonObject["count"].get<std::string>();
+	 danma->msgType = 5;
+	 QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+	 emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
+		 QString::fromStdString(liveDeviceId));
+	}
+ else if (type == "RoomMessage") {
 
-		auto danma = std::make_shared<DanmaRoomMessage>();
-		danma->content = jsonObject["content"].get<std::string>();
-		danma->count = jsonObject["count"].get<std::string>();
-		danma->msgType = 6;
-		QString danmaText = QString::fromStdString(uniqueName) + ":" + QString::fromStdString(danma->content);
-		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
-					   QString::fromStdString(liveDeviceId));
+	 auto danma = std::make_shared<DanmaRoomMessage>();
+	 danma->content = jsonObject["content"].get<std::string>();
+	 danma->count = jsonObject["count"].get<std::string>();
+	 danma->msgType = 6;
+	 QString danmaText = QString::fromStdString(uniqueName) + ":" + QString::fromStdString(danma->content);
+	 emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
+		 QString::fromStdString(liveDeviceId));
 
 
 
@@ -1245,58 +1343,146 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 }
 
 
-void GBSBizLiveGuarderCtrl::addNewWidget(const QString &atext, const QString &aimagePath, const QString &atext2,
-					const QString &atype, const QString &liveId)
+void GBSBizLiveGuarderCtrl::addNewWidget(const QString& atext, const QString& aimagePath, const QString& atext2,
+	const QString& atype, const QString& liveId)
 {
 	QString text = atext;
 	QString imagePath = aimagePath;
 	QString text2 = atext2;
 	QString type = atype;
-	DanmaItem item{QTime::currentTime(), text, imagePath, text2, type, liveId};
+	DanmaItem item{ QTime::currentTime(), text, imagePath, text2, type, liveId };
 	int danmakuType = DANITEM_TYPE_ALL;
-	QList<DanmaItem> danmItemWhoisList = thlWhoIsDanmukus.localData();
-	QList<DanmaItem> danmItemAllList = thlAllDanmakus.localData();
-	QList<DanmaItem> danmItemGiftList = thlGiftDanmakus.localData();
-	QList<DanmaItem> danmItemLikeList = thlLikeDanmakus.localData();
-	QList<DanmaItem> danmItemChatList = thlChatDanmakus.localData();
+	//QList<DanmaItem> danmItemWhoisList = thlWhoIsDanmukus.localData();
+	//QList<DanmaItem> danmItemAllList = thlAllDanmakus.localData();
+	//QList<DanmaItem> danmItemGiftList = thlGiftDanmakus.localData();
+	//QList<DanmaItem> danmItemLikeList = thlLikeDanmakus.localData();
+	//QList<DanmaItem> danmItemChatList = thlChatDanmakus.localData();
 	if (type == "MemberMessage") {
-		danmItemWhoisList.push_back(item);
-		if (danmItemWhoisList.size() > 300) {
-			danmItemWhoisList.pop_front();
+		whoIsDanmukus.push_back(item);
+		if (whoIsDanmukus.size() > 300) {
+			whoIsDanmukus.pop_front();
 		}
 		danmakuType = DANITEM_TYPE_WHOIS;
-	} else if (type == "ChatMessage") {
-		danmItemChatList.push_back(item);
-		if (danmItemChatList.size() > 300) {
-			danmItemChatList.pop_front();
+	}
+	else if (type == "ChatMessage") {
+		chatDanmakus.push_back(item);
+		if (chatDanmakus.size() > 300) {
+			chatDanmakus.pop_front();
 		}
 		danmakuType = DANITEM_TYPE_CHAT;
-	} else if (type == "GiftMessage") {
-		danmItemGiftList.push_back(item);
-		if (danmItemGiftList.size() > 300) {
-			danmItemGiftList.pop_front();
+	}
+	else if (type == "GiftMessage") {
+		giftDanmakus.push_back(item);
+		if (giftDanmakus.size() > 300) {
+			giftDanmakus.pop_front();
 		}
 		danmakuType = DANITEM_TYPE_GIFT;
-	} else if (type == "SocialMessage") {
-	} else if (type == "LikeMessage") {
-		danmItemLikeList.push_back(item);
-		if (danmItemLikeList.size() > 300) {
-			danmItemLikeList.pop_front();
+	}
+	else if (type == "SocialMessage") {
+	}
+	else if (type == "LikeMessage") {
+		likeDanmakus.push_back(item);
+		if (likeDanmakus.size() > 300) {
+			likeDanmakus.pop_front();
 		}
 		danmakuType = DANITEM_TYPE_LIKE;
 	}
-	if (danmItemAllList.size() > 300) {
-		danmItemAllList.pop_front();
+	if (allDanmakus.size() > 300) {
+		allDanmakus.pop_front();
 	}
-	danmItemAllList.push_back(item);
+	allDanmakus.push_back(item);
 
-	if ((mDanmakuType != DANITEM_TYPE_ALL) && (mDanmakuType !=DANITEM_TYPE_SINGLE))  {
-		if (mDanmakuType != danmakuType) {
+	//两种情况清除现有弹幕，并重新加载弹幕
+	//1. 如果用户且了单个直播间,要从所有按照用户id过滤消息并显示
+	//2. 如果用户过滤弹幕类型，如用户留言，礼物打赏等等
+
+	if (userDanmakuType != userLastDanmakuType) {
+		userLastDanmakuType = userDanmakuType;
+		//清除掉原有弹幕
+
+		while (QLayoutItem* item = danmaKuAreaLayout->takeAt(0)) {
+			if (item->widget()) {
+				item->widget()->deleteLater();
+			}
+			delete item;
+		}
+		QList<DanmaItem> currentDanmakus;
+		//添加新的弹幕
+		if (userDanmakuType == DANITEM_TYPE_ALL) {
+			currentDanmakus = allDanmakus;
+		}
+		else if (userDanmakuType == DANITEM_TYPE_GIFT) {
+			currentDanmakus = giftDanmakus;
+		}
+		else if (userDanmakuType == DANITEM_TYPE_CHAT) {
+			currentDanmakus = chatDanmakus;
+		}
+		else if (userDanmakuType == DANITEM_TYPE_WHOIS) {
+			currentDanmakus = whoIsDanmukus;
+		} else if (userDanmakuType == DANITEM_TYPE_SINGLE) {
+			for (DanmaItem item : allDanmakus) {
+				int iLiveId = -1;
+				if (item.liveId.length() > 1) {
+					iLiveId = item.liveId.left(1).toInt();
+				}
+				qDebug() << "iLiveId " << iLiveId << " mDanmakuValue " << mDanmakuValue;
+				if (iLiveId == mDanmakuValue) {
+					currentDanmakus.push_back(item);
+				}
+			}
+
+
+		}
+
+		if (currentDanmakus.size() > 0) {
+			for (DanmaItem item : currentDanmakus) {
+				// 创建新 widget
+				DanmakuWidget *newWidget = new DanmakuWidget();
+				newWidget->setFirstRowContent(item.deviceName, item.iamgePath);
+				newWidget->setSecondRowContent(item.danmaku);
+
+				// 添加到布局
+				widgetList.append(newWidget);
+
+				// 插入到布局的最底部
+				danmaKuAreaLayout->insertWidget(danmaKuAreaLayout->count(),
+								newWidget); // 最新的 widget 添加到布局的最后
+				qDebug() << "danmaKuAreaLayout count " << danmaKuAreaLayout->count();
+
+				// 滚动到最底部显示最新添加的widget
+				QScrollBar *vScrollBar = danmakuscrollArea->verticalScrollBar();
+				vScrollBar->setValue(vScrollBar->maximum());
+
+				// 检查是否超过 300 个 widget
+				if (danmaKuAreaLayout->count() > 300) {
+					// 移除最早的 widget
+					QLayoutItem *oldestItem = danmaKuAreaLayout->takeAt(0);
+					if (oldestItem->widget()) {
+						delete oldestItem->widget();
+					}
+					delete oldestItem;
+				}
+			}
+		}
+	}
+	if ((danmakuType != userDanmakuType) &&
+	    ((userDanmakuType != DANITEM_TYPE_ALL) && (userDanmakuType != DANITEM_TYPE_SINGLE))) {
+		return;
+	}
+	if (userDanmakuType == DANITEM_TYPE_SINGLE) {
+		int iLiveId = -1;
+		if (item.liveId.length() > 1) {
+			iLiveId = item.liveId.toInt();
+		}
+		if (iLiveId != mDanmakuValue) {
 			return;
 		}
 	}
+
+
+
 	// 创建新 widget
-	DanmakuWidget *newWidget = new DanmakuWidget(ui->tabWidget->currentWidget());
+	DanmakuWidget *newWidget = new DanmakuWidget();
 	newWidget->setFirstRowContent(text, imagePath);
 	newWidget->setSecondRowContent(text2);
 
@@ -1323,29 +1509,7 @@ void GBSBizLiveGuarderCtrl::addNewWidget(const QString &atext, const QString &ai
 	}
 }
 void GBSBizLiveGuarderCtrl::onDanmukuChanged(int value) {
+	userDanmakuType = DANITEM_TYPE_SINGLE;
 	mDanmakuValue = value;
-	mDanmakuType = DANITEM_TYPE_SINGLE;
-	QList<DanmaItem> signalDanmaList;
-	QList<DanmaItem> danmItemAllList = thlAllDanmakus.localData();
-	{
-		while (QLayoutItem *item = danmaKuAreaLayout->takeAt(0)) {
-			if (item->widget()) {
-				item->widget()->deleteLater();
-			}
-			delete item;
-		}
-
-		for (DanmaItem item : danmItemAllList) {
-			int iLiveId = -1;
-			if (item.liveId.length() > 1) {
-				iLiveId = item.liveId.left(1).toInt();
-			}
-			qDebug() << "iLiveId " << iLiveId << " mDanmakuValue " << mDanmakuValue;
-			if (iLiveId == mDanmakuValue) {
-				emit signalDanmakuReceived(item.deviceName, item.iamgePath, item.danmaku, item.type,
-							   item.liveId);
-			}
-		}
-	}
 }
 #include "GBSBizLiveGuarderCtrl.moc"

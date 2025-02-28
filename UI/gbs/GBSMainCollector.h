@@ -94,6 +94,14 @@ public:
 	//Push Stream info currently.
 	void setPushStreamInfo(GBSPushStreamInfo info);
 	GBSPushStreamInfo& getPushStreamInfo();
+
+	void setGuarderCtrlPassword(QString password);
+	QString getGuarderCtrlPassword();
+
+	void setRemoteAuth(QString username, QString password);
+	QString getRemoteUsername();
+	QString getRemotePassword();
+
 	
 
 private:
@@ -129,6 +137,12 @@ private:
 	std::string mUniqueNo{""};
 	std::string danmakuId{""};//主要有srsliveId 和 弹幕被抓平台id构成
 	std::string buildInfo{""};
+
+	QString mRemoteUsernmae;
+	QString mRemotePassword;
+	
+
+	QString guarderCtrlPassword;
 	
 
 	 //std::string baseUrl = {"http://36be34f5.r27.cpolar.top"};
@@ -139,7 +153,7 @@ private:
 
 	 //版本构成说明
 	 
-	 std::string mSoftWareVersion{"1.0.28"};
+	 std::string mSoftWareVersion{"1.0.30"};
 	
 	
 };

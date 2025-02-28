@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QPointer>
 #include <QThreadStorage>
+#include <QMap>
 #include "window-basic-main-outputs.hpp"
 
 #include "gbs/common/GBSHttpClient.h"
@@ -28,6 +29,8 @@ public:
 	~GBSBizLiveGuarderCtrl();
 
 	void onListDevices(std::list<GBSLiveDevices> devices, int pageNum) override;
+	void onDeviceCount(int onLineCount, int totalCount) override;
+
 
 signals:
 
@@ -43,6 +46,8 @@ public slots:
 	void onWssKeepAlive();
 
 	void onDanmukuChanged(int value);
+
+	
 
 protected:
 	static void RenderMain(void *data, uint32_t cx, uint32_t cy);
@@ -88,6 +93,7 @@ private:
 	QList<DanmaItem> allDanmakus;
 	QList<DanmaItem> giftDanmakus;
 	QList<DanmaItem> likeDanmakus;
+	QList<DanmaItem> chatDanmakus;
 
 	QVBoxLayout *danmaKuAreaLayout;
 	QScrollArea *danmakuscrollArea;
@@ -102,8 +108,11 @@ private:
 	std::atomic<int> mDanmakuValue{-1};
 	QString pullRtmpUrl;
 
-
-
+	int deviceOnLineCount{0};
+	int deviceTotalCount{0};
+	int userDanmakuType{DANITEM_TYPE_ALL};
+	int userLastDanmakuType{DANITEM_TYPE_ALL};
+	QMap<std::string, int> operationMap;
 
 };
 
