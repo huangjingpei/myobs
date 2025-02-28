@@ -8,6 +8,7 @@
 #include <QPointer>
 #include <QThreadStorage>
 #include <QMap>
+#include <QPushButton>
 #include "window-basic-main-outputs.hpp"
 
 #include "gbs/common/GBSHttpClient.h"
@@ -67,6 +68,7 @@ private:
 	void onClose() override;
 
 	void onPullRtmpUrl(const std::string url);
+	void updateStyle(bool checked);
 
 
 private:
@@ -113,6 +115,8 @@ private:
 	int userDanmakuType{DANITEM_TYPE_ALL};
 	int userLastDanmakuType{DANITEM_TYPE_ALL};
 	QMap<std::string, int> operationMap;
+	QList<QPushButton *> btnDanmaLists;
+
 
 };
 

@@ -1130,7 +1130,7 @@ void OBSBasic::Load(const char *file, bool remigrate)
 	migrationBaseResolution.reset();
 
 	obs_data_t *data = obs_data_create_from_json_file_safe(file, "bak");
-	if (true) {
+	if (!data) {
 		disableSaving--;
 		const auto path = filesystem::u8path(file);
 		const string name = path.stem().u8string();
@@ -1157,7 +1157,7 @@ void OBSBasic::Load(const char *file, bool remigrate)
 
 		bool hasFirstRun = config_get_bool(App()->GetUserConfig(), "General", "FirstRun");
 
-		CreateDefaultScene(true);
+		CreateDefaultScene(!hasFirstRun);
 		SaveProject();
 		return;
 	}

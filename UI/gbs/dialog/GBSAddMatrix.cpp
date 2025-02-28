@@ -69,7 +69,7 @@ GBSAddMatrix::GBSAddMatrix(QWidget *parent)
     GBSHttpClient::getInstance()->registerHandler(this);
     connect(ui->btnClose, &QPushButton::clicked, this, [this]() { close(); });
 
-	ui->leActivationResult->setObjectName("myEditText");
+	//ui->leActivationResult->setObjectName("myEditText");
 
 
     connect(ui->pushButton_2, &QPushButton::clicked, this, &GBSAddMatrix::activateDevice);
@@ -88,17 +88,12 @@ void GBSAddMatrix::activateDevice() {
 		ui->leActivationResult->setText("错误:备注信息没有填写");
 		ui->leActivationResult->setStyleSheet(R"(
 			    QLabel {
-				background-color: #f9f9f9;            /* 背景色 */
-				border: 1px solid #cccccc;            /* 边框 */
+				background-color: transparent;            /* 背景色 */
+				border: none;            /* 边框 */
 				border-radius: 4px;                  /* 圆角 */
-				padding: 8px;                         /* 内边距 */
 				font-size: 14px;                      /* 字体大小 */
-				font-family: "Segoe UI", sans-serif;   /* 字体 */
-				color: #red;                       /* 文本颜色 */
-				selection-background-color: #6ec1e4;  /* 选中文本背景 */
-				selection-color: white;               /* 选中文本颜色 */
+				color: red;                       /* 文本颜色 */
 			    }
-   
 
 			)");
 		return;
@@ -117,37 +112,27 @@ void GBSAddMatrix::activateDevice() {
  void GBSAddMatrix::onActivateCode(int code) {
 	 QMetaObject::invokeMethod(this, [code, this]() {
 		 if (code == 0) {
-			 ui->leActivationResult->setStyleSheet(R"(
+			ui->leActivationResult->setStyleSheet(R"(
 			    QLabel {
-				background-color: #f9f9f9;            /* 背景色 */
-				border: 1px solid #cccccc;            /* 边框 */
+				background-color: transparent;            /* 背景色 */
+				border: none;            /* 边框 */
 				border-radius: 4px;                  /* 圆角 */
-				padding: 8px;                         /* 内边距 */
 				font-size: 14px;                      /* 字体大小 */
-				font-family: "Segoe UI", sans-serif;   /* 字体 */
 				color: #00C566;                       /* 文本颜色 */
-				selection-background-color: #6ec1e4;  /* 选中文本背景 */
-				selection-color: white;               /* 选中文本颜色 */
 			    }
-    
-	
+
 			)");
 			 ui->leActivationResult->setText("激活成功");
 			 
 		 } else {
-			 ui->leActivationResult->setStyleSheet(R"(
+			ui->leActivationResult->setStyleSheet(R"(
 			    QLabel {
-				background-color: #f9f9f9;            /* 背景色 */
-				border: 1px solid #cccccc;            /* 边框 */
+				background-color: transparent;            /* 背景色 */
+				border: none;            /* 边框 */
 				border-radius: 4px;                  /* 圆角 */
-				padding: 8px;                         /* 内边距 */
 				font-size: 14px;                      /* 字体大小 */
-				font-family: "Segoe UI", sans-serif;   /* 字体 */
-				color: #red;                       /* 文本颜色 */
-				selection-background-color: #6ec1e4;  /* 选中文本背景 */
-				selection-color: white;               /* 选中文本颜色 */
+				color: red;                       /* 文本颜色 */
 			    }
-   
 
 			)");
 			 ui->leActivationResult->setText("激活失败");
