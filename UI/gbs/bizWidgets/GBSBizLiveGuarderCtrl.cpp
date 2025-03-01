@@ -926,9 +926,11 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 		mWssTimer->setInterval(10000);
 	}
 	ui->widget_2->setStyleSheet(R"(
-		background: #F9F9F9;
-		border-radius: 16px 16px 16px 16px;
-		border: none;)");
+		QWidget#widget_2{
+			background: #F9F9F9;
+			border-radius: 16px 16px 16px 16px;
+			border: none;
+		})");
 	ui->tabWidget_2->setStyleSheet("QTabWidget::pane {"
 				     "    border: none;" // 移除tab pane的边框
 				     "}");               // 清空 QTabWidget 的样式表
@@ -1347,6 +1349,15 @@ void GBSBizLiveGuarderCtrl::onMessage(std::string msg)
 {
 	try {
 		QString qMsg = QString::fromLocal8Bit(msg);
+		QFile file("network_messages.txt");
+		if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+			// 处理文件打开失败的情况
+			return;
+		}
+		QTextStream out(&file);
+		out << (qMsg) << "\n";
+		file.close();
+
 		auto jsonObject = nlohmann::json::parse(msg);
 		if (jsonObject.is_object()) {
 			processDanmaItem(jsonObject);

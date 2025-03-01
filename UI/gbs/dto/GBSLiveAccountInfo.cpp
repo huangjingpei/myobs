@@ -86,7 +86,7 @@ GBSLiveAccountInfo GBSLiveAccountInfo::fromJson(const std::string& json) {
     int activationStatus = j["activationStatus"].is_null() ? 0 : j["activationStatus"].get<int>();
     std::string customerNo = j["customerNo"].is_null() ? "" : j["customerNo"].get<std::string>();
     std::string deviceCode = j["deviceCode"].is_null() ? "" : j["deviceCode"].get<std::string>();
-    std::string deviceCreateTime = j["deviceCreateTime"].is_null() ? "" : j["deviceCreateTime"].get<std::string>();
+    std::string deviceCreateTime = j["deviceCreatedTime"].is_null() ? "" : j["deviceCreatedTime"].get<std::string>();
     std::string deviceName = j["deviceName"].is_null() ? "" : j["deviceName"].get<std::string>();
     std::string deviceNo = j["deviceNo"].is_null() ? "" : j["deviceNo"].get<std::string>();
     std::string head = j["head"].is_null() ? "" : j["head"].get<std::string>();

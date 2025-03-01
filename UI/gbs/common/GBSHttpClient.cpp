@@ -2171,6 +2171,9 @@ void GBSHttpClient::modifyZlmLiveDevice(std::string deviceName, int id, std::str
 			      std::string platformAccount, int remoteSwitch, std::string toDeskAccount,
 			      std::string toDeskPassword)
 {
+	if (deviceName.empty()) {//deviceName 已经不在使用，但是又必须要传，所以这里做一个处理
+		deviceName = std::to_string(id);
+	}
 	executor->addTask(std::bind(&GBSHttpClient::modifyZlmLiveDeviceTaskV2, this, deviceName,id,livePlatform, notes, platformAccount, remoteSwitch, toDeskAccount, toDeskPassword));
 }
 

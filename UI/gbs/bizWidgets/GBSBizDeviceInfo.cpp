@@ -51,6 +51,29 @@ static void split(std::string &s, std::string &delim, std::vector<std::string> *
 	}
 }
 
+
+static int calculateDaysUntilExpiration(const QString &startTimeStr)
+{
+	// 1. 解析起始时间字符串 (格式: "YYYY-MM-DD HH:MM:SS")
+	QDateTime startDateTime = QDateTime::fromString(startTimeStr, "yyyy-MM-dd HH:mm:ss");
+	if (!startDateTime.isValid()) {
+		qDebug() << "Invalid start time format. Expected format: yyyy-MM-dd HH:mm:ss";
+		return -1; // 返回 -1 表示解析失败
+	}
+
+	// 2. 给起始时间增加 365 天
+	QDateTime expirationDateTime = startDateTime.addDays(365);
+
+	// 3. 获取当前时间
+	QDateTime currentDateTime = QDateTime::currentDateTime();
+
+	// 4. 计算当前时间与到期时间之间的差值（以天为单位）
+	qint64 daysDifference = currentDateTime.daysTo(expirationDateTime);
+
+	return daysDifference;
+}
+
+
 static QString MakeMissedFramesText(uint32_t total_lagged, uint32_t total_rendered, long double num)
 {
 	return QString("%1 / %2 (%3%)")
@@ -407,7 +430,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//});
 
 	QList<QPushButton*> qButtons;
-	qButtons << ui->btnCopyCustonNO << ui->btnDevInfo03 << ui->btnRemotePassword;
+	qButtons << ui->btnCopyCustonNO << ui->btnDevInfo03;
 	for (auto button : qButtons) {
 		button->setStyleSheet("QPushButton {"
 				      "   color: #00C566;"
@@ -639,8 +662,7 @@ GBSBizDeviceInfo::GBSBizDeviceInfo(QWidget *parent)
 	//rtcEngine->setScenario(true, false, "", nullptr);
 	//rtcEngine->LoginRoom("abcd", "hjp");
 	//rtcEngine->BeginTalk("12345", nullptr);
-	connect(ui->btnRemotePassword, &QPushButton::clicked, this, []() {
-		});
+
 }
 
 qint64 GBSBizDeviceInfo::converYMDHMStoSec(std::string& date) {
@@ -1008,15 +1030,16 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
     //std::vector<std::string> vec;
     //std::string delim = "/";
     //split(remark, delim, &vec);
-
-    GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceidStr, liveDeviceId, "", remark, liveAccountId, value,
-						      remoteAccount, remotePassword);
-
     QString username = GBSMainCollector::getInstance()->getRemoteUsername();
     QString password = GBSMainCollector::getInstance()->getRemotePassword();
 
-	ui->lblMngred01->setText(username);
-	ui->lblMngred02->setText(password);
+    ui->lblMngred01->setText(username);
+    ui->lblMngred02->setText(password);
+
+    GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceidStr, liveDeviceId, "", remark, liveAccountId, value,
+						      username.toStdString(), password.toStdString());
+
+
 
 }
 
@@ -1069,15 +1092,17 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 				    text-transform: none; /* 这个一般默认就是 none，可以省略 */
 				})");
 		}
-
-		ui->lbsSysInfo01_2->setText(QString::fromStdString(result.getDeviceCreateTime()));
+		QString createTime = QString::fromStdString(result.getDeviceCreateTime());
+		ui->lbsSysInfo01_2->setText(createTime);
+		int leftDays = calculateDaysUntilExpiration(createTime);
+		ui->lbsSysInfo01_3->setText(QString("%1 (天)").arg(leftDays));
 		ui->lblDevInfo03->setText(QString::fromStdString(result.getNotes()));
 
 		ui->horizontalSlider->setValue(result.getRemoteSwitch());
 
-		ui->lblMngred01->setText(ObfuscateString(QString::fromStdString(result.getToDeskAccount())));
+		ui->lblMngred01->setText((QString::fromStdString(result.getToDeskAccount())));
 
-		ui->lblMngred02->setText(ObfuscateString(QString::fromStdString(result.getToDeskPassword())));
+		ui->lblMngred02->setText((QString::fromStdString(result.getToDeskPassword())));
 
 		QList<QString> abbreviations = GBSMainCollector::getInstance()->getLiveAbbreviations();
 		QString remark = QString::fromStdString(result.getNotes());

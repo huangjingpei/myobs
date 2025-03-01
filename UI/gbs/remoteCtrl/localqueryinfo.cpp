@@ -171,7 +171,7 @@ void send_message_to_rust(){
                 QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
                 if (!jsonDoc.isNull() && jsonDoc.isObject()) {
                     QJsonObject jsonObject = jsonDoc.object();//转化为对象
-                    qDebug() << "Received JSON from server:" << jsonObject ;
+                    //qDebug() << "Received JSON from server:" << jsonObject ;
                     if (!jsonObject["status"].toBool()) {
                         remove_rust_config();
                         install_rust_application();

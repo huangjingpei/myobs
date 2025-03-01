@@ -194,11 +194,7 @@ border-radius: 20px;</string>
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">width: 1169px;
-height: 395px;
-background: #FFFFFF;
-border-radius: 16px 16px 16px 16px;
-border: 1px solid #E7E7E7;</string>
+           <string notr="true"/>
           </property>
           <property name="frameShape">
            <enum>QFrame::Shape::StyledPanel</enum>
@@ -292,13 +288,6 @@ background: transparent;
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">width: 1169px;
-height: 395px;
-background: #FFFFFF;
-border-radius: 16px 16px 16px 16px;
-border: 1px solid #E7E7E7;</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::Shape::StyledPanel</enum>

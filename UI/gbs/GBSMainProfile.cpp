@@ -29,17 +29,18 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
                    Qt::WindowCloseButtonHint);
     ui->setupUi(this);
 
-    VertNaviButton* btnAccount = new VertNaviButton("账号资料", ":gbs/images/gbs/biz/gbs-menu-profile.png", this);
+    //VertNaviButton* btnAccount = new VertNaviButton("账号资料", ":gbs/images/gbs/biz/gbs-menu-profile.png", this);
     VertNaviButton* btnAboutME = new VertNaviButton("关于我们", ":gbs/images/gbs/biz/gbs-menu-about-me.png", this);
     VertNaviButton* btnSoftWare = new VertNaviButton("软件更新", ":gbs/images/gbs/biz/gbs-menu-software-update.png", this);
     VertNaviButton* btnSetting = new VertNaviButton("高级设置", ":gbs/images/gbs/biz/gbs-menu-setting.png", this);
     VertNaviButton* btnHotkey = new VertNaviButton("快捷键", ":gbs/images/gbs/biz/gbs-menu-hotkey.png", this);
-    VertNaviButton* btnAPI = new VertNaviButton("API接口", ":gbs/images/gbs/biz/gbs-menu-api.png", this);
-    VertNaviButton* btnMaterial = new VertNaviButton("素材背景库", ":gbs/images/gbs/biz/gbs-menu-material.png", this);
-    VertNaviButton* btnDriver = new VertNaviButton("摄像头驱动", ":gbs/images/gbs/biz/gbs-menu-driver.png", this);
-    VertNaviButton* btnSquare = new VertNaviButton("音色广场", ":gbs/images/gbs/biz/gbs-menu-timbre-square.png", this);
-    vertNaviButtons << btnAccount << btnAboutME << btnSoftWare << btnSetting << btnHotkey << btnAPI << btnMaterial
-		    << btnDriver << btnSquare;
+    //VertNaviButton* btnAPI = new VertNaviButton("API接口", ":gbs/images/gbs/biz/gbs-menu-api.png", this);
+    //VertNaviButton* btnMaterial = new VertNaviButton("素材背景库", ":gbs/images/gbs/biz/gbs-menu-material.png", this);
+    //VertNaviButton* btnDriver = new VertNaviButton("摄像头驱动", ":gbs/images/gbs/biz/gbs-menu-driver.png", this);
+    //VertNaviButton* btnSquare = new VertNaviButton("音色广场", ":gbs/images/gbs/biz/gbs-menu-timbre-square.png", this);
+    //vertNaviButtons << btnAccount << btnAboutME << btnSoftWare << btnSetting << btnHotkey << btnAPI << btnMaterial
+//		    << btnDriver << btnSquare;
+    vertNaviButtons << btnAboutME << btnSoftWare << btnSetting << btnHotkey;
     for (auto vertNaviButton : vertNaviButtons) {
 	    connect(vertNaviButton, &VertNaviButton::clicked, this,
 		    [this, vertNaviButton](bool checked) {
@@ -77,25 +78,25 @@ GBSMainProfile::GBSMainProfile(QWidget *parent)
 
 	//btnSoftWare->setStyleSheet(btnStyle);
 
-    btnAccount->setFixedSize(300, 40);
+    //btnAccount->setFixedSize(300, 40);
     btnAboutME->setFixedSize(300, 40);
     btnSoftWare->setFixedSize(300, 40);
     btnSetting->setFixedSize(300, 40);
     btnHotkey->setFixedSize(300, 40);
-    btnAPI->setFixedSize(300, 40);
-    btnMaterial->setFixedSize(300, 40);
-    btnDriver->setFixedSize(300, 40);
-    btnSquare->setFixedSize(300, 40);
+    //btnAPI->setFixedSize(300, 40);
+    //btnMaterial->setFixedSize(300, 40);
+    //btnDriver->setFixedSize(300, 40);
+    //btnSquare->setFixedSize(300, 40);
 
-    ui->verticalLayout->addWidget(btnAccount);
+    //ui->verticalLayout->addWidget(btnAccount);
     ui->verticalLayout->addWidget(btnAboutME);
     ui->verticalLayout->addWidget(btnSoftWare);
     ui->verticalLayout->addWidget(btnSetting);
     ui->verticalLayout->addWidget(btnHotkey);
-    ui->verticalLayout->addWidget(btnAPI);
-    ui->verticalLayout->addWidget(btnMaterial);
-    ui->verticalLayout->addWidget(btnDriver);
-    ui->verticalLayout->addWidget(btnSquare);
+    //ui->verticalLayout->addWidget(btnAPI);
+    //ui->verticalLayout->addWidget(btnMaterial);
+    //ui->verticalLayout->addWidget(btnDriver);
+    //ui->verticalLayout->addWidget(btnSquare);
     QSpacerItem* verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     ui->verticalLayout->addSpacerItem(verticalSpacer);
 

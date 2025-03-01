@@ -148,9 +148,11 @@ QWeH+tVM2g0vee09bFoB
 #include <QApplication>
 #include <QWidget>
 #include <QMetaObject>
+#include <QFile>
 #include "gbs/bizWidgets/GBSMsgDialog.h"
 
 void processDanmaItem(nlohmann::json &jsonObject) {
+
 	GBSLiveAccountInfo acctInfo = GBSMainCollector::getInstance()->getAccountInfo();
 	std::string notes = acctInfo.getNotes();
 	std::string remark = "unknown";

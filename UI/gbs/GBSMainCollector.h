@@ -153,7 +153,7 @@ private:
 
 	 //版本构成说明
 	 
-	 std::string mSoftWareVersion{"1.0.30"};
+	 std::string mSoftWareVersion{"1.0.32"};
 	
 	
 };

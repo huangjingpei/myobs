@@ -1457,10 +1457,10 @@ static void source_output_audio_data(obs_source_t *source, const struct audio_da
 				source->timing_adjust = os_time - in.timestamp;
 			in.timestamp = source->next_audio_ts_min;
 		} else {
-			blog(LOG_DEBUG,
-			     "Audio timestamp for '%s' exceeded TS_SMOOTHING_THRESHOLD, diff=%" PRIu64
-			     " ns, expected %" PRIu64 ", input %" PRIu64,
-			     source->context.name, diff, source->next_audio_ts_min, in.timestamp);
+			// blog(LOG_DEBUG,
+			//      "Audio timestamp for '%s' exceeded TS_SMOOTHING_THRESHOLD, diff=%" PRIu64
+			//      " ns, expected %" PRIu64 ", input %" PRIu64,
+			//      source->context.name, diff, source->next_audio_ts_min, in.timestamp);
 		}
 	}
 
