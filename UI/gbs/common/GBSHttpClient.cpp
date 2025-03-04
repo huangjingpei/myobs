@@ -154,7 +154,7 @@ void GBSHttpClient::loginWithCheckVersion(
 					  std::string vendor)
 
 {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		[phone, password, loginType, vendor, this]() {
 			loginWithCheckVersionTask(phone, password, loginType,
 						  vendor);
@@ -308,7 +308,7 @@ void GBSHttpClient::addBarrageRoomConfigTask()
 }
 
 void GBSHttpClient::getPullStream() {
-	executor->addTask([this]() { this->getPullStreamTask(); });
+	executor->addTask4Dbg(__FILE__, __LINE__,[this]() { this->getPullStreamTask(); });
 }
 void GBSHttpClient::getPullStreamTask()
 {
@@ -362,7 +362,7 @@ void GBSHttpClient::getPullStreamTask()
 	task->run();
 }
 void GBSHttpClient::checkDeviceNoCreateQrCodeScan() {
-	executor->addTask([this]() { this->checkDeviceNoCreateQrCodeScanTask(); });
+	executor->addTask4Dbg(__FILE__, __LINE__,[this]() { this->checkDeviceNoCreateQrCodeScanTask(); });
 }
 
 void GBSHttpClient::checkDeviceNoCreateQrCodeScanTask()
@@ -429,7 +429,7 @@ void GBSHttpClient::sendWebsocketMsg(std::string msg)
 	if (plat.empty()) {
 		return;
 	}
-	executor->addTask([msg, this]() { this->sendWebsocketMsgTask(msg); });
+	executor->addTask4Dbg(__FILE__, __LINE__,[msg, this]() { this->sendWebsocketMsgTask(msg); });
 }
 void GBSHttpClient::sendWebsocketMsgTask(std::string msg) {
 	
@@ -472,7 +472,7 @@ void GBSHttpClient::sendWebsocketMsgTask(std::string msg) {
 }
 
 void GBSHttpClient::queryByEquipmentNo() {
-	executor->addTask([this]() { this->queryByEquipmentNoTask(); });
+	executor->addTask4Dbg(__FILE__, __LINE__,[this]() { this->queryByEquipmentNoTask(); });
 	
 }
 void GBSHttpClient::queryByEquipmentNoTask()
@@ -547,7 +547,7 @@ void GBSHttpClient::queryByEquipmentNoTask()
 
 
 void GBSHttpClient::getUserInfo() {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		[this]() { this->getUserInfoTask();
 		});
 }
@@ -623,7 +623,7 @@ void GBSHttpClient::getUserInfoTask()
 	
 }
 void GBSHttpClient::downFile(std::string url, std::string path, int type) {
-	executor->addTask(std::bind(&GBSHttpClient::downFileTask, this, url, path, type));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::downFileTask, this, url, path, type));
 }
 
 void GBSHttpClient::downFileTask(std::string url, std::string pathfile, int type)
@@ -678,7 +678,7 @@ void GBSHttpClient::downFileTask(std::string url, std::string pathfile, int type
 
 
 void GBSHttpClient::pageQuery() {
-	executor->addTask(std::bind(&GBSHttpClient::pageQueryTask, this));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::pageQueryTask, this));
 }
 
 void GBSHttpClient::pageQueryTask()
@@ -772,7 +772,7 @@ void GBSHttpClient::destroy() {
 
 void GBSHttpClient::startLive(std::string &equipments)
 {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		std::bind(&GBSHttpClient::startLiveTask, this, equipments));
 }
 
@@ -857,7 +857,7 @@ void GBSHttpClient::startLiveTask(std::string &equipments)
 }
 
 void GBSHttpClient::endLive(std::string id) {
-	executor->addTask(std::bind(&GBSHttpClient::endLiveTask, this, id));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::endLiveTask, this, id));
 }
 void GBSHttpClient::endLiveTask(std::string id)
 {
@@ -902,7 +902,7 @@ void GBSHttpClient::endLiveTask(std::string id)
 
 void GBSHttpClient::upRemoteLiveRoomState(std::string ids)
 {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		std::bind(&GBSHttpClient::upRemoteLiveRoomStateTask, this, ids));
 }
 void GBSHttpClient::upRemoteLiveRoomStateTask(std::string ids)
@@ -950,7 +950,7 @@ void GBSHttpClient::upRemoteLiveRoomStateTask(std::string ids)
 }
 
 void GBSHttpClient::createQrCodeScan() {
-	executor->addTask(std::bind(&GBSHttpClient::createQrCodeScanTask, this));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::createQrCodeScanTask, this));
 	}
 void GBSHttpClient::createQrCodeScanTask() {
 	json body = {{}};
@@ -999,7 +999,7 @@ void GBSHttpClient::createQrCodeScanTask() {
 }
 
 void GBSHttpClient::scanLoginInfo(std::string qrCode) {
-	executor->addTask(std::bind(&GBSHttpClient::scanLoginInfoTask, this, qrCode));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::scanLoginInfoTask, this, qrCode));
 
     }
 void GBSHttpClient::scanLoginInfoTask(std::string qrCode) {
@@ -1059,7 +1059,7 @@ void GBSHttpClient::scanLoginInfoTask(std::string qrCode) {
 }
 
 void GBSHttpClient::memberInfo(std::string userId) {
-	executor->addTask(std::bind(&GBSHttpClient::memberInfoTask, this, userId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::memberInfoTask, this, userId));
 }
 void GBSHttpClient::memberInfoTask(std::string userId) {
 	std::string deviceNo = getDeviceNo();
@@ -1116,7 +1116,7 @@ void GBSHttpClient::memberInfoTask(std::string userId) {
 
 
 void GBSHttpClient::codeList(int levelId) {
-	executor->addTask(std::bind(&GBSHttpClient::codeListTask, this, levelId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::codeListTask, this, levelId));
 }
 void GBSHttpClient::codeListTask(int levelId) {
 	json body = {{"id", levelId}};
@@ -1152,7 +1152,7 @@ void GBSHttpClient::codeListTask(int levelId) {
 }
 
 void GBSHttpClient::remainingActivation(int levelId) {
-	executor->addTask(std::bind(&GBSHttpClient::remainingActivationTask, this, levelId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::remainingActivationTask, this, levelId));
 }
 void GBSHttpClient::remainingActivationTask(int levelId) {
 	json body = {{"id", levelId}};
@@ -1189,7 +1189,7 @@ void GBSHttpClient::remainingActivationTask(int levelId) {
 	return;
 }
 void GBSHttpClient::agreement(int type) {
-	executor->addTask(std::bind(&GBSHttpClient::agreementTask, this, type));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::agreementTask, this, type));
 }
 void GBSHttpClient::agreementTask(int type) {
 	json body = {{"type", type}};
@@ -1249,7 +1249,7 @@ void GBSHttpClient::srsScanLoginV2(std::string version) {
 	}
 	QLogD("Product Id is %s", productId);
 	QLogD("Device Id is %s", deviceId);
-	executor->addTask(std::bind(&GBSHttpClient::srsScanLoginTaskV2, this, deviceId, productId, version));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::srsScanLoginTaskV2, this, deviceId, productId, version));
 }
 void GBSHttpClient::srsScanLoginTaskV2(std::string deviceNo, std::string productNo, std::string version) {
 	json body = {
@@ -1313,7 +1313,7 @@ void GBSHttpClient::srsScanLoginTaskV2(std::string deviceNo, std::string product
 void GBSHttpClient::srsAccountLoginV2(std::string account, std::string password, std::string smsCode,
 				      std::string version, int type)
 {
-	executor->addTask(std::bind(&GBSHttpClient::srsAccountLoginTaskV2, this, account, password, smsCode, version, type));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::srsAccountLoginTaskV2, this, account, password, smsCode, version, type));
 }
 
 void GBSHttpClient::srsAccountLoginTaskV2(std::string account, std::string password, std::string smsCode,
@@ -1394,7 +1394,7 @@ void GBSHttpClient::srsAccountLoginTaskV2(std::string account, std::string passw
 
 }
 void GBSHttpClient::scanLoginQrCodeInfoV2(std::string qrCodeNo) {
-	executor->addTask(std::bind(&GBSHttpClient::scanLoginQrCodeInfoTaskV2, this, qrCodeNo));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::scanLoginQrCodeInfoTaskV2, this, qrCodeNo));
 }
 void GBSHttpClient::scanLoginQrCodeInfoTaskV2(std::string qrCodeNo) {
 	json body = {{"qrCodeNo", qrCodeNo}};
@@ -1466,7 +1466,7 @@ void GBSHttpClient::srsLiveAccountInfoV2(std::string version)
 	}
 	QLogD("Product Id is %s", productId.c_str());
 	QLogD("Device Id is %s", deviceId.c_str());
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		std::bind(&GBSHttpClient::srsLiveAccountInfoTaskV2, this, deviceId, productId, boarderNo, version));
 }
 void GBSHttpClient::srsLiveAccountInfoTaskV2(std::string deviceNo, std::string productNo, std::string boarderNo,
@@ -1550,7 +1550,7 @@ void GBSHttpClient::activateDeviceV2(std::string activationCode, std::string dev
 	}
 	QLogD("Product Id is %s", productId.c_str());
 	QLogD("Device Id is %s", deviceId.c_str());
-	executor->addTask(std::bind(&GBSHttpClient::activateDeviceTaskV2, this, activationCode, deviceName, deviceNo,
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::activateDeviceTaskV2, this, activationCode, deviceName, deviceNo,
 				    liveAccountId, livePlatform, motherboardNo, notes, platformAccount, productId,
 				    toDeskAccount,
 				    toDeskPassword));
@@ -1624,7 +1624,7 @@ void GBSHttpClient::activateDeviceTaskV2(std::string activationCode, std::string
 }
 
 void GBSHttpClient::sendHeartbeatTimeV2(int userId) {
-	executor->addTask(std::bind(&GBSHttpClient::sendHeartbeatTimeTaskV2, this, userId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::sendHeartbeatTimeTaskV2, this, userId));
 }
 void GBSHttpClient::sendHeartbeatTimeTaskV2(int userId)
 {
@@ -1677,7 +1677,7 @@ void GBSHttpClient::sendHeartbeatTimeTaskV2(int userId)
 void GBSHttpClient::createSrsStreamV2(int streamSource) {
 
 	
-	executor->addTask(std::bind(&GBSHttpClient::createSrsStreamTaskV2, this, streamSource));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::createSrsStreamTaskV2, this, streamSource));
 }
 void GBSHttpClient::createSrsStreamTaskV2(int streamSource) {
 	json body = {{"streamSource", streamSource}
@@ -1753,7 +1753,7 @@ void GBSHttpClient::createSrsStreamTaskV2(int streamSource) {
 
 void GBSHttpClient::enterControlV2(std::string password, int liveAccountId, int liveDeviceId)
 {
-	executor->addTask(std::bind(&GBSHttpClient::enterControlTaskV2, this, password, liveAccountId, liveDeviceId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::enterControlTaskV2, this, password, liveAccountId, liveDeviceId));
 
 
 }
@@ -1807,7 +1807,7 @@ void GBSHttpClient::enterControlTaskV2(std::string password, int liveAccountId, 
 }
 
 void GBSHttpClient::pageSrsLiveDeviceV2(int liveAccountId, int pageNum, int pagesize) {
-	executor->addTask(std::bind(&GBSHttpClient::pageSrsLiveDeviceTaskV2, this, liveAccountId, pageNum, pagesize));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::pageSrsLiveDeviceTaskV2, this, liveAccountId, pageNum, pagesize));
 }
 void GBSHttpClient::pageSrsLiveDeviceTaskV2(int liveAccountId, int pageNum, int pagesize) {
 	json body = {{"liveAccountId", liveAccountId}, {"pageNum", pageNum}, {"pageSize", pagesize}
@@ -1878,7 +1878,7 @@ void GBSHttpClient::addSrsLiveDeviceV2(std::string activationCode, std::string d
 				       std::string platformAccount, std::string toDeskAccount,
 				       std::string toDeskPassword)
 {
-	executor->addTask(std::bind(&GBSHttpClient::addSrsLiveDeviceTaskV2, this, activationCode, deviceCode,
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::addSrsLiveDeviceTaskV2, this, activationCode, deviceCode,
 				    deviceName,
 				    liveAccountId, livePlatform, notes, platformAccount, toDeskAccount,
 				    toDeskPassword));
@@ -1958,7 +1958,7 @@ void GBSHttpClient::getPullStreamUrlV2() {
 	}
 	QLogD("Product Id is %s", productId.c_str());
 	QLogD("Device Id is %s", deviceId.c_str());
-	executor->addTask(std::bind(&GBSHttpClient::getPullStreamUrlTaskV2, this, deviceId, productId, motherboardNo));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::getPullStreamUrlTaskV2, this, deviceId, productId, motherboardNo));
 
     }
 void GBSHttpClient::getPullStreamUrlTaskV2(std::string deviceNo, std::string productNo, std::string motherboardNo)
@@ -2016,7 +2016,7 @@ void GBSHttpClient::getPullStreamUrlTaskV2(std::string deviceNo, std::string pro
 }
 
 void GBSHttpClient::closeSrsStreamLogV2(int id) {
-	executor->addTask(std::bind(&GBSHttpClient::closeSrsStreamLogTaskV2, this, id));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::closeSrsStreamLogTaskV2, this, id));
 }
 void GBSHttpClient::closeSrsStreamLogTaskV2(int id) {
 	json body = {{"id", id}};
@@ -2073,7 +2073,7 @@ void GBSHttpClient::closeSrsStreamLogTaskV2(int id) {
 
 
 void GBSHttpClient::deletedSrsLiveDeviceV2(int id) {
-	executor->addTask(std::bind(&GBSHttpClient::deletedSrsLiveDeviceTaskV2, this, id));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::deletedSrsLiveDeviceTaskV2, this, id));
 }
 void GBSHttpClient::deletedSrsLiveDeviceTaskV2(int id) {
 	json body = {{"id", id}};
@@ -2128,7 +2128,7 @@ void GBSHttpClient::deletedSrsLiveDeviceTaskV2(int id) {
 
 void GBSHttpClient::sendWebsocketMsgV2(std::string msg)
 {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		[msg, this]() { this->sendWebsocketMsgTaskV2(msg); });
 }
 void GBSHttpClient::sendWebsocketMsgTaskV2(std::string msg)
@@ -2174,7 +2174,7 @@ void GBSHttpClient::modifyZlmLiveDevice(std::string deviceName, int id, std::str
 	if (deviceName.empty()) {//deviceName 已经不在使用，但是又必须要传，所以这里做一个处理
 		deviceName = std::to_string(id);
 	}
-	executor->addTask(std::bind(&GBSHttpClient::modifyZlmLiveDeviceTaskV2, this, deviceName,id,livePlatform, notes, platformAccount, remoteSwitch, toDeskAccount, toDeskPassword));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::modifyZlmLiveDeviceTaskV2, this, deviceName,id,livePlatform, notes, platformAccount, remoteSwitch, toDeskAccount, toDeskPassword));
 }
 
 void GBSHttpClient::modifyZlmLiveDeviceTaskV2(std::string deviceName, int id, std::string livePlatform,
@@ -2229,7 +2229,7 @@ void GBSHttpClient::modifyZlmLiveDeviceTaskV2(std::string deviceName, int id, st
 }
 
 void GBSHttpClient::queryZlmLiveDevicesV2(int liveAccountId) {
-	executor->addTask(std::bind(&GBSHttpClient::queryZlmLiveDevicesTaskV2, this, liveAccountId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::queryZlmLiveDevicesTaskV2, this, liveAccountId));
 
     }
 void GBSHttpClient::queryZlmLiveDevicesTaskV2(int liveAccountId) {
@@ -2280,7 +2280,7 @@ void GBSHttpClient::queryZlmLiveDevicesTaskV2(int liveAccountId) {
 }
 
 void GBSHttpClient::startLiveTranscribeV2(int duration, int streamLogId) {
-	executor->addTask(std::bind(&GBSHttpClient::startLiveTranscribeTaskV2, this, duration, streamLogId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::startLiveTranscribeTaskV2, this, duration, streamLogId));
 }
 
 void GBSHttpClient::startLiveTranscribeTaskV2(int duration, int streamLogId) {
@@ -2314,7 +2314,7 @@ void GBSHttpClient::startLiveTranscribeTaskV2(int duration, int streamLogId) {
 }
 
 void GBSHttpClient::endLiveTranscribeV2(int streamLogId) {
-	executor->addTask(std::bind(&GBSHttpClient::endLiveTranscribeTaskV2, this, streamLogId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::endLiveTranscribeTaskV2, this, streamLogId));
 
     }
 void GBSHttpClient::endLiveTranscribeTaskV2(int streamLogId) {
@@ -2348,7 +2348,7 @@ void GBSHttpClient::endLiveTranscribeTaskV2(int streamLogId) {
 }
 
 void GBSHttpClient::getLiveTranscribeStatusV2(int streamLogId) {
-	executor->addTask(std::bind(&GBSHttpClient::getLiveTranscribeStatusTaskV2, this, streamLogId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::getLiveTranscribeStatusTaskV2, this, streamLogId));
 
     }
 void GBSHttpClient::getLiveTranscribeStatusTaskV2(int streamLogId) {
@@ -2382,7 +2382,7 @@ void GBSHttpClient::getLiveTranscribeStatusTaskV2(int streamLogId) {
 }
 
 void GBSHttpClient::queryLiveTranscribeByStreamLogIdV2(int streamLogId) {
-	executor->addTask(std::bind(&GBSHttpClient::queryLiveTranscribeByStreamLogIdTaskV2, this, streamLogId));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::queryLiveTranscribeByStreamLogIdTaskV2, this, streamLogId));
 
 }
 void GBSHttpClient::queryLiveTranscribeByStreamLogIdTaskV2(int streamLogId) {
@@ -2413,7 +2413,7 @@ void GBSHttpClient::queryLiveTranscribeByStreamLogIdTaskV2(int streamLogId) {
 }
 
 void GBSHttpClient::sendTranscribeLiveHeartBeatV2(int id) {
-	executor->addTask(std::bind(&GBSHttpClient::sendTranscribeLiveHeartBeatTaskV2, this, id));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::sendTranscribeLiveHeartBeatTaskV2, this, id));
 }
 void GBSHttpClient::sendTranscribeLiveHeartBeatTaskV2(int id) {
 	json body = {{"id", id}};
@@ -2446,7 +2446,7 @@ void GBSHttpClient::sendTranscribeLiveHeartBeatTaskV2(int id) {
 }
 
 void GBSHttpClient::startTranscribeLiveV2(int liveAccountId, std::list<std::string> liveDevices, int streamLogId) {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		std::bind(&GBSHttpClient::startTranscribeLiveTaskV2, this, liveAccountId, liveDevices, streamLogId));
 }
 void GBSHttpClient::startTranscribeLiveTaskV2(int liveAccountId, std::list<std::string> liveDevices, int streamLogId) {
@@ -2490,7 +2490,7 @@ void GBSHttpClient::startTranscribeLiveTaskV2(int liveAccountId, std::list<std::
 
 
 void GBSHttpClient::endTranscribeLiveV2(int id) {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		std::bind(&GBSHttpClient::endTranscribeLiveTaskV2, this, id));
 }
 void GBSHttpClient::endTranscribeLiveTaskV2(int id) {
@@ -2526,7 +2526,7 @@ void GBSHttpClient::endTranscribeLiveTaskV2(int id) {
 
 void GBSHttpClient::pageZlmStreamLogV2(int streamLogId, int liveServerId, int pageNum, int pageSize)
 {
-	executor->addTask(
+	executor->addTask4Dbg(__FILE__, __LINE__,
 		std::bind(&GBSHttpClient::pageZlmStreamLogTaskV2, this, streamLogId, liveServerId, pageNum, pageSize));
 }
 void GBSHttpClient::pageZlmStreamLogTaskV2(int streamLogId, int liveServerId, int pageNum, int pageSize)
@@ -2564,7 +2564,7 @@ void GBSHttpClient::pageZlmStreamLogTaskV2(int streamLogId, int liveServerId, in
 }
 
 void GBSHttpClient::modifyLiveRemarkV2(int id, std::string liveRemark) {
-	executor->addTask(std::bind(&GBSHttpClient::modifyLiveRemarkTaskV2, this, id, liveRemark));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::modifyLiveRemarkTaskV2, this, id, liveRemark));
 }
 void GBSHttpClient::modifyLiveRemarkTaskV2(int id, std::string liveRemark) {
 	json body = {{"id", id}, {"liveRemark", liveRemark}};
@@ -2597,7 +2597,7 @@ void GBSHttpClient::modifyLiveRemarkTaskV2(int id, std::string liveRemark) {
 }
 
 void GBSHttpClient::countZlmLiveDeviceInfo(int id) {
-	executor->addTask(std::bind(&GBSHttpClient::countZlmLiveDeviceInfoTaskV2, this, id));
+	executor->addTask4Dbg(__FILE__, __LINE__,std::bind(&GBSHttpClient::countZlmLiveDeviceInfoTaskV2, this, id));
 
 }
 void GBSHttpClient::countZlmLiveDeviceInfoTaskV2(int id) {

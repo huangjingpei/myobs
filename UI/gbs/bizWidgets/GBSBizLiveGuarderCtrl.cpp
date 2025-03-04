@@ -1348,16 +1348,6 @@ void GBSBizLiveGuarderCtrl::RenderMain(void *data, uint32_t, uint32_t)
 void GBSBizLiveGuarderCtrl::onMessage(std::string msg)
 {
 	try {
-		QString qMsg = QString::fromLocal8Bit(msg);
-		QFile file("network_messages.txt");
-		if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
-			// 处理文件打开失败的情况
-			return;
-		}
-		QTextStream out(&file);
-		out << (qMsg) << "\n";
-		file.close();
-
 		auto jsonObject = nlohmann::json::parse(msg);
 		if (jsonObject.is_object()) {
 			processDanmaItem(jsonObject);

@@ -21,6 +21,9 @@ public:
 
     void markButton(QPushButton *button);
 
+signals:
+    void settingLoaded();
+
 private slots:
     void onClickBasic();
     void onClickAVOutput();

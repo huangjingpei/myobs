@@ -371,5 +371,6 @@
         <file>images/gbs/biz/gbs-deviceinfo-setting.png</file>
         <file>images/gbs/biz/gbs-grey-disable-video.png</file>
         <file>images/gbs/biz/gbs-grey-remote-share.png</file>
+        <file>images/gbs/biz/gbs-loading.gif</file>
     </qresource>
 </RCC>

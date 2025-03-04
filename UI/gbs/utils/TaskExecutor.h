@@ -10,6 +10,8 @@
 #include <atomic>
 #include <unordered_set>
 #include <QDebug>
+#include <QFile>
+
 
 
 class TaskExecutor {
@@ -64,6 +66,45 @@ public:
 	    {
 		    std::unique_lock<std::mutex> lock(taskMutex);
 		    taskQueue.push([task]() { (*task)(); });
+	    }
+
+	    taskCondition.notify_one();
+	    return result;
+    }
+
+    // 调试添加普通任务
+    template<typename Callable, typename... Args>
+    auto addTask4Dbg(const char* file, int line, Callable &&func, Args &&...args) -> std::future<typename std::invoke_result<Callable, Args...>::type>
+    {
+	    using ReturnType = typename std::invoke_result<Callable,
+							   Args...>::type; // 确定返回类型
+	    auto task = std::make_shared<std::packaged_task<ReturnType()>>(
+		    std::bind(std::forward<Callable>(func), std::forward<Args>(args)...));
+	    std::future<ReturnType> result = task->get_future();
+
+	    {
+		    std::unique_lock<std::mutex> lock(taskMutex);
+		    taskQueue.push([task, file, line]() {
+			    auto start_time = std::chrono::steady_clock::now();
+			    (*task)();
+			    auto end_time = std::chrono::steady_clock::now();
+			    auto execution_time =
+				    std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+			    if (execution_time.count() > 500) {
+				    qWarning("Task '%s %d' took too long: %d ms", file,
+					     line,
+					     execution_time.count());
+				    QFile qFile("network_messages.txt");
+				    if (!qFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+					    // 处理文件打开失败的情况
+					    return;
+				    }
+				    QTextStream out(&qFile);
+				    out << "Task " << file << " : " << line << " "
+					<< " took too long : " << execution_time.count();
+				    qFile.close();
+			    }
+			    });
 	    }
 
 	    taskCondition.notify_one();
@@ -168,13 +209,13 @@ private:
 
             // 执行任务
             if (taskToRun) {
-		auto start_time = std::chrono::steady_clock::now();
+		//auto start_time = std::chrono::steady_clock::now();
                 taskToRun();
-		auto end_time = std::chrono::steady_clock::now();
-		auto execution_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time);
-		if (execution_time.count() > 50) {
-			qWarning("exec time is too long, spent %d (ms)\n", execution_time.count());
-		}
+		//auto end_time = std::chrono::steady_clock::now();
+		//auto execution_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time-start_time);
+		//if (execution_time.count() > 50) {
+		//	qWarning("exec time is too long, spent %d (ms)\n", execution_time.count());
+		//}
 
             }
         }

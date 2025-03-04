@@ -134,7 +134,7 @@ GBSBizSettingAV::GBSBizSettingAV(QSharedPointer<OBSBasicSettings> settings, QWid
 	QString comboBoxStyleSheet = R"(
     /* QComboBox整体样式 */
     QComboBox {
-        border: 1px solid #cccccc;       /* 边框颜色 */
+        border: 1px gray #cccccc;       /* 边框颜色 */
         border-radius: 5px;             /* 边框圆角 */
         padding: 5px;                   /* 内边距 */
         background-color: #ffffff;      /* 背景颜色 */
@@ -364,14 +364,8 @@ void GBSBizSettingAV::LoadDownscaleFilters()
 
 void GBSBizSettingAV::on_cbxBasicResolution_editTextChanged(const QString &text) {
 	
-	RecalcOutputResPixels(QT_TO_UTF8(text));
-	LoadDownscaleFilters();
-	
-}
-void GBSBizSettingAV::on_cbxOutputResolution_editTextChanged(const QString &text)
-{
 	if (!ValidResolutions()) {
-		return ;
+		return;
 	}
 	QString cbxBasicResolution = text;
 	uint32_t cx, cy;
@@ -381,10 +375,15 @@ void GBSBizSettingAV::on_cbxOutputResolution_editTextChanged(const QString &text
 	std::tuple<int, int> aspect = aspect_ratio(cx, cy);
 
 	ui->label_4->setText(
-		QTStr("AspectRatio")
-			.arg(QString::number(std::get<0>(aspect)), QString::number(std::get<1>(aspect))));
+		QTStr("AspectRatio").arg(QString::number(std::get<0>(aspect)), QString::number(std::get<1>(aspect))));
 
 	ResetDownscales(cx, cy);
+}
+void GBSBizSettingAV::on_cbxOutputResolution_editTextChanged(const QString &text)
+{
+	RecalcOutputResPixels(QT_TO_UTF8(text));
+	LoadDownscaleFilters();
+	
 	
 }
 

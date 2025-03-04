@@ -1,6 +1,7 @@
 #include "GBSBizSettingPage.h"
 #include "ui_GBSBizSettingPage.h"
 
+#include <QMovie>
 #include "gbs/bizWidgets/GBSBizSettingAV.h"
 #include "gbs/bizWidgets/GBSBizSettingBasic.h"
 #include "gbs/bizWidgets/GBSBizSettingOutput.h"
@@ -16,22 +17,43 @@ GBSBizSettingPage::GBSBizSettingPage(QWidget *parent)
     connect(ui->pushButton_12, &QPushButton::clicked, this, &GBSBizSettingPage::onClickBasic);
     connect(ui->pushButton_13, &QPushButton::clicked, this, &GBSBizSettingPage::onClickAVOutput);
     connect(ui->pushButton_14, &QPushButton::clicked, this, &GBSBizSettingPage::onClickAVSetting);
-    settings = QSharedPointer<OBSBasicSettings>::create(OBSBasic::Get()); //new OBSBasicSettings(OBSBasic::Get());
-    GBSBizSettingOutput *avSetting = new GBSBizSettingOutput(settings);
-    ui->horizontalLayout->addWidget(avSetting);
-    currentWidget = avSetting;
-    connect(ui->btnConfirm, &QPushButton::clicked, this, &GBSBizSettingPage::onOK);
-    connect(ui->btnCancel, &QPushButton::clicked, this, &GBSBizSettingPage::onCancel);
-    connect(ui->btnApply, &QPushButton::clicked, this, &GBSBizSettingPage::onApply);
 
-    buttons << ui->pushButton_12 << ui->pushButton_13 << ui->pushButton_14;
+    QLabel *loadingLabel = new QLabel();
+    loadingLabel->setFixedSize(282, 282);
+    ui->horizontalLayout->addWidget(loadingLabel);
+    QMovie *movie = new QMovie(":gbs/images/gbs/biz/gbs-loading.gif", QByteArray(), loadingLabel);
+    movie->setScaledSize(QSize{282, 282});
+    loadingLabel->setMovie(movie);
+    loadingLabel->setAlignment(Qt::AlignCenter); // 设置 GIF 居中显示
 
+    movie->start();
 
-    iconPathes << ":gbs/images/gbs/biz/gbs-setting-basic.png"
-	       << ":gbs/images/gbs/biz/gbs-setting-output.png"
-	       << ":gbs/images/gbs/biz/gbs-setting-av.png";
+    connect(this, &GBSBizSettingPage::settingLoaded, this, [movie, loadingLabel, this]() {
+	    movie->stop();
+	    ui->horizontalLayout->removeWidget(loadingLabel);
+            loadingLabel->deleteLater();
+	    }, Qt::DirectConnection);
+    QTimer::singleShot(1000, [this]() {
+	    settings =
+		    QSharedPointer<OBSBasicSettings>::create(OBSBasic::Get()); //new OBSBasicSettings(OBSBasic::Get());
+	    GBSBizSettingOutput *avSetting = new GBSBizSettingOutput(settings);
+	    emit settingLoaded();
+	    ui->horizontalLayout->addWidget(avSetting);
+	    
 
-    markButton(ui->pushButton_13);
+	    currentWidget = avSetting;
+	    connect(ui->btnConfirm, &QPushButton::clicked, this, &GBSBizSettingPage::onOK);
+	    connect(ui->btnCancel, &QPushButton::clicked, this, &GBSBizSettingPage::onCancel);
+	    connect(ui->btnApply, &QPushButton::clicked, this, &GBSBizSettingPage::onApply);
+
+	    buttons << ui->pushButton_12 << ui->pushButton_13 << ui->pushButton_14;
+
+	    iconPathes << ":gbs/images/gbs/biz/gbs-setting-basic.png"
+		       << ":gbs/images/gbs/biz/gbs-setting-output.png"
+		       << ":gbs/images/gbs/biz/gbs-setting-av.png";
+
+	    markButton(ui->pushButton_13);
+	});
 
 
 
