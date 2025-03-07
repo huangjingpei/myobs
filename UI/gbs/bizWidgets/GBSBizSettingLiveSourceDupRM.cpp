@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QProcess>
+#include <QRandomGenerator>
 
 #include "gbs/common/FileIOUtils.h"
 #include "window-basic-main.hpp"
@@ -75,17 +76,23 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 
     iniFile = std::make_unique<IniSettings>("gbs.ini");
     QString appDirPath = QCoreApplication::applicationDirPath();
-    QString defaultDedupImagePath = appDirPath + ".\\materials\\iamges";
-    QString defaultOtherPlatformMateralImagePath = appDirPath + ".\\materials\\hyperlinks\\links.txt";
-    QString defaultTimeClockImagePath = appDirPath + ".\\materials\\clocks\\classic\\index.html";
-    QString defaultWhosCommingImagePath = appDirPath + ".\\materials\\joinin";
-    QString defaultAudioEffectImagePath = appDirPath + ".\\materials\\audeffects";
+    QString defaultDedupImagePath = appDirPath + "\\materials\\iamges";
+    QString defaultOtherPlatformMateralImagePath = appDirPath + "\\materials\\hyperlinks\\links.txt";
+    QString defaultTimeClockImagePath = appDirPath + "\\materials\\clocks\\classic\\index.html";
+    QString defaultWhosCommingImagePath = appDirPath + "\\materials\\joinin";
+    QString defaultAudioEffectImagePath = appDirPath + "\\materials\\audeffects";
 
     bool jitterOn = iniFile->value("RemoveDuplicate", "video.jitter", false).toBool();
     ui->horizontalSlider_19->setValue(jitterOn);
     connect(ui->horizontalSlider_19, &QSlider::valueChanged, this, [this](int value) {
 	    ui->horizontalSlider_19->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.jitter", value);
+	    if (value) {
+		    OBSBasic *main = OBSBasic::Get();
+		    //TODO 可以做成调整是编码器VBR，可变帧率？？
+	    } else {
+
+	    }
 	    });
 
     bool extractFrame = iniFile->value("RemoveDuplicate", "video.ExtractFrame", false).toBool();
@@ -93,37 +100,158 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     connect(ui->horizontalSlider_20, &QSlider::valueChanged, this, [this](int value) {
 	    ui->horizontalSlider_20->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.ExtractFrame", value);
+	    if (value) {
+		    OBSBasic *main = OBSBasic::Get();
+		    //TODO 下一步做
+	    } else {
+	    }
     });
 
     bool extractVideoLayer = iniFile->value("RemoveDuplicate", "video.ExtractVideoLayer", false).toBool();
     ui->horizontalSlider_21->setValue(extractVideoLayer);
-    connect(ui->horizontalSlider_21, &QSlider::valueChanged, this, [this](int value) {
+    connect(ui->horizontalSlider_21, &QSlider::valueChanged, this, [defaultDedupImagePath, this](int value) {
 	    ui->horizontalSlider_21->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.ExtractVideoLayer", value);
+	    if (value) {
+		    OBSBasic *main = OBSBasic::Get();
+		    QString dedupImagePath =
+			    iniFile->value("RemoveDuplicate", "video.DedupImagePath", defaultDedupImagePath).toString();
+		    QDir dir(dedupImagePath);
+		    if (dir.exists()) {
+			    QStringList filters;
+			    filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
+			    QStringList files = dir.entryList(filters, QDir::Files);
+			    QStringList absoluteFiles;
+			    for (const QString &file : files) {
+				    // 使用 absoluteFilePath 获取文件的完整路径
+				    QString fullPath = dir.absoluteFilePath(file);
+				    absoluteFiles << fullPath;
+			    }
+			    if (absoluteFiles.size() > 0) {
+				    QRandomGenerator *rng = QRandomGenerator::global();
+				    QSet<int> indexs;
+				    int counter = 1;
+				    do {
+					    int i = rng->bounded(absoluteFiles.size());
+					    indexs.insert(i);
+				    } while ((indexs.size() < 4) && (++counter < 100));
+				    struct obs_video_info ovi = {};
+				    obs_get_video_info(&ovi);
+				    int32_t baseXPos = 0;
+				    int32_t baseYPos = 0;
+				    int32_t halfXStep = ovi.output_width / 2;
+				    int32_t halfYStep = ovi.output_height / 2;
+				    int32_t positions[][2] = {{baseXPos, baseYPos},
+							      {baseXPos + halfXStep, baseYPos},
+							      {baseXPos, baseYPos + halfYStep},
+							      {baseXPos + halfXStep, baseYPos + halfYStep}};
+				    QStringList names;
+				    names << "图层去重1" << "图层去重2" << "图层去重3"
+					  << "图层去重4";
+				    int loop = 0;
+				    for (int index : indexs) {
+					    main->addImageSource(absoluteFiles[index].toStdString(),
+								 names[loop].toStdString(), positions[loop][0],
+								 positions[loop][1]);
+					    ++loop;
+				    }
+			    }
+		    }
+	    } else {
+			OBSBasic *main = OBSBasic::Get();
+			main->removeSource("图层去重1");
+			main->removeSource("图层去重2");
+			main->removeSource("图层去重3");
+			main->removeSource("图层去重4");
+	    }
     });
     bool timeClockOverlay = iniFile->value("RemoveDuplicate", "video.TimeClockOverlay", false).toBool();
     ui->horizontalSlider_22->setValue(timeClockOverlay);
-    connect(ui->horizontalSlider_22, &QSlider::valueChanged, this, [this](int value) {
+    connect(ui->horizontalSlider_22, &QSlider::valueChanged, this, [defaultTimeClockImagePath,this](int value) {
 	    ui->horizontalSlider_22->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.TimeClockOverlay", value);
+	    OBSBasic *main = OBSBasic::Get();
+	    if (value) {
+		    QString timeClockImagePath =
+			    iniFile->value("RemoveDuplicate", "video.TimeClockImagePath", defaultTimeClockImagePath)
+				    .toString();
+		    main->addTimeClockSource(defaultTimeClockImagePath);
+		    
+	    } else {
+		    main->removeSource("时钟去重");
+
+	    }
+
     });
     bool whosCommingOverlay = iniFile->value("RemoveDuplicate", "video.WhosCommingOverlay", false).toBool();
     ui->horizontalSlider_23->setValue(whosCommingOverlay);
-    connect(ui->horizontalSlider_23, &QSlider::valueChanged, this, [this](int value) {
+    connect(ui->horizontalSlider_23, &QSlider::valueChanged, this, [defaultWhosCommingImagePath,this](int value) {
 	    ui->horizontalSlider_23->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.WhosCommingOverlay", value);
+	    OBSBasic *main = OBSBasic::Get();
+	    if (value) {
+		    QString whosCommingImagePath =
+			    iniFile->value("RemoveDuplicate", "audio.WhosCommingImagePath", defaultWhosCommingImagePath)
+				    .toString();
+		    QString path1 = whosCommingImagePath + "/1";
+		    QString path2 = whosCommingImagePath + "/2";
+		    QString path3 = whosCommingImagePath + "/3";
+		    QString path4 = whosCommingImagePath + "/4";
+		    QString path5 = whosCommingImagePath + "/5";
+		    struct obs_video_info ovi = {};
+		    obs_get_video_info(&ovi);
+		    int32_t baseXPos = 0;
+		    int32_t baseYPos = ovi.output_height / 2;
+		    OBSSource source1 = main->addSlideShowSource2(path1, "图层谁来了1", baseXPos, baseYPos);
+		    OBSSource source2 = main->addSlideShowSource2(path2, "图层谁来了2", baseXPos, baseYPos + 55);
+		    OBSSource source3 = main->addSlideShowSource2(path3, "图层谁来了3", baseXPos, baseYPos + 55 * 2);
+		    OBSSource source4 = main->addSlideShowSource2(path4, "图层谁来了4", baseXPos, baseYPos + 55 * 3);
+		    OBSSource source5 = main->addSlideShowSource2(path5, "图层谁来了5", baseXPos, baseYPos + 55 * 4);
+	    } else {
+		main->removeSource("图层谁来了1");
+		main->removeSource("图层谁来了2");
+		main->removeSource("图层谁来了3");
+		main->removeSource("图层谁来了4");
+		main->removeSource("图层谁来了5");
+	    }
     });
     bool audioEffectOverlay = iniFile->value("RemoveDuplicate", "video.AudioEffectOverlay", false).toBool();
     ui->horizontalSlider_24->setValue(audioEffectOverlay);
-    connect(ui->horizontalSlider_24, &QSlider::valueChanged, this, [this](int value) {
+    connect(ui->horizontalSlider_24, &QSlider::valueChanged, this, [defaultAudioEffectImagePath,this](int value) {
 	    ui->horizontalSlider_24->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.AudioEffectOverlay", value);
+	    OBSBasic *main = OBSBasic::Get();
+	    if (value) {
+		    QString audioEffectImagePath =
+			    iniFile->value("RemoveDuplicate", "video.AudioEffectImagePath", defaultAudioEffectImagePath)
+				    .toString();
+		    QDir dir(audioEffectImagePath);
+		    if (dir.exists()) {
+			    QStringList filters;
+			    filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
+			    QStringList files = dir.entryList(filters, QDir::Files);
+			    QStringList absoluteFiles;
+			    for (const QString &file : files) {
+				    // 使用 absoluteFilePath 获取文件的完整路径
+				    QString fullPath = dir.absoluteFilePath(file);
+				    absoluteFiles << fullPath;
+			    }
+			    main->addSlideShowSource(absoluteFiles, "音效棒去重");
+		    }
+	    } else {
+		    main->removeSource("音效棒去重");
+	    }
     });
     bool productOverlay = iniFile->value("RemoveDuplicate", "video.ProductOverlay", false).toBool();
     ui->horizontalSlider_25->setValue(productOverlay);
     connect(ui->horizontalSlider_25, &QSlider::valueChanged, this, [this](int value) {
 	    ui->horizontalSlider_25->setValue(value);
 	    iniFile->setValue("RemoveDuplicate", "video.ProductOverlay", value);
+	    if (value) {
+
+	    } else {
+
+	    }
     });
 
     bool globalControl = iniFile->value("RemoveDuplicate", "video.GlobalControl", false).toBool();
@@ -144,14 +272,7 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 		    }
 
 		    OBSBasic *main = OBSBasic::Get();
-		    if (value) {
-			    main->videoGlobalRmDuplication();
-		    } else {
-
-		    }
-		    
-
-		    
+		    main->videoGlobalRmDuplication(value);		    
 	    } else {
 		    QList<EllipticalSlider *> ctrlList;
 		    ctrlList << ui->horizontalSlider_26 << ui->horizontalSlider_27 << ui->horizontalSlider_28
@@ -170,7 +291,7 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     connect(ui->hsJittterSlider, &QSlider::valueChanged, this, [this](int value) {
 	    OBSBasic *main = OBSBasic::Get();
 	    ui->label_51->setText(QString("%1 %").arg(value));
-	    main->changeTransform(value);
+	    //main->changeTransform(value);
 	    iniFile->setValue("RemoveDuplicate", "video.LocalJitter", value);
     });
     ui->hsJittterSlider->setRange(0, 100);
@@ -185,13 +306,19 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
     ui->hsExtractFrameSlider->setRange(0, 100);
     ui->hsExtractFrameSlider->setValue(localExtractFrame);
 
-    int localTransparent = iniFile->value("RemoveDuplicate", "video.LocalTransparent", 0).toInt();
+    int localTransparent = iniFile->value("RemoveDuplicate", "video.LocalTransparent", 20).toInt();
     connect(ui->hsTransparentSlider, &QSlider::valueChanged, this, [this](int value) {
 	    int sliderValue = ui->hsTransparentSlider->value();
 	    ui->label_61->setText(QString("%1 %").arg(sliderValue));
 	    iniFile->setValue("RemoveDuplicate", "video.LocalTransparent", sliderValue);
-	    OBSBasic *main = OBSBasic::Get();
-	    main->changeOpacity("图层去重", sliderValue);
+	    OBSBasic *main = OBSBasic::Get();	    
+	    main->changeOpacity("图层去重1", sliderValue);
+	    main->changeOpacity("图层去重2", sliderValue);
+	    main->changeOpacity("图层去重3", sliderValue);
+	    main->changeOpacity("图层去重4", sliderValue);
+	    main->changeOpacity("音效棒去重", sliderValue);
+	    main->changeOpacity("跨平台素材去重", sliderValue);
+
     });
     ui->hsTransparentSlider->setRange(0, 100);
     ui->hsTransparentSlider->setValue(localTransparent);

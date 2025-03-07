@@ -30,6 +30,8 @@ public:
 
 	inline obs_display_t *GetDisplay() const { return display; }
 
+	void setRoundedCorners(int radius);
+
 	uint32_t backgroundColor = GREY_COLOR_BACKGROUND;
 
 	QColor GetDisplayBackgroundColor() const;

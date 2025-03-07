@@ -1035,6 +1035,9 @@ void GBSBizDeviceInfo::onSliderValueChanged(int value) {
 
     ui->lblMngred01->setText(username);
     ui->lblMngred02->setText(password);
+    if (account.getActivationStatus() == 0) {
+
+    }
 
     GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceidStr, liveDeviceId, "", remark, liveAccountId, value,
 						      username.toStdString(), password.toStdString());
@@ -1095,7 +1098,7 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 		QString createTime = QString::fromStdString(result.getDeviceCreateTime());
 		ui->lbsSysInfo01_2->setText(createTime);
 		int leftDays = calculateDaysUntilExpiration(createTime);
-		ui->lbsSysInfo01_3->setText(QString("%1 (天)").arg(leftDays));
+		ui->lbsSysInfo01_3->setText(QString("%1 (天)").arg(leftDays < 0 ? 0 : leftDays));
 		ui->lblDevInfo03->setText(QString::fromStdString(result.getNotes()));
 
 		ui->horizontalSlider->setValue(result.getRemoteSwitch());

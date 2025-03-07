@@ -1298,6 +1298,8 @@ public:
 	virtual int GetProfilePath(char *path, size_t size, const char *file) const override;
 
 	static void InitBrowserPanelSafeBlock();
+
+	bool removeSource(QString sourceName);
 #ifdef YOUTUBE_ENABLED
 	void NewYouTubeAppDock();
 	void DeleteYouTubeAppDock();
@@ -1397,18 +1399,21 @@ public:
 	void activeIntercom(bool active);
 	void cleanGuarderCtrlScene();
 
-	OBSSource addSlideShowSource(QStringList files, std::string sourceName);
+	OBSSource addSlideShowSource2(QString path, std::string sourceName, int posx = 0, int posy = 0);
+	OBSSource addSlideShowSource(QStringList files, std::string sourceName, int posx = 0, int posy = 0);
 	void removeSlideShowSource(std::string sourceName);
 
-	OBSSource addImageSource(std::string file, std::string sourceName);
+	OBSSource addImageSource(std::string file, std::string sourceName, int posx = 0, int posy = 0);
 	void removeImageSource(std::string sourceName);
 
 	OBSSource addTimeClockSource(QString file);
 	void removeTimeClockSource();
 
-	OBSSource addHyperlinkSource(QString hyperLink);
+	OBSSource addStreamSource(QString hyperLink);
 	void removeHyperlinkSource();
 
+	OBSSource addBrowserSource(QString hyperLink);
+	void removeBrowserSource();
 	
 
 	OBSScene querySceneBySceneName(std::string sceneName);
@@ -1416,7 +1421,7 @@ public:
 	void changeOpacity(std::string sourceName, int opacity);
 	void dumpFFmegSourceLog();
 
-	void videoGlobalRmDuplication();
+	void videoGlobalRmDuplication(bool on);
 	void closeGlobalRmDuplication();
 
 private:
@@ -1435,13 +1440,13 @@ private:
 
 public:
 	QString getAvator();
-	
+	void moveSource2Bottom(const char *scene_name, const char *source_name);
+
 private slots:
 	void startPullStream(QString rtmp);
 	void stopPullStream();
 
 	void onWssKeepAlive();
-	void onDeDupProcess();
 
  private:
 	QString pullRtmpUrl;

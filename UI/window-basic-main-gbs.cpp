@@ -27,7 +27,7 @@
 #include <QScrollBar>
 #include <QTimer>
 #include "gbs/bizWidgets/GBSMsgDialog.h"
-
+#include <QRandomGenerator>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -135,37 +135,75 @@ void OBSBasic::OBSInit2() {
 		mWssTimer->start();
 		mWssTimer->setInterval(10000);
 	}
-	//videoGlobalRmDuplication();
-	mDeDupTimer = new QTimer(this);
-	connect(mDeDupTimer, &QTimer::timeout, this, &OBSBasic::onDeDupProcess);
-	if (!mDeDupTimer->isActive()) {
-		mDeDupTimer->start();
-		mDeDupTimer->setInterval(1000);
-	}
+
+
+	videoGlobalRmDuplication(true);
+
 
 }
 
 
-void OBSBasic::videoGlobalRmDuplication() {
+void OBSBasic::moveSource2Bottom(const char *scene_name, const char *source_name)
+{
+	// 获取场景
+	obs_source_t *scene_source = obs_get_source_by_name(scene_name);
+	if (!scene_source) {
+		blog(LOG_ERROR, "Scene '%s' not found", scene_name);
+		return;
+	}
+
+	obs_scene_t *scene = obs_scene_from_source(scene_source);
+	if (!scene) {
+		blog(LOG_ERROR, "Failed to get scene from source '%s'", scene_name);
+		obs_source_release(scene_source);
+		return;
+	}
+
+	// 查找目标源的场景项
+	obs_sceneitem_t *item = obs_scene_find_source(scene, source_name);
+	if (!item) {
+		blog(LOG_ERROR, "Source '%s' not found in scene '%s'", source_name, scene_name);
+		obs_scene_release(scene);
+		obs_source_release(scene_source);
+		return;
+	}
+
+	// 获取当前顺序位置
+	int64_t current_position = obs_sceneitem_get_order_position(item);
+	blog(LOG_INFO, "Current position of '%s': %lld", source_name, current_position);
+
+	// 将场景项移动到底部（索引 0）
+	obs_sceneitem_set_order_position(item, 0);
+
+	// 验证新位置（可选）
+	int64_t new_position = obs_sceneitem_get_order_position(item);
+	blog(LOG_INFO, "New position of '%s': %lld", source_name, new_position);
+
+	// 释放资源
+	obs_sceneitem_release(item);
+	obs_scene_release(scene);
+	obs_source_release(scene_source);
+}
+
+void OBSBasic::videoGlobalRmDuplication(bool on) {
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
-	int globalCtrl = iniFile->value("RemoveDuplicate", "video.GlobalControl", 0).toInt();
 	QString appDirPath = QCoreApplication::applicationDirPath();
-	QString defaultDedupImagePath = appDirPath + ".\\materials\\iamges";
-	QString defaultOtherPlatformMateralImagePath = appDirPath + ".\\materials\\hyperlinks\\links.txt";
-	QString defaultTimeClockImagePath = appDirPath + ".\\materials\\clocks\\classic\\index.html";
-	QString defaultWhosCommingImagePath = appDirPath + ".\\materials\\joinin";
-	QString defaultAudioEffectImagePath = appDirPath + ".\\materials\\audeffects";
-	#if 0
-	if (globalCtrl) {
-	#endif
+	QString defaultDedupImagePath = appDirPath + "\\materials\\iamges";
+	QString defaultOtherPlatformMateralImagePath = appDirPath + "\\materials\\hyperlinks\\links.txt";
+	QString defaultTimeClockImagePath = appDirPath + "\\materials\\clocks\\classic\\index.html";
+	QString defaultWhosCommingImagePath = appDirPath + "\\materials\\joinin";
+	QString defaultAudioEffectImagePath = appDirPath + "\\materials\\audeffects";
+	
+
+	if (on) {
 		//1.画面抖动
 		int jitter = iniFile->value("RemoveDuplicate", "video.jitter", 0).toInt();
-		if (jitter && globalCtrl) {
+		if (jitter) {
 			changeTransform(jitter);
 		}
 		//2.随机抽帧
 		int extractFrame = iniFile->value("RemoveDuplicate", "video.ExtractFrame", 0).toInt();
-		if (extractFrame && globalCtrl) {
+		if (extractFrame) {
 			int realfr = 30 - extractFrame / 10;
 			if (realfr == 30) {
 				realfr = 29;
@@ -180,28 +218,58 @@ void OBSBasic::videoGlobalRmDuplication() {
 		}
 		//3.图层去重
 		int extractVideoLayer = iniFile->value("RemoveDuplicate", "video.ExtractVideoLayer", 0).toInt();
-		if (extractVideoLayer && globalCtrl) {
+		if (extractVideoLayer) {
 			QString dedupImagePath =
 				iniFile->value("RemoveDuplicate", "video.DedupImagePath", defaultDedupImagePath)
 					.toString();
-			QString path1 = dedupImagePath + "/" + "0001.jpeg";
-			QString path2 = dedupImagePath + "/" + "0002.jpeg";
-			QString path3 = dedupImagePath + "/" + "0003.jpeg";
-			QString path4 = dedupImagePath + "/" + "0004.jpeg";
-			QString path5 = dedupImagePath + "/" + "0005.jpeg";
-
 			QDir dir(dedupImagePath);
 			if (dir.exists()) {
-				OBSSource source1 = addImageSource(path1.toStdString(), "图层去重1");
-				OBSSource source2 = addImageSource(path2.toStdString(), "图层去重2");
-				OBSSource source3 = addImageSource(path3.toStdString(), "图层去重3");
-				OBSSource source4 = addImageSource(path4.toStdString(), "图层去重4");
-				OBSSource source5 = addImageSource(path5.toStdString(), "图层去重5");
+				QStringList filters;
+				filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
+				QStringList files = dir.entryList(filters, QDir::Files);
+				QStringList absoluteFiles;
+				for (const QString &file : files) {
+					// 使用 absoluteFilePath 获取文件的完整路径
+					QString fullPath = dir.absoluteFilePath(file);
+					absoluteFiles << fullPath;
+				}
+				if (absoluteFiles.size() > 0) {
+					QRandomGenerator *rng = QRandomGenerator::global();
+					QSet<int> indexs;
+					int counter = 1;
+					do {
+						int i = rng->bounded(absoluteFiles.size());
+						indexs.insert(i);
+					} while ((indexs.size() < 4) && (++counter < 100));
+					struct obs_video_info ovi = {};
+					obs_get_video_info(&ovi);
+					int32_t baseXPos = 0;
+					int32_t baseYPos = 0;
+					int32_t halfXStep = ovi.output_width/2;
+					int32_t halfYStep = ovi.output_height / 2;
+					int32_t positions[][2] = {{baseXPos, baseYPos},
+								  {baseXPos + halfXStep, baseYPos},
+								  {baseXPos, baseYPos + halfYStep},
+								  {baseXPos + halfXStep, baseYPos + halfYStep}};
+					QStringList names;
+					names << "图层去重1" << "图层去重2" << "图层去重3"
+					      << "图层去重4";
+					int loop = 0;
+					for (int index : indexs) {
+						addImageSource(absoluteFiles[index].toStdString(),
+							       names[loop].toStdString(), positions[loop][0],
+							       positions[loop][1]);
+						++loop;
+					}
+
+				}
+				
 			}
+			
 		}
 		//4.时钟
 		int timeClockOverlay = iniFile->value("RemoveDuplicate", "video.TimeClockOverlay", 0).toInt();
-		if (timeClockOverlay && globalCtrl)
+		if (timeClockOverlay)
 			{
 			QString timeClockImagePath =
 				iniFile->value("RemoveDuplicate", "video.TimeClockImagePath", defaultTimeClockImagePath)
@@ -213,27 +281,28 @@ void OBSBasic::videoGlobalRmDuplication() {
 		}
 		//5.谁来了
 		int whosCommingOverlay = iniFile->value("RemoveDuplicate", "video.WhosCommingOverlay", 0).toInt();
-		if (whosCommingOverlay && globalCtrl) {
+		if (whosCommingOverlay) {
 			QString whosCommingImagePath = iniFile->value("RemoveDuplicate", "audio.WhosCommingImagePath",
 								      defaultWhosCommingImagePath)
 							       .toString();
-			QDir dir(whosCommingImagePath);
-			if (dir.exists()) {
-				QStringList filters;
-				filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
-				QStringList files = dir.entryList(filters, QDir::Files);
-				QStringList absoluteFiles;
-				for (const QString &file : files) {
-					// 使用 absoluteFilePath 获取文件的完整路径
-					QString fullPath = dir.absoluteFilePath(file);
-					absoluteFiles << fullPath;
-				}
-				addSlideShowSource(absoluteFiles, "谁来了去重");
-			}
+			QString path1 = whosCommingImagePath + "/1";
+			QString path2 = whosCommingImagePath + "/2";
+			QString path3 = whosCommingImagePath + "/3";
+			QString path4 = whosCommingImagePath + "/4";
+			QString path5 = whosCommingImagePath + "/5";
+			struct obs_video_info ovi = {};
+			obs_get_video_info(&ovi);
+			int32_t baseXPos = 0;
+			int32_t baseYPos = ovi.output_height / 2;
+			OBSSource source1 = addSlideShowSource2(path1, "图层谁来了1", baseXPos, baseYPos);
+			OBSSource source2 = addSlideShowSource2(path2, "图层谁来了2", baseXPos, baseYPos + 55);
+			OBSSource source3 = addSlideShowSource2(path3, "图层谁来了3", baseXPos, baseYPos + 55 * 2);
+			OBSSource source4 = addSlideShowSource2(path4, "图层谁来了4", baseXPos, baseYPos + 55 * 3);
+			OBSSource source5 = addSlideShowSource2(path5, "图层谁来了5", baseXPos, baseYPos + 55 * 4);
 		}
 		//6.音效棒
 		int audioEffectOverlay = iniFile->value("RemoveDuplicate", "video.AudioEffectOverlay", 0).toInt();
-		if (audioEffectOverlay && globalCtrl) {
+		if (audioEffectOverlay) {
 			QString audioEffectImagePath = iniFile->value("RemoveDuplicate", "video.AudioEffectImagePath",
 								      defaultAudioEffectImagePath)
 							       .toString();
@@ -243,25 +312,25 @@ void OBSBasic::videoGlobalRmDuplication() {
 				filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
 				QStringList files = dir.entryList(filters, QDir::Files);
 				QStringList absoluteFiles;
+				struct obs_video_info ovi = {};
+				obs_get_video_info(&ovi);
+				int32_t baseXPos = ovi.output_width/10*9;
+				int32_t baseYPos = ovi.output_height / 2;
 				for (const QString &file : files) {
 					// 使用 absoluteFilePath 获取文件的完整路径
 					QString fullPath = dir.absoluteFilePath(file);
 					absoluteFiles << fullPath;
 				}
-				addSlideShowSource(absoluteFiles, "音效棒去重");
+				addSlideShowSource(absoluteFiles, "音效棒去重", baseXPos, baseYPos);
 			}
 		}
 		//7.商品素材
 		int productOverlay = iniFile->value("RemoveDuplicate", "video.ProductOverlay", 0).toInt();
-		if (productOverlay && globalCtrl) {
+		if (productOverlay) {
 			//无
 		}
-		//8.透明度
-		int opacity = iniFile->value("RemoveDuplicate", "video.LocalTransparent", 0).toInt();
-		if (opacity && globalCtrl) {
-			//changeOpacity(opacity);
-		}
-		//9.跨平台素材去重
+
+		//8.跨平台素材去重
 		QString path = iniFile->value("RemoveDuplicate", "video.OtherPlatformMateralImagePath",
 				  defaultOtherPlatformMateralImagePath).toString();
 		if (!path.isEmpty()) {
@@ -274,7 +343,7 @@ void OBSBasic::videoGlobalRmDuplication() {
 					QTextStream in(&file);
 					QString line = in.readLine(); // 读取第一行
 					if (!line.isEmpty()) {
-						addHyperlinkSource(line);
+						addBrowserSource(line);
 					}
 					file.close();
 					
@@ -283,8 +352,27 @@ void OBSBasic::videoGlobalRmDuplication() {
 			}
 
 		}
+		//9.透明度
+		int opacity = iniFile->value("RemoveDuplicate", "video.LocalTransparent", 20).toInt();
+		if (opacity) {
+			//changeOpacity("时钟去重", opacity);
+			changeOpacity("图层去重1", opacity);
+			changeOpacity("图层去重2", opacity);
+			changeOpacity("图层去重3", opacity);
+			changeOpacity("图层去重4", opacity);
+			//changeOpacity("图层谁来了1", opacity);
+			//changeOpacity("图层谁来了2", opacity);
+			//changeOpacity("图层谁来了3", opacity);
+			//changeOpacity("图层谁来了4", opacity);
+			//changeOpacity("图层谁来了5", opacity);
+			changeOpacity("音效棒去重", opacity);
+			changeOpacity("跨平台素材去重", opacity);
+			
 
-	#if 0
+			//changeOpacity(opacity);
+		}
+
+
 	} else {
 		//1.画面抖动
 		//2.随机抽帧
@@ -293,10 +381,76 @@ void OBSBasic::videoGlobalRmDuplication() {
 		//5.谁来了
 		//6.音效棒
 		//7.商品素材
+
+		//removeTimeClockSource();
+		//removeImageSource("图层去重1");
+		//removeImageSource("图层去重2");
+		//removeImageSource("图层去重3");
+		//removeImageSource("图层去重4");
+		//removeSlideShowSource("图层谁来了1");
+		//removeSlideShowSource("图层谁来了2");
+		//removeSlideShowSource("图层谁来了3");
+		//removeSlideShowSource("图层谁来了4");
+		//removeSlideShowSource("图层谁来了5");
+		//removeSlideShowSource("音效棒去重");
+		//removeBrowserSource();
+
+		removeSource("时钟去重");
+		removeSource("图层去重1");
+		removeSource("图层去重2");
+		removeSource("图层去重3");
+		removeSource("图层去重4");
+		removeSource("图层谁来了1");
+		removeSource("图层谁来了2");
+		removeSource("图层谁来了3");
+		removeSource("图层谁来了4");
+		removeSource("图层谁来了5");
+		removeSource("音效棒去重");
+		removeSource("跨平台素材去重");
+
+		//obs_source_activate(obs_source_t * source, enum view_type type)
+
 	}
-	#endif
 
 }
+
+
+
+bool OBSBasic::removeSource(QString  sourceName)
+{
+	// 获取当前场景
+	obs_source_t *currentScene = obs_frontend_get_current_scene();
+	if (!currentScene) {
+		std::cerr << "无法获取当前场景" << std::endl;
+		return false;
+	}
+
+	// 获取场景对象
+	obs_scene_t *scene = obs_scene_from_source(currentScene);
+	if (!scene) {
+		std::cerr << "无法获取场景对象" << std::endl;
+		obs_source_release(currentScene);
+		return false;
+	}
+
+	// 查找场景项
+	obs_sceneitem_t *sceneItem = obs_scene_find_source(scene, sourceName.toUtf8().constData());
+	if (!sceneItem) {
+		std::cerr << "无法找到场景项: " << sourceName.toStdString() << std::endl;
+		obs_source_release(currentScene);
+		return false;
+	}
+
+	// 删除场景项
+	obs_sceneitem_remove(sceneItem);
+	std::cout << "已删除场景项: " << sourceName.toStdString() << std::endl;
+
+	// 释放资源
+	obs_source_release(currentScene);
+	return true;
+	
+}
+
 
 
 void OBSBasic::closeGlobalRmDuplication()
@@ -304,18 +458,18 @@ void OBSBasic::closeGlobalRmDuplication()
 	std::unique_ptr<IniSettings> iniFile = std::make_unique<IniSettings>("gbs.ini");
 	int globalCtrl = iniFile->value("RemoveDuplicate", "video.GlobalControl", 0).toInt();
 	QString appDirPath = QCoreApplication::applicationDirPath();
-	QString defaultDedupImagePath = appDirPath + ".\\materials\\iamges";
-	QString defaultOtherPlatformMateralImagePath = appDirPath + ".\\materials\\hyperlinks\\links.txt";
-	QString defaultTimeClockImagePath = appDirPath + ".\\materials\\clocks\\classic\\index.html";
-	QString defaultWhosCommingImagePath = appDirPath + ".\\materials\\joinin";
-	QString defaultAudioEffectImagePath = appDirPath + ".\\materials\\audeffects";
+	QString defaultDedupImagePath = appDirPath + "\\materials\\iamges";
+	QString defaultOtherPlatformMateralImagePath = appDirPath + "\\materials\\hyperlinks\\links.txt";
+	QString defaultTimeClockImagePath = appDirPath + "\\materials\\clocks\\classic\\index.html";
+	QString defaultWhosCommingImagePath = appDirPath + "\\materials\\joinin";
+	QString defaultAudioEffectImagePath = appDirPath + "\\materials\\audeffects";
 #if 0
 	if (globalCtrl) {
 #endif
 	//1.画面抖动
 	int jitter = iniFile->value("RemoveDuplicate", "video.jitter", 0).toInt();
 	if (jitter && !globalCtrl) {
-		changeTransform(0);
+		//changeTransform(0);
 	}
 	//2.随机抽帧
 	int extractFrame = iniFile->value("RemoveDuplicate", "video.ExtractFrame", 0).toInt();
@@ -345,12 +499,8 @@ void OBSBasic::closeGlobalRmDuplication()
 
 		QDir dir(dedupImagePath);
 		if (dir.exists()) {
-			
-			removeImageSource("图层去重1");
-			removeImageSource("图层去重2");
-			removeImageSource("图层去重3");
-			removeImageSource("图层去重4");
-			removeImageSource("图层去重5");
+			removeImageSource("图层去重");
+
 		}
 	}
 	//4.时钟
@@ -390,7 +540,7 @@ void OBSBasic::closeGlobalRmDuplication()
 		//无
 	}
 	//8.透明度 设置为0
-	int opacity = iniFile->value("RemoveDuplicate", "video.LocalTransparent", 0).toInt();
+	int opacity = iniFile->value("RemoveDuplicate", "video.LocalTransparent", 20).toInt();
 	if (opacity && globalCtrl) {
 		//changeOpacity(opacity);
 	}
@@ -409,9 +559,7 @@ void OBSBasic::closeGlobalRmDuplication()
 
 
 void OBSBasic::OBSDeinit2() {
-	if (mDeDupTimer->isActive()) {
-		mDeDupTimer->stop();
-	}
+
 	if (mWssTimer->isActive()) {
 		mWssTimer->stop();
 	}
@@ -513,11 +661,6 @@ void OBSBasic::onWssKeepAlive() {
 		dumpFFmegSourceLog();
 
 	}
-}
-
-void OBSBasic::onDeDupProcess()
-{
-	//videoGlobalRmDuplication();
 }
 
 
@@ -693,6 +836,8 @@ void OBSBasic::startPullStream(QString rtmp)
 					obs_source_update(source, settings);
 					obs_data_release(settings);
 				}
+
+
 			} else {
 
 				OBSSceneItem newSceneItem;
@@ -750,7 +895,8 @@ void OBSBasic::startPullStream(QString rtmp)
 			}
 		}
 	}
-	
+
+	moveSource2Bottom("场景", "RTMP 矩阵地址");
 }
 
 QString OBSBasic::getAvator() {
@@ -1263,8 +1409,24 @@ void OBSBasic::activeIntercom(bool val)
 	});
 }
 
-
-OBSSource OBSBasic::addSlideShowSource(QStringList files, std::string sourceName)
+OBSSource OBSBasic::addSlideShowSource2(QString path, std::string sourceName, int posx, int posy)
+{
+	QDir dir(path);
+	if (dir.exists()) {
+		QStringList filters;
+		filters << "*.png" << "*.jpeg" << "*.jpg"; // 可以加上 .jpg 作为对比
+		QStringList files = dir.entryList(filters, QDir::Files);
+		QStringList absoluteFiles;
+		for (const QString &file : files) {
+			// 使用 absoluteFilePath 获取文件的完整路径
+			QString fullPath = dir.absoluteFilePath(file);
+			absoluteFiles << fullPath;
+		}
+		return addSlideShowSource(absoluteFiles, sourceName, posx, posy);
+	}
+	return nullptr;
+}
+OBSSource OBSBasic::addSlideShowSource(QStringList files, std::string sourceName, int posx, int posy)
 {
 	size_t idx = 0;
 	const char *unversioned_type;
@@ -1291,6 +1453,20 @@ OBSSource OBSBasic::addSlideShowSource(QStringList files, std::string sourceName
 					AddSourceData2 data;
 					data.source = source;
 					data.visible = true;
+
+					
+					if ((posx != 0) || (posy != 0)) {
+						obs_transform_info info;
+						vec2_set(&info.pos, posx, posy);
+						vec2_set(&info.scale, 0.16f, 0.16f);
+						info.rot = 0.0f;
+						info.alignment = OBS_ALIGN_TOP | OBS_ALIGN_LEFT;
+						info.bounds_type = OBS_BOUNDS_NONE;
+						info.bounds_alignment = OBS_ALIGN_CENTER;
+						info.crop_to_bounds = false;
+						vec2_set(&info.bounds, 0.0f, 0.0f);
+						data.transform = &info;
+					}
 
 					obs_enter_graphics();
 					obs_scene_atomic_update(scene, AddSource2, &data);
@@ -1319,7 +1495,11 @@ OBSSource OBSBasic::addSlideShowSource(QStringList files, std::string sourceName
 						obs_data_array_push_back(array, arrayItem);	
 					}
 					obs_data_set_array(settings, "files", array);
+					obs_data_set_string(settings, "transition", "slide");
+					obs_data_set_int(settings, "slide_time", 2000 + posy);
 					obs_source_update(source, settings);
+
+
 
 					if (!closed) {
 						properties = new OBSBasicProperties(this, newSource);
@@ -1360,7 +1540,7 @@ void OBSBasic::removeSlideShowSource(std::string sourceName)
 	}
 }
 
-OBSSource OBSBasic::addHyperlinkSource(QString hyperLink) {
+OBSSource OBSBasic::addStreamSource(QString hyperLink) {
 	size_t idx = 0;
 	const char *unversioned_type;
 	const char *type;
@@ -1373,7 +1553,7 @@ OBSSource OBSBasic::addHyperlinkSource(QString hyperLink) {
 		if (strcmp(type, "ffmpeg_source") == 0) {
 			//AddSource(unversioned_type);
 			//AddNew
-			OBSSourceAutoRelease source = obs_get_source_by_name("三方视频素材去重");
+			OBSSourceAutoRelease source = obs_get_source_by_name("流素材去重");
 			if (source) {
 				obs_properties_t *props = obs_source_properties(source);
 				obs_property_t *property = obs_properties_first(props);
@@ -1395,7 +1575,7 @@ OBSSource OBSBasic::addHyperlinkSource(QString hyperLink) {
 
 				OBSSceneItem newSceneItem;
 				const char *v_id = obs_get_latest_input_type_id("ffmpeg_source");
-				source = obs_source_create(v_id, "三方视频素材去重", NULL, nullptr);
+				source = obs_source_create(v_id, "流素材去重", NULL, nullptr);
 				OBSScene scene = GetCurrentScene();
 				if (source && scene) {
 					AddSourceData2 data;
@@ -1463,7 +1643,7 @@ void OBSBasic::removeHyperlinkSource() {
 		if (strcmp(type, "ffmpeg_source") == 0) {
 			//AddSource(unversioned_type);
 			//AddNew
-			OBSSourceAutoRelease source = obs_get_source_by_name("三方视频素材去重");
+			OBSSourceAutoRelease source = obs_get_source_by_name("流素材去重");
 			if (source) {
 				OBSSceneItem newSceneItem;
 				const char *v_id = obs_get_latest_input_type_id("ffmpeg_source");
@@ -1478,7 +1658,7 @@ void OBSBasic::removeHyperlinkSource() {
 	}
 }
 
-OBSSource OBSBasic::addImageSource(std::string file, std::string sourceName) {
+OBSSource OBSBasic::addImageSource(std::string file, std::string sourceName, int posx, int posy) {
 	size_t idx = 0;
 	const char *unversioned_type;
 	const char *type;
@@ -1492,7 +1672,10 @@ OBSSource OBSBasic::addImageSource(std::string file, std::string sourceName) {
 			//AddNew
 			OBSSourceAutoRelease source = obs_get_source_by_name(sourceName.c_str());
 			if (source) {
-
+				struct obs_transform_info info;
+				const auto item = GetCurrentSceneItem();
+				obs_sceneitem_get_info2(item, &info);
+				qDebug() << "enter";
 			} else {
 
 				OBSSceneItem newSceneItem;
@@ -1504,6 +1687,31 @@ OBSSource OBSBasic::addImageSource(std::string file, std::string sourceName) {
 					AddSourceData2 data;
 					data.source = source;
 					data.visible = true;
+
+					if ((posx != 0) || (posy != 0)) {
+						obs_transform_info info;
+						vec2_set(&info.pos, posx, posy);
+						vec2_set(&info.scale, 1.7f, 1.7f);
+						info.rot = 0.0f;
+						info.alignment = OBS_ALIGN_TOP | OBS_ALIGN_LEFT;
+						info.bounds_type = OBS_BOUNDS_NONE;
+						info.bounds_alignment = OBS_ALIGN_CENTER;
+						info.crop_to_bounds = false;
+						vec2_set(&info.bounds, 0.0f, 0.0f);
+						data.transform = &info;
+					} else {
+						obs_transform_info info;
+						vec2_set(&info.pos, 0.0f, 0.0f);
+						vec2_set(&info.scale, 1.0f, 1.0f);
+						info.rot = 0.0f;
+						info.alignment = OBS_ALIGN_TOP | OBS_ALIGN_LEFT;
+						info.bounds_type = OBS_BOUNDS_NONE;
+						info.bounds_alignment = OBS_ALIGN_CENTER;
+						info.crop_to_bounds = false;
+						vec2_set(&info.bounds, 0.0f, 0.0f);
+						data.transform = &info;
+					}
+
 
 					obs_enter_graphics();
 					obs_scene_atomic_update(scene, AddSource2, &data);
@@ -1593,6 +1801,17 @@ OBSSource OBSBasic::addTimeClockSource(QString file) {
 					data.source = source;
 					data.visible = true;
 
+					obs_transform_info info;
+					vec2_set(&info.pos, 0.0f, 0.0f);
+					vec2_set(&info.scale, 1.0f, 1.0f);
+					info.rot = 0.0f;
+					info.alignment = OBS_ALIGN_TOP | OBS_ALIGN_LEFT;
+					info.bounds_type = OBS_BOUNDS_NONE;
+					info.bounds_alignment = OBS_ALIGN_CENTER;
+					info.crop_to_bounds = false;
+					vec2_set(&info.bounds, 0.0f, 0.0f);
+					data.transform = &info;
+
 					obs_enter_graphics();
 					obs_scene_atomic_update(scene, AddSource2, &data);
 					obs_leave_graphics();
@@ -1628,6 +1847,7 @@ OBSSource OBSBasic::addTimeClockSource(QString file) {
 	}
 	return newSource;
 }
+
 void OBSBasic::removeTimeClockSource() {
 	size_t idx = 0;
 	const char *unversioned_type;
@@ -1641,6 +1861,119 @@ void OBSBasic::removeTimeClockSource() {
 			//AddSource(unversioned_type);
 			//AddNew
 			OBSSourceAutoRelease source = obs_get_source_by_name("时钟去重");
+			if (source) {
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("browser_source");
+				OBSScene scene = querySceneBySceneName("场景");
+				if (source && scene) {
+					obs_source_remove(source);
+					obs_source_release(source);
+				}
+			}
+		}
+	}
+}
+
+
+OBSSource OBSBasic::addBrowserSource(QString hyperLink)
+{
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "browser_source") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("跨平台素材去重");
+			if (source) {
+				obs_properties_t *props = obs_source_properties(source);
+				obs_property_t *property = obs_properties_first(props);
+				
+				obs_data_t *settings = obs_source_get_settings(source);
+				obs_source_set_volume(source, 0.0);
+				obs_source_update(source, settings);
+				obs_data_release(settings);
+				
+
+			} else {
+
+				OBSSceneItem newSceneItem;
+				const char *v_id = obs_get_latest_input_type_id("browser_source");
+				source = obs_source_create(v_id, "跨平台素材去重", NULL, nullptr);
+				//OBSScene scene = GetCurrentScene();
+				OBSScene scene = querySceneBySceneName("场景");
+				if (source && scene) {
+					AddSourceData2 data;
+					data.source = source;
+					data.visible = true;
+					QRandomGenerator *rng = QRandomGenerator::global();
+					double d = rng->bounded(100.0f);
+					obs_transform_info info;
+					vec2_set(&info.pos, d * (-1), d * (-1));
+					vec2_set(&info.scale, 3.0f, 3.0f);
+					info.rot = 0.0f;
+					info.alignment = OBS_ALIGN_TOP | OBS_ALIGN_LEFT;
+					info.bounds_type = OBS_BOUNDS_NONE;
+					info.bounds_alignment = OBS_ALIGN_CENTER;
+					info.crop_to_bounds = false;
+					vec2_set(&info.bounds, 0.0f, 0.0f);
+					data.transform = &info;
+
+					obs_enter_graphics();
+					obs_scene_atomic_update(scene, AddSource2, &data);
+					obs_leave_graphics();
+
+					newSource = source;
+					newSceneItem = data.scene_item;
+
+					/* set monitoring if source monitors by default */
+					uint32_t flags = obs_source_get_output_flags(source);
+					if ((flags & OBS_SOURCE_MONITOR_BY_DEFAULT) != 0) {
+						obs_source_set_monitoring_type(source,
+									       OBS_MONITORING_TYPE_MONITOR_ONLY);
+					}
+
+					bool closed = true;
+					if (properties)
+						closed = properties->close();
+					obs_data_t *settings = obs_source_get_settings(source);
+					obs_data_set_bool(settings, "is_local_file", false);
+					obs_data_set_bool(settings, "reroute_audio", true);
+					obs_data_set_int(settings, "width", 1280);
+					obs_data_set_int(settings, "height", 720);
+					obs_data_set_string(settings, "url", hyperLink.toUtf8().constData());
+					obs_source_set_volume(source, 0.0);
+					obs_source_update(source, settings);
+					obs_data_release(settings);
+
+					if (!closed) {
+						properties = new OBSBasicProperties(this, newSource);
+						properties->Init();
+						properties->setAttribute(Qt::WA_DeleteOnClose, true);
+					}
+				}
+			}
+		}
+	}
+	return newSource;
+}
+void OBSBasic::removeBrowserSource() {
+	size_t idx = 0;
+	const char *unversioned_type;
+	const char *type;
+	OBSSource newSource;
+	while (obs_enum_input_types2(idx++, &type, &unversioned_type)) {
+		const char *name = obs_source_get_display_name(type);
+		uint32_t caps = obs_get_source_output_flags(type);
+
+		if (strcmp(type, "browser_source") == 0) {
+			//AddSource(unversioned_type);
+			//AddNew
+			OBSSourceAutoRelease source = obs_get_source_by_name("跨平台素材去重");
 			if (source) {
 				OBSSceneItem newSceneItem;
 				const char *v_id = obs_get_latest_input_type_id("browser_source");
@@ -1721,6 +2054,7 @@ void OBSBasic::changeOpacity(int opacity) {
 void OBSBasic::changeOpacity(std::string sourceName, int opacity)
 {
 	//double opacity = opa / 100.0;
+	
 
 	// 获取目标源
 	obs_source_t *source = obs_get_source_by_name(sourceName.c_str());

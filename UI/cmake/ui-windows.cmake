@@ -34,7 +34,7 @@ target_sources(
     gbs/common/VolumeHBarWidget.h
     gbs/common/ShadowWidget.h
     gbs/common/ToggleButton.h
-    gbs/common/DanmakuWidget.h
+    
     gbs/common/SelectedIDSDialog.h
     gbs/common/EllipticalSlider.h
     gbs/common/EllipticalSliderExt.h
@@ -239,6 +239,11 @@ target_sources(
     gbs/bizWidgets/tables/liveMngr/ComboBoxDelegate.cpp
     gbs/bizWidgets/tables/liveMngr/SliderDelegate.h
     gbs/bizWidgets/tables/liveMngr/SliderDelegate.cpp
+
+    gbs/bizWidgets/danmaku/DanmakuWidget.h
+    gbs/bizWidgets/danmaku/DanmakuWidget.cpp
+    gbs/bizWidgets/danmaku/DanmakuBizWindow.h
+    gbs/bizWidgets/danmaku/DanmakuBizWindow.cpp
     
     
     gbs/remoteCtrl/localqueryinfo.h

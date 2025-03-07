@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QFrame>
+#include <QLabel>
 class SelectedIDSDialog : public QDialog {
 	Q_OBJECT
 public:

@@ -10,7 +10,6 @@
 #include <QTime>
 #include <QPointer>
 #include <QThreadStorage>
-#include "../common/DanmakuWidget.h"
 #include "../common/SelectedIDSDialog.h"
 #include "../GBSToolKits.h"
 #include "window-basic-main-outputs.hpp"
@@ -20,6 +19,8 @@
 #include "gbs/common/WebSocketClient.h"
 #include "gbs/media/GBSAudioWriter.h"
 #include "gbs/common/GBSTeleprompter.h"
+#include "gbs/bizWidgets/danmaku/DanmakuWidget.h"
+#include "gbs/bizWidgets/danmaku/DanmakuBizWindow.h"
 
 
 
@@ -65,11 +66,11 @@ public slots:
 	
 signals:
 	void signalDanmakuReceived(const QString &text, const QString &imagePath, const QString &text2,
-				   const QString &type);
+				   const QString &type, const QString &liveId);
 
 public slots:
-	void addNewWidget(const QString &text, const QString &imagePath, const QString &text2, const QString &type);
-
+	void addNewWidget(const QString &atext, const QString &aimagePath, const QString &atext2, const QString &atype,
+			  const QString &liveId);
 
 private slots:
 	void updateStyle(bool checked);
@@ -83,9 +84,7 @@ private:
 	std::shared_future<void> setupStreamingGuard;
 private:
 	Ui::GBSBizLivePusherCtrl *ui;
-	QScrollArea *danmakuscrollArea;
 
-	QVBoxLayout* danmaKuAreaLayout;
 
 	SelectedIDSDialog *selectIDSDialog;
 	QList<DanmakuWidget*> widgetList;
@@ -156,6 +155,7 @@ private:
 	GBSTeleprompter *teleprompter{nullptr};
 	std::atomic<bool> onFailedProcessing{false};
 	std::atomic<bool> mbTeleprompter{false};
+	DanmakuBizWindow *danmaBizWindow;
 };
 
 #endif // GBSBIZLIVEPUSHERCTRL_H

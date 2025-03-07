@@ -33,7 +33,7 @@ GBSBizSettingPage::GBSBizSettingPage(QWidget *parent)
 	    ui->horizontalLayout->removeWidget(loadingLabel);
             loadingLabel->deleteLater();
 	    }, Qt::DirectConnection);
-    QTimer::singleShot(1000, [this]() {
+    QTimer::singleShot(0, [this]() {
 	    settings =
 		    QSharedPointer<OBSBasicSettings>::create(OBSBasic::Get()); //new OBSBasicSettings(OBSBasic::Get());
 	    GBSBizSettingOutput *avSetting = new GBSBizSettingOutput(settings);

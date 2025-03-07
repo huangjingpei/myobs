@@ -2708,6 +2708,8 @@ int main(int argc, char *argv[])
 	}
 #endif
 
+	forceTerminateProcess("main.exe");
+	forceTerminateProcess("rustdesk.exe");
 	//检查时候有可升级文件
 	std::string exePath = GetExeDirectory();
 	
@@ -2934,5 +2936,7 @@ int main(int argc, char *argv[])
 		file.remove();
 
 	}
+	forceTerminateProcess("main.exe");
+	forceTerminateProcess("rustdesk.exe");
 	return ret;
 }

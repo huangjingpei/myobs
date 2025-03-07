@@ -298,6 +298,21 @@ font-size: 24px;
                      </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_15">
+                       <property name="spacing">
+                        <number>20</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>12</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>12</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>12</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>12</number>
+                       </property>
                        <item>
                         <widget class="FatButton" name="pushButton">
                          <property name="text">
@@ -953,7 +968,7 @@ font-size: 24px;
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>386</width>
+              <width>342</width>
               <height>16</height>
              </rect>
             </property>
@@ -1007,7 +1022,7 @@ font-size: 24px;
               <x>0</x>
               <y>0</y>
               <width>16</width>
-              <height>28</height>
+              <height>30</height>
              </rect>
             </property>
             <property name="sizePolicy">

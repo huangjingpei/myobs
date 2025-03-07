@@ -611,80 +611,42 @@ font-size:16px;
     <enum>QTabWidget::TabShape::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="elideMode">
     <enum>Qt::TextElideMode::ElideLeft</enum>
    </property>
    <widget class="QWidget" name="tabAdvanced">
+    <property name="styleSheet">
+     <string notr="true">background: #F9F9F9;
+border-radius: 16px;
+border: transparent;</string>
+    </property>
     <attribute name="title">
      <string>汇总</string>
     </attribute>
-    <widget class="QPushButton" name="btnF2F">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>3</y>
-       <width>56</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>留言互动</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btnFans">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>3</y>
-       <width>56</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>谁来了</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btnTips">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>3</y>
-       <width>56</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>礼物打赏</string>
-     </property>
-    </widget>
     <widget class="QWidget" name="verticalLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>30</y>
+       <x>-2</x>
+       <y>-1</y>
        <width>541</width>
-       <height>841</height>
+       <height>871</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout"/>
-    </widget>
-    <widget class="QPushButton" name="btnAll">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>3</y>
-       <width>71</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>下单列表</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="tabBasic">
+    <property name="styleSheet">
+     <string notr="true">background: #F9F9F9;
+border-radius: 16px;
+border: transparent;</string>
+    </property>
     <attribute name="title">
      <string>提词器</string>
     </attribute>

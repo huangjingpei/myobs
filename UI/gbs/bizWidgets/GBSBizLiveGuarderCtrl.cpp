@@ -16,7 +16,6 @@
 #include <QStackedWidget>
 #include <QGridLayout>
 #include <QLabel>
-#include "gbs/common/DanmakuWidget.h"
 #include "gbs/common/SystemUtils.h"
 #include "gbs/common/QIniFile.h"
 #include "window-basic-main.hpp"
@@ -28,6 +27,7 @@
 #include "gbs/dialog/GBSOperationReadME.h"
 #include "gbs/dialog/GBSColorReadME.h"
 #include "gbs/dialog/GBSDeleteMatrix.h"
+#include "gbs/bizWidgets/danmaku/DanmakuBizWindow.h"
 
 
 #include "qt-wrappers.hpp"
@@ -836,85 +836,23 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 		mWebSocketClient->Start(wssUrl);
 	}
 	mWebSocketClient->RegisterHandler(this);
-	connect(this, &GBSBizLiveGuarderCtrl::signalDanmakuReceived, this, &GBSBizLiveGuarderCtrl::addNewWidget, Qt::QueuedConnection);
+	connect(this, &GBSBizLiveGuarderCtrl::signalDanmakuReceived, this, &GBSBizLiveGuarderCtrl::addNewWidget);
 
 	//QWidget *currentWidget = ui->tabWidget->currentWidget();
 	//
 	//
 	//
-	danmaKuAreaLayout = new QVBoxLayout();
-	danmaKuAreaLayout->setSpacing(6);                 // 设置widget之间的固定间距为6像素
-	danmaKuAreaLayout->setAlignment(Qt::AlignBottom); // 保证最新widget在最底部
 
-	QWidget *containerWidget = new QWidget();         // 用于容纳所有widgets
-	containerWidget->setObjectName("ContainerWidget");
-	containerWidget->setStyleSheet("#ContainerWidget {"
-	                               "   border: 2px solid #F9F9F9;"
-	                               "   border-radius: 5px;"
-	                               "}");
-	containerWidget->setLayout(danmaKuAreaLayout);
 
-	danmakuscrollArea = new QScrollArea();
-	danmakuscrollArea->setWidget(containerWidget);
-	danmakuscrollArea->setWidgetResizable(true);
-	danmakuscrollArea->setStyleSheet("QTextEdit {"
-		"   background-color: #F9F9F9;" // 文本框背景色
-		"}"
-		"QScrollBar:vertical {" // 垂直滚动条
-		"   border: none;"
-		"   background: #DEDEDE;"   // 滚动条背景色
-		"   width: 14px;"           // 滚动条宽度 (包含箭头)
-		"   margin: 14px 0 14px 0;" // 上下箭头区域高度 (正方形边长)
-		"}"
-		"QScrollBar::handle:vertical {" // 垂直滚动条滑块
-		"   background: #00C566;"       // 滑块颜色（绿色）
-		"   min-height: 20px;"          // 滑块最小高度
-		"}"
-		"QScrollBar::add-line:vertical {" // 垂直滚动条下箭头 (隐藏)
-		"   border: none;"
-		"   background: none;"            // 隐藏
-		"   height: 14px;"                // 箭头高度
-		"   subcontrol-position: bottom;" // 箭头位于底部
-		"   subcontrol-origin: margin;"
-		"}"
-		"QScrollBar::sub-line:vertical {" // 垂直滚动条上箭头 (隐藏)
-		"   border: none;"
-		"   background: none;"         // 隐藏
-		"   height: 14px;"             // 箭头高度
-		"   subcontrol-position: top;" // 箭头位于顶部
-		"   subcontrol-origin: margin;"
-		"}"
-		"QScrollBar::up-arrow:vertical {" // 上端绿色正方形和白色三角形
-		"   border: none;"
-		"   background: #00C566;" // 绿色正方形
-		"   width: 14px;"         // 正方形边长
-		"   height: 14px;"        // 正方形边长
-		"   subcontrol-position: top;"
-		"   subcontrol-origin: content;"
-		"   image: url(:/gbs/images/gbs/biz/gbs-green-scrollbar-uparrow.png);" // 设置图片
-		"}"
-		"QScrollBar::down-arrow:vertical {" // 下端绿色正方形和白色三角形
-		"   border: none;"
-		"   background: #00C566;" // 绿色正方形
-		"   width: 14px;"         // 正方形边长
-		"   height: 14px;"        // 正方形边长
-		"   subcontrol-position: bottom;"
-		"   subcontrol-origin: content;"
-		"    image: url(:/gbs/images/gbs/biz/gbs-green-scrollbar-downarrow.png);" // 设置图片
-		"}"
-		"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {" // 垂直滚动条页
-		"   background: none;" // 上下翻页时区域的颜色，这里设置成透明
-		"}");
+	QVBoxLayout *danmakuLayout = new QVBoxLayout(ui->widget3);
+	danmaBizWindow = new DanmakuBizWindow(ui->widget3);
+	
+	//danmaBizWindow->setStyleSheet("background-color: lightblue;"); // 设置背景颜色以便观察
 
-		// 限制ScrollArea尺寸，防止几何超出问题
-	//danmakuscrollArea->setMinimumSize(520, 460);
-	danmakuscrollArea->setMaximumHeight(3000);
-
-	//// Set the scroll area as the layout for the current widget
-	//QVBoxLayout *mainLayout = new QVBoxLayout(currentWidget);
-	//mainLayout->addWidget(danmakuscrollArea);
-
-	ui->verticalLayout_2->addWidget(danmakuscrollArea);
+	//danmaBizWindow->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	danmakuLayout->addWidget(danmaBizWindow);
+	danmakuLayout->setContentsMargins(0, 0, 0, 0); // 设置边距为 0
+	danmakuLayout->setSpacing(0);                  // 设置间距为 0
 
 
 	//设置直播间管理，开播管理
@@ -957,78 +895,13 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 				     "QTabWidget::tab-bar { border: none; }");
 	connect(ui->tabWidget_2, &QTabWidget::currentChanged, this, &GBSBizLiveGuarderCtrl::onTabChanged2);
 
-	mDanmakuType = DANITEM_TYPE_ALL;
 	gridButtons = new GridButtons(this);
 	ui->tabWidget_2->addTab(gridButtons, "直播间");
 	ui->lineEdit_2->setAlignment(Qt::AlignCenter);
 	ui->lineEdit_3->setAlignment(Qt::AlignCenter);
 	ui->lineEdit->setAlignment(Qt::AlignCenter);
 
-	ui->pushButton->setCheckable(true); // 允许按钮被选中
-	ui->pushButton_2->setCheckable(true); // 允许按钮被选中
-	ui->pushButton_3->setCheckable(true); // 允许按钮被选中
-	ui->pushButton_4->setCheckable(true); // 允许按钮被选中
-	ui->pushButton_5->setCheckable(true); // 允许按钮被选中
-	btnDanmaLists.append(ui->pushButton);
-	btnDanmaLists.append(ui->pushButton_2);
-	btnDanmaLists.append(ui->pushButton_3);
-	btnDanmaLists.append(ui->pushButton_4);
-	btnDanmaLists.append(ui->pushButton_5);
-
-	connect(ui->pushButton, &QPushButton::toggled, this, &GBSBizLiveGuarderCtrl::updateStyle);
-	connect(ui->pushButton_2, &QPushButton::toggled, this, &GBSBizLiveGuarderCtrl::updateStyle);
-	connect(ui->pushButton_3, &QPushButton::toggled, this, &GBSBizLiveGuarderCtrl::updateStyle);
-	connect(ui->pushButton_4, &QPushButton::toggled, this, &GBSBizLiveGuarderCtrl::updateStyle);
-	connect(ui->pushButton_5, &QPushButton::toggled, this, &GBSBizLiveGuarderCtrl::updateStyle);
-
-
-	for (QPushButton *item : btnDanmaLists) {
-		if (item == ui->pushButton) {
-			item->setStyleSheet("QPushButton {"
-					    "   border-radius: 5px;" // 圆角
-					    "   color: #00c566;"
-					    "   font-size: 14px;"
-					    "   padding:10px;"
-					    "}"
-
-					    "QPushButton:pressed {"
-					    "   background-color: #D1D8DD;" // 按下时背景颜色
-					    "   padding-left: 3px;"         // 向左移动 3px
-					    "   padding-top: 3px;"          // 向上移动 3px
-					    "   background-repeat: no-repeat;"
-					    "   background-position: center;"
-					    "}");
-		} else {
-			item->setStyleSheet("QPushButton {"
-					    "   border-radius: 5px;" // 圆角
-					    "   color: #78828A;"
-					    "   border: black;" // 无边框
-					    "   font-size: 12px;"
-					    "   padding:10px;"
-					    "}"
-
-					    "QPushButton:pressed {"
-					    "   background-color: #D1D8DD;" // 按下时背景颜色
-					    "   padding-left: 3px;"         // 向左移动 3px
-					    "   padding-top: 3px;"          // 向上移动 3px
-					    "   background-repeat: no-repeat;"
-					    "   background-position: center;"
-					    "}");
-		}
-		
-	}
-
-
 	connect(gridButtons, &GridButtons::notifyDanmukuChanged, this, &GBSBizLiveGuarderCtrl::onDanmukuChanged);
-
-
-	connect(ui->pushButton, &QPushButton::clicked, this, [this](){ userDanmakuType = DANITEM_TYPE_ALL;
-		});
-	connect(ui->pushButton_2, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_ALL;
-		});
-	connect(ui->pushButton_3, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_WHOIS; });
-	connect(ui->pushButton_4, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_GIFT; });
-	connect(ui->pushButton_5, &QPushButton::clicked, this, [this]() { userDanmakuType = DANITEM_TYPE_CHAT; });
 
 	liveManageWidget = new LiveManageWidget(this);
 	
@@ -1042,85 +915,6 @@ GBSBizLiveGuarderCtrl::GBSBizLiveGuarderCtrl(QWidget *parent)
 
 }
 
-
-void GBSBizLiveGuarderCtrl::updateStyle(bool checked)
-{
-	QPushButton *button = qobject_cast<QPushButton *>(sender());
-	int i = 0;
-	for (QPushButton *item : btnDanmaLists) {
-		++i;
-		if ((button == item)) {
-			if (button == ui->pushButton) {
-				qDebug() << "index " << i << "selected";
-				item->setStyleSheet("QPushButton {"
-						    "   border-radius: 5px;" // 圆角
-						    "   color: #00c566;"
-						    "   font-size: 14px;"
-						    "   padding:10px;"
-						    "}"
-
-						    "QPushButton:pressed {"
-						    "   background-color: #D1D8DD;" // 按下时背景颜色
-						    "   padding-left: 3px;"         // 向左移动 3px
-						    "   padding-top: 3px;"          // 向上移动 3px
-						    "   background-repeat: no-repeat;"
-						    "   background-position: center;"
-						    "}");
-			} else {
-				qDebug() << "index " << i << "selected";
-				item->setStyleSheet("QPushButton {"
-						    "   border-radius: 5px;" // 圆角
-						    "   color: #00c566;"
-						    "   font-size: 12px;"
-						    "   padding:10px;"
-						    "}"
-
-						    "QPushButton:pressed {"
-						    "   background-color: #D1D8DD;" // 按下时背景颜色
-						    "   padding-left: 3px;"         // 向左移动 3px
-						    "   padding-top: 3px;"          // 向上移动 3px
-						    "   background-repeat: no-repeat;"
-						    "   background-position: center;"
-						    "}");
-			}
-			
-		} else {
-			if (button == ui->pushButton) {
-				item->setStyleSheet("QPushButton {"
-						    "   border-radius: 5px;" // 圆角
-						    "   color: #78828A;"
-						    "   font-size: 14px;"
-						    "   padding:10px;"
-						    "}"
-
-						    "QPushButton:pressed {"
-						    "   background-color: #D1D8DD;" // 按下时背景颜色
-						    "   padding-left: 3px;"         // 向左移动 3px
-						    "   padding-top: 3px;"          // 向上移动 3px
-						    "   background-repeat: no-repeat;"
-						    "   background-position: center;"
-						    "}");
-			} else {
-				qDebug() << "index " << i << "un-selected";
-				item->setStyleSheet("QPushButton {"
-						    "   border-radius: 5px;" // 圆角
-						    "   color: #78828A;"
-						    "   font-size: 12px;"
-						    "   padding:10px;"
-						    "}"
-
-						    "QPushButton:pressed {"
-						    "   background-color: #D1D8DD;" // 按下时背景颜色
-						    "   padding-left: 3px;"         // 向左移动 3px
-						    "   padding-top: 3px;"          // 向上移动 3px
-						    "   background-repeat: no-repeat;"
-						    "   background-position: center;"
-						    "}");
-			}
-			
-		}
-	}
-}
 
 void GBSBizLiveGuarderCtrl::onPullRtmpUrl(const std::string url)
 {
@@ -1449,7 +1243,7 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 
 	std::string type = jsonObject["type"].get<std::string>();
 	qDebug() << "damaku type " << type;
-	if (type == "MemberMessage") {
+	if (type == "MemberMessage") { //谁来了
 		auto danma = std::make_shared<DammaMemberMSG>();
 		danma->type = "MemberMessage";
 		danma->name = jsonObject["name"].get<std::string>();
@@ -1463,7 +1257,7 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
 					   QString::fromStdString(liveDeviceId));
 
-	} else if (type == "ChatMessage") {
+	} else if (type == "ChatMessage") { //用户留言
 		auto danma = std::make_shared<DanmaChatMessage>();
 		danma->type = "ChatMessage";
 		danma->name = jsonObject["name"].get<std::string>();
@@ -1474,7 +1268,7 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
 					   QString::fromStdString(liveDeviceId));
 
-	} else if (type == "GiftMessage") {
+	} else if (type == "GiftMessage") { //用户送礼
 		auto danma = std::make_shared<DanmaGiftMessage>();
 		danma->type = "GiftMessage";
 		danma->name = jsonObject["name"].get<std::string>();
@@ -1487,7 +1281,7 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
 					   QString::fromStdString(liveDeviceId));
 
-	} else if (type == "SocialMessage") {
+	} else if (type == "SocialMessage") { //用户关注
 		auto danma = std::make_shared<DanmaSocialMessage>();
 		danma->type = "SocialMessage";
 		danma->name = jsonObject["name"].get<std::string>();
@@ -1498,29 +1292,26 @@ void GBSBizLiveGuarderCtrl::processDanmaItem(const nlohmann::json jsonObject)
 		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
 			QString::fromStdString(liveDeviceId));
 	}
- else if (type == "LikeMessage") {
-	 auto danma = std::make_shared<DanmaLikeMessage>();
-	 danma->type = "LikeMessage";
-	 danma->name = jsonObject["name"].get<std::string>();
-	 danma->head_image = jsonObject["head_image"].get<std::string>();
-	 danma->content = jsonObject["content"].get<std::string>();
-	 danma->count = jsonObject["count"].get<std::string>();
-	 danma->msgType = 5;
-	 QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
-	 emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
-		 QString::fromStdString(liveDeviceId));
+	else if (type == "LikeMessage") { //用户点赞
+		auto danma = std::make_shared<DanmaLikeMessage>();
+		danma->type = "LikeMessage";
+		danma->name = jsonObject["name"].get<std::string>();
+		danma->head_image = jsonObject["head_image"].get<std::string>();
+		danma->content = jsonObject["content"].get<std::string>();
+		danma->count = jsonObject["count"].get<std::string>();
+		danma->msgType = 5;
+		QString danmaText = QString::fromStdString(danma->name) + ":" + QString::fromStdString(danma->content);
+		emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
+			QString::fromStdString(liveDeviceId));
 	}
- else if (type == "RoomMessage") {
-
-	 auto danma = std::make_shared<DanmaRoomMessage>();
-	 danma->content = jsonObject["content"].get<std::string>();
-	 danma->count = jsonObject["count"].get<std::string>();
-	 danma->msgType = 6;
-	 QString danmaText = QString::fromStdString(uniqueName) + ":" + QString::fromStdString(danma->content);
-	 emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
-		 QString::fromStdString(liveDeviceId));
-
-
+	else if (type == "RoomMessage") { //房间信息
+		 auto danma = std::make_shared<DanmaRoomMessage>();
+		 danma->content = jsonObject["content"].get<std::string>();
+		 danma->count = jsonObject["count"].get<std::string>();
+		 danma->msgType = 6;
+		 QString danmaText = QString::fromStdString(uniqueName) + ":" + QString::fromStdString(danma->content);
+		 emit signalDanmakuReceived(qUniqueName, danmaPlatIconString, danmaText, QString::fromStdString(type),
+			 QString::fromStdString(liveDeviceId));
 
 	}
 }
@@ -1535,164 +1326,13 @@ void GBSBizLiveGuarderCtrl::addNewWidget(const QString& atext, const QString& ai
 	QString type = atype;
 	DanmaItem item{ QTime::currentTime(), text, imagePath, text2, type, liveId };
 	int danmakuType = DANITEM_TYPE_ALL;
-	//QList<DanmaItem> danmItemWhoisList = thlWhoIsDanmukus.localData();
-	//QList<DanmaItem> danmItemAllList = thlAllDanmakus.localData();
-	//QList<DanmaItem> danmItemGiftList = thlGiftDanmakus.localData();
-	//QList<DanmaItem> danmItemLikeList = thlLikeDanmakus.localData();
-	//QList<DanmaItem> danmItemChatList = thlChatDanmakus.localData();
-	if (type == "MemberMessage") {
-		whoIsDanmukus.push_back(item);
-		if (whoIsDanmukus.size() > 300) {
-			whoIsDanmukus.pop_front();
-		}
-		danmakuType = DANITEM_TYPE_WHOIS;
-	}
-	else if (type == "ChatMessage") {
-		chatDanmakus.push_back(item);
-		if (chatDanmakus.size() > 300) {
-			chatDanmakus.pop_front();
-		}
-		danmakuType = DANITEM_TYPE_CHAT;
-	}
-	else if (type == "GiftMessage") {
-		giftDanmakus.push_back(item);
-		if (giftDanmakus.size() > 300) {
-			giftDanmakus.pop_front();
-		}
-		danmakuType = DANITEM_TYPE_GIFT;
-	}
-	else if (type == "SocialMessage") {
-	}
-	else if (type == "LikeMessage") {
-		likeDanmakus.push_back(item);
-		if (likeDanmakus.size() > 300) {
-			likeDanmakus.pop_front();
-		}
-		danmakuType = DANITEM_TYPE_LIKE;
-	}
-	if (allDanmakus.size() > 300) {
-		allDanmakus.pop_front();
-	}
-	allDanmakus.push_back(item);
 
-	//两种情况清除现有弹幕，并重新加载弹幕
-	//1. 如果用户且了单个直播间,要从所有按照用户id过滤消息并显示
-	//2. 如果用户过滤弹幕类型，如用户留言，礼物打赏等等
-
-	if (userDanmakuType != userLastDanmakuType) {
-		userLastDanmakuType = userDanmakuType;
-		//清除掉原有弹幕
-
-		while (QLayoutItem* item = danmaKuAreaLayout->takeAt(0)) {
-			if (item->widget()) {
-				item->widget()->deleteLater();
-			}
-			delete item;
-		}
-		QList<DanmaItem> currentDanmakus;
-		//添加新的弹幕
-		if (userDanmakuType == DANITEM_TYPE_ALL) {
-			currentDanmakus = allDanmakus;
-		}
-		else if (userDanmakuType == DANITEM_TYPE_GIFT) {
-			currentDanmakus = giftDanmakus;
-		}
-		else if (userDanmakuType == DANITEM_TYPE_CHAT) {
-			currentDanmakus = chatDanmakus;
-		}
-		else if (userDanmakuType == DANITEM_TYPE_WHOIS) {
-			currentDanmakus = whoIsDanmukus;
-		} else if (userDanmakuType == DANITEM_TYPE_SINGLE) {
-			for (DanmaItem item : allDanmakus) {
-				int iLiveId = -1;
-				if (item.liveId.length() > 1) {
-					iLiveId = item.liveId.left(1).toInt();
-				}
-				qDebug() << "iLiveId " << iLiveId << " mDanmakuValue " << mDanmakuValue;
-				if (iLiveId == mDanmakuValue) {
-					currentDanmakus.push_back(item);
-				}
-			}
+	danmaBizWindow->handleMessage(atype, atext, aimagePath, atext2, liveId);
 
 
-		}
-
-		if (currentDanmakus.size() > 0) {
-			for (DanmaItem item : currentDanmakus) {
-				// 创建新 widget
-				DanmakuWidget *newWidget = new DanmakuWidget();
-				newWidget->setFirstRowContent(item.deviceName, item.iamgePath);
-				newWidget->setSecondRowContent(item.danmaku);
-
-				// 添加到布局
-				widgetList.append(newWidget);
-
-				// 插入到布局的最底部
-				danmaKuAreaLayout->insertWidget(danmaKuAreaLayout->count(),
-								newWidget); // 最新的 widget 添加到布局的最后
-				qDebug() << "danmaKuAreaLayout count " << danmaKuAreaLayout->count();
-
-				// 滚动到最底部显示最新添加的widget
-				QScrollBar *vScrollBar = danmakuscrollArea->verticalScrollBar();
-				vScrollBar->setValue(vScrollBar->maximum());
-
-				// 检查是否超过 300 个 widget
-				if (danmaKuAreaLayout->count() > 300) {
-					// 移除最早的 widget
-					QLayoutItem *oldestItem = danmaKuAreaLayout->takeAt(0);
-					if (oldestItem->widget()) {
-						delete oldestItem->widget();
-					}
-					delete oldestItem;
-				}
-			}
-		}
-	}
-	if ((danmakuType != userDanmakuType) &&
-	    ((userDanmakuType != DANITEM_TYPE_ALL) && (userDanmakuType != DANITEM_TYPE_SINGLE))) {
-		return;
-	}
-	if (userDanmakuType == DANITEM_TYPE_SINGLE) {
-		int iLiveId = -1;
-		if (item.liveId.length() > 1) {
-			iLiveId = item.liveId.toInt();
-		}
-		if (iLiveId != mDanmakuValue) {
-			return;
-		}
-	}
-
-
-
-	// 创建新 widget
-	DanmakuWidget *newWidget = new DanmakuWidget();
-	newWidget->setFirstRowContent(text, imagePath);
-	newWidget->setSecondRowContent(text2);
-
-
-	// 添加到布局
-	widgetList.append(newWidget);
-
-	// 插入到布局的最底部
-	danmaKuAreaLayout->insertWidget(danmaKuAreaLayout->count(), newWidget); // 最新的 widget 添加到布局的最后
-	qDebug() << "danmaKuAreaLayout count " << danmaKuAreaLayout->count();
-
-	// 滚动到最底部显示最新添加的widget
-	QScrollBar *vScrollBar = danmakuscrollArea->verticalScrollBar();
-	vScrollBar->setValue(vScrollBar->maximum());
-
-	// 检查是否超过 300 个 widget
-	if (danmaKuAreaLayout->count() > 300) {
-		// 移除最早的 widget
-		QLayoutItem *oldestItem = danmaKuAreaLayout->takeAt(0);
-		if (oldestItem->widget()) {
-			delete oldestItem->widget();
-		}
-		delete oldestItem;
-	}
 }
 void GBSBizLiveGuarderCtrl::onDanmukuChanged(int value) {
 	userDanmakuType = DANITEM_TYPE_SINGLE;
-	mDanmakuValue = value;
+	danmaBizWindow->onUserSelected(QString::number(value));
 }
 #include "GBSBizLiveGuarderCtrl.moc"

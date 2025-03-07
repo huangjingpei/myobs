@@ -80,9 +80,20 @@ GBSModifyRemark::GBSModifyRemark(QWidget *parent)
 		std::string remotePassword = account.getToDeskPassword();
 		int remoteSwitch = account.getRemoteSwitch();
 		QString remark = ui->lineEdit->text() + "/" + ui->lineEdit_2->text();
-		GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceName, liveDeviceId, "",
-								  remark.toStdString(), liveAccountId, remoteSwitch,
-								  remoteAccount, remotePassword);
+		if (account.getActivationStatus() == 0) {
+			ui->label_4->setText("设备未激活, 请激活后重新尝试");
+			ui->label_4->setStyleSheet("QLabel {"
+						   "   color: red;"
+						   "   font-size: 16px;"
+						   "   border-radius: 5px;" // 圆角
+						   "   border: none;"       // 无边框
+						   "}");
+		} else {
+			GBSHttpClient::getInstance()->modifyZlmLiveDevice(liveDeviceName, liveDeviceId, "",
+									  remark.toStdString(), liveAccountId,
+									  remoteSwitch, remoteAccount, remotePassword);
+		}
+		
 	});
 
     

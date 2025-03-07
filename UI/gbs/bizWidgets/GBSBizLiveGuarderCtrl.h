@@ -14,7 +14,8 @@
 #include "gbs/common/GBSHttpClient.h"
 #include "gbs/dto/GBSLiveDevices.h"
 #include "gbs/common/WebSocketClient.h"
-#include "gbs/common/DanmakuWidget.h"
+#include "gbs/bizWidgets/danmaku/DanmakuWidget.h"
+#include "gbs/bizWidgets/danmaku/DanmakuBizWindow.h"
 
 #include "gbs/GBSDanmaType.h"
 namespace Ui {
@@ -90,24 +91,7 @@ private:
 	std::string mWssKeepaliveId{""};
 	std::shared_ptr<WebSocketClient> mWebSocketClient;
 
-	
-	QList<DanmaItem> whoIsDanmukus;
-	QList<DanmaItem> allDanmakus;
-	QList<DanmaItem> giftDanmakus;
-	QList<DanmaItem> likeDanmakus;
-	QList<DanmaItem> chatDanmakus;
 
-	QVBoxLayout *danmaKuAreaLayout;
-	QScrollArea *danmakuscrollArea;
-	QList<DanmakuWidget *> widgetList;
-
-	QThreadStorage<QList<DanmaItem>> thlWhoIsDanmukus;
-	QThreadStorage<QList<DanmaItem>> thlAllDanmakus;
-	QThreadStorage<QList<DanmaItem>> thlGiftDanmakus;
-	QThreadStorage<QList<DanmaItem>> thlLikeDanmakus;
-	QThreadStorage<QList<DanmaItem>> thlChatDanmakus;
-	int mDanmakuType{DANITEM_TYPE_ALL};
-	std::atomic<int> mDanmakuValue{-1};
 	QString pullRtmpUrl;
 
 	int deviceOnLineCount{0};
@@ -116,6 +100,8 @@ private:
 	int userLastDanmakuType{DANITEM_TYPE_ALL};
 	QMap<std::string, int> operationMap;
 	QList<QPushButton *> btnDanmaLists;
+
+	DanmakuBizWindow *danmaBizWindow;
 
 
 };

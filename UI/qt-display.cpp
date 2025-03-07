@@ -178,6 +178,8 @@ void OBSQTDisplay::CreateDisplay()
 		return;
 
 	display = obs_display_create(&info, backgroundColor);
+	setRoundedCorners(15); // 每次调整大小时更新遮罩
+
 
 	emit DisplayCreated(this);
 }
@@ -220,9 +222,28 @@ void OBSQTDisplay::resizeEvent(QResizeEvent *event)
 	if (isVisible() && display) {
 		QSize size = GetPixelSize(this);
 		obs_display_resize(display, size.width(), size.height());
+		setRoundedCorners(15); // 每次调整大小时更新遮罩
 	}
 
 	emit DisplayResized();
+}
+#include <QPainterPath>
+#include <QPainter>
+
+void OBSQTDisplay::setRoundedCorners(int radius) {
+
+	QPixmap pixmap(this->size());
+	pixmap.fill(Qt::transparent);
+
+	QPainter painter(&pixmap);
+	painter.setRenderHint(QPainter::Antialiasing, true);          // 启用抗锯齿
+	painter.setRenderHint(QPainter::SmoothPixmapTransform, true); // 平滑变换
+
+	QPainterPath path;
+	path.addRoundedRect(this->rect(), radius, radius);
+	painter.fillPath(path, Qt::black); // 填充圆角区域
+
+	this->setMask(pixmap.createMaskFromColor(Qt::transparent));
 }
 
 QPaintEngine *OBSQTDisplay::paintEngine() const

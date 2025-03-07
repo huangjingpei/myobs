@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="widget" native="true">
+  <widget class="QWidget" name="widget3" native="true">
    <property name="geometry">
     <rect>
      <x>40</x>
@@ -27,7 +27,7 @@
 border-radius: 16px;
 border: 1px solid #FFFFFF;</string>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,99">
+   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -43,75 +43,6 @@ border: 1px solid #FFFFFF;</string>
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei</family>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>汇总</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>下单列表</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>谁来了</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_4">
-        <property name="text">
-         <string>礼物点赞</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_5">
-        <property name="text">
-         <string>留言互动</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="OBSBasicPreview" name="wgtPreview" native="true">
@@ -169,7 +100,7 @@ border-radius: 20px;</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget1">
        <property name="geometry">
         <rect>
          <x>0</x>

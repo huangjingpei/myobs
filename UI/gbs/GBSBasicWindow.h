@@ -2,7 +2,7 @@
 #define GBSBASICWINDOW_H
 
 #include <QMainWindow>
-#include "common/DanmakuWidget.h"
+#include "gbs/bizWidgets/danmaku/DanmakuWidget.h"
 
 namespace Ui {
 class GBSBasicWindow;

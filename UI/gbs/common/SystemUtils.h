@@ -445,4 +445,52 @@ inline bool RegisterVCam()
 	return true;
 }
 
+#include <filesystem> // 需要 C++17 或更高版本
+namespace fs = std::filesystem;
+#include <windows.h>
+#include <tlhelp32.h>
+#include <iostream>
+#include <string>
+#include <Windows.h>
+#include <ShlObj.h> // For SHGetFolderPathW
+
+inline bool forceTerminateProcess(const QString &processName) {
+	bool killed = false;
+	DWORD currentProcessId = GetCurrentProcessId();
+
+	// Create a snapshot of all processes
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		qDebug() << "Failed to take a snapshot of processes.";
+		return false;
+	}
+
+	PROCESSENTRY32 processEntry;
+	processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+	// Loop through all processes in the snapshot
+	if (Process32First(snapshot, &processEntry)) {
+		do {
+			QString currentProcessName = QString::fromWCharArray(processEntry.szExeFile);
+
+			// Check if the process name matches and it's not the current instance
+			if (currentProcessName.compare(processName, Qt::CaseInsensitive) == 0 &&
+			    processEntry.th32ProcessID != currentProcessId) {
+				HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, processEntry.th32ProcessID);
+				if (hProcess) {
+					if (TerminateProcess(hProcess, 0)) {
+						qDebug() << "Killed process:" << processName;
+						killed = true;
+					} else {
+						qDebug() << "Failed to terminate process:" << processName;
+					}
+					CloseHandle(hProcess);
+				}
+			}
+		} while (Process32Next(snapshot, &processEntry));
+	}
+	CloseHandle(snapshot);
+	return killed;
+}
+
 #endif //__SYSTEM_UTILS_H__

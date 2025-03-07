@@ -7554,6 +7554,18 @@ void OBSBasic::StreamActionTriggered()
 
 void OBSBasic::RecordActionTriggered()
 {
+	OBSSourceAutoRelease source1 = obs_get_source_by_name("图层谁来了1");
+	if (source1) {
+		struct obs_video_info ovi = {};
+		obs_get_video_info(&ovi);
+		struct obs_transform_info info;
+		const auto item = GetCurrentSceneItem();
+		obs_sceneitem_get_info2(item, &info);
+		qDebug() << "enter";
+	}
+	
+
+
 	if (outputHandler->RecordingActive()) {
 		bool confirm = config_get_bool(App()->GetUserConfig(), "BasicWindow", "WarnBeforeStoppingRecord");
 
