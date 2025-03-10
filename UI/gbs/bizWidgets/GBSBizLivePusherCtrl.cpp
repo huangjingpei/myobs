@@ -832,6 +832,7 @@ void GBSBizLivePusherCtrl::onRtmpPushUrl(std::string url, int liveAccountId) {
 
 void GBSBizLivePusherCtrl::onPushRtmpClosed() {
 	StopStreaming();
+	mLiveAccountId = 0;
 }
 
 
@@ -904,7 +905,13 @@ GBSBizLivePusherCtrl::~GBSBizLivePusherCtrl()
 	if (cameraSource) {
 		//GBSToolKits::getInstance()->StopPreview(cameraSource);
 	}
+
 	
+	QLogE("GBSBizLivePusherCtrl 关播 %d", mLiveAccountId);
+	if (mLiveAccountId > 0) {
+		GBSHttpClient::getInstance()->closeSrsStreamLogV2(mLiveAccountId);
+		GBSMainCollector::getInstance()->setLiving(false);
+	}
 	OBSBasic *main = reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
 
 	GBSHttpClient::getInstance()->unRegisterHandler(this);

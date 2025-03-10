@@ -89,7 +89,8 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 	    iniFile->setValue("RemoveDuplicate", "video.jitter", value);
 	    if (value) {
 		    OBSBasic *main = OBSBasic::Get();
-		    //TODO 可以做成调整是编码器VBR，可变帧率？？
+			value = value*150/100;
+			main->changeBreatheFilter("RTMP 矩阵地址", value, value, value);
 	    } else {
 
 	    }
@@ -102,7 +103,7 @@ GBSBizSettingLiveSourceDupRM::GBSBizSettingLiveSourceDupRM(QWidget *parent)
 	    iniFile->setValue("RemoveDuplicate", "video.ExtractFrame", value);
 	    if (value) {
 		    OBSBasic *main = OBSBasic::Get();
-		    //TODO 下一步做
+		    //TODO 可以做成调整是编码器VBR，可变帧率？？
 	    } else {
 	    }
     });

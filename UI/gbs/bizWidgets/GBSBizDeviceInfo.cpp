@@ -1099,6 +1099,7 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 		ui->lbsSysInfo01_2->setText(createTime);
 		int leftDays = calculateDaysUntilExpiration(createTime);
 		ui->lbsSysInfo01_3->setText(QString("%1 (天)").arg(leftDays < 0 ? 0 : leftDays));
+		std::string notes = result.getNotes();
 		ui->lblDevInfo03->setText(QString::fromStdString(result.getNotes()));
 
 		ui->horizontalSlider->setValue(result.getRemoteSwitch());
@@ -1110,7 +1111,11 @@ void GBSBizDeviceInfo::onAccountInfo(GBSLiveAccountInfo result)
 		QList<QString> abbreviations = GBSMainCollector::getInstance()->getLiveAbbreviations();
 		QString remark = QString::fromStdString(result.getNotes());
 			
-		int index = remark.indexOf("/");
+		
+		QStringList parts = remark.split("/");
+		if ((remark.at(remark.size() - 1) == '/') && !parts.isEmpty()) {
+			ui->lblDevInfo03->setText(parts.at(0));
+		}		
 			
 		//ui->comboBox->setCurrentText(remark.left(index));
 

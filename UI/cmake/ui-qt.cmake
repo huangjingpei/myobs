@@ -118,6 +118,7 @@ set(
   gbs/dialog/GBSDeleteMatrix.ui
   gbs/dialog/GBSModifyRemark.ui
   gbs/dialog/GBSOperationReadME.ui
+  gbs/dialog/GBSMsgConfirm.ui
 
 )
 

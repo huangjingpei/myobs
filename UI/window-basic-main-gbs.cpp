@@ -199,7 +199,10 @@ void OBSBasic::videoGlobalRmDuplication(bool on) {
 		//1.画面抖动
 		int jitter = iniFile->value("RemoveDuplicate", "video.jitter", 0).toInt();
 		if (jitter) {
-			changeTransform(jitter);
+			
+			int value = jitter*150/100;
+			changeBreatheFilter("RTMP 矩阵地址", value, value, value);
+
 		}
 		//2.随机抽帧
 		int extractFrame = iniFile->value("RemoveDuplicate", "video.ExtractFrame", 0).toInt();
@@ -896,7 +899,7 @@ void OBSBasic::startPullStream(QString rtmp)
 		}
 	}
 
-	moveSource2Bottom("场景", "RTMP 矩阵地址");
+	//moveSource2Bottom("场景", "RTMP 矩阵地址");
 }
 
 QString OBSBasic::getAvator() {
@@ -2050,7 +2053,74 @@ void OBSBasic::changeOpacity(int opacity) {
 }
 #endif
 
+bool OBSBasic::changeBreatheFilter(std::string sourceName, int scaleMax, int scaleMin, int speed)
+{
+	// 查找指定名称的来源
+	obs_source_t *source = obs_get_source_by_name(sourceName.c_str());
+	if (!source) {
+		blog(LOG_WARNING, "找不到来源: %s", sourceName.c_str());
+		return false;
+	}
 
+	// 检查是否已有呼吸效果滤镜
+	obs_source_t *existingFilter = nullptr;
+	const char *breatheFilterId = "breathe_filter";
+
+	// 用于存储找到的滤镜
+	struct filter_search {
+		const char *filter_id;
+		obs_source_t *found_filter;
+	};
+
+	filter_search search_data = {breatheFilterId, nullptr};
+
+	// 遍历所有滤镜查找是否已存在
+	obs_source_enum_filters(
+		source,
+		[](obs_source_t *parent, obs_source_t *filter, void *param) {
+			auto *search = reinterpret_cast<filter_search *>(param);
+			const char *id = obs_source_get_id(filter);
+			if (strcmp(id, search->filter_id) == 0) {
+				// 保存找到的滤镜并增加引用计数
+				search->found_filter = obs_source_get_ref(filter);
+			}
+		},
+		&search_data);
+
+	existingFilter = search_data.found_filter;
+
+	// 准备滤镜设置
+	obs_data_t *settings = obs_data_create();
+	obs_data_set_bool(settings, "enable", true);
+	obs_data_set_int(settings, "expand_pixels", scaleMax);
+	obs_data_set_int(settings, "shrink_pixels", scaleMin);
+	obs_data_set_double(settings, "scale_speed", speed);
+
+	// 如果已存在滤镜，更新设置
+	if (existingFilter) {
+		obs_source_update(existingFilter, settings);
+		obs_source_release(existingFilter);
+	} else {
+		// 否则创建新滤镜
+		obs_source_t *filter = obs_source_create(breatheFilterId, "呼吸效果", settings, nullptr);
+		if (filter) {
+			// 添加滤镜到来源
+			obs_source_filter_add(source, filter);
+			obs_source_release(filter);
+		} else {
+			blog(LOG_ERROR, "无法创建呼吸效果滤镜");
+			obs_data_release(settings);
+			obs_source_release(source);
+			return false;
+		}
+	}
+
+	// 释放资源
+	obs_data_release(settings);
+	obs_source_release(source);
+
+	return true;
+}
 void OBSBasic::changeOpacity(std::string sourceName, int opacity)
 {
 	//double opacity = opa / 100.0;

@@ -47,8 +47,10 @@ protected:
 			QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 			if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
 				emit EnterKeyPressed();
+				return true; // 阻止继续传递
 			} else if ((keyEvent->key() == Qt::Key_Backspace) || (keyEvent->key() == Qt::Key_Delete)) {
 				emit DelKeyPressed();
+				return true; // 阻止继续传递
 			} else {
 				QString text = keyEvent->text();
 				if (!text.isEmpty()) {
@@ -56,6 +58,7 @@ protected:
 					if (ch.isPrint()) {
 						lineEdit->setText("*");
 						lineEdit->setProperty("value", ch);
+						return true; // 阻止继续传递
 					}
 				}
 				

@@ -23,11 +23,11 @@ struct breathe_filter_data {
     bool loop;
 
     // 缩放相关字段
-    float shrink_scale;     // 缩小的目标比例（例如 0.98 表示 98%）
-    float expand_scale;     // 放大的目标比例（例如 1.02 表示 102%）
-    float scale_speed;      // 缩放速度（比例/秒）
-    float current_scale;    // 当前缩放比例
-    float target_scale;     // 目标缩放比例
+    int shrink_pixels;      // 缩小的像素数（例如 20 表示缩小 20 像素）
+    int expand_pixels;      // 放大的像素数（例如 20 表示放大 20 像素）
+    float scale_speed;      // 缩放速度（像素/秒）
+    float current_scale;    // 当前缩放比例（仍然使用比例，但内部计算）
+    float target_scale;     // 目标缩放比例（仍然使用比例，但内部计算）
     int scale_state;        // 当前状态：0=缩小，1=回到原大小，2=放大，3=回到原大小
     float scale_time;       // 累计时间，用于控制速度
     bool enable;            // 是否启用滤镜
@@ -81,14 +81,15 @@ static void breathe_filter_destroy(void *data)
 static void breathe_filter_update(void *data, obs_data_t *settings)
 {
     struct breathe_filter_data *filter = data;
+    bool was_enabled = filter->enable;
 
     filter->limit_cx = obs_data_get_bool(settings, "limit_cx");
     filter->limit_cy = obs_data_get_bool(settings, "limit_cy");
     filter->cx = (uint32_t)obs_data_get_int(settings, "cx");
     filter->cy = (uint32_t)obs_data_get_int(settings, "cy");
 
-    filter->shrink_scale = (float)obs_data_get_double(settings, "shrink_scale");
-    filter->expand_scale = (float)obs_data_get_double(settings, "expand_scale");
+    filter->shrink_pixels = (int)obs_data_get_int(settings, "shrink_pixels");
+    filter->expand_pixels = (int)obs_data_get_int(settings, "expand_pixels");
     filter->scale_speed = (float)obs_data_get_double(settings, "scale_speed");
     filter->enable = obs_data_get_bool(settings, "enable");
 
@@ -105,11 +106,23 @@ static void breathe_filter_update(void *data, obs_data_t *settings)
     filter->sampler = gs_samplerstate_create(&sampler_info);
     obs_leave_graphics();
 
-    // 初始化缩放状态
-    filter->current_scale = 1.0f;     // 初始为原始大小
-    filter->scale_state = 0;          // 从“缩小”开始
-    filter->scale_time = 0.0f;
-    filter->target_scale = filter->shrink_scale; // 初始目标为缩小比例
+    // 只在首次启用或禁用时重置状态，避免设置其他参数时干扰当前动画
+    if (was_enabled != filter->enable) {
+        // 初始化缩放状态
+        if (filter->enable) {
+            // 如果是首次启用，从当前大小开始渐变
+            filter->current_scale = 1.0f;     // 从原始大小开始
+            filter->scale_state = 0;          // 从"缩小"开始
+            filter->scale_time = 0.0f;
+            filter->target_scale = 0.0f;      // 目标将在 tick 函数中计算
+        } else {
+            // 如果禁用，立即重置为原始大小
+            filter->current_scale = 1.0f;
+            filter->target_scale = 1.0f;
+            filter->scale_state = 0;
+            filter->scale_time = 0.0f;
+        }
+    }
 }
 
 static bool limit_cx_clicked(obs_properties_t *props, obs_property_t *p, obs_data_t *settings)
@@ -136,9 +149,15 @@ static obs_properties_t *breathe_filter_properties(void *data)
     obs_property_t *p;
 
     obs_properties_add_bool(props, "enable", obs_module_text("BreatheFilter.Enable"));
-    obs_properties_add_float_slider(props, "shrink_scale", obs_module_text("BreatheFilter.ShrinkScale"), 0.5, 1.0, 0.01);
-    obs_properties_add_float_slider(props, "expand_scale", obs_module_text("BreatheFilter.ExpandScale"), 1.0, 1.5, 0.01);
-    obs_properties_add_float_slider(props, "scale_speed", obs_module_text("BreatheFilter.ScaleSpeed"), 0.1, 5.0, 0.01);
+    
+    p = obs_properties_add_int_slider(props, "shrink_pixels", obs_module_text("BreatheFilter.ShrinkPixels"), 0, 150, 1);
+    obs_property_set_long_description(p, "设置画面缩小的像素数量（基于宽度），高度将保持等比例缩放");
+    
+    p = obs_properties_add_int_slider(props, "expand_pixels", obs_module_text("BreatheFilter.ExpandPixels"), 0, 150, 1);
+    obs_property_set_long_description(p, "设置画面放大的像素数量（基于宽度），高度将保持等比例缩放");
+    
+    p = obs_properties_add_float_slider(props, "scale_speed", obs_module_text("BreatheFilter.ScaleSpeed"), 5.0, 150.0, 1.0);
+    obs_property_set_long_description(p, "设置缩放速度（像素/秒），值越大，呼吸效果越快");
 
     p = obs_properties_add_bool(props, "limit_cx", obs_module_text("BreatheFilter.LimitWidth"));
     obs_property_set_modified_callback(p, limit_cx_clicked);
@@ -160,70 +179,110 @@ static void breathe_filter_defaults(obs_data_t *settings)
     obs_data_set_default_int(settings, "cx", 100);
     obs_data_set_default_int(settings, "cy", 100);
     obs_data_set_default_bool(settings, "loop", true);
-    obs_data_set_default_bool(settings, "enable", false);        // 默认关闭滤镜
-    obs_data_set_default_double(settings, "shrink_scale", 0.98); // 默认缩小到 98%
-    obs_data_set_default_double(settings, "expand_scale", 1.02); // 默认放大到 102%
-    obs_data_set_default_double(settings, "scale_speed", 0.2);   // 默认速度 0.2 比例/秒
+    obs_data_set_default_bool(settings, "enable", false);    // 默认关闭滤镜
+    obs_data_set_default_int(settings, "shrink_pixels", 10); // 默认缩小 10 像素，减小缩放范围
+    obs_data_set_default_int(settings, "expand_pixels", 10); // 默认放大 10 像素，减小缩放范围
+    obs_data_set_default_double(settings, "scale_speed", 15.0); // 默认速度降低为 15 像素/秒，使动画更平滑
 }
 
 static void breathe_filter_tick(void *data, float seconds)
 {
     struct breathe_filter_data *filter = data;
 
-    // 如果滤镜未启用，则保持原始大小，不更新缩放
+    // 如果滤镜未启用，保持原始大小并重置状态
     if (!filter->enable) {
         filter->current_scale = 1.0f;
+        filter->target_scale = 1.0f;
+        filter->scale_state = 0;  // 重置为初始状态
+        filter->scale_time = 0.0f;
         return;
+    }
+
+    // 获取源的基本宽度和高度
+    obs_source_t *target = obs_filter_get_target(filter->context);
+    uint32_t base_cx = obs_source_get_base_width(target);
+    uint32_t base_cy = obs_source_get_base_height(target);
+    
+    if (base_cx == 0 || base_cy == 0)
+        return;
+
+    // 始终使用宽度作为缩放基准
+    uint32_t reference_dimension = base_cx;
+    
+    // 根据当前的状态计算目标比例，确保平滑过渡
+    if (filter->target_scale == 0.0f || (filter->scale_state == 0 && filter->target_scale == 1.0f) || 
+        (filter->scale_state == 2 && filter->target_scale == 1.0f)) {
+        switch (filter->scale_state) {
+        case 0: // 缩小
+            // 计算缩小的目标比例（从1.0减去相对比例）
+            if (filter->shrink_pixels > 0) {
+                filter->target_scale = 1.0f - (float)filter->shrink_pixels / (float)reference_dimension;
+                // 确保不会缩小到零或负值
+                filter->target_scale = fmaxf(0.1f, filter->target_scale);
+            } else {
+                // 如果缩小像素设为0，直接跳到状态2（放大）
+                filter->scale_state = 2;
+                filter->target_scale = 1.0f + (float)filter->expand_pixels / (float)reference_dimension;
+            }
+            break;
+        case 1: // 回到原大小
+            filter->target_scale = 1.0f;
+            break;
+        case 2: // 放大
+            // 计算放大的目标比例（从1.0加上相对比例）
+            if (filter->expand_pixels > 0) {
+                filter->target_scale = 1.0f + (float)filter->expand_pixels / (float)reference_dimension;
+            } else {
+                // 如果放大像素设为0，直接跳到状态0（缩小）
+                filter->scale_state = 0;
+                filter->target_scale = 1.0f - (float)filter->shrink_pixels / (float)reference_dimension;
+                filter->target_scale = fmaxf(0.1f, filter->target_scale);
+            }
+            break;
+        case 3: // 回到原大小
+            filter->target_scale = 1.0f;
+            break;
+        }
     }
 
     // 更新累计时间
     filter->scale_time += seconds;
 
-    // 计算缩放增量
-    float delta_scale = filter->scale_speed * seconds;
+    // 计算像素增量和对应的比例增量
+    float pixel_delta = filter->scale_speed * seconds;
+    float scale_delta = pixel_delta / (float)reference_dimension; // 使用宽度计算缩放增量
+
+    // 更新当前缩放比例，确保平滑过渡
     if (filter->current_scale > filter->target_scale) {
-        filter->current_scale -= delta_scale;
+        filter->current_scale -= scale_delta;
         if (filter->current_scale < filter->target_scale)
             filter->current_scale = filter->target_scale;
     } else if (filter->current_scale < filter->target_scale) {
-        filter->current_scale += delta_scale;
+        filter->current_scale += scale_delta;
         if (filter->current_scale > filter->target_scale)
             filter->current_scale = filter->target_scale;
     }
 
     // 根据状态切换逻辑
-    switch (filter->scale_state) {
-    case 0: // 缩小到 shrink_scale
-        if (filter->current_scale <= filter->target_scale) {
-            filter->current_scale = filter->shrink_scale;
+    if (fabs(filter->current_scale - filter->target_scale) < 0.001f) {
+        switch (filter->scale_state) {
+        case 0: // 缩小到目标像素
             filter->scale_state = 1;           // 切换到返回状态
             filter->target_scale = 1.0f;       // 目标回到原大小
-        }
-        break;
-
-    case 1: // 返回到原大小
-        if (filter->current_scale >= filter->target_scale) {
-            filter->current_scale = 1.0f;
+            break;
+        case 1: // 返回到原大小
             filter->scale_state = 2;           // 切换到放大状态
-            filter->target_scale = filter->expand_scale; // 目标放大
-        }
-        break;
-
-    case 2: // 放大到 expand_scale
-        if (filter->current_scale >= filter->target_scale) {
-            filter->current_scale = filter->expand_scale;
+            filter->target_scale = 0.0f;       // 临时值，将在下一帧重新计算
+            break;
+        case 2: // 放大到目标像素
             filter->scale_state = 3;           // 切换到返回状态
             filter->target_scale = 1.0f;       // 目标回到原大小
-        }
-        break;
-
-    case 3: // 返回到原大小
-        if (filter->current_scale <= filter->target_scale) {
-            filter->current_scale = 1.0f;
+            break;
+        case 3: // 返回到原大小
             filter->scale_state = 0;           // 切换到缩小状态
-            filter->target_scale = filter->shrink_scale; // 目标缩小
+            filter->target_scale = 0.0f;       // 临时值，将在下一帧重新计算
+            break;
         }
-        break;
     }
 }
 
@@ -353,10 +412,15 @@ static void breathe_filter_show(void *data)
     struct breathe_filter_data *filter = data;
     filter->offset.x = 0.0f;
     filter->offset.y = 0.0f;
-    filter->current_scale = 1.0f;     // 初始为原始大小
-    filter->scale_state = 0;          // 从“缩小”开始
-    filter->scale_time = 0.0f;
-    filter->target_scale = filter->shrink_scale; // 初始目标为缩小比例
+    
+    // 只有当滤镜被启用时才需要从头开始动画
+    if (filter->enable) {
+        // 总是从原始大小开始，确保平滑过渡
+        filter->current_scale = 1.0f;     // 初始为原始大小
+        filter->scale_state = 0;          // 从"缩小"开始
+        filter->scale_time = 0.0f;
+        filter->target_scale = 0.0f;      // 在 tick 函数中计算
+    }
 }
 
 static enum gs_color_space breathe_filter_get_color_space(void *data, size_t count,

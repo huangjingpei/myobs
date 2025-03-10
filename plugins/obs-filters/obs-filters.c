@@ -17,6 +17,7 @@ extern struct obs_source_info color_filter;
 extern struct obs_source_info color_filter_v2;
 extern struct obs_source_info scale_filter;
 extern struct obs_source_info scroll_filter;
+extern struct obs_source_info breathe_filter;
 extern struct obs_source_info gpu_delay_filter;
 extern struct obs_source_info color_key_filter;
 extern struct obs_source_info color_key_filter_v2;
@@ -51,6 +52,7 @@ bool obs_module_load(void)
 	obs_register_source(&color_filter_v2);
 	obs_register_source(&scale_filter);
 	obs_register_source(&scroll_filter);
+	obs_register_source(&breathe_filter);
 	obs_register_source(&gpu_delay_filter);
 	obs_register_source(&color_key_filter);
 	obs_register_source(&color_key_filter_v2);

@@ -47,6 +47,8 @@ public slots:
 private:
 	void mariVertButton(VertNaviButton *button);
 
+	bool tryStopLivingDialog();
+
 
 private:
 	Ui::GBSNaviLive *ui;

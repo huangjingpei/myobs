@@ -12,6 +12,7 @@
 #include "gbs/GBSMainCollector.h"
 #include "gbs/dto/GBSLiveAccountInfo.h"
 #include "gbs/common/QBizLogger.h"
+#include "gbs/dialog/GBSMsgConfirm.h"
 
 GBSNaviLive::GBSNaviLive(QWidget *parent)
 	: QWidget(parent),
@@ -145,7 +146,9 @@ void GBSNaviLive::onZBZBClicked() {
 
 }
 void GBSNaviLive::onDBZBClicked() {
-
+	if (tryStopLivingDialog()) {
+		return;
+	}
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout && !useLiveBroker) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
@@ -166,7 +169,20 @@ void GBSNaviLive::onDBZBClicked() {
 	useLiveBroker = true;
 
 }
+
+bool GBSNaviLive::tryStopLivingDialog() {
+	bool success = false;
+	if (GBSMainCollector::getInstance()->isLiving()) {
+		//GBSMsgConfirm *confirm = new GBSMsgConfirm();
+		//confirm->exec();
+		success = true;
+	}
+	return false;
+}
 void GBSNaviLive::onDMSZClicked() {
+	if (tryStopLivingDialog()) {
+		return;
+	}
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());
@@ -190,6 +206,9 @@ void GBSNaviLive::onDMSZClicked() {
 
 }
 void GBSNaviLive::onCKGLClicked() {
+	if (tryStopLivingDialog()) {
+		return;
+	}
 	QSharedPointer<QLayout> layout = weakLayoutPtr.toStrongRef();
 	if (layout) {
 		VertNaviButton *button = qobject_cast<VertNaviButton *>(sender());

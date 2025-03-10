@@ -86,6 +86,8 @@ target_sources(
     gbs/dialog/GBSOperationReadME.cpp
     gbs/dialog/GBSModifyRemark.h
     gbs/dialog/GBSModifyRemark.cpp
+    gbs/dialog/GBSMsgConfirm.h
+    gbs/dialog/GBSMsgConfirm.cpp
 
     gbs/GBSMainBizWindow.cpp
     gbs/GBSMainBizWindow.h

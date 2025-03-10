@@ -1419,6 +1419,7 @@ public:
 	OBSScene querySceneBySceneName(std::string sceneName);
 	void changeTransform(int factor);
 	void changeOpacity(std::string sourceName, int opacity);
+	bool changeBreatheFilter(std::string sourceName, int scaleMax, int scaleMin, int speed);
 	void dumpFFmegSourceLog();
 
 	void videoGlobalRmDuplication(bool on);
