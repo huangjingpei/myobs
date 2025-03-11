@@ -50,7 +50,7 @@ target_sources(
     window-basic-main-transitions.cpp
     window-basic-main.cpp
     window-basic-main.hpp
-    #window-basic-main-gbs.cpp
+    window-basic-main-gbs.cpp
 
     gbs/common/VertNaviButtonExt.h
     gbs/common/VertNaviButton.h
@@ -71,9 +71,9 @@ target_sources(
     gbs/common/QBizLogger.h
     gbs/common/QToast.h
 
-    #gbs/common/WebSocketClient.cpp
+    gbs/common/WebSocketClient.cpp
     gbs/common/WebSocketClient.h
-    #gbs/common/GBSHttpClient.cpp
+    gbs/common/GBSHttpClient.cpp
     gbs/common/GBSHttpClient.h
     gbs/common/DoubleTextButton.h
 

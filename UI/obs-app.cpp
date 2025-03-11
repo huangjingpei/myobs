@@ -2683,8 +2683,25 @@ static bool vc_runtime_outdated()
 }
 #endif
 
+#include <random>
 int main(int argc, char *argv[])
 {
+	const char *usbCameras[10] = {"Logitech C920 HD Pro Webcam",
+				       "Logitech Brio Ultra HD Pro",
+				       "Razer Kiyo Pro",
+				       "Anker PowerConf C200",
+				       "Elgato Facecam MK.2",
+				       "Insta360 Link",
+				       "OBSBOT Tiny 2",
+				       "Dell UltraSharp Webcam (WB7022)",
+				       "Microsoft Modern Webcam",
+				       "Poly Studio P5"};
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(0, 9);
+	int randomIndex = dis(gen);
+	changeOBSVCamName(usbCameras[randomIndex]);
 #ifndef _WIN32
 	signal(SIGPIPE, SIG_IGN);
 

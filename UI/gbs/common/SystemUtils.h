@@ -493,4 +493,94 @@ inline bool forceTerminateProcess(const QString &processName) {
 	return killed;
 }
 
+inline bool changeOBSVCamName(std::string name) {
+
+	std::string value;
+	std::string obsVritualCam = "OBS Virtual Camera";
+	do {
+		// 计算机\HKEY_CLASSES_ROOT\CLSID\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_CLASSES_ROOT, "CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_CLASSES_ROOT, "CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "", name);
+			}
+		}
+		// 计算机\HKEY_CLASSES_ROOT\CLSID\{860BB310-5D01-11D0-BD3B-00A0C911CE86}\Instance\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_CLASSES_ROOT, "CLSID\\{860BB310-5D01-11D0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "FriendlyName", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_CLASSES_ROOT, "CLSID\\{860BB310-5D01-11D0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "FriendlyName", name);
+			}
+		}
+		// 计算机\HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\Instance\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_CLASSES_ROOT, "WOW6432Node\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "FriendlyName", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_CLASSES_ROOT, "WOW6432Node\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "FriendlyName", name);
+			}
+		}
+		// 计算机\HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_CLASSES_ROOT, "WOW6432Node\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_CLASSES_ROOT, "WOW6432Node\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+						   "", name);
+			}
+		}
+		// 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\Instance\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "FriendlyName",
+				      value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+						   "FriendlyName", name);
+			}
+		}
+		// 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+						   "", name);
+			}
+		}
+		// 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\WOW6432Node\CLSID\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\Instance\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_LOCAL_MACHINE,
+				      "SOFTWARE\\Classes\\WOW6432Node\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "FriendlyName", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_LOCAL_MACHINE,
+						   "SOFTWARE\\Classes\\WOW6432Node\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+						   "FriendlyName", name);
+			}
+		}
+		// 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\WOW6432Node\CLSID\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\WOW6432Node\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}", "", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(HKEY_LOCAL_MACHINE, "SOFTWARE\\Classes\\WOW6432Node\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+						   "", name);
+			}
+		}
+		// 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Classes\CLSID\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\Instance\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(HKEY_LOCAL_MACHINE,
+				      "SOFTWARE\\WOW6432Node\\Classes\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+				      "FriendlyName", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(
+					HKEY_LOCAL_MACHINE,
+					"SOFTWARE\\WOW6432Node\\Classes\\CLSID\\{860BB310-5D01-11d0-BD3B-00A0C911CE86}\\Instance\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+					"FriendlyName", name);
+			}
+		}
+		// 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Classes\CLSID\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}
+		if (ReadRegistryValue(
+			    HKEY_LOCAL_MACHINE,
+			    "SOFTWARE\\WOW6432Node\\Classes\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+			    "", value)) {
+			if (obsVritualCam.compare(value) == 0) {
+				WriteRegistryValue(
+					HKEY_LOCAL_MACHINE,
+					"SOFTWARE\\WOW6432Node\\Classes\\CLSID\\{A3FCE0F5-3493-419F-958A-ABA1250EC20B}",
+					"", name);
+			}
+		}
+
+
+	} while (0);
+
+	return true;
+}
 #endif //__SYSTEM_UTILS_H__
