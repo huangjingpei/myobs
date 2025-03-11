@@ -10,13 +10,14 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QVBoxLayout>
+#include <QApplication>
 
 class FatButton : public QPushButton {
     Q_OBJECT
 
 public:
     FatButton(QWidget *parent = nullptr) : FatButton("", "", parent) {
-
+	    setAttribute(Qt::WA_AlwaysStackOnTop, true);
     }
     FatButton(const QString &imagePath, const QString &text, QWidget *parent = nullptr)
         : QPushButton(parent), m_text(text) {
@@ -91,25 +92,35 @@ public:
 
 private slots:
     void updateStyle(bool checked) {
-		
+        qDebug() << "updateStyle called with checked =" << checked;
+        
+        // 清除现有样式表
+        setStyleSheet("");
+        
+        // 确保子控件是透明的
+        imageLabel->setStyleSheet("border:none; background-color: transparent;");
+        textLabel->setStyleSheet("border:none; background-color: transparent; font-size: 12px;");
+        
         if (!checked) {
-            imageLabel->setPixmap(m_image.scaled(60, 40, Qt::KeepAspectRatio)); // 调整图片大小
-            imageLabel->setStyleSheet("border:none;");
-            setStyleSheet("background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1, stop: 0 #1B2846, stop: 1 #000000);"
-                          "border: 1px solid #D7D4D4!important;");
-            textLabel->setStyleSheet("border:none;"
-                                     "font-size: 12px;" // 字体大小
-                                     "color:#F9F9F9;"
-                                     );
+            setStyleSheet("FatButton { background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1, stop: 0 #1B2846, stop: 1 #000000); border: 1px solid #D7D4D4; }");
+            textLabel->setStyleSheet("border:none; background-color: transparent; font-size: 12px; color:#F9F9F9;");
+            imageLabel->setPixmap(m_image.scaled(60, 40, Qt::KeepAspectRatio));
         } else {
-            imageLabel->setPixmap(m_color_image.scaled(60, 40, Qt::KeepAspectRatio)); // 调整图片大小
-            imageLabel->setStyleSheet("border:none;");
-            setStyleSheet("background-color:#FFFFFF;border: 1px solid #D7D4D4!important;");
-            textLabel->setStyleSheet("border:none;"
-                                     "font-size: 12px;" // 字体大小
-                                     "color:#D7D4D4;"
-                                     );
+            setStyleSheet("FatButton { background-color:#FFFFFF; border: 1px solid #D7D4D4; }");
+            textLabel->setStyleSheet("border:none; background-color: transparent; font-size: 12px; color:#D7D4D4;");
+            imageLabel->setPixmap(m_color_image.scaled(60, 40, Qt::KeepAspectRatio));
         }
+        
+        // 强制样式重新应用
+        style()->unpolish(this);
+        style()->polish(this);
+        
+        // 强制更新
+        update();
+        repaint();
+        
+        // 处理事件队列
+        QApplication::processEvents();
     }
 
 

@@ -78,13 +78,42 @@ SourceTreeItem::SourceTreeItem(SourceTree *tree_, OBSSceneItem sceneitem_) : tre
 	}
 
 	vis = new QCheckBox();
-	vis->setProperty("class", "checkbox-icon indicator-visibility");
+	//vis->setProperty("class", "checkbox-icon indicator-visibility");
+
+	QString styleSheet = R"(
+	QCheckBox::indicator {
+        width: 18px;
+        height: 18px;
+    }
+	QCheckBox::indicator:checked {
+		image: url(:res/images/visible.png);
+	}
+
+	QCheckBox::indicator:unchecked {
+		image: url(:res/images/invisible.png);
+	}
+	)";
+    vis->setStyleSheet(styleSheet);
 	vis->setChecked(sourceVisible);
 	vis->setAccessibleName(QTStr("Basic.Main.Sources.Visibility"));
 	vis->setAccessibleDescription(QTStr("Basic.Main.Sources.VisibilityDescription").arg(name));
 
 	lock = new QCheckBox();
-	lock->setProperty("class", "checkbox-icon indicator-lock");
+	//lock->setProperty("class", "checkbox-icon indicator-lock");
+	QString styleSheet2 = R"(
+	QCheckBox::indicator {
+        width: 16px;
+        height: 16px;
+    }
+	QCheckBox::indicator:checked {
+		image: url(:res/images/locked.png);
+	}
+
+	QCheckBox::indicator:unchecked {
+		image: url(:res/images/unlocked.png);
+	}
+	)";
+    lock->setStyleSheet(styleSheet2);
 	lock->setChecked(obs_sceneitem_locked(sceneitem));
 	lock->setAccessibleName(QTStr("Basic.Main.Sources.Lock"));
 	lock->setAccessibleDescription(QTStr("Basic.Main.Sources.LockDescription").arg(name));

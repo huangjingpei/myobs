@@ -1,6 +1,33 @@
+set(GBS_SOURCES_TO_CHECK
+  "window-basic-main-gbs.obj"
+  "gbs/common/GBSHttpClient.obj"
+  "gbs/common/WebSocketClient.obj"
+)
+
+
+foreach(SOURCE_FILE ${GBS_SOURCES_TO_CHECK})
+  string(REPLACE ".cpp" ".obj" OBJ_FILE "${SOURCE_FILE}")
+
+  set(SOURCE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE}")
+  set(OBJ_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${OBJ_FILE}")
+
+  
+  if (NOT EXISTS "${SOURCE_PATH}")
+    if (EXISTS "${OBJ_PATH}")
+      list(APPEND OBS_STUDIO_SOURCES "${OBJ_PATH}")
+      message(STATUS "Adding ${OBJ_FILE} to target_sources (source file missing)")
+    else()
+      message(STATUS "${SOURCE_FILE} does not exist, and ${OBJ_FILE} also does not exist.")
+    endif()
+  else()
+    list(APPEND OBS_STUDIO_SOURCES "${SOURCE_PATH}")
+  endif()
+endforeach()
+
 target_sources(
   obs-studio
   PRIVATE
+    ${OBS_STUDIO_SOURCES}
     window-basic-about.cpp
     window-basic-about.hpp
     window-basic-adv-audio.cpp
@@ -23,8 +50,7 @@ target_sources(
     window-basic-main-transitions.cpp
     window-basic-main.cpp
     window-basic-main.hpp
-    window-basic-main-gbs.cpp
-
+    #window-basic-main-gbs.cpp
 
     gbs/common/VertNaviButtonExt.h
     gbs/common/VertNaviButton.h
@@ -45,9 +71,9 @@ target_sources(
     gbs/common/QBizLogger.h
     gbs/common/QToast.h
 
-    gbs/common/WebSocketClient.cpp
+    #gbs/common/WebSocketClient.cpp
     gbs/common/WebSocketClient.h
-    gbs/common/GBSHttpClient.cpp
+    #gbs/common/GBSHttpClient.cpp
     gbs/common/GBSHttpClient.h
     gbs/common/DoubleTextButton.h
 

@@ -91,6 +91,8 @@ private slots:
         } else {
             textLabel->setStyleSheet("background-color: transparent; font-size: 16px; border-radius: 16px;"); // 未选中时背景色
         }
+        update();  // 刷新控件
+        repaint(); // 强制重绘
     }
 
 private:

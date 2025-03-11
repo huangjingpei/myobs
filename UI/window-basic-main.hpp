@@ -1432,6 +1432,7 @@ private:
 	void onRoomInfos(std::list<GBSRoomInfo> &info) override;
 	void onRoomInfo(GBSRoomInfo *info) override;
 	void onAccountInfo(GBSLiveAccountInfo result) override;
+	void onPushRtmpClosed() override;
 	// 通过 WssEventListener 继承
 	void onMessage(std::string msg) override;
 	void onOpen() override;

@@ -579,6 +579,7 @@ void GBSBizLivePusherCtrl::updateStyle(bool checked) {
 					      "}");
 		}
 	}
+	update();
 
 }
 

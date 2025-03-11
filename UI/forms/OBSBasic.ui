@@ -1990,7 +1990,7 @@ font-size: 24px;
   <action name="actionMixerToolbarMenu">
    <property name="icon">
     <iconset resource="obs.qrc">
-     <normaloff>:/res/images/dots-vert.svg</normaloff>:/res/images/dots-vert.svg</iconset>
+     <normaloff>:/res/images/dots-vert-green.svg</normaloff>:/res/images/dots-vert-green.svg</iconset>
    </property>
    <property name="text">
     <string>MixerToolbarMenu</string>

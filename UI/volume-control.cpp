@@ -239,7 +239,8 @@ VolControl::VolControl(OBSSource source_, bool showConfig, bool vertical)
 
 	if (showConfig) {
 		config = new QPushButton(this);
-		config->setProperty("class", "icon-dots-vert");
+		//config->setProperty("class", "icon-dots-vert");
+		config->setStyleSheet("border-image:url(:/res/images/dots-vert.svg)");
 		config->setAutoDefault(false);
 
 		config->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

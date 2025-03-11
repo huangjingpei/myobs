@@ -113,7 +113,7 @@ void OBSBasic::OBSInit2() {
 	connect(ui->pushButton_2, &FatButton::clicked, this, &OBSBasic::RecordActionTriggered);
 	connect(ui->pushButton, &FatButton::clicked, this, &OBSBasic::VirtualCamActionTriggered);
 
-	ui->actionMixerToolbarMenu->setVisible(false);
+	ui->actionMixerToolbarMenu->setVisible(true);
 
 	cleanGuarderCtrlScene();
 
@@ -949,6 +949,10 @@ void OBSBasic::onAccountInfo(GBSLiveAccountInfo result){
 	
 }
 
+void OBSBasic::onPushRtmpClosed()
+{
+	StopGBSStreaming();
+}
 
 OBSSource OBSBasic::addCameraSource()
 {

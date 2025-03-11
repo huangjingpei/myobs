@@ -689,7 +689,7 @@ void GBSBizLivePusherCtrl::updateStyle(bool checked) {
 					      "}");
 		}
 	}
-
+	update();
 }
 
 bool GBSBizLivePusherCtrl::FindCameraSource(void *param, obs_source_t *source)
